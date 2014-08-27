@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>{{title}}</title>
+
+	<!-- General META -->
+	<meta charset="utf-8">
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<!--Application CSS Files-->
+	{% for cssFile in cssFiles %}<link rel="stylesheet" href="{{cssFile}}">
+	{% endfor %}
+
+	<!-- HTML5 Shim -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div id="container">
+        <h2 class="text-center">Create a new account</h2>
+        <form action="/setup" method="post">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Name</label>
+                    <div class="col-md-10">
+                        <input type="text" name="name" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">First name</label>
+                    <div class="col-md-10">
+                        <input type="text" name="firstName" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">Last name</label>
+                    <div class="col-md-10">
+                        <input type="text" name="lastName" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">Email</label>
+                    <div class="col-md-10">
+                        <input type="text" name="email" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">Password</label>
+                    <div class="col-md-10">
+                        <input type="password" name="password" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
