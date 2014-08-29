@@ -8,7 +8,7 @@ var should = require('should'),
 	controller = require('../controllers/account'),
 	config = require_config(),
 	Account = require_domain('account'),
-	repository = require_domain('repository');
+	repository = require_infrastructure('repository');
 
 /**
  * Unit tests

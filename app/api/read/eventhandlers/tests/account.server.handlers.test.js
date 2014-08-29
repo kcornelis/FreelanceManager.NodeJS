@@ -1,0 +1,289 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+var should = require('should'),
+	uuid = require('node-uuid'),
+	async = require('async'),
+	mongoose = require('mongoose'),
+	Account = mongoose.model('Account'),
+	servicebus = require_infrastructure('servicebus');
+
+
+/**
+ * Unit tests
+ */
+describe('Account Handlers Unit Tests:', function() {
+
+	describe('When an account created event is received', function() {
+
+		var id = uuid.v1();
+		var account;
+
+		before(function(done){
+			async.series([
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						name: 'John BVBA',
+						firstName: 'John',
+						lastName: 'Doe',
+						email: 'john@doe.com',
+						metadata: {
+							eventName: 'AccountCreated',
+							eventVersion: 1
+						}
+					}, done);
+				},
+				function(done){
+					servicebus.processEvents(done);
+				}
+			], done);
+		});
+
+		it('should create an account', function(done){
+			Account.findOne({
+				aggregateRootId: id
+			})
+			.exec(function(err, a) {
+
+				should.not.exist(err);
+				should.exist(a);
+				account = a;
+
+				done();
+			});
+		});	
+
+		it('should create an account with a aggregate root id', function(){
+			account.aggregateRootId.should.eql(id);
+		});
+
+		it('should create an account with a name', function(){
+			account.name.should.eql('John BVBA');
+		});
+
+		it('should create an account with a first name', function(){
+			account.firstName.should.eql('John');
+		});
+
+		it('should create an account with a last name', function(){
+			account.lastName.should.eql('Doe');
+		});
+
+		it('should create an account with a email', function(){
+			account.email.should.eql('john@doe.com');
+		});
+
+		it('should not be admin', function(){
+			account.admin.should.eql(false);
+		});
+
+		it('should create an account with a version', function(){
+			account.version.should.eql(1);
+		});
+
+		after(function(done) {
+			Account.remove().exec(function(){
+				done();
+			});
+		});	
+	});
+
+	describe('When an account details changed event is received', function() {
+
+		var id = uuid.v1();
+		var account;
+
+		before(function(done){
+			async.series([
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						name: 'John BVBA',
+						firstName: 'John',
+						lastName: 'Doe',
+						email: 'john@doe.com',
+						metadata: {
+							eventName: 'AccountCreated',
+							eventVersion: 1
+						}
+					}, done);
+				},
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						name: 'Jane BVBA',
+						firstName: 'Jane',
+						lastName: 'Test',
+						email: 'jane@test.com',
+						metadata: {
+							eventName: 'AccountDetailsChanged',
+							eventVersion: 2
+						}
+					}, done);
+				}, 
+				function(done){
+					servicebus.processEvents(done);
+				},
+				function(done){
+					Account.findOne({
+						aggregateRootId: id
+					})
+					.exec(function(err, a) {
+						account = a;
+						done();
+					});
+				}
+
+			], done);
+		});
+
+		it('should have the correct aggregate root id', function(){
+			account.aggregateRootId.should.eql(id);
+		});
+
+		it('should update the account with the new name', function(){
+			account.name.should.eql('Jane BVBA');
+		});
+
+		it('should update the account with the new first name', function(){
+			account.firstName.should.eql('Jane');
+		});
+
+		it('should update the account with the new last name', function(){
+			account.lastName.should.eql('Test');
+		});
+
+		it('should update the account with the new email', function(){
+			account.email.should.eql('jane@test.com');
+		});
+
+		it('should update an account with the new version', function(){
+			account.version.should.eql(2);
+		});
+
+		after(function(done) {
+			Account.remove().exec(function(){
+				done();
+			});
+		});	
+	});
+
+	describe('When an account is made admin', function() {
+
+		var id = uuid.v1();
+		var account;
+
+		before(function(done){
+			async.series([
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						name: 'John BVBA',
+						firstName: 'John',
+						lastName: 'Doe',
+						email: 'john@doe.com',
+						metadata: {
+							eventName: 'AccountCreated',
+							eventVersion: 1
+						}
+					}, done);
+				},
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						metadata: {
+							eventName: 'AccountMadeAdmin',
+							eventVersion: 2
+						}
+					}, done);
+				},
+				function(done){
+					servicebus.processEvents(done);
+				},
+				function(done){
+					Account.findOne({
+						aggregateRootId: id
+					})
+					.exec(function(err, a) {
+						account = a;
+						done();
+					});
+				}
+
+			], done);
+		});
+
+		it('should should be admin', function(){
+			account.admin.should.eql(true);
+		});
+
+		it('should update the account with the new version', function(){
+			account.version.should.eql(2);
+		});
+
+		after(function(done) {
+			Account.remove().exec(function(){
+				done();
+			});
+		});	
+	});
+
+	describe('When an account password is changed', function() {
+
+		var id = uuid.v1();
+		var account;
+
+		before(function(done){
+			async.series([
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						name: 'John BVBA',
+						firstName: 'John',
+						lastName: 'Doe',
+						email: 'john@doe.com',
+						metadata: {
+							eventName: 'AccountCreated',
+							eventVersion: 1
+						}
+					}, done);
+				},
+				function(done){
+					servicebus.publishDomainEvent({
+						aggregateRootId: id,
+						metadata: {
+							eventName: 'AccountPasswordChanged',
+							eventVersion: 2
+						}
+					}, done);
+				},
+				function(done){
+					servicebus.processEvents(done);
+				},
+				function(done){
+					Account.findOne({
+						aggregateRootId: id
+					})
+					.exec(function(err, a) {
+						account = a;
+						done();
+					});
+				}
+
+			], done);
+		});
+
+		it('should update the account with the new version', function(){
+			account.version.should.eql(2);
+		});
+
+		after(function(done) {
+			Account.remove().exec(function(){
+				done();
+			});
+		});	
+	});
+});

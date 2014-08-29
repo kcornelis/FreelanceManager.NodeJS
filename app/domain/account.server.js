@@ -2,8 +2,8 @@
 
 var util = require('util'),
 	_ = require('lodash'),
-	AggregateRoot = require('./aggregateroot'),
-	repository = require('./repository'),
+	AggregateRoot = require_domain('aggregateroot'),
+	repository = require_infrastructure('repository'),
 	crypto = require('crypto');
 
 

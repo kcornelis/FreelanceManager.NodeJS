@@ -14,11 +14,15 @@ var AccountSchema = new Schema({
 		type: Number,
 		default: ''
 	},
+	aggregateRootId: {
+		type: String,
+		default: ''
+	},
   	name: {
 		type: String,
 		default: ''
 	},
-  	firstName: {
+	firstName: {
 		type: String,
 		default: ''
 	},
@@ -30,11 +34,11 @@ var AccountSchema = new Schema({
 		type: String,
 		default: ''
 	},
-  	admin: {
+	admin: {
 		type: Boolean,
-    default: false
+		default: false
 	},
-  	createdOn: {
+	createdOn: {
 		type: Date,
 		default: Date.now
 	}

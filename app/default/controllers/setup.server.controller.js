@@ -3,7 +3,7 @@
 var mongoose = require('mongoose'),
     AccountModel = mongoose.model('Account'),
     DomainAccount = require_domain('account'),
-    repository = require_domain('repository'),
+    repository = require_infrastructure('repository'),
     uuid = require('node-uuid');
 
 

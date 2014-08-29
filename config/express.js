@@ -30,6 +30,9 @@ global.require_config = function(){
 global.require_domain = function(item){
    return require(__dirname + '/../app/domain/' + item);
 };
+global.require_infrastructure = function(item){
+   return require(__dirname + '/../app/infrastructure/' + item);
+};
 
 module.exports = function(db) {
 	// Initialize express app
@@ -119,6 +122,11 @@ module.exports = function(db) {
 	// Globbing routing files
 	config.getGlobbedFiles('./app/**/routes/**/*routes.js').forEach(function(routePath) {
 		require(path.resolve(routePath))(app);
+	});
+
+	// Globbing routing files
+	config.getGlobbedFiles('./app/**/eventhandlers/**/*handlers.js').forEach(function(handlerPath) {
+		require(path.resolve(handlerPath));
 	});
 
 	// Assume 'not found' in the error msgs is a 404. this is somewhat silly, but valid, you can do whatever you like, set properties, use instanceof etc.

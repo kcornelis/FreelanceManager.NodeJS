@@ -2,7 +2,7 @@
 
 var config = require_config(),
 	_ = require('lodash'),
-	AggregateRoot = require('./aggregateroot');
+	AggregateRoot = require_domain('aggregateroot');
 
 var es = require('eventstore')({
   type: 'mongodb',

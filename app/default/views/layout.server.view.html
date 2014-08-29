@@ -21,29 +21,54 @@
 </head>
 
 <body>
-    <div id="wrapper">
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"
-             data-ng-include="'/modules/core/views/navigation.client.view.html'">
 
-        </nav>
+<div id="wrap">
+		<div class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">Freelance Manager</a>
+				</div>
+				<div class="navbar-collapse collapse"
+					 data-ng-include="'/modules/core/views/navigation.client.view.html'">
+				</div>
+			</div>
+		</div>
 
-        <div id="page-wrapper">
-            {% block content %}{% endblock %}
-        </div>
-    </div>
-        <!--Embedding The User Object-->
-        <script type="text/javascript">
-            var user = {{ user | json | safe }};
-        </script>
+		<div class="container">
+			
+				<ul class="nav  nav-tabs">
+					<!-- TODO render menu -->
+				</ul>
+			
 
-        <!--Application JavaScript Files-->
-        {% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>
-        {% endfor %}
+			{% block content %}{% endblock %}
+		</div>
+	</div>
 
-        {% if process.env.NODE_ENV === 'development' %}
-        <!--Livereload script rendered -->
-        <script type="text/javascript" src="http://localhost:35729/livereload.js"></script>
-        {% endif %}
+	<footer>
+		<div class="container">
+			
+		</div>
+	</footer>
+
+		<!--Embedding The User Object-->
+		<script type="text/javascript">
+			var user = {{ user | json | safe }};
+		</script>
+
+		<!--Application JavaScript Files-->
+		{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>
+		{% endfor %}
+
+		{% if process.env.NODE_ENV === 'development' %}
+		<!--Livereload script rendered -->
+		<script type="text/javascript" src="http://localhost:35729/livereload.js"></script>
+		{% endif %}
 
 </body>
 

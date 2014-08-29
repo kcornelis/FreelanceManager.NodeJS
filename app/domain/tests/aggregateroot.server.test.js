@@ -7,7 +7,7 @@ var should = require('should'),
 	uuid = require('node-uuid'),
 	_ = require('lodash'),
 	util = require('util'),
-	AggregateRoot = require('../aggregateroot');
+	AggregateRoot = require_domain('aggregateroot');
 
 /**
  * Test data

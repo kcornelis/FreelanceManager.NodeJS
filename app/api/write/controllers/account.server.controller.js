@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var Account = require_domain('account'),
-	repository = require_domain('repository'),
+	repository = require_infrastructure('repository'),
 	uuid = require('node-uuid'),
 	_ = require('lodash');
 

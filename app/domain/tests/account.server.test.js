@@ -5,7 +5,7 @@ var should = require('should'),
 	uuid = require('node-uuid'),
 	_ = require('lodash'),
 	util = require('util'),
-	Account = require('../account');
+	Account = require_domain('account');
 
 /**
  * Unit tests
