@@ -1,6 +1,7 @@
 'use strict';
 
 var config = require_config(),
+	servicebus = require('./servicebus'),
 	_ = require('lodash'),
 	AggregateRoot = require_domain('aggregateroot');
 
@@ -11,7 +12,7 @@ var es = require('eventstore')({
   dbName: config.mongo.eventstore.name
 });
 es.useEventPublisher(function(evt, callback) {
-	// bus.sendAndWaitForAck('event', evt, callback);
+	servicebus.publishDomainEvent(evt, callback);
 });
 es.init();
 

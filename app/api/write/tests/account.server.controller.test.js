@@ -13,7 +13,7 @@ var should = require('should'),
 /**
  * Unit tests
  */
-describe('Write Account Controller Unit Tests:', function() {
+describe('API-Write: Account Controller Integration Tests:', function() {
 
 	describe('When creating an account', function() {
 
@@ -24,13 +24,13 @@ describe('Write Account Controller Unit Tests:', function() {
 		before(function(done) {
 			
 			request('http://localhost:' + config.port)
-		        .post('/api/write/accounts/create')
-		        .send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
-		        .expect('Content-Type', /json/)
-		        .expect(200)
-		        .end(function(err, res) {
-		        	if(err)
-		        		throw err;
+				.post('/api/write/accounts/create')
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res) {
+					if(err)
+						throw err;
 
 					response = res;
 					body = res.body;
@@ -39,7 +39,7 @@ describe('Write Account Controller Unit Tests:', function() {
 						account = a;
 						done();
 					});
-		        });
+				});
 		});
 		
 		it('should return the id of the account', function() {

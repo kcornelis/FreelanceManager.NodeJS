@@ -7,6 +7,7 @@ var should = require('should'),
 	uuid = require('node-uuid'),
 	async = require('async'),
 	mongoose = require('mongoose'),
+	DomainAccount = require_domain('account'),
 	Account = mongoose.model('Account'),
 	servicebus = require_infrastructure('servicebus');
 
@@ -22,19 +23,12 @@ describe('Account Handlers Unit Tests:', function() {
 		var account;
 
 		before(function(done){
+			var domainAccount = new DomainAccount(id, 'John BVBA', 'John', 'Doe', 'john@doe.com');
+			
 			async.series([
 				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						name: 'John BVBA',
-						firstName: 'John',
-						lastName: 'Doe',
-						email: 'john@doe.com',
-						metadata: {
-							eventName: 'AccountCreated',
-							eventVersion: 1
-						}
-					}, done);
+					servicebus.publishDomainEvents(
+						domainAccount.getUncommittedChanges(), done);
 				},
 				function(done){
 					servicebus.processEvents(done);
@@ -97,33 +91,14 @@ describe('Account Handlers Unit Tests:', function() {
 		var account;
 
 		before(function(done){
+			var domainAccount = new DomainAccount(id, 'John BVBA', 'John', 'Doe', 'john@doe.com');
+			domainAccount.changeDetails('Jane BVBA', 'Jane', 'Test', 'jane@test.com');
+
 			async.series([
 				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						name: 'John BVBA',
-						firstName: 'John',
-						lastName: 'Doe',
-						email: 'john@doe.com',
-						metadata: {
-							eventName: 'AccountCreated',
-							eventVersion: 1
-						}
-					}, done);
+					servicebus.publishDomainEvents(
+						domainAccount.getUncommittedChanges(), done);
 				},
-				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						name: 'Jane BVBA',
-						firstName: 'Jane',
-						lastName: 'Test',
-						email: 'jane@test.com',
-						metadata: {
-							eventName: 'AccountDetailsChanged',
-							eventVersion: 2
-						}
-					}, done);
-				}, 
 				function(done){
 					servicebus.processEvents(done);
 				},
@@ -136,7 +111,6 @@ describe('Account Handlers Unit Tests:', function() {
 						done();
 					});
 				}
-
 			], done);
 		});
 
@@ -177,28 +151,13 @@ describe('Account Handlers Unit Tests:', function() {
 		var account;
 
 		before(function(done){
+			var domainAccount = new DomainAccount(id, 'John BVBA', 'John', 'Doe', 'john@doe.com');
+			domainAccount.makeAdmin();
+
 			async.series([
 				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						name: 'John BVBA',
-						firstName: 'John',
-						lastName: 'Doe',
-						email: 'john@doe.com',
-						metadata: {
-							eventName: 'AccountCreated',
-							eventVersion: 1
-						}
-					}, done);
-				},
-				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						metadata: {
-							eventName: 'AccountMadeAdmin',
-							eventVersion: 2
-						}
-					}, done);
+					servicebus.publishDomainEvents(
+						domainAccount.getUncommittedChanges(), done);
 				},
 				function(done){
 					servicebus.processEvents(done);
@@ -212,7 +171,6 @@ describe('Account Handlers Unit Tests:', function() {
 						done();
 					});
 				}
-
 			], done);
 		});
 
@@ -237,28 +195,13 @@ describe('Account Handlers Unit Tests:', function() {
 		var account;
 
 		before(function(done){
+			var domainAccount = new DomainAccount(id, 'John BVBA', 'John', 'Doe', 'john@doe.com');
+			domainAccount.changePassword('123');
+
 			async.series([
 				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						name: 'John BVBA',
-						firstName: 'John',
-						lastName: 'Doe',
-						email: 'john@doe.com',
-						metadata: {
-							eventName: 'AccountCreated',
-							eventVersion: 1
-						}
-					}, done);
-				},
-				function(done){
-					servicebus.publishDomainEvent({
-						aggregateRootId: id,
-						metadata: {
-							eventName: 'AccountPasswordChanged',
-							eventVersion: 2
-						}
-					}, done);
+					servicebus.publishDomainEvents(
+						domainAccount.getUncommittedChanges(), done);
 				},
 				function(done){
 					servicebus.processEvents(done);
@@ -272,7 +215,6 @@ describe('Account Handlers Unit Tests:', function() {
 						done();
 					});
 				}
-
 			], done);
 		});
 

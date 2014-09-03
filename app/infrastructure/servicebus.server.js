@@ -29,7 +29,7 @@ exports.deleteDomainEventSubscription = function(name, callback){
 
 exports.processEvents = function(callback) {
 
-	if(events.empty)
+	if(events.empty && callback)
 		callback();
 
 	async.eachSeries(events, function(evt, evtCallback){
@@ -58,13 +58,23 @@ exports.processEvents = function(callback) {
 	function(err) {
 		// all events are handled
 		events = [];
-		callback();
+		if(callback)
+			callback();
 	});
 };
 
 exports.start = function(){
 	// start after all registrations in express.js
+	receiveLoop();
 };
+
+function receiveLoop(){
+	setTimeout(function(){
+		exports.processEvents(function(){
+			receiveLoop();
+		});
+	}, 1000);
+}
 
 exports.publishDomainEvent = function(evt, callback) {
 
@@ -80,4 +90,10 @@ exports.publishDomainEvent = function(evt, callback) {
 
 	if(callback)
 		callback();
+};
+
+exports.publishDomainEvents = function(evts, callback){
+	async.eachSeries(evts, function(evt, done) {
+		exports.publishDomainEvent(evt, done);
+	}, callback);
 };

@@ -12,5 +12,8 @@ module.exports = {
 	port: 3001,
 	app: {
 		title: 'MEAN.JS - Test Environment'
+	},
+	servicebus:{
+		autostart: false
 	}
 };

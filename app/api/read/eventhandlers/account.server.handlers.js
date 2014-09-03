@@ -1,6 +1,6 @@
  'use strict';
 
- var servicebus = require_infrastructure('servicebus'),
+var servicebus = require_infrastructure('servicebus'),
 	mongoose = require('mongoose'),
 	Account = mongoose.model('Account');
 
