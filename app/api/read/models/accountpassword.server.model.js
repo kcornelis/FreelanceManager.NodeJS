@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	  Schema = mongoose.Schema;
+	crypto = require('crypto'),
+	Schema = mongoose.Schema;
 
 /**
  * TimeRegistration Schema
@@ -35,5 +36,9 @@ var AccountPasswordSchema = new Schema({
 		default: Date.now
 	}
 });
+
+AccountPasswordSchema.methods.authenticate = function(password) {
+	return this.passwordHash === crypto.pbkdf2Sync(password, new Buffer(this.passwordSalt, 'base64'), 10000, 64).toString('base64');
+};
 
 mongoose.model('AccountPassword', AccountPasswordSchema);

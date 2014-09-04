@@ -56,12 +56,12 @@ _.extend(Account.prototype, {
 	},		
 	changePassword: function(password){
 		
-		var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+		var salt = crypto.randomBytes(16).toString('base64');
 
 		this.apply('AccountPasswordChanged', {
 			passwordHash: hashPassword(password, salt),
 			passwordSalt: salt
-		});	
+		});
 	},
 	makeAdmin: function(){
 		this.apply('AccountMadeAdmin', { });
@@ -77,7 +77,7 @@ _.extend(Account.prototype, {
 });
 
 function hashPassword(password, salt){
-	return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+	return crypto.pbkdf2Sync(password, new Buffer(salt, 'base64'), 10000, 64).toString('base64');
 }
 
 function subscribeToDomainEvents(account) {

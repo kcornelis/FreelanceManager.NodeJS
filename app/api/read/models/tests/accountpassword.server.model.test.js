@@ -5,6 +5,7 @@
  */
 var should = require('should'),
 	mongoose = require('mongoose'),
+	crypto = require('crypto'),
 	AccountPassword = mongoose.model('AccountPassword');
 
 
@@ -16,12 +17,14 @@ describe('Account Password Model Unit Tests:', function() {
 	describe('When an account password is created', function() {
 
 		var original, saved;
+		var salt = crypto.randomBytes(16).toString('base64');
+		var hash = crypto.pbkdf2Sync('pas123', new Buffer(salt, 'base64'), 10000, 64).toString('base64');
 
 		before(function(done) {
 			original = new AccountPassword({
 				aggregateRootId: 'my unique id',
-				passwordHash: 'hash',
-				passwordSalt: 'salt',
+				passwordHash: hash,
+				passwordSalt: salt,
 				email: 'test@test.com',
 				version: 2
 			});
@@ -54,11 +57,11 @@ describe('Account Password Model Unit Tests:', function() {
 		});
 
 		it('should have a password hash', function(){
-			saved.passwordHash.should.eql('hash');
+			saved.passwordHash.should.eql(hash);
 		});
 
 		it('should have a password salt', function(){
-			saved.passwordSalt.should.eql('salt');
+			saved.passwordSalt.should.eql(salt);
 		});
 
 		it('should have a email', function(){
@@ -74,6 +77,18 @@ describe('Account Password Model Unit Tests:', function() {
 			new Date(saved.createdOn).should.lessThan(new Date(Date.now() + 10000));
 		});
 
+		if('should authenticate with the correct password', function(){
+			saved.authenticate('pas123').should.be.ok;
+		});
+
+		if('should not authenticate with the wrong password', function(){
+			saved.authenticate('123').should.not.be.ok;
+		});
+
+		if('should not authenticate with an empty password', function(){
+			saved.authenticate('').should.not.be.ok;
+		});
+
 		after(function(done) {
 			AccountPassword.remove().exec();
 			done();
@@ -81,7 +96,7 @@ describe('Account Password Model Unit Tests:', function() {
 	});
 
 
-	describe('When an account is modified', function() {
+	describe('When an account password is modified', function() {
 
 		var original, saved;
 
@@ -159,5 +174,4 @@ describe('Account Password Model Unit Tests:', function() {
 			done();
 		});
 	});
-
 });
