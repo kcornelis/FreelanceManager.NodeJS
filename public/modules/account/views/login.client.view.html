@@ -1,0 +1,13 @@
+<div class="stretch-viewport login" data-ng-controller="AuthenticateController">
+	<div class="container">
+		<form data-ng-submit="submit()" class="form-signin">
+			<div data-ng-show="error" class="alert alert-danger">
+				<div data-ng-bind="error"></div>
+			</div>
+			<h2 class="form-signin-heading">Please sign in</h2>
+			<input class="form-control" data-ng-model="user.email" type="text" name="email" placeholder="Email" autofocus="" />
+			<input class="form-control" data-ng-model="user.password" type="password" name="password" placeholder="Password" />
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		</form>
+	</div>
+</div>

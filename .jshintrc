@@ -12,7 +12,7 @@
 	"noarg": true, // Prohibit use of `arguments.caller` and `arguments.callee`.
 	"quotmark": "single", // Define quotes to string values.
 	"regexp": true, // Prohibit `.` and `[^...]` in regular expressions.
-	"undef": true, // Require all non-global variables be declared before they are used.
+	"undef": false, // Require all non-global variables be declared before they are used.
 	"unused": false, // Warn unused variables.
 	"strict": true, // Require `use strict` pragma in every file.
 	"trailing": true, // Prohibit trailing whitespaces.
@@ -34,7 +34,10 @@
 		"afterEach",
 		"it",
 		"inject",
-		"expect"
+		"expect",
+		"require_domain",
+		"require_infrastructure",
+		"require_config"
 	],
 	"indent": 4, // Specify indentation spacing
 	"devel": true, // Allow development statements e.g. `console.log();`.

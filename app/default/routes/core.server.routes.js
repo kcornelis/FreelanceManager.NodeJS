@@ -1,7 +1,15 @@
 'use strict';
 
+/**
+ * Module dependencies.
+ */
+var jwt = require('express-jwt'),
+	config = require_config();
+
 module.exports = function(app) {
-	// Root routing
+	
+	// Core routing
 	var core = require('../controllers/core');
-	app.route('/').get(core.index);
+
+	app.route('/').get(/*jwt({ secret: config.jwtSecret }),*/ core.index);
 };

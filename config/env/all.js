@@ -10,6 +10,7 @@ module.exports = {
 	templateEngine: 'swig',
 	sessionSecret: 'MyFreelanceManagerSecret',
 	sessionCollection: 'sessions',
+	jwtSecret: 'MyJwtSecret',
 	servicebus: {
 		autostart: true
 	},

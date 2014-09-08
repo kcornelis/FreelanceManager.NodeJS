@@ -4,9 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	Account = mongoose.model('Account'),
-	uuid = require('node-uuid'),
-	_ = require('lodash');
+	Account = mongoose.model('Account');
 
 /**
  * Create a article
