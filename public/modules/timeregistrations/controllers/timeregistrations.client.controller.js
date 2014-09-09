@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('timeregistrations').controller('TimeRegistrationsController', ['$scope', '$stateParams', '$location', 'Authentication',
-	function($scope, $stateParams, $location, Authentication) {
+angular.module('timeregistrations').controller('TimeRegistrationsController',
+	function($scope, $http) {
 // 		$scope.authentication = Authentication;
 
-		$scope.create = function() {
+	$scope.create = function() {
 // 			var timeregistration = new Timeregistrations({
 // 				title: this.title,
 // 				content: this.content
@@ -17,9 +17,9 @@ angular.module('timeregistrations').controller('TimeRegistrationsController', ['
 
 // 			this.title = '';
 // 			this.content = '';
-		};
+	};
 
-		$scope.remove = function(timeregistration) {
+	$scope.remove = function(timeregistration) {
 // 			if (timeregistration) {
 // 				timeregistration.$remove();
 
@@ -33,9 +33,9 @@ angular.module('timeregistrations').controller('TimeRegistrationsController', ['
 // 					$location.path('timeregistrations');
 // 				});
 // 			}
-		};
+	};
 
-		$scope.update = function() {
+	$scope.update = function() {
 // 			var timeregistration = $scope.timeregistration;
 
 // 			timeregistration.$update(function() {
@@ -43,16 +43,22 @@ angular.module('timeregistrations').controller('TimeRegistrationsController', ['
 // 			}, function(errorResponse) {
 // 				$scope.error = errorResponse.data.message;
 // 			});
-		};
+	};
 
-		$scope.find = function() {
-			//$scope.timeregistrations = Timeregistrations.query();
-		};
+	$scope.find = function() {
+		//$scope.timeregistrations = Timeregistrations.query();
 
-		$scope.findOne = function() {
+		$http.get('/api/read/accounts')
+			.success(function (data, status, headers, config) {
+				$scope.timeregistrations = data;
+			})
+			.error(function (data, status, headers, config) {
+			});			
+	};
+
+	$scope.findOne = function() {
 // 			$scope.timeregistration = Timeregistrations.get({
 // 				timeregistrationId: $stateParams.timeregistrationId
 // 			});
-		};
-	}
-]);
+	};
+});

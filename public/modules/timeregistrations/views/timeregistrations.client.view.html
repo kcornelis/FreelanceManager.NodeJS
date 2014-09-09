@@ -2,10 +2,14 @@
 	<header data-ng-include="'/modules/core/views/header.client.view.html'">
 	</header>
 	<div class="container">
+		<ul class="nav  nav-tabs">
+			<li class="active"><a href="/#!/timeregistrations">Registrations</a></li>
+			<li><a href="/#!/timeregistrations/overview">Overview</a></li>
+			<li><a href="/#!/timeregistrations/report">Report</a></li>
+		</ul>
 		<div ui-view></div>
 	</div>
 </div>	
 
 <footer data-ng-include="'/modules/core/views/footer.client.view.html'">
 </footer>
-

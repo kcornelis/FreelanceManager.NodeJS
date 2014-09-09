@@ -9,7 +9,7 @@ var accounts = require('../controllers/account'),
 
 module.exports = function(app) {
 
-  //app.use('/api/read', jwt({ secret: config.jwtSecret }))
+  app.use('/api/read', jwt({ secret: config.jwtSecret }));
 
   app.route('/api/read/accounts').get(accounts.getAll);
   app.route('/api/read/account/:accountId').get(accounts.getById);

@@ -139,13 +139,24 @@ module.exports = function(db) {
 		// If the error object doesn't exists
 		if (!err) return next();
 
-		// Log it
-		console.error(err.stack);
+		console.log(err.name);
 
-		// Error page
-		res.status(500).render('500', {
-			error: err.stack
-		});
+		if(err.name == 'UnauthorizedError') {
+
+			res.status(401).render('401', {
+				error: 'Unauthorized'
+			});
+
+		}else{
+
+			// Log it
+			console.error(err.stack);
+
+			// Error page
+			res.status(500).render('500', {
+				error: err.stack
+			});
+		}
 	});
 
 	// Assume 404 since no middleware responded

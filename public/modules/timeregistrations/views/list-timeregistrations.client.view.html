@@ -1,5 +1,8 @@
 <section data-ng-controller="TimeRegistrationsController" data-ng-init="find()">
 	<div class="page-header">
 		<h1>Timeregistrations</h1>
+		<ul>
+		    <li data-ng-repeat="t in timeregistrations">{{ t.firstName }}</li>
+		</ul>
 	</div>
 </section>
