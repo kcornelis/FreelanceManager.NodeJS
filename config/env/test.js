@@ -4,6 +4,7 @@ module.exports = {
 	db: 'mongodb://localhost/mean-tst',
 	mongo: {
 		eventstore: {
+			db: 'mongodb://localhost/mean-tst-es',
 			host: 'localhost',
 			port: 27017,
 			name: 'mean-tst-es'

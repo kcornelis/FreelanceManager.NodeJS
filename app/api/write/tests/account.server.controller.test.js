@@ -8,12 +8,23 @@ var should = require('should'),
 	controller = require('../controllers/account'),
 	config = require_config(),
 	Account = require_domain('account'),
-	repository = require_infrastructure('repository');
+	repository = require_infrastructure('repository'),
+	testdata = require_infrastructure('testdata');
 
 /**
  * Unit tests
  */
 describe('API-Write: Account Controller Integration Tests:', function() {
+
+	describe('When an account is created by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/write/accounts/create')
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
+				.expect(401)
+				.end(done);
+		});
+	});
 
 	describe('When creating an account', function() {
 
@@ -25,6 +36,7 @@ describe('API-Write: Account Controller Integration Tests:', function() {
 			
 			request('http://localhost:' + config.port)
 				.post('/api/write/accounts/create')
+				.set('Authorization', testdata.normalAccountToken)
 				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
 				.expect('Content-Type', /json/)
 				.expect(200)

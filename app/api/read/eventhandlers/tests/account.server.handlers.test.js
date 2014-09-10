@@ -39,8 +39,7 @@ describe('Account Handlers Unit Tests:', function() {
 		it('should create an account', function(done){
 			Account.findOne({
 				aggregateRootId: id
-			})
-			.exec(function(err, a) {
+			}, function(err, a) {
 
 				should.not.exist(err);
 				should.exist(a);
@@ -77,12 +76,6 @@ describe('Account Handlers Unit Tests:', function() {
 		it('should create an account with a version', function(){
 			account.version.should.eql(1);
 		});
-
-		after(function(done) {
-			Account.remove().exec(function(){
-				done();
-			});
-		});	
 	});
 
 	describe('When an account details changed event is received', function() {
@@ -105,8 +98,7 @@ describe('Account Handlers Unit Tests:', function() {
 				function(done){
 					Account.findOne({
 						aggregateRootId: id
-					})
-					.exec(function(err, a) {
+					}, function(err, a) {
 						account = a;
 						done();
 					});
@@ -137,12 +129,6 @@ describe('Account Handlers Unit Tests:', function() {
 		it('should update an account with the new version', function(){
 			account.version.should.eql(2);
 		});
-
-		after(function(done) {
-			Account.remove().exec(function(){
-				done();
-			});
-		});	
 	});
 
 	describe('When an account is made admin', function() {
@@ -165,8 +151,7 @@ describe('Account Handlers Unit Tests:', function() {
 				function(done){
 					Account.findOne({
 						aggregateRootId: id
-					})
-					.exec(function(err, a) {
+					}, function(err, a) {
 						account = a;
 						done();
 					});
@@ -181,12 +166,6 @@ describe('Account Handlers Unit Tests:', function() {
 		it('should update the account with the new version', function(){
 			account.version.should.eql(2);
 		});
-
-		after(function(done) {
-			Account.remove().exec(function(){
-				done();
-			});
-		});	
 	});
 
 	describe('When an account password is changed', function() {
@@ -209,8 +188,7 @@ describe('Account Handlers Unit Tests:', function() {
 				function(done){
 					Account.findOne({
 						aggregateRootId: id
-					})
-					.exec(function(err, a) {
+					}, function(err, a) {
 						account = a;
 						done();
 					});
@@ -221,11 +199,5 @@ describe('Account Handlers Unit Tests:', function() {
 		it('should update the account with the new version', function(){
 			account.version.should.eql(2);
 		});
-
-		after(function(done) {
-			Account.remove().exec(function(){
-				done();
-			});
-		});	
 	});
 });

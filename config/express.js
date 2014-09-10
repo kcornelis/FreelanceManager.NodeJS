@@ -139,10 +139,11 @@ module.exports = function(db) {
 		// If the error object doesn't exists
 		if (!err) return next();
 
-		console.log(err.name);
+		
 
 		if(err.name == 'UnauthorizedError') {
 
+			console.log('UnauthorizedError');
 			res.status(401).render('401', {
 				error: 'Unauthorized'
 			});

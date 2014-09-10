@@ -11,12 +11,22 @@ var should = require('should'),
 	controller = require('../controllers/account'),
 	config = require_config(),
 	DomainAccount = require_domain('account'),
-	servicebus = require_infrastructure('servicebus');
+	servicebus = require_infrastructure('servicebus'),
+	testdata = require_infrastructure('testdata');
 
 /**
  * Unit tests
  */
 describe('API-Read: Account Controller Integration Tests:', function() {
+
+	describe('When an account is requested by id by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/read/account/' + uuid.v1())
+				.expect(401)
+				.end(done);
+		});
+	});
 
 	describe('When an account is requested by id', function() {
 
@@ -39,8 +49,9 @@ describe('API-Read: Account Controller Integration Tests:', function() {
 					
 					request('http://localhost:' + config.port)
 						.get('/api/read/account/' + id)
-						.expect('Content-Type', /json/)
+						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
+						.expect('Content-Type', /json/)
 						.end(function(err, res) {
 							if(err)
 								throw err;
@@ -74,6 +85,15 @@ describe('API-Read: Account Controller Integration Tests:', function() {
 		});					
 	});
 
+	describe('When all accounts are requested by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/read/accounts')
+				.expect(401)
+				.end(done);
+		});
+	});
+
 	describe('When an all accounts are requested', function() {
 
 		var id1 = uuid.v1();
@@ -101,8 +121,9 @@ describe('API-Read: Account Controller Integration Tests:', function() {
 					
 					request('http://localhost:' + config.port)
 						.get('/api/read/accounts')
-						.expect('Content-Type', /json/)
+						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
+						.expect('Content-Type', /json/)
 						.end(function(err, res) {
 							if(err)
 								throw err;
@@ -116,15 +137,15 @@ describe('API-Read: Account Controller Integration Tests:', function() {
 		});
 		
 		it('should return a collection with the first account', function() {
-			_.where(body, { aggregateRootId: id1}).should.exist;
+			_.where(body, { aggregateRootId: id1 }).should.exist;
 		});
 
 		it('should return a collection with the second account', function() {
-			_.where(body, { aggregateRootId: id2}).should.exist;
+			_.where(body, { aggregateRootId: id2 }).should.exist;
 		});
 
 		it('should not contain an unexisting id', function() {
-			_.where(body, { aggregateRootId: uuid.v1}).should.not.exist;
+			_.where(body, { aggregateRootId: uuid.v1 }).should.not.exist;
 		});
 	});
 });
