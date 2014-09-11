@@ -39,8 +39,7 @@ describe('Account Model Unit Tests:', function() {
 		it('should be in the database', function(done) {
 			Account.findOne({
 				email: 'test@test.com'
-			})
-			.exec(function(err, account) {
+			}, function(err, account) {
 
 				should.not.exist(err);
 				should.exist(account);
@@ -85,8 +84,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove().exec();
-			done();
+			Account.remove(done);
 		});
 	});
 
@@ -112,8 +110,7 @@ describe('Account Model Unit Tests:', function() {
 		it('should be saved with no problems', function(done) {
 			Account.findOne({
 				email: 'test@test.com'
-			})
-			.exec(function(finderr, account) {
+			}, function(finderr, account) {
 
 				should.not.exist(finderr);
 
@@ -134,8 +131,7 @@ describe('Account Model Unit Tests:', function() {
 		it('should be updated in the database', function(done) {
 			Account.findOne({
 				email: 'test1@test.com'
-			})
-			.exec(function(err, account) {
+			}, function(err, account) {
 
 				should.not.exist(err);
 				should.exist(account);
@@ -175,8 +171,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove().exec();
-			done();
+			Account.remove(done);
 		});
 	});
 

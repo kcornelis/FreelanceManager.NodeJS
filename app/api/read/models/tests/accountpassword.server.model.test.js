@@ -90,8 +90,7 @@ describe('Account Password Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			AccountPassword.remove().exec();
-			done();
+			AccountPassword.remove(done);
 		});
 	});
 
@@ -117,8 +116,7 @@ describe('Account Password Model Unit Tests:', function() {
 		it('should be saved with no problems', function(done) {
 			AccountPassword.findOne({
 				email: 'test@test.com'
-			})
-			.exec(function(finderr, account) {
+			}, function(finderr, account) {
 
 				should.not.exist(finderr);
 
@@ -137,8 +135,7 @@ describe('Account Password Model Unit Tests:', function() {
 		it('should be updated in the database', function(done) {
 			AccountPassword.findOne({
 				email: 'test1@test.com'
-			})
-			.exec(function(err, account) {
+			}, function(err, account) {
 
 				should.not.exist(err);
 				should.exist(account);
@@ -170,8 +167,7 @@ describe('Account Password Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			AccountPassword.remove().exec();
-			done();
+			AccountPassword.remove(done);
 		});
 	});
 });
