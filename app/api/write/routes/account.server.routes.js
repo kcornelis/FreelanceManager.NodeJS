@@ -9,7 +9,7 @@ var accounts = require('../controllers/account'),
 
 module.exports = function(app) {
 
-	app.use('/api/write', jwt({ secret: config.jwtSecret }));
+	app.use('/api/write/accounts', jwt({ secret: config.jwtSecret }));
 
 	app.route('/api/write/accounts/create').post(accounts.create);
 	app.route('/api/write/accounts/update/:accountId').post(accounts.update);
