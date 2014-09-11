@@ -17,17 +17,14 @@ servicebus.subscribeToDomainEvents('fm-account-rm', {
 			version: evt.metadata.eventVersion
 		});
 		
-		account.save(function(){
-			done();
-		});
+		account.save(done);
 	},
 
 	AccountDetailsChanged: function(evt, done) {
 
 		Account.findOne({
 			aggregateRootId: evt.aggregateRootId
-		})
-		.exec(function(err, account) {
+		}, function(err, account) {
 			if(account) {
 				account.firstName = evt.firstName;
 				account.lastName = evt.lastName;
@@ -45,8 +42,7 @@ servicebus.subscribeToDomainEvents('fm-account-rm', {
 
 		Account.findOne({
 			aggregateRootId: evt.aggregateRootId
-		})
-		.exec(function(err, account) {
+		}, function(err, account) {
 			if(account) {
 				account.version = evt.metadata.eventVersion;
 				
@@ -60,8 +56,7 @@ servicebus.subscribeToDomainEvents('fm-account-rm', {
 
 		Account.findOne({
 			aggregateRootId: evt.aggregateRootId
-		})
-		.exec(function(err, account) {
+		}, function(err, account) {
 			if(account) {
 				account.admin = true;
 				account.version = evt.metadata.eventVersion;

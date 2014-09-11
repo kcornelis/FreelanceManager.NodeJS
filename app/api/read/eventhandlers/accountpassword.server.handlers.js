@@ -23,8 +23,7 @@ servicebus.subscribeToDomainEvents('fm-accountpassword-rm', {
 
 		AccountPassword.findOne({
 			aggregateRootId: evt.aggregateRootId
-		})
-		.exec(function(err, account) {
+		}, function(err, account) {
 			if(account) {
 				account.email = evt.email;
 				account.version = evt.metadata.eventVersion;
@@ -39,8 +38,7 @@ servicebus.subscribeToDomainEvents('fm-accountpassword-rm', {
 
 		AccountPassword.findOne({
 			aggregateRootId: evt.aggregateRootId
-		})
-		.exec(function(err, account) {
+		}, function(err, account) {
 			if(account) {
 				account.passwordHash = evt.passwordHash;
 				account.passwordSalt = evt.passwordSalt;
@@ -56,8 +54,7 @@ servicebus.subscribeToDomainEvents('fm-accountpassword-rm', {
 
 		AccountPassword.findOne({
 			aggregateRootId: evt.aggregateRootId
-		})
-		.exec(function(err, account) {
+		}, function(err, account) {
 			if(account) {
 				account.version = evt.metadata.eventVersion;
 				
