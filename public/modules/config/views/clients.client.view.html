@@ -7,7 +7,7 @@
 	<div class="client-list" data-ng-repeat="client in clients">
 
 	    <div class="btn-group pull-right">
-	        <button type="button" class="btn btn-primary btn-xs" data-clientId="{{ client.id }}">Edit Client</button>
+	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openClient(client)"><span class="glyphicon glyphicon-edit"></span></button>
 	        <button type="button" class="btn btn-primary btn-xs">
 	            Add Project
 	        </button>
@@ -18,8 +18,8 @@
 	    <ul class="list-group" data-ng-repeat="project in client.projects">
 	        <li class="list-group-item" data-ng-class="{hidden-project: project.hidden}">
 
-	            <button type="button" class="btn btn-primary btn-xs pull-right" data-project="{{ project.id }}">Edit</button>
-	            <button type="button" class="btn btn-primary btn-xs pull-right" data-project="{{ project.id }}">Tasks</button>
+	            <button type="button" data-ng-click="openProject(project)"><span class="glyphicon glyphicon-edit"></span></button>
+	            <button type="button" class="btn btn-primary btn-xs pull-right" data-ng-click="openProjectTasks(project)">Tasks</button>
 	            <h4 class="list-group-item-heading">{{ project.name }}</h4>
 	            <p class="list-group-item-text">{{ project.description }}</p>
 
@@ -28,7 +28,7 @@
 
 	</div>
 
-	<button id="add-client" type="button" class="btn btn-primary pull-right" data-ng-click="openCreateClient()">
+	<button id="add-client" type="button" class="btn btn-primary pull-right" data-ng-click="openClient()">
 	    <span class="glyphicon glyphicon-plus"></span>
 	</button>	
 

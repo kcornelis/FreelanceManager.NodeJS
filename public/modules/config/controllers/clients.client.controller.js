@@ -12,11 +12,16 @@ function($scope, $http, $modal) {
 			});	
 	};
 
-	$scope.openCreateClient = function(){
+	$scope.openClient = function(client){
 
 		var createDialog = $modal.open({
-			templateUrl: '/modules/config/views/createclient.client.view.html',
-			controller: 'CreateClientController'
+			templateUrl: '/modules/config/views/clientdialog.client.view.html',
+			controller: 'ClientDialogController',
+			resolve: {
+				client: function () {
+					return client;
+				}
+			}
 		});
 
 		createDialog.result.then(function (client) {
