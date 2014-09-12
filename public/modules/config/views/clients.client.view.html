@@ -1,0 +1,35 @@
+<section data-ng-controller="ClientsController" data-ng-init="getAllClients()">
+
+	<h1 class="text-center">
+	    Clients &amp; Projects
+	</h1>
+
+	<div class="client-list" data-ng-repeat="client in clients">
+
+	    <div class="btn-group pull-right">
+	        <button type="button" class="btn btn-primary btn-xs" data-clientId="{{ client.id }}">Edit Client</button>
+	        <button type="button" class="btn btn-primary btn-xs">
+	            Add Project
+	        </button>
+	    </div>
+	    <h3 class="panel-title hideOverflow">{{ client.name }}</h3>
+	    <hr />
+
+	    <ul class="list-group" data-ng-repeat="project in client.projects">
+	        <li class="list-group-item" data-ng-class="{hidden-project: project.hidden}">
+
+	            <button type="button" class="btn btn-primary btn-xs pull-right" data-project="{{ project.id }}">Edit</button>
+	            <button type="button" class="btn btn-primary btn-xs pull-right" data-project="{{ project.id }}">Tasks</button>
+	            <h4 class="list-group-item-heading">{{ project.name }}</h4>
+	            <p class="list-group-item-text">{{ project.description }}</p>
+
+	        </li>
+	    </ul>
+
+	</div>
+
+	<button id="add-client" type="button" class="btn btn-primary pull-right" data-ng-click="openCreateClient()">
+	    <span class="glyphicon glyphicon-plus"></span>
+	</button>	
+
+</section>

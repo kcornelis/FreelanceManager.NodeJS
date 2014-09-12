@@ -10,19 +10,19 @@ angular.module('timeregistrations').config(['$stateProvider',
 		})
 		.state('timeregistrations.list', {
 			url: '/timeregistrations',
-			templateUrl: 'modules/timeregistrations/views/list-timeregistrations.client.view.html'
+			templateUrl: 'modules/timeregistrations/views/timeregistrations-list.client.view.html'
 		})
 		.state('timeregistrations.create', {
 			url: '/timeregistrations/create',
-			templateUrl: 'modules/timeregistrations/views/create-timeregistration.client.view.html'
+			templateUrl: 'modules/timeregistrations/views/timeregistrations-create.client.view.html'
 		})
 		.state('timeregistrations.view', {
 			url: '/timeregistrations/:timeRegistrationId',
-			templateUrl: 'modules/timeregistrations/views/view-timeregistration.client.view.html'
+			templateUrl: 'modules/timeregistrations/views/timeregistrations-view.client.view.html'
 		})
 		.state('timeregistrations.edit', {
 			url: '/timeregistrations/:timeRegistrationId/edit',
-			templateUrl: 'modules/timeregistrations/views/edit-timeregistration.client.view.html'
+			templateUrl: 'modules/timeregistrations/views/timeregistrations-edit.client.view.html'
 		});
 	}
 ]);

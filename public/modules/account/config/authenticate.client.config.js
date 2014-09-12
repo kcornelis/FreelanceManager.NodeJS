@@ -21,3 +21,11 @@ angular.module('account').factory('authInterceptor', function ($rootScope, $q, $
 angular.module('account').config(function ($httpProvider) {
   $httpProvider.interceptors.push('authInterceptor');
 });
+
+angular.module('account').run(function($rootScope, $location, $window) {
+    $rootScope.$on("$routeChangeStart", function(event, nextRoute, currentRoute) {
+        if (nextRoute.access.requiredLogin && !$window.sessionStorage.token) {
+            $location.path("/login");
+        }
+    });
+});
