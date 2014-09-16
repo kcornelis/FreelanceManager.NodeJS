@@ -10,14 +10,26 @@ var Client = require_domain('client'),
 /**
  * Create a client
  */
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
 
 	var id = uuid.v1();
 	var client = new Client(id, req.body.name);
-	repository.save(client, function(){
+	repository.save(client, function(err){
+		if(err){ next(err); }
 		res.send({ id: id });
 	});
 };
 
-exports.update = function(req, res) {	
+/**
+ * Update a client
+ */
+exports.update = function(req, res) {
+	repository.getById(new Client(req.params.clientId), function(err, client){
+		if(err){ next(err); }
+		client.changeDetails(req.body.name);
+		repository.save(client, function(err){
+			if(err){ next(err); }
+			res.send({ id: client.aggregateRootId });
+		});
+	});
 };

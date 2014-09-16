@@ -9,14 +9,16 @@ var should = require('should'),
 	config = require_config(),
 	Client = require_domain('client'),
 	repository = require_infrastructure('repository'),
-	testdata = require_infrastructure('testdata');
+	testdata = require_infrastructure('testdata'),
+	uuid = require('node-uuid'),
+	async = require('async');
 
 /**
  * Unit tests
  */
 describe('API-Write: Client Controller Integration Tests:', function() {
 
-	describe('When an client is created by an unauthenticated person', function(){
+	describe('When a client is created by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
 				.post('/api/write/clients/create')
@@ -63,4 +65,70 @@ describe('API-Write: Client Controller Integration Tests:', function() {
 			client.getName().should.eql('John Doe');
 		});			
 	});
+
+	describe('When a client is updated by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/write/clients/update/' + uuid.v1())
+				.send({ name: 'John Doe' })
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When updating a client', function() {
+
+		var response;
+		var body;
+		var id;
+		var client;
+
+		before(function(done) {
+			
+			async.series([
+				function(done){
+					request('http://localhost:' + config.port)
+						.post('/api/write/clients/create')
+						.set('Authorization', testdata.normalAccountToken)
+						.send({ name: 'John Doe' })
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err, res) {
+							if(err)
+								done(err);
+
+							id = res.body.id;
+							done();
+						});	
+				},
+				function(done){
+					request('http://localhost:' + config.port)
+						.post('/api/write/clients/update/' + id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send({ name: 'Jane Doe' })
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err, res) {
+							if(err)
+								done(err);
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				},
+				function(done){
+					repository.getById(new Client(id), function(err, c){
+						client = c;
+						done();
+					});
+				}], done);
+
+
+		});
+		
+		it('should update the client with the specified name', function(){
+			client.getName().should.eql('Jane Doe');
+		});			
+	});	
 });
