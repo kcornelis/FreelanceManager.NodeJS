@@ -1,4 +1,4 @@
-<form role="form" name="clientForm" novalidate>
+<form role="form" name="clientForm" novalidate >
 	<div class="modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-ng-click="cancel()" aria-hidden="true">&times;</button>
@@ -7,7 +7,7 @@
 		<div class="modal-body">
 			<div class="form-group" ng-class="{ 'has-error' : clientForm.name.$invalid && !clientForm.name.$pristine }">
 				<label>Name</label>
-				<input type="text" name="name" class="form-control" placeholder="Name" data-ng-model="client.name" required autofocus="">
+				<input type="text" name="name" class="form-control" placeholder="Name" data-ng-model="client.name" required autofocus>
 				<p ng-show="clientForm.name.$invalid && !clientForm.name.$pristine" class="help-block">The name of the client is required</p>
 			</div>
 		</div>

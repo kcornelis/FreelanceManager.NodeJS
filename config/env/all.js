@@ -11,9 +11,6 @@ module.exports = {
 	sessionSecret: 'MyFreelanceManagerSecret',
 	sessionCollection: 'sessions',
 	jwtSecret: 'MyJwtSecret',
-	servicebus: {
-		autostart: true
-	},
 	assets: {
 		lib: {
 			css: [
@@ -28,7 +25,8 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-				'public/lib/bootstrap/dist/js/bootstrap.js'
+				'public/lib/bootstrap/dist/js/bootstrap.js',
+				'public/lib/lodash/dist/lodash.js'
 			]
 		},
 		css: [

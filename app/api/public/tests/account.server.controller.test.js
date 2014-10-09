@@ -1,0 +1,228 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+var should = require('should'),
+	_ = require('lodash'),
+	async = require('async'),
+	request = require('supertest'),
+	controller = require('../controllers/account'),
+	config = require_config(),
+	uuid = require('node-uuid'),
+	Account = require('mongoose').model('Account'),
+	testdata = require_infrastructure('testdata');
+
+
+describe('Public API: Account Controller Integration Tests:', function() {
+
+	/**
+	 * Get by id
+	 */
+	describe('When an account is requested by id by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/account/' + uuid.v1())
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When an account is requested by id', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done){
+			account = Account.create('John BVBA', 'John', 'Doe', 'john@doe.com');
+			
+			async.series([
+				function(done){
+					account.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.get('/api/public/account/' + account._id)
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+		
+		it('should return the id of the account', function() {
+			body.id.should.eql(account.id);
+		});
+
+		it('should create an account with the specified name', function(){
+			body.name.should.eql('John BVBA');
+		});
+
+		it('should create an account with the specified first name', function(){
+			body.firstName.should.eql('John');
+		});
+
+		it('should create an account with the specified last name', function(){
+			body.lastName.should.eql('Doe');
+		});	
+
+		it('should create an account with the specified email', function(){
+			body.email.should.eql('john@doe.com');
+		});					
+	});
+
+	/**
+	 * Get all accounts
+	 */
+	describe('When all accounts are requested by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/accounts')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When an all accounts are requested', function() {
+
+		var response;
+		var body;
+
+		var account1;
+		var account2;
+
+		before(function(done){
+			account1 = Account.create('John BVBA', 'John', 'Doe', 'john@doe.com');
+			account2 = Account.create('John BVBA', 'John', 'Doe', 'john@doe.com');
+			
+			async.series([
+				function(done){
+					account1.save(done);
+				},
+				function(done){
+					account2.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/accounts')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+		
+		it('should return a collection with the first account', function() {
+			_.where(body, { id: account1.id }).should.exist;
+		});
+
+		it('should return a collection with the second account', function() {
+			_.where(body, { id: account2.id }).should.exist;
+		});
+
+		it('should not contain an unexisting id', function() {
+			_.where(body, { id: uuid.v1() }).should.not.exist;
+		});
+	});
+
+	/**
+	 * Create
+	 */
+	describe('When an account is created by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/account/create')
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When creating an account', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done) {
+			
+			request('http://localhost:' + config.port)
+				.post('/api/public/account/create')
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res) {
+					if(err)
+						throw err;
+
+					response = res;
+					body = res.body;
+
+					Account.findById(body.id, function(err, a){
+						account = a;
+						done();
+					});
+				});
+		});
+
+		it('should be saved in the database', function() {
+			account.should.exist;
+		});
+
+		it('should create an account with the specified name', function(){
+			account.name.should.eql('John BVBA');
+		});
+
+		it('should create an account with the specified first name', function(){
+			account.firstName.should.eql('John');
+		});
+
+		it('should create an account with the specified last name', function(){
+			account.lastName.should.eql('Doe');
+		});	
+
+		it('should create an account with the specified email', function(){
+			account.email.should.eql('john@doe.com');
+		});	
+		
+		it('should return the id of the account', function() {
+			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+		});
+
+		it('should return the name', function(){
+			body.name.should.eql('John BVBA');
+		});
+
+		it('should return the first name', function(){
+			body.firstName.should.eql('John');
+		});
+
+		it('should return the last name', function(){
+			body.lastName.should.eql('Doe');
+		});	
+
+		it('should return the email', function(){
+			body.email.should.eql('john@doe.com');
+		});					
+	});	 
+});

@@ -15,20 +15,20 @@ function($scope, $http, $modalInstance, client) {
 		showMessage('Saving client...');
 
 		if($scope.newClient) {
-			$http.post('/api/write/clients/create', $scope.client)
+			$http.post('/api/public/client/create', $scope.client)
 				.success(function (data, status, headers, config) {
 					hideMessage();
-					$modalInstance.close();
+					$modalInstance.close(data);
 				})
 				.error(function (data, status, headers, config) {
 					showMessage('An error occurred...');
 				});	
 		}
 		else {
-			$http.post('/api/write/clients/update/' + $scope.originalClient.aggregateRootId, $scope.client)
+			$http.post('/api/public/client/update/' + $scope.originalClient.id, $scope.client)
 				.success(function (data, status, headers, config) {
 					hideMessage();
-					$modalInstance.close();
+					$modalInstance.close(data);
 				})
 				.error(function (data, status, headers, config) {
 					showMessage('An error occurred...');

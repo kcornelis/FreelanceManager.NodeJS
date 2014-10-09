@@ -48,7 +48,7 @@ angular.module('timeregistrations').controller('TimeRegistrationsController',
 	$scope.find = function() {
 		//$scope.timeregistrations = Timeregistrations.query();
 
-		$http.get('/api/read/accounts')
+		$http.get('/api/public/accounts')
 			.success(function (data, status, headers, config) {
 				$scope.timeregistrations = data;
 			})

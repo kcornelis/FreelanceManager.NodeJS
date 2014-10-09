@@ -4,7 +4,7 @@ angular.module('config').controller('ClientsController',
 function($scope, $http, $modal) {
 
 	$scope.getAllClients = function() {
-		$http.get('/api/read/clients')
+		$http.get('/api/public/clients')
 			.success(function (data, status, headers, config) {
 				$scope.clients = data;
 			})
@@ -25,9 +25,9 @@ function($scope, $http, $modal) {
 		});
 
 		createDialog.result.then(function (client) {
-			
-		}, function () {
-			
+			var c = _.find($scope.clients, { 'id': client.id });
+			if(c) angular.copy(client, c);
+			else $scope.clients.push(client);
 		});		
 	}
 });

@@ -3,13 +3,9 @@
 /**
 * Global declarations
 *   => require_config();
-*   => require_domain('account');
 */
 global.require_config = function(){
    return require(__dirname + '/config.js');
-};
-global.require_domain = function(item){
-   return require(__dirname + '/../app/domain/' + item);
 };
 global.require_infrastructure = function(item){
    return require(__dirname + '/../app/infrastructure/' + item);
@@ -32,8 +28,7 @@ var express = require('express'),
 	flash = require('connect-flash'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
-	path = require('path'),
-	servicebus = require_infrastructure('servicebus');
+	path = require('path');
 
 module.exports = function(db) {
 	// Initialize express app
@@ -124,15 +119,6 @@ module.exports = function(db) {
 	config.getGlobbedFiles('./app/**/routes/**/*routes.js').forEach(function(routePath) {
 		require(path.resolve(routePath))(app);
 	});
-
-	// Globbing event handlers
-	config.getGlobbedFiles('./app/**/eventhandlers/**/*handlers.js').forEach(function(handlerPath) {
-		require(path.resolve(handlerPath));
-	});
-
-	// start the bus
-	if(config.servicebus.autostart)
-		servicebus.start();
 
 	// Assume 'not found' in the error msgs is a 404. this is somewhat silly, but valid, you can do whatever you like, set properties, use instanceof etc.
 	app.use(function(err, req, res, next) {

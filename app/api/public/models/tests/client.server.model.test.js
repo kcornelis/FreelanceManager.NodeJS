@@ -5,26 +5,17 @@
  */
 var should = require('should'),
 	mongoose = require('mongoose'),
-	Client = mongoose.model('Client'),
-	uuid = require('node-uuid');
+	Client = mongoose.model('Client');
 
 
-/**
- * Unit tests
- */
 describe('Client Model Unit Tests:', function() {
 
-	describe('When a client is created', function() {
+	describe('When an client is created', function() {
 
-		var id = uuid.v1();
 		var original, saved;
 
 		before(function(done) {
-			original = new Client({
-				aggregateRootId: id,
-				name: 'Full Name',
-				version: 2
-			});
+			original = Client.create('John Doe');
 			done();
 		});
 
@@ -37,7 +28,7 @@ describe('Client Model Unit Tests:', function() {
 
 		it('should be in the database', function(done) {
 			Client.findOne({
-				aggregateRootId: id
+				_id: original._id
 			}, function(err, client) {
 
 				should.not.exist(err);
@@ -49,16 +40,18 @@ describe('Client Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a aggregate root id', function(){
-			saved.aggregateRootId.should.eql(id);
-		});
-
 		it('should have a name', function(){
-			saved.name.should.eql('Full Name');
+			saved.name.should.eql('John Doe');
 		});
 
-		it('should have a version', function(){
-			saved.version.should.eql(2);
+		it('should have version 1', function(){
+			saved.version.should.eql(1);
+		});
+
+		it('should have a created event', function(){
+			saved.events[0].name.should.eql('John Doe');
+
+			saved.events[0].metadata.eventName.should.eql('ClientCreated');
 		});
 
 		it('should have created on date', function(){
@@ -72,32 +65,23 @@ describe('Client Model Unit Tests:', function() {
 	});
 
 
-	describe('When a client is modified', function() {
+	describe('When a client details is changed', function() {
 
-		var id = uuid.v1();
 		var original, saved;
 
 		before(function(done) {
-			original = new Client({
-				aggregateRootId: id,
-				name: 'Full Name',
-				version: 2
-			});
-			
-			original.save(function(err) {
-				done();
-			});
+			original = Client.create('John Doe');
+			original.save(done);
 		});
 
 		it('should be saved with no problems', function(done) {
 			Client.findOne({
-				aggregateRootId: id
+				_id: original._id
 			}, function(finderr, client) {
 
 				should.not.exist(finderr);
 
-				client.name = 'Full Name 1';
-				client.version = 3;
+				client.changeDetails('Jane Doe')
 
 				client.save(function(saveerr){
 					should.not.exist(saveerr);
@@ -108,7 +92,7 @@ describe('Client Model Unit Tests:', function() {
 
 		it('should be updated in the database', function(done) {
 			Client.findOne({
-				aggregateRootId: id
+				_id: original._id
 			}, function(err, client) {
 
 				should.not.exist(err);
@@ -121,20 +105,25 @@ describe('Client Model Unit Tests:', function() {
 		});
 
 		it('should have an updated name', function(){
-			saved.name.should.eql('Full Name 1');
-		});
-
-		it('should have an updated version', function(){
-			saved.version.should.eql(3);
+			saved.name.should.eql('Jane Doe');
 		});
 
 		it('should have the same created on date', function(){
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
+		it('should have an updated version', function(){
+			saved.version.should.eql(2);
+		});
+
+		it('should have a details changed event', function(){
+			saved.events[1].name.should.eql('Jane Doe');
+
+			saved.events[1].metadata.eventName.should.eql('ClientDetailsChanged');
+		});
+
 		after(function(done) {
 			Client.remove(done);
 		});
 	});
-
 });
