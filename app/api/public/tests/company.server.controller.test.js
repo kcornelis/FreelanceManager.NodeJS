@@ -7,44 +7,45 @@ var should = require('should'),
 	_ = require('lodash'),
 	async = require('async'),
 	request = require('supertest'),
-	controller = require('../controllers/client'),
+	controller = require('../controllers/company'),
 	config = require_config(),
 	uuid = require('node-uuid'),
-	Client = require('mongoose').model('Client'),
+	Company = require('mongoose').model('Company'),
 	testdata = require_infrastructure('testdata');
 
 
-describe('Public API: Client Controller Integration Tests:', function() {
+describe('Public API: Company Controller Integration Tests:', function() {
 
 	/**
 	 * Get by id
 	 */
-	describe('When an client is requested by id by an unauthenticated person', function(){
+	describe('When an company is requested by id by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.get('/api/public/client/' + uuid.v1())
+				.get('/api/public/company/' + uuid.v1())
 				.expect(401)
 				.end(done);
 		});
 	});
 
-	describe('When an client is requested by id', function() {
+	describe('When an company is requested by id', function() {
+
 
 		var response;
 		var body;
-		var client;
+		var company;
 
 		before(function(done){
-			client = Client.create('John BVBA');
+			company = Company.create('John BVBA');
 			
 			async.series([
 				function(done){
-					client.save(done);
+					company.save(done);
 				},
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.get('/api/public/client/' + client.id)
+						.get('/api/public/company/' + company.id)
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -60,50 +61,50 @@ describe('Public API: Client Controller Integration Tests:', function() {
 			], done);
 		});
 		
-		it('should return the id of the client', function() {
-			body.id.should.eql(client.id);
+		it('should return the id of the company', function() {
+			body.id.should.eql(company.id);
 		});
 
-		it('should create an client with the specified name', function(){
+		it('should create an company with the specified name', function(){
 			body.name.should.eql('John BVBA');
 		});				
 	});
 
 	/**
-	 * Get all clients
+	 * Get all companies
 	 */
-	describe('When all clients are requested by an unauthenticated person', function(){
+	describe('When all companies are requested by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.get('/api/public/clients')
+				.get('/api/public/companies')
 				.expect(401)
 				.end(done);
 		});
 	});
 
-	describe('When an all clients are requested', function() {
+	describe('When an all companies are requested', function() {
 
 		var response;
 		var body;
 
-		var client1;
-		var client2;
+		var company1;
+		var company2;
 
 		before(function(done){
-			client1 = Client.create('John BVBA');
-			client2 = Client.create('John BVBA');
+			company1 = Company.create('John BVBA');
+			company2 = Company.create('John BVBA');
 			
 			async.series([
 				function(done){
-					client1.save(done);
+					company1.save(done);
 				},
 				function(done){
-					client2.save(done);
+					company2.save(done);
 				},
 				function(done){
 					
 					request('http://localhost:' + config.port)
-						.get('/api/public/clients')
+						.get('/api/public/companies')
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -119,12 +120,12 @@ describe('Public API: Client Controller Integration Tests:', function() {
 			], done);
 		});
 		
-		it('should return a collection with the first client', function() {
-			_.where(body, { id: client1.id }).should.exist;
+		it('should return a collection with the first company', function() {
+			_.where(body, { id: company1.id }).should.exist;
 		});
 
-		it('should return a collection with the second client', function() {
-			_.where(body, { id: client2.id }).should.exist;
+		it('should return a collection with the second company', function() {
+			_.where(body, { id: company2.id }).should.exist;
 		});
 
 		it('should not contain an unexisting id', function() {
@@ -135,26 +136,26 @@ describe('Public API: Client Controller Integration Tests:', function() {
 	/**
 	 * Create
 	 */
-	describe('When an client is created by an unauthenticated person', function(){
+	describe('When an company is created by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/client/create')
+				.post('/api/public/company/create')
 				.send({ name: 'John BVBA' })
 				.expect(401)
 				.end(done);
 		});
 	});
 
-	describe('When creating an client', function() {
+	describe('When creating an company', function() {
 
 		var response;
 		var body;
-		var client;
+		var company;
 
 		before(function(done) {
 			
 			request('http://localhost:' + config.port)
-				.post('/api/public/client/create')
+				.post('/api/public/company/create')
 				.set('Authorization', testdata.normalAccountToken)
 				.send({ name: 'John BVBA' })
 				.expect('Content-Type', /json/)
@@ -166,22 +167,22 @@ describe('Public API: Client Controller Integration Tests:', function() {
 					response = res;
 					body = res.body;
 
-					Client.findById(body.id, function(err, c){
-						client = c;
+					Company.findById(body.id, function(err, c){
+						company = c;
 						done();
 					});
 				});
 		});
 
 		it('should be saved in the database', function() {
-			client.should.exist;
+			company.should.exist;
 		});
 
-		it('should create an client with the specified name', function(){
-			client.name.should.eql('John BVBA');
+		it('should create an company with the specified name', function(){
+			company.name.should.eql('John BVBA');
 		});
 		
-		it('should return the id of the client', function() {
+		it('should return the id of the company', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 
@@ -193,34 +194,34 @@ describe('Public API: Client Controller Integration Tests:', function() {
 	/**
 	 * Create
 	 */
-	describe('When an client is updated by an unauthenticated person', function(){
+	describe('When an company is updated by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/client/update/' + uuid.v1())
+				.post('/api/public/company/update/' + uuid.v1())
 				.send({ name: 'John BVBA' })
 				.expect(401)
 				.end(done);
 		});
 	});
 
-	describe('When updating an client', function() {
+	describe('When updating an company', function() {
 
 		var response;
 		var body;
-		var client;
+		var company;
 
 		before(function(done) {
 
-			client = Client.create('John BVBA');
+			company = Company.create('John BVBA');
 
 			async.series([
 				function(done){
-					client.save(done);
+					company.save(done);
 				},
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.post('/api/public/client/update/' + client.id)
+						.post('/api/public/company/update/' + company.id)
 						.set('Authorization', testdata.normalAccountToken)
 						.send({ name: 'Jane BVBA' })
 						.expect('Content-Type', /json/)
@@ -232,8 +233,8 @@ describe('Public API: Client Controller Integration Tests:', function() {
 							response = res;
 							body = res.body;
 
-							Client.findById(body.id, function(err, c){
-								client = c;
+							Company.findById(body.id, function(err, c){
+								company = c;
 								done();
 							});
 						});
@@ -242,14 +243,14 @@ describe('Public API: Client Controller Integration Tests:', function() {
 		});
 
 		it('should be saved in the database', function() {
-			client.should.exist;
+			company.should.exist;
 		});
 
-		it('should create an client with the specified name', function(){
-			client.name.should.eql('Jane BVBA');
+		it('should create an company with the specified name', function(){
+			company.name.should.eql('Jane BVBA');
 		});
 		
-		it('should return the id of the client', function() {
+		it('should return the id of the company', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 

@@ -1,21 +1,21 @@
 'use strict';
 
-angular.module('config').controller('ClientDialogController',
-function($scope, $http, $modalInstance, client) {
+angular.module('crm').controller('CompanyDialogController',
+function($scope, $http, $modalInstance, company) {
 
-	$scope.originalClient = client;
-	$scope.newClient = client == undefined;
-	client = client || { };
-	$scope.client =  { name: client.name || '' };
+	$scope.originalCompany = company;
+	$scope.newCompany = company == undefined;
+	company = company || { };
+	$scope.company =  { name: company.name || '' };
 	
 	$scope.isBusy = false;
 	$scope.message = '';
 
 	$scope.ok = function () {
-		showMessage('Saving client...');
+		showMessage('Saving company...');
 
-		if($scope.newClient) {
-			$http.post('/api/public/client/create', $scope.client)
+		if($scope.newCompany) {
+			$http.post('/api/public/company/create', $scope.company)
 				.success(function (data, status, headers, config) {
 					hideMessage();
 					$modalInstance.close(data);
@@ -25,7 +25,7 @@ function($scope, $http, $modalInstance, client) {
 				});	
 		}
 		else {
-			$http.post('/api/public/client/update/' + $scope.originalClient.id, $scope.client)
+			$http.post('/api/public/company/update/' + $scope.originalCompany.id, $scope.company)
 				.success(function (data, status, headers, config) {
 					hideMessage();
 					$modalInstance.close(data);

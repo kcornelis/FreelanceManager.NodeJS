@@ -5,17 +5,17 @@
  */
 var should = require('should'),
 	mongoose = require('mongoose'),
-	Client = mongoose.model('Client');
+	Company = mongoose.model('Company');
 
 
-describe('Client Model Unit Tests:', function() {
+describe('Company Model Unit Tests:', function() {
 
-	describe('When an client is created', function() {
+	describe('When an company is created', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Client.create('John Doe');
+			original = Company.create('John Doe');
 			done();
 		});
 
@@ -27,14 +27,14 @@ describe('Client Model Unit Tests:', function() {
 		});
 
 		it('should be in the database', function(done) {
-			Client.findOne({
+			Company.findOne({
 				_id: original._id
-			}, function(err, client) {
+			}, function(err, company) {
 
 				should.not.exist(err);
-				should.exist(client);
+				should.exist(company);
 
-				saved = client;
+				saved = company;
 
 				done();
 			});
@@ -51,7 +51,7 @@ describe('Client Model Unit Tests:', function() {
 		it('should have a created event', function(){
 			saved.events[0].name.should.eql('John Doe');
 
-			saved.events[0].metadata.eventName.should.eql('ClientCreated');
+			saved.events[0].metadata.eventName.should.eql('CompanyCreated');
 		});
 
 		it('should have created on date', function(){
@@ -60,30 +60,30 @@ describe('Client Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Client.remove(done);
+			Company.remove(done);
 		});
 	});
 
 
-	describe('When a client details is changed', function() {
+	describe('When a company details is changed', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Client.create('John Doe');
+			original = Company.create('John Doe');
 			original.save(done);
 		});
 
 		it('should be saved with no problems', function(done) {
-			Client.findOne({
+			Company.findOne({
 				_id: original._id
-			}, function(finderr, client) {
+			}, function(finderr, company) {
 
 				should.not.exist(finderr);
 
-				client.changeDetails('Jane Doe')
+				company.changeDetails('Jane Doe')
 
-				client.save(function(saveerr){
+				company.save(function(saveerr){
 					should.not.exist(saveerr);
 					done();
 				});
@@ -91,14 +91,14 @@ describe('Client Model Unit Tests:', function() {
 		});
 
 		it('should be updated in the database', function(done) {
-			Client.findOne({
+			Company.findOne({
 				_id: original._id
-			}, function(err, client) {
+			}, function(err, company) {
 
 				should.not.exist(err);
-				should.exist(client);
+				should.exist(company);
 
-				saved = client;
+				saved = company;
 
 				done();
 			});
@@ -119,11 +119,11 @@ describe('Client Model Unit Tests:', function() {
 		it('should have a details changed event', function(){
 			saved.events[1].name.should.eql('Jane Doe');
 
-			saved.events[1].metadata.eventName.should.eql('ClientDetailsChanged');
+			saved.events[1].metadata.eventName.should.eql('CompanyDetailsChanged');
 		});
 
 		after(function(done) {
-			Client.remove(done);
+			Company.remove(done);
 		});
 	});
 });

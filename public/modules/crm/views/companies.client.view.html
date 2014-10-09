@@ -1,21 +1,21 @@
-<section data-ng-controller="ClientsController" data-ng-init="getAllClients()">
+<section data-ng-controller="CompaniesController" data-ng-init="getAllCompanies()">
 
 	<h1 class="text-center">
-	    Clients &amp; Projects
+	    Companies
 	</h1>
 
-	<div class="client-list" data-ng-repeat="client in clients">
+	<div class="company-list" data-ng-repeat="company in companies">
 
 	    <div class="btn-group pull-right">
-	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openClient(client)"><span class="glyphicon glyphicon-edit"></span></button>
+	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openCompany(company)"><span class="glyphicon glyphicon-edit"></span></button>
 	        <button type="button" class="btn btn-primary btn-xs">
-	            Add Project
+	            Add Company
 	        </button>
 	    </div>
-	    <h3 class="panel-title hideOverflow">{{ client.name }}</h3>
+	    <h3 class="panel-title hideOverflow">{{ company.name }}</h3>
 	    <hr />
 
-	    <ul class="list-group" data-ng-repeat="project in client.projects">
+	    <ul class="list-group" data-ng-repeat="project in company.projects">
 	        <li class="list-group-item" data-ng-class="{hidden-project: project.hidden}">
 
 	            <button type="button" data-ng-click="openProject(project)"><span class="glyphicon glyphicon-edit"></span></button>
@@ -28,7 +28,7 @@
 
 	</div>
 
-	<button id="add-client" type="button" class="btn btn-primary pull-right" data-ng-click="openClient()">
+	<button id="add-company" type="button" class="btn btn-primary pull-right" data-ng-click="openCompany()">
 	    <span class="glyphicon glyphicon-plus"></span>
 	</button>	
 
