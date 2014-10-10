@@ -126,4 +126,22 @@ describe('Company Model Unit Tests:', function() {
 			Company.remove(done);
 		});
 	});
+
+	describe('When a company details is changed with the same values', function() {
+
+		var company;
+
+		before(function() {
+			company = Company.create('John Doe BVBA');
+			company.changeDetails('John Doe BVBA');
+		});
+
+		it('should not create a new event', function(){
+			company.events.should.have.length(1);
+		});
+
+		after(function(done) {
+			Company.remove(done);
+		});
+	});
 });

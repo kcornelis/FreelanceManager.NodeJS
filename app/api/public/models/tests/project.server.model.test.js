@@ -15,7 +15,7 @@ describe('Project Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('clientId', 'FM Manager', 'Freelance management');
+			original = Project.create('companyId', 'FM Manager', 'Freelance management');
 			done();
 		});
 
@@ -41,7 +41,7 @@ describe('Project Model Unit Tests:', function() {
 		});
 
 		it('should have a client id', function(){
-			saved.clientId.should.eql('clientId');
+			saved.companyId.should.eql('companyId');
 		});
 
 		it('should have a name', function(){
@@ -72,7 +72,7 @@ describe('Project Model Unit Tests:', function() {
 		});
 
 		it('should have a created event', function(){
-			saved.events[0].clientId.should.eql('clientId');
+			saved.events[0].companyId.should.eql('companyId');
 			saved.events[0].name.should.eql('FM Manager');
 			saved.events[0].description.should.eql('Freelance management');
 
@@ -108,7 +108,7 @@ describe('Project Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('clientId', 'FM Manager', 'Freelance management');
+			original = Project.create('companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -139,7 +139,7 @@ describe('Project Model Unit Tests:', function() {
 		});
 
 		it('should have no updated client id', function(){
-			saved.clientId.should.eql('clientId');
+			saved.companyId.should.eql('companyId');
 		});
 
 		it('should have an updated name', function(){
@@ -170,12 +170,30 @@ describe('Project Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When a project details is changed with the same values', function() {
+
+		var project;
+
+		before(function() {
+			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project.changeDetails('FM Manager', 'Freelance management');
+		});
+
+		it('should not create a new event', function(){
+			project.events.should.have.length(2);
+		});
+
+		after(function(done) {
+			Project.remove(done);
+		});
+	});
+
 	describe('When a project tasks is changed', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('clientId', 'FM Manager', 'Freelance management');
+			original = Project.create('companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -187,7 +205,7 @@ describe('Project Model Unit Tests:', function() {
 				project.changeTasks([
 					{ name: 'Development', defaultRateInCents: 5000 },
 					{ name: 'Meeting', defaultRateInCents: 4000 },
-					{ name: 'Thinking', defaultRateInCents: 6000 }])
+					{ name: 'Thinking', defaultRateInCents: 6000 }]);
 
 				project.save(function(saveerr){
 					should.not.exist(saveerr);
@@ -241,12 +259,33 @@ describe('Project Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When a project tasks is changed with the same values', function() {
+
+		var project;
+
+		before(function() {
+			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project.changeTasks([
+					{ name: 'Development', defaultRateInCents: 0 },
+					{ name: 'Analyse', defaultRateInCents: 0 },
+					{ name: 'Meeting', defaultRateInCents: 0 }]);
+		});
+
+		it('should not create a new event', function(){
+			project.events.should.have.length(2);
+		});
+
+		after(function(done) {
+			Project.remove(done);
+		});
+	});
+
 	describe('When a project is made hidden', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('clientId', 'FM Manager', 'Freelance management');
+			original = Project.create('companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -294,12 +333,31 @@ describe('Project Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When a project is hidden for the second time', function() {
+
+		var project;
+
+		before(function() {
+			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project.hide();
+			project.hide();
+		});
+
+		it('should not create a new event', function(){
+			project.events.should.have.length(3); // create, tasks, hide
+		});
+
+		after(function(done) {
+			Project.remove(done);
+		});
+	});
+
 	describe('When a project is made unhidden', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('clientId', 'FM Manager', 'Freelance management');
+			original = Project.create('companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -341,6 +399,25 @@ describe('Project Model Unit Tests:', function() {
 		it('should have a details changed event', function(){
 
 			saved.events[3].metadata.eventName.should.eql('ProjectUnhidden');
+		});
+
+		after(function(done) {
+			Project.remove(done);
+		});
+	});
+
+	describe('When a project is unhidden for the second time', function() {
+
+		var project;
+
+		before(function() {
+			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project.unhide();
+			project.unhide();
+		});
+
+		it('should not create a new event', function(){
+			project.events.should.have.length(2); // create, tasks
 		});
 
 		after(function(done) {

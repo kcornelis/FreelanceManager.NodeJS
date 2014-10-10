@@ -22,14 +22,14 @@ exports.getById = function(req, res) {
 	Account.findById(req.params.accountId, function(err, account) {
 		res.send(convert(account));
 	});
-};
+}
 
 exports.getAll = function(req, res) {
 
 	Account.find({ },function(err, accounts) {
 		res.send(_.map(accounts, convert));
 	});
-};
+}
 
 exports.create = function(req, res, next) {
 
@@ -38,10 +38,10 @@ exports.create = function(req, res, next) {
 		if(err){ next(err); }
 		res.send(convert(account));
 	});
-};
+}
 
 exports.update = function(req, res) {	
-};
+}
 
 exports.changepassword = function(req, res) {
-};
+}

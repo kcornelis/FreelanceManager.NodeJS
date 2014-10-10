@@ -165,6 +165,23 @@ describe('Account Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When a account details is changed with the same values', function() {
+
+		var account;
+
+		before(function() {
+			account = Account.create('John Doe', 'John', 'Doe', 'john@doe.com');
+			account.changeDetails('John Doe', 'John', 'Doe', 'john@doe.com');
+		});
+
+		it('should not create a new event', function(){
+			account.events.should.have.length(1);
+		});
+
+		after(function(done) {
+			Account.remove(done);
+		});
+	});
 
 	describe('When an accounts password is changed', function() {
 
@@ -242,6 +259,24 @@ describe('Account Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When an account is made admin for the second time', function() {
+
+		var account;
+
+		before(function() {
+			account = Account.create('John Doe', 'John', 'Doe', 'john@doe.com');
+			account.makeAdmin();
+			account.makeAdmin();
+		});
+
+		it('should not create a new event', function(){
+			account.events.should.have.length(2);
+		});
+
+		after(function(done) {
+			Account.remove(done);
+		});
+	});
 
 	describe('When an account is authenticated', function() {
 

@@ -10,10 +10,10 @@ var mongoose = require('mongoose'),
  * Client Schema
  */
 var ProjectSchema = new AggregateRootSchema({
-  	clientId: {
-  		type: String
-  	},
-  	name: {
+	companyId: {
+		type: String
+	},
+	name: {
 		type: String
 	},
 	description: {
@@ -36,11 +36,11 @@ var ProjectSchema = new AggregateRootSchema({
 /*
  *	Write methods
  */
-ProjectSchema.statics.create = function(clientId, name, description){
+ProjectSchema.statics.create = function(companyId, name, description){
 	
 	var project = new this();
 
-	project.clientId = clientId;
+	project.companyId = companyId;
 	project.name = name;
 	project.description = description;
 
@@ -52,7 +52,7 @@ ProjectSchema.statics.create = function(clientId, name, description){
 
 	project.apply('ProjectCreated', 
 	{
-		clientId: clientId,
+		companyId: companyId,
 		name: name,
 		description: description
 	});	
@@ -66,38 +66,63 @@ ProjectSchema.statics.create = function(clientId, name, description){
 
 ProjectSchema.methods.changeDetails = function(name, description){
 
-	this.name = name;
-	this.description = description;
+	if( this.name != name ||
+		this.description != description){
+		
+		this.name = name;
+		this.description = description;
 
-	this.apply('ProjectDetailsChanged', 
-	{
-		name: name,
-		description: description
-	});	
+		this.apply('ProjectDetailsChanged', 
+		{
+			name: name,
+			description: description
+		});	
+	}
 };
 
 ProjectSchema.methods.changeTasks = function(tasks){
 
-	this.tasks = tasks;
+	var changed = false;
+	if (tasks.length != this.tasks.length){
+		changed = true;
+	}
+	else {
 
-	this.apply('ProjectTasksChanged', 
-	{
-		tasks: tasks
-	});	
+		for(var i = 0; i < tasks.length; i++){
+
+			if (tasks[i].name != this.tasks[i].name ||
+				tasks[i].defaultRateInCents != this.tasks[i].defaultRateInCents)
+			{
+				changed = true;
+				break;
+			}
+		}
+	}
+
+	if(changed){
+		this.tasks = tasks;
+	
+		this.apply('ProjectTasksChanged', 
+		{
+			tasks: tasks
+		});	
+	}
 };
 
 ProjectSchema.methods.hide = function(){
 
-	this.hidden = true;
-
-	this.apply('ProjectHidden', {});	
+	if(!this.hidden){
+		this.hidden = true;
+		this.apply('ProjectHidden', {});	
+	}
 };
 
 ProjectSchema.methods.unhide = function(){
 
-	this.hidden = false;
-
-	this.apply('ProjectUnhidden', {});	
+	if(this.hidden){
+		this.hidden = false;	
+		this.apply('ProjectUnhidden', {});	
+	}
 };
 
 mongoose.model('Project', ProjectSchema);

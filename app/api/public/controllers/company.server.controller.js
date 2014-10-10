@@ -19,14 +19,14 @@ exports.getById = function(req, res) {
 	Company.findById(req.params.companyId, function(err, company) {
 		res.send(convert(company));
 	});
-};
+}
 
 exports.getAll = function(req, res) {
 
 	Company.find({ },function(err, companies) {
 		res.send(_.map(companies, convert));
 	});
-};
+}
 
 exports.create = function(req, res, next) {
 
@@ -35,7 +35,7 @@ exports.create = function(req, res, next) {
 		if(err){ next(err); }                           
 		res.send(convert(company));
 	});
-};
+}
 
 exports.update = function(req, res, next) {
 	
@@ -47,4 +47,4 @@ exports.update = function(req, res, next) {
 			res.send(convert(company));
 		});
 	});
-};
+}

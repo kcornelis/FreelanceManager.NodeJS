@@ -19,7 +19,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 	/**
 	 * Get by id
 	 */
-	describe('When an company is requested by id by an unauthenticated person', function(){
+	describe('When a company is requested by id by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
 				.get('/api/public/company/' + uuid.v1())
@@ -28,7 +28,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		});
 	});
 
-	describe('When an company is requested by id', function() {
+	describe('When a company is requested by id', function() {
 
 
 		var response;
@@ -65,7 +65,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 			body.id.should.eql(company.id);
 		});
 
-		it('should create an company with the specified name', function(){
+		it('should return a company with the name', function(){
 			body.name.should.eql('John BVBA');
 		});				
 	});
@@ -82,7 +82,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		});
 	});
 
-	describe('When an all companies are requested', function() {
+	describe('When all companies are requested', function() {
 
 		var response;
 		var body;
@@ -128,7 +128,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 			_.where(body, { id: company2.id }).should.exist;
 		});
 
-		it('should not contain an unexisting id', function() {
+		it('should not contain a unexisting id', function() {
 			_.where(body, { id: uuid.v1() }).should.not.exist;
 		});
 	});
@@ -136,7 +136,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 	/**
 	 * Create
 	 */
-	describe('When an company is created by an unauthenticated person', function(){
+	describe('When a company is created by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
 				.post('/api/public/company/create')
@@ -146,7 +146,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		});
 	});
 
-	describe('When creating an company', function() {
+	describe('When creating a company', function() {
 
 		var response;
 		var body;
@@ -178,7 +178,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 			company.should.exist;
 		});
 
-		it('should create an company with the specified name', function(){
+		it('should create a company with the specified name', function(){
 			company.name.should.eql('John BVBA');
 		});
 		
@@ -192,9 +192,9 @@ describe('Public API: Company Controller Integration Tests:', function() {
 	});	 
 
 	/**
-	 * Create
+	 * Update
 	 */
-	describe('When an company is updated by an unauthenticated person', function(){
+	describe('When a company is updated by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
 				.post('/api/public/company/update/' + uuid.v1())
@@ -204,7 +204,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		});
 	});
 
-	describe('When updating an company', function() {
+	describe('When updating a company', function() {
 
 		var response;
 		var body;
@@ -246,7 +246,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 			company.should.exist;
 		});
 
-		it('should create an company with the specified name', function(){
+		it('should update the company with the specified name', function(){
 			company.name.should.eql('Jane BVBA');
 		});
 		

@@ -36,12 +36,15 @@ CompanySchema.statics.create = function(name){
 
 CompanySchema.methods.changeDetails = function(name){
 
-	this.name = name;
-
-	this.apply('CompanyDetailsChanged', 
-	{
-		name: name
-	});	
+	if(this.name != name){
+		
+		this.name = name;
+		
+		this.apply('CompanyDetailsChanged', 
+		{
+			name: name
+		});	
+	}
 };
 
 mongoose.model('Company', CompanySchema);

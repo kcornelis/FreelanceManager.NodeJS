@@ -85,25 +85,32 @@ AccountSchema.methods.changePassword = function(password){
 
 AccountSchema.methods.makeAdmin = function(){
 
-	this.admin = true;
-
-	this.apply('AccountMadeAdmin', {});
+	if(!this.admin){
+		this.admin = true;
+		this.apply('AccountMadeAdmin', {});
+	}
 };
 
 AccountSchema.methods.changeDetails = function(name, firstName, lastName, email){
 
-	this.name = name;
-	this.firstName = firstName;
-	this.lastName = lastName;
-	this.email = email;
-
-	this.apply('AccountDetailsChanged', 
+	if( this.name != name ||
+		this.firstName != firstName ||
+		this.lastName != lastName ||
+		this.email != email)
 	{
-		name: name,
-		firstName: firstName,
-		lastName : lastName,
-		email: email
-	});	
+		this.name = name;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+
+		this.apply('AccountDetailsChanged', 
+		{
+			name: name,
+			firstName: firstName,
+			lastName : lastName,
+			email: email
+		});	
+	}
 };
 
 /*
