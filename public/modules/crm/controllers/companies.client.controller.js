@@ -1,15 +1,10 @@
 'use strict';
 
 angular.module('crm').controller('CompaniesController',
-function($scope, $http, $modal) {
+function($scope, $modal, Company) {
 
 	$scope.getAllCompanies = function() {
-		$http.get('/api/public/companies')
-			.success(function (data, status, headers, crm) {
-				$scope.companies = data;
-			})
-			.error(function (data, status, headers, crm) {
-			});	
+		$scope.companies = Company.query();
 	};
 
 	$scope.openCompany = function(company){
@@ -18,7 +13,7 @@ function($scope, $http, $modal) {
 			templateUrl: '/modules/crm/views/companydialog.client.view.html',
 			controller: 'CompanyDialogController',
 			resolve: {
-				company: function () {
+				toUpdate: function () {
 					return company;
 				}
 			}

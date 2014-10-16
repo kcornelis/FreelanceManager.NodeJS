@@ -22,7 +22,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 	describe('When a project is requested by id by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.get('/api/public/project/' + uuid.v1())
+				.get('/api/public/projects/' + uuid.v1())
 				.expect(401)
 				.end(done);
 		});
@@ -44,7 +44,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.get('/api/public/project/' + project.id)
+						.get('/api/public/projects/' + project.id)
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -161,7 +161,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 	describe('When a project is created by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/project/create')
+				.post('/api/public/projects')
 				.send({ companyId: 'company id', name: 'FM Manager', description: 'Freelance manager' })
 				.expect(401)
 				.end(done);
@@ -177,7 +177,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		before(function(done) {
 			
 			request('http://localhost:' + config.port)
-				.post('/api/public/project/create')
+				.post('/api/public/projects')
 				.set('Authorization', testdata.normalAccountToken)
 				.send({ companyId: 'company id', name: 'FM Manager', description: 'Freelance manager' })
 				.expect('Content-Type', /json/)
@@ -235,7 +235,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 	describe('When a project is updated by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/project/update/' + uuid.v1())
+				.post('/api/public/projects/' + uuid.v1())
 				.send({ name: 'John BVBA' })
 				.expect(401)
 				.end(done);
@@ -259,7 +259,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.post('/api/public/project/update/' + project.id)
+						.post('/api/public/projects/' + project.id)
 						.set('Authorization', testdata.normalAccountToken)
 						.send({ name: 'Hello', description: 'There' })
 						.expect('Content-Type', /json/)

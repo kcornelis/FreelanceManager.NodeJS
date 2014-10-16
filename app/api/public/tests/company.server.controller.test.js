@@ -22,7 +22,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 	describe('When a company is requested by id by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.get('/api/public/company/' + uuid.v1())
+				.get('/api/public/companies/' + uuid.v1())
 				.expect(401)
 				.end(done);
 		});
@@ -45,7 +45,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.get('/api/public/company/' + company.id)
+						.get('/api/public/companies/' + company.id)
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -139,7 +139,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 	describe('When a company is created by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/company/create')
+				.post('/api/public/companies')
 				.send({ name: 'John BVBA' })
 				.expect(401)
 				.end(done);
@@ -155,7 +155,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		before(function(done) {
 			
 			request('http://localhost:' + config.port)
-				.post('/api/public/company/create')
+				.post('/api/public/companies')
 				.set('Authorization', testdata.normalAccountToken)
 				.send({ name: 'John BVBA' })
 				.expect('Content-Type', /json/)
@@ -197,7 +197,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 	describe('When a company is updated by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/company/update/' + uuid.v1())
+				.post('/api/public/companies/' + uuid.v1())
 				.send({ name: 'John BVBA' })
 				.expect(401)
 				.end(done);
@@ -221,7 +221,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.post('/api/public/company/update/' + company.id)
+						.post('/api/public/companies/' + company.id)
 						.set('Authorization', testdata.normalAccountToken)
 						.send({ name: 'Jane BVBA' })
 						.expect('Content-Type', /json/)

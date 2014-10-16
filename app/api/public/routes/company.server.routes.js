@@ -12,8 +12,8 @@ module.exports = function(app) {
 	app.use('/api/public', jwt({ secret: config.jwtSecret }));
 
 	app.route('/api/public/companies').get(company.getAll);
-	app.route('/api/public/company/:companyId').get(company.getById);
+	app.route('/api/public/companies/:companyId').get(company.getById);
 
-	app.route('/api/public/company/create').post(company.create);
-	app.route('/api/public/company/update/:companyId').post(company.update);
+	app.route('/api/public/companies').post(company.create);
+	app.route('/api/public/companies/:companyId').post(company.update);
 };

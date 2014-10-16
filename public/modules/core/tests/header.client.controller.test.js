@@ -19,5 +19,9 @@
 		it('should expose the authentication service', function() {
 			expect(true).toBeTruthy();
 		});
+
+		it('should expose the authentication service', function() {
+			expect(true).toBeTruthy();
+		});
 	});
 })();

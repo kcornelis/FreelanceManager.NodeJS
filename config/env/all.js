@@ -40,7 +40,7 @@ module.exports = {
 		],
 		tests: [
 			'public/lib/angular-mocks/angular-mocks.js',
-			'public/modules/*/tests/*.js'
+			'public/modules/**/*.test.js'
 		]
 	}
 };

@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('crm').controller('CompanyDialogController',
-function($scope, $http, $modalInstance, company) {
+function($scope, Company, toUpdate) {
 
-	$scope.originalCompany = company;
-	$scope.newCompany = company == undefined;
-	company = company || { };
-	$scope.company =  { name: company.name || '' };
+	$scope.originalCompany = toUpdate;
+	$scope.newCompany = toUpdate == undefined;
+	toUpdate = toUpdate || { };
+	$scope.company =  { name: toUpdate.name || '' };
 	
 	$scope.isBusy = false;
 	$scope.message = '';
@@ -14,30 +14,20 @@ function($scope, $http, $modalInstance, company) {
 	$scope.ok = function () {
 		showMessage('Saving company...');
 
-		if($scope.newCompany) {
-			$http.post('/api/public/company/create', $scope.company)
-				.success(function (data, status, headers, config) {
-					hideMessage();
-					$modalInstance.close(data);
-				})
-				.error(function (data, status, headers, config) {
-					showMessage('An error occurred...');
-				});	
-		}
-		else {
-			$http.post('/api/public/company/update/' + $scope.originalCompany.id, $scope.company)
-				.success(function (data, status, headers, config) {
-					hideMessage();
-					$modalInstance.close(data);
-				})
-				.error(function (data, status, headers, config) {
-					showMessage('An error occurred...');
-				});	
-		}
+		var id = $scope.newCompany ? {} : { id: $scope.originalCompany.id };
+
+		Company.save(id, $scope.company,
+			function(data) { 
+				hideMessage();
+				$scope.$close(data);
+			},
+			function(err) { 
+				showMessage('An error occurred...'); 
+			});
 	};
 
 	$scope.cancel = function () {
-		$modalInstance.dismiss('cancel');
+		$scope.$dismiss('cancel');
 	};
 
 	function showMessage(message) {

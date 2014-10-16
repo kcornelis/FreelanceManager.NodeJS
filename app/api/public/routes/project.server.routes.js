@@ -12,8 +12,8 @@ module.exports = function(app) {
 	app.use('/api/public', jwt({ secret: config.jwtSecret }));
 
 	app.route('/api/public/projects').get(project.getAll);
-	app.route('/api/public/project/:projectId').get(project.getById);
+	app.route('/api/public/projects/:projectId').get(project.getById);
 
-	app.route('/api/public/project/create').post(project.create);
-	app.route('/api/public/project/update/:projectId').post(project.update);
+	app.route('/api/public/projects').post(project.create);
+	app.route('/api/public/projects/:projectId').post(project.update);
 };

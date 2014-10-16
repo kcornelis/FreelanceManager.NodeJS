@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('core').directive('autofocus', function($timeout, $parse) {
+angular.module('core').directive('autofocus', function($timeout) {
   return {
     link: function(scope, element, attrs) {
           $timeout(function() {

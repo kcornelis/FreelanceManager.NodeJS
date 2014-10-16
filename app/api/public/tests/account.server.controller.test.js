@@ -22,7 +22,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 	describe('When an account is requested by id by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.get('/api/public/account/' + uuid.v1())
+				.get('/api/public/accounts/' + uuid.v1())
 				.expect(401)
 				.end(done);
 		});
@@ -44,7 +44,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 				function(done){
 
 					request('http://localhost:' + config.port)
-						.get('/api/public/account/' + account._id)
+						.get('/api/public/accounts/' + account._id)
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -150,7 +150,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 	describe('When an account is created by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.post('/api/public/account/create')
+				.post('/api/public/accounts')
 				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
 				.expect(401)
 				.end(done);
@@ -166,7 +166,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		before(function(done) {
 			
 			request('http://localhost:' + config.port)
-				.post('/api/public/account/create')
+				.post('/api/public/accounts')
 				.set('Authorization', testdata.normalAccountToken)
 				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
 				.expect('Content-Type', /json/)
