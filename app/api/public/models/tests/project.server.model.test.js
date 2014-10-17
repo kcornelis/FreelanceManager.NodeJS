@@ -5,17 +5,20 @@
  */
 var should = require('should'),
 	mongoose = require('mongoose'),
+	uuid = require('node-uuid'),
 	Project = mongoose.model('Project');
 
 
 describe('Project Model Unit Tests:', function() {
+
+	var tenant = uuid.v1();
 
 	describe('When an project is created', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('companyId', 'FM Manager', 'Freelance management');
+			original = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			done();
 		});
 
@@ -38,6 +41,10 @@ describe('Project Model Unit Tests:', function() {
 
 				done();
 			});
+		});
+
+		it('should have a tenant', function(){
+			saved.tenant.should.eql(tenant);
 		});
 
 		it('should have a client id', function(){
@@ -75,6 +82,7 @@ describe('Project Model Unit Tests:', function() {
 			saved.events[0].companyId.should.eql('companyId');
 			saved.events[0].name.should.eql('FM Manager');
 			saved.events[0].description.should.eql('Freelance management');
+			saved.events[0].tenant.should.eql(tenant);
 
 			saved.events[0].metadata.eventName.should.eql('ProjectCreated');
 		});
@@ -108,7 +116,7 @@ describe('Project Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('companyId', 'FM Manager', 'Freelance management');
+			original = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -175,7 +183,7 @@ describe('Project Model Unit Tests:', function() {
 		var project;
 
 		before(function() {
-			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			project.changeDetails('FM Manager', 'Freelance management');
 		});
 
@@ -193,7 +201,7 @@ describe('Project Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('companyId', 'FM Manager', 'Freelance management');
+			original = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -264,7 +272,7 @@ describe('Project Model Unit Tests:', function() {
 		var project;
 
 		before(function() {
-			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			project.changeTasks([
 					{ name: 'Development', defaultRateInCents: 0 },
 					{ name: 'Analyse', defaultRateInCents: 0 },
@@ -285,7 +293,7 @@ describe('Project Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('companyId', 'FM Manager', 'Freelance management');
+			original = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -338,7 +346,7 @@ describe('Project Model Unit Tests:', function() {
 		var project;
 
 		before(function() {
-			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			project.hide();
 			project.hide();
 		});
@@ -357,7 +365,7 @@ describe('Project Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Project.create('companyId', 'FM Manager', 'Freelance management');
+			original = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			original.save(done);
 		});
 
@@ -411,7 +419,7 @@ describe('Project Model Unit Tests:', function() {
 		var project;
 
 		before(function() {
-			project = Project.create('companyId', 'FM Manager', 'Freelance management');
+			project = Project.create(tenant, 'companyId', 'FM Manager', 'Freelance management');
 			project.unhide();
 			project.unhide();
 		});

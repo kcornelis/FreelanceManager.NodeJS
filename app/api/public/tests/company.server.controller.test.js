@@ -131,6 +131,9 @@ describe('Public API: Company Controller Integration Tests:', function() {
 					company2.save(done);
 				},
 				function(done){
+					company3.save(done);
+				},
+				function(done){
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/companies')
@@ -212,7 +215,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 			company.name.should.eql('John BVBA');
 		});
 
-		it('should a company for the logged in user', function(){
+		it('should create a company for the logged in user', function(){
 			company.tenant.should.eql(testdata.normalAccountId);
 		});
 		

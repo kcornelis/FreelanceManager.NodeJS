@@ -12,7 +12,8 @@ var mongoose = require('mongoose'),
 var CompanySchema = new AggregateRootSchema({
 	tenant: {
 		type: String,
-		required: true
+		required: true,
+		index: true
 	},
   	name: {
 		type: String,

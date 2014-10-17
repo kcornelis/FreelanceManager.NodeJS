@@ -56,7 +56,8 @@ describe('Company Model Unit Tests:', function() {
 		});
 
 		it('should have a created event', function(){
-			saved.events[0].name.should.eql('John Doe');
+			saved.events[0].name.should.eql('John Doe');			
+			saved.events[0].tenant.should.eql(tenant);
 
 			saved.events[0].metadata.eventName.should.eql('CompanyCreated');
 		});

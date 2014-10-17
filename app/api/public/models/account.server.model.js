@@ -27,7 +27,8 @@ var AccountSchema = new AggregateRootSchema({
 	email: {
 		type: String,
 		unique: true,
-		trim: true
+		trim: true,
+		index: true
 	},
 	passwordHash: {
 		type: String

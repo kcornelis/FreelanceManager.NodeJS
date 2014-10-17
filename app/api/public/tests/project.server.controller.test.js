@@ -35,7 +35,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		var project;
 
 		before(function(done){
-			project = Project.create('companyId', 'FM Manager', 'Freelance manager');
+			project = Project.create(testdata.normalAccountId, 'companyId', 'FM Manager', 'Freelance manager');
 			
 			async.series([
 				function(done){
@@ -92,6 +92,32 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		});							
 	});
 
+	describe('When a project is requested by id by another tenant', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done){
+			project = Project.create(uuid.v1(), 'companyId', 'FM Manager', 'Freelance manager');
+			
+			async.series([
+				function(done){
+					project.save(done);
+				},
+			], done);
+		});
+		
+		it('should not return the project', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/companies/' + project.id)
+				.set('Authorization', testdata.normalAccountToken)
+				.expect(404)
+				.expect('Content-Type', /html/)
+				.end(done);
+		});					
+	});
+
 	/**
 	 * Get all projects
 	 */
@@ -111,10 +137,12 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		var project1;
 		var project2;
+		var project3;
 
 		before(function(done){
-			project1 = Project.create('companyId', 'FM Manager', 'Freelance manager');
-			project2 = Project.create('companyId', 'FM Manager', 'Freelance manager');
+			project1 = Project.create(testdata.normalAccountId, 'companyId', 'FM Manager', 'Freelance manager');
+			project2 = Project.create(testdata.normalAccountId, 'companyId', 'FM Manager', 'Freelance manager');
+			project3 = Project.create(uuid.v1(), 'companyId', 'FM Manager', 'Freelance manager');
 			
 			async.series([
 				function(done){
@@ -122,6 +150,9 @@ describe('Public API: Project Controller Integration Tests:', function() {
 				},
 				function(done){
 					project2.save(done);
+				},
+				function(done){
+					project3.save(done);
 				},
 				function(done){
 					
@@ -150,8 +181,8 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			_.where(body, { id: project2.id }).should.exist;
 		});
 
-		it('should not contain a unexisting id', function() {
-			_.where(body, { id: uuid.v1() }).should.not.exist;
+		it('should not return projects from another tenant', function() {
+			_.where(body, { id: project3.id }).should.not.exist;
 		});
 	});
 
@@ -198,6 +229,10 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		it('should be saved in the database', function() {
 			project.should.exist;
+		});
+
+		it('should create a project for the logged in user', function(){
+			project.tenant.should.eql(testdata.normalAccountId);
 		});
 
 		it('should create a project with the specified company id', function(){
@@ -250,7 +285,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			project = Project.create('company id', 'FM Manager', 'Freelance manager');
+			project = Project.create(testdata.normalAccountId, 'company id', 'FM Manager', 'Freelance manager');
 
 			async.series([
 				function(done){
@@ -304,4 +339,41 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			body.description.should.eql('There');
 		});			
 	});	 
+
+	describe('When updating a project from another tenant', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(uuid.v1(), 'company id', 'FM Manager', 'Freelance manager');
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send({ name: 'Hello', description: 'There' })
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+		});
+
+		it('should not be updated', function(done) {
+			Project.findById(project.id, function(err, c){
+				if(err){ done(err); }
+
+				c.name.should.eql('FM Manager');
+				done();
+			});
+		});		
+	});	
 });

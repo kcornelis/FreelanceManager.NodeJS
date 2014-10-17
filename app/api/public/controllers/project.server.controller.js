@@ -20,21 +20,29 @@ function convert(project){
 
 exports.getById = function(req, res) {
 
-	Project.findById(req.params.projectId, function(err, project) {
-		res.send(convert(project));
+	Project.findOne(
+	{
+		_id: req.params.projectId,
+		tenant: req.user.id
+	}, 
+	function(err, project) 
+	{
+		if(project)
+			res.send(convert(project));
+		else next();
 	});
 }
 
 exports.getAll = function(req, res) {
 
-	Project.find({ },function(err, projects) {
+	Project.find({ tenant: req.user.id },function(err, projects) {
 		res.send(_.map(projects, convert));
 	});
 }
 
 exports.create = function(req, res, next) {
 
-	var project = Project.create(req.body.companyId, req.body.name, req.body.description);
+	var project = Project.create(req.user.id, req.body.companyId, req.body.name, req.body.description);
 	project.save(function(err){
 		if(err){ next(err); }                           
 		res.send(convert(project));
@@ -43,12 +51,21 @@ exports.create = function(req, res, next) {
 
 exports.update = function(req, res, next) {
 	
-	Project.findById(req.params.projectId, function(err, project) {
+	Project.findOne(
+	{
+		_id: req.params.projectId,
+		tenant: req.user.id
+	}, 
+	function(err, project) {
 		if(err){ next(err); }
-		project.changeDetails(req.body.name, req.body.description);
-		project.save(function(err){
-			if(err){ next(err); }
-			res.send(convert(project));
-		});
+
+		if(project){
+			project.changeDetails(req.body.name, req.body.description);
+			project.save(function(err){
+				if(err){ next(err); }
+				res.send(convert(project));
+			});
+		}
+		else next();
 	});
 }

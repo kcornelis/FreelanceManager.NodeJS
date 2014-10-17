@@ -10,6 +10,11 @@ var mongoose = require('mongoose'),
  * Client Schema
  */
 var ProjectSchema = new AggregateRootSchema({
+	tenant: {
+		type: String,
+		required: true,
+		index: true
+	},
 	companyId: {
 		type: String
 	},
@@ -21,7 +26,8 @@ var ProjectSchema = new AggregateRootSchema({
 	},
 	hidden: {
 		type: Boolean,
-		default: false
+		default: false,
+		index: true
 	},
 	tasks: [{
 		name: {
@@ -36,13 +42,14 @@ var ProjectSchema = new AggregateRootSchema({
 /*
  *	Write methods
  */
-ProjectSchema.statics.create = function(companyId, name, description){
+ProjectSchema.statics.create = function(tenant, companyId, name, description){
 	
 	var project = new this();
 
 	project.companyId = companyId;
 	project.name = name;
 	project.description = description;
+	project.tenant = tenant;
 
 	project.tasks = [
 		{ name: 'Development', defaultRateInCents: 0 },		
@@ -52,6 +59,7 @@ ProjectSchema.statics.create = function(companyId, name, description){
 
 	project.apply('ProjectCreated', 
 	{
+		tenant: tenant,
 		companyId: companyId,
 		name: name,
 		description: description
