@@ -83,6 +83,73 @@ describe('Account Model Unit Tests:', function() {
 		});
 	});
 
+	describe('An account', function() {
+
+		var original, saved;
+
+		before(function(done) {
+			original = Account.create('John Doe BVBA', 'John', 'Doe', 'john@doe.com');
+			done();
+		});
+
+		it('should be able to save without problems', function(done) {
+			original.save(function(err) {
+				should.not.exist(err);
+				done();
+			});
+		});
+
+		it('should be in the database', function(done) {
+			Account.findOne({
+				email: 'john@doe.com'
+			}, function(err, account) {
+
+				should.not.exist(err);
+				should.exist(account);
+
+				saved = account;
+
+				done();
+			});
+		});
+
+		it('should have a full name', function(){
+			saved.fullName.should.eql('John Doe');
+		});
+
+		after(function(done) {
+			Account.remove(done);
+		});
+	});
+
+	describe('An account with the same email', function() {
+
+		var account1, account2;
+
+		before(function(done) {
+			account1 = Account.create('John Doe BVBA', 'John', 'Doe', 'john@doe.com');
+			account2 = Account.create('John', 'J', 'D', 'john@doe.com');
+			done();
+		});
+
+		it('should be able to save without problems', function(done) {
+			account1.save(function(err) {
+				should.not.exist(err);
+				done();
+			});
+		});
+
+		it('should not be saved in the database', function(done) {
+			account2.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+
+		after(function(done) {
+			Account.remove(done);
+		});
+	});	
 
 	describe('When an accounts details are changed', function() {
 

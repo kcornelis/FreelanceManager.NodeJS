@@ -10,6 +10,10 @@ var mongoose = require('mongoose'),
  * Client Schema
  */
 var CompanySchema = new AggregateRootSchema({
+	tenant: {
+		type: String,
+		required: true
+	},
   	name: {
 		type: String,
 		default: ''
@@ -20,14 +24,16 @@ var CompanySchema = new AggregateRootSchema({
  *	Write methods
  */
 
-CompanySchema.statics.create = function(name){
+CompanySchema.statics.create = function(tenant, name){
 	
 	var company = new this();
 
 	company.name = name;
+	company.tenant = tenant;
 
 	company.apply('CompanyCreated', 
 	{
+		tenant: tenant,
 		name: name
 	});		
 

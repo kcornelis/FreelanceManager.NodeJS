@@ -30,19 +30,20 @@ describe('Public API: Company Controller Integration Tests:', function() {
 
 	describe('When a company is requested by id', function() {
 
-
 		var response;
 		var body;
 		var company;
 
 		before(function(done){
-			company = Company.create('John BVBA');
+			company = Company.create(testdata.normalAccountId, 'John BVBA');
 			
 			async.series([
 				function(done){
 					company.save(done);
 				},
 				function(done){
+
+					console.log('test ' + testdata.normalAccountId);
 
 					request('http://localhost:' + config.port)
 						.get('/api/public/companies/' + company.id)
@@ -70,6 +71,32 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		});				
 	});
 
+	describe('When a company is requested by id by another tenant', function() {
+
+		var response;
+		var body;
+		var company;
+
+		before(function(done){
+			company = Company.create(uuid.v1(), 'John BVBA');
+			
+			async.series([
+				function(done){
+					company.save(done);
+				}
+			], done);
+		});
+		
+		it('should not return the company', function(done) {
+			request('http://localhost:' + config.port)
+				.get('/api/public/companies/' + company.id)
+				.set('Authorization', testdata.normalAccountToken)
+				.expect(404)
+				.expect('Content-Type', /html/)
+				.end(done);
+		});
+	});
+
 	/**
 	 * Get all companies
 	 */
@@ -89,10 +116,12 @@ describe('Public API: Company Controller Integration Tests:', function() {
 
 		var company1;
 		var company2;
+		var company3;
 
 		before(function(done){
-			company1 = Company.create('John BVBA');
-			company2 = Company.create('John BVBA');
+			company1 = Company.create(testdata.normalAccountId, 'John BVBA');
+			company2 = Company.create(testdata.normalAccountId, 'John BVBA');
+			company3 = Company.create(uuid.v1(), 'John BVBA');
 			
 			async.series([
 				function(done){
@@ -119,7 +148,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 				}
 			], done);
 		});
-		
+
 		it('should return a collection with the first company', function() {
 			_.where(body, { id: company1.id }).should.exist;
 		});
@@ -128,10 +157,11 @@ describe('Public API: Company Controller Integration Tests:', function() {
 			_.where(body, { id: company2.id }).should.exist;
 		});
 
-		it('should not contain a unexisting id', function() {
-			_.where(body, { id: uuid.v1() }).should.not.exist;
+		it('should not return companies from another tenant', function() {
+			_.where(body, { id: company3.id }).should.not.exist;
 		});
 	});
+
 
 	/**
 	 * Create
@@ -181,6 +211,10 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		it('should create a company with the specified name', function(){
 			company.name.should.eql('John BVBA');
 		});
+
+		it('should a company for the logged in user', function(){
+			company.tenant.should.eql(testdata.normalAccountId);
+		});
 		
 		it('should return the id of the company', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
@@ -212,7 +246,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			company = Company.create('John BVBA');
+			company = Company.create(testdata.normalAccountId, 'John BVBA');
 
 			async.series([
 				function(done){
@@ -257,5 +291,42 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		it('should return the name', function(){
 			body.name.should.eql('Jane BVBA');
 		});				
+	});	 
+
+	describe('When updating a company from another tenant', function() {
+
+		var response;
+		var body;
+		var company;
+
+		before(function(done) {
+
+			company = Company.create(uuid.v1(), 'John BVBA');
+
+			async.series([
+				function(done){
+					company.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/companies/' + company.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send({ name: 'Jane BVBA' })
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+		});
+
+		it('should not be updated', function(done) {
+			Company.findById(company.id, function(err, c){
+				if(err){ done(err); }
+
+				c.name.should.eql('John BVBA');
+				done();
+			});
+		});		
 	});	 
 });

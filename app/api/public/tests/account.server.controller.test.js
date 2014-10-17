@@ -35,7 +35,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		var account;
 
 		before(function(done){
-			account = Account.create('John BVBA', 'John', 'Doe', 'john@doe.com');
+			account = Account.create('John BVBA', 'John', 'Doe', 'john_001@doe.com');
 			
 			async.series([
 				function(done){
@@ -77,7 +77,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});	
 
 		it('should create an account with the specified email', function(){
-			body.email.should.eql('john@doe.com');
+			body.email.should.eql('john_001@doe.com');
 		});					
 	});
 
@@ -102,8 +102,8 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		var account2;
 
 		before(function(done){
-			account1 = Account.create('John BVBA', 'John', 'Doe', 'john@doe.com');
-			account2 = Account.create('John BVBA', 'John', 'Doe', 'john@doe.com');
+			account1 = Account.create('John BVBA', 'John', 'Doe', 'john_002@doe.com');
+			account2 = Account.create('John BVBA', 'John', 'Doe', 'john_003@doe.com');
 			
 			async.series([
 				function(done){
@@ -151,7 +151,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
 				.post('/api/public/accounts')
-				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john_004@doe.com' })
 				.expect(401)
 				.end(done);
 		});
@@ -168,7 +168,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			request('http://localhost:' + config.port)
 				.post('/api/public/accounts')
 				.set('Authorization', testdata.normalAccountToken)
-				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john@doe.com' })
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john_005@doe.com' })
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res) {
@@ -202,7 +202,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});	
 
 		it('should create an account with the specified email', function(){
-			account.email.should.eql('john@doe.com');
+			account.email.should.eql('john_005@doe.com');
 		});	
 		
 		it('should return the id of the account', function() {
@@ -222,7 +222,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});	
 
 		it('should return the email', function(){
-			body.email.should.eql('john@doe.com');
+			body.email.should.eql('john_005@doe.com');
 		});					
 	});	 
 });

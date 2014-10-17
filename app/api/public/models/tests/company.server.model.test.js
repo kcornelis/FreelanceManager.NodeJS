@@ -5,17 +5,20 @@
  */
 var should = require('should'),
 	mongoose = require('mongoose'),
+	uuid = require('node-uuid'),
 	Company = mongoose.model('Company');
 
 
 describe('Company Model Unit Tests:', function() {
+
+	var tenant = uuid.v1();
 
 	describe('When an company is created', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Company.create('John Doe');
+			original = Company.create(tenant, 'John Doe');
 			done();
 		});
 
@@ -38,6 +41,10 @@ describe('Company Model Unit Tests:', function() {
 
 				done();
 			});
+		});
+
+		it('should have a tenant', function(){
+			saved.tenant.should.eql(tenant);
 		});
 
 		it('should have a name', function(){
@@ -70,7 +77,7 @@ describe('Company Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Company.create('John Doe');
+			original = Company.create(tenant, 'John Doe');
 			original.save(done);
 		});
 
@@ -132,7 +139,7 @@ describe('Company Model Unit Tests:', function() {
 		var company;
 
 		before(function() {
-			company = Company.create('John Doe BVBA');
+			company = Company.create(tenant, 'John Doe BVBA');
 			company.changeDetails('John Doe BVBA');
 		});
 

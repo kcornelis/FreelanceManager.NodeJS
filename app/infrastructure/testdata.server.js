@@ -61,6 +61,7 @@ exports.testUsers = function(done){
 		};
 
 		exports.normalAccountToken = 'Bearer ' + jwt.sign(profile, config.jwtSecret, { expiresInMinutes: 60*5 });;
+		exports.normalAccountId = normalAccount.id;
 		
 		done();
 	});

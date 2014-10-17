@@ -13,16 +13,21 @@ var mongoose = require('mongoose'),
  */
 var AccountSchema = new AggregateRootSchema({
   	name: {
-		type: String
+		type: String,
+		trim: true
 	},
 	firstName: {
-		type: String
+		type: String,
+		trim: true
 	},
 	lastName: {
-		type: String
+		type: String,
+		trim: true
 	},
 	email: {
-		type: String
+		type: String,
+		unique: true,
+		trim: true
 	},
 	passwordHash: {
 		type: String
@@ -122,7 +127,7 @@ AccountSchema.methods.authenticate = function(password) {
 };
 
 AccountSchema.virtual('fullName').get(function(){
-	return this._firstName + ' ' + this._lastName;
+	return this.firstName + ' ' + this.lastName;
 });
 
 
