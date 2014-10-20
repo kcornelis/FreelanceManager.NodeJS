@@ -1,0 +1,21 @@
+<section data-ng-controller="ProjectsController" data-ng-init="getAllProjects()">
+
+	<h1 class="text-center">
+	    Projects
+	</h1>
+
+	<div class="fm-list project" data-ng-repeat="project in projects">
+
+	    <div class="btn-group pull-right">
+	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openProject(project)"><span class="glyphicon glyphicon-edit"></span></button>
+	    </div>
+	    <h3 class="panel-title hideOverflow">{{ project.name }}</h3>
+	    <p class="list-group-item-text">{{ project.description }}</p>
+	    <hr />
+	</div>
+
+	<button id="add-project" type="button" class="btn btn-primary pull-right" data-ng-click="openProject()">
+	    <span class="glyphicon glyphicon-plus"></span>
+	</button>	
+
+</section>

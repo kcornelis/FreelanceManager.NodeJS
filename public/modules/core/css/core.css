@@ -155,7 +155,7 @@ input[type="checkbox"].input-validation-error {
 
 @-o-keyframes rotation {
     from {-o-transform: rotate(0deg);}
-    to {-o-transform: rotate(359deg);}
+    to {-o-transform: rotate(359deg);}·
 }
 
 @keyframes rotation {
@@ -169,16 +169,16 @@ input[type="checkbox"].input-validation-error {
 *
 */
 
-.hidden-project {
+.fm-hidden-project {
     color: #888888;
 }
 
-.client-list .list-group{
+.fm-list .list-group{
     margin-bottom: 50px;
     margin-top: 10px;
 }
 
-.client-list hr{
+.fm-list hr{
     margin-top: 8px;
 }
 

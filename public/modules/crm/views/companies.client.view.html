@@ -4,28 +4,13 @@
 	    Companies
 	</h1>
 
-	<div class="company-list" data-ng-repeat="company in companies">
+	<div class="fm-list company" data-ng-repeat="company in companies">
 
 	    <div class="btn-group pull-right">
 	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openCompany(company)"><span class="glyphicon glyphicon-edit"></span></button>
-	        <button type="button" class="btn btn-primary btn-xs">
-	            Add Company
-	        </button>
 	    </div>
 	    <h3 class="panel-title hideOverflow">{{ company.name }}</h3>
 	    <hr />
-
-	    <ul class="list-group" data-ng-repeat="project in company.projects">
-	        <li class="list-group-item" data-ng-class="{hidden-project: project.hidden}">
-
-	            <button type="button" data-ng-click="openProject(project)"><span class="glyphicon glyphicon-edit"></span></button>
-	            <button type="button" class="btn btn-primary btn-xs pull-right" data-ng-click="openProjectTasks(project)">Tasks</button>
-	            <h4 class="list-group-item-heading">{{ project.name }}</h4>
-	            <p class="list-group-item-text">{{ project.description }}</p>
-
-	        </li>
-	    </ul>
-
 	</div>
 
 	<button id="add-company" type="button" class="btn btn-primary pull-right" data-ng-click="openCompany()">
