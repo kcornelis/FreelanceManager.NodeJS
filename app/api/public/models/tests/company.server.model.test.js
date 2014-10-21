@@ -72,6 +72,29 @@ describe('Company Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When a company is created with no tenant', function() {
+
+		it('should fail', function(done) {
+
+			var company = Company.create(null, 'John Doe');
+			company.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});
+
+	describe('When a company is created with no name', function() {
+
+		it('should fail', function(done) {
+
+			var company = Company.create(tenant, '');
+			company.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});
 
 	describe('When a company details is changed', function() {
 

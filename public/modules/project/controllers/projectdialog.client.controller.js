@@ -1,18 +1,20 @@
 'use strict';
 
 angular.module('project').controller('ProjectDialogController',
-function($scope, Project, toUpdate) {
+function($scope, Project, Company, toUpdate) {
 
 	$scope.originalProject = toUpdate;
 	$scope.newProject = toUpdate == undefined;
 	toUpdate = toUpdate || { };
 	$scope.project =  { 
+		companyId: toUpdate.companyId || '',
 		name: toUpdate.name || '',
 		description: toUpdate.description || '' 
 	};
 	
 	$scope.isBusy = false;
 	$scope.message = '';
+	$scope.companies = Company.query();
 
 	$scope.ok = function () {
 		showMessage('Saving project...');

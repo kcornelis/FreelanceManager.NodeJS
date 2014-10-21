@@ -16,13 +16,18 @@ var ProjectSchema = new AggregateRootSchema({
 		index: true
 	},
 	companyId: {
-		type: String
+		type: String,
+		required: true,
+		index: true
 	},
 	name: {
-		type: String
+		type: String,
+		required: true,
+		trim: true
 	},
 	description: {
-		type: String
+		type: String,
+		trim: true
 	},
 	hidden: {
 		type: Boolean,

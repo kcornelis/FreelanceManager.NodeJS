@@ -17,7 +17,8 @@ var CompanySchema = new AggregateRootSchema({
 	},
   	name: {
 		type: String,
-		default: ''
+		required: true,
+		trim: true
 	}
 });
 

@@ -14,7 +14,8 @@ var mongoose = require('mongoose'),
 var AccountSchema = new AggregateRootSchema({
   	name: {
 		type: String,
-		trim: true
+		trim: true,
+		required: true
 	},
 	firstName: {
 		type: String,
@@ -28,7 +29,8 @@ var AccountSchema = new AggregateRootSchema({
 		type: String,
 		unique: true,
 		trim: true,
-		index: true
+		index: true,
+		required: true
 	},
 	passwordHash: {
 		type: String

@@ -83,6 +83,30 @@ describe('Account Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When an account is created with no name', function() {
+
+		it('should fail', function(done) {
+
+			var account = Account.create(null, 'John', 'Doe', 'john@doe.com');
+			account.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});
+
+	describe('When an account is created with no email', function() {
+
+		it('should fail', function(done) {
+
+			var account = Account.create('John Doe BVBA', 'John', 'Doe', '');
+			account.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});
+
 	describe('An account', function() {
 
 		var original, saved;

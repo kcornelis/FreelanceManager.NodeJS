@@ -110,6 +110,41 @@ describe('Project Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When a project is created with no tenant', function() {
+
+		it('should fail', function(done) {
+
+			var project = Project.create(null, 'companyId', 'FM Manager', 'Freelance management');
+			project.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});
+
+	describe('When a project is created with no company', function() {
+
+		it('should fail', function(done) {
+
+			var project = Project.create(tenant, undefined, 'FM Manager', 'Freelance management');
+			project.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});
+
+	describe('When a project is created with no name', function() {
+
+		it('should fail', function(done) {
+
+			var project = Project.create(tenant, 'companyId', '', 'Freelance management');
+			project.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});	
 
 	describe('When a project details is changed', function() {
 

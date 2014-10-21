@@ -2,10 +2,16 @@
 
 (function() {
 	describe('ProjectDialogController Unit Tests:', function() {
-		//Initialize global variables
+
 		var scope, 
 			ProjectDialogController,
 			toUpdate;
+
+		var mockCompanyService = {
+			query: function(){
+				return [{ id: 1, name: 'company 1' }, { id: 2, name: 'company 2' }]
+			}
+		};
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
@@ -24,10 +30,11 @@
 
 			beforeEach(inject(function($controller) {
 				
-				toUpdate = { id: 2, name: 'abc', description: 'description' };
+				toUpdate = { id: 2, companyId: 'companyId', name: 'abc', description: 'description' };
 
 				ProjectDialogController = $controller('ProjectDialogController', {
 					$scope: scope,
+					Company: mockCompanyService,
 					toUpdate: toUpdate
 				});
 			}));
@@ -44,15 +51,25 @@
 				expect(scope.message).toBe('');
 			});
 
+			it('should have a list of all companies', function() {
+				expect(scope.companies.length).toBe(2);
+				expect(scope.companies[0].name).toBe('company 1');
+				expect(scope.companies[1].name).toBe('company 2');
+			});
+
 			it('should have a reference to the project to update', function(){
 				toUpdate.name = 'updatedName';
 				expect(scope.originalProject.name).toBe('updatedName');
 			});
 
 			it('should have a copy of the project to update', function(){
+				toUpdate.companyId = 'myCompanyId';
 				toUpdate.name = 'updatedName';
-				toUpdate.description = 'description';
+				toUpdate.description = 'updatedDescription';
+
+				expect(scope.project.companyId).toBe('companyId');
 				expect(scope.project.name).toBe('abc');
+				expect(scope.project.description).toBe('description');
 			});
 		});	
 
@@ -62,6 +79,7 @@
 
 				ProjectDialogController = $controller('ProjectDialogController', {
 					$scope: scope,
+					Company: mockCompanyService,
 					toUpdate: undefined
 				});
 			}));
@@ -78,9 +96,16 @@
 				expect(scope.message).toBe('');
 			});
 
+			it('should have a list of all companies', function() {
+				expect(scope.companies.length).toBe(2);
+				expect(scope.companies[0].name).toBe('company 1');
+				expect(scope.companies[1].name).toBe('company 2');
+			});
+
 			it('should have a project to edit', function(){
 				expect(scope.project.name).toBe('');
 				expect(scope.project.description).toBe('');
+				expect(scope.project.companyId).toBe('');
 			});
 		});	
 
@@ -216,6 +241,7 @@
 
 				scope.project.name = 'new';				
 				scope.project.description = 'new description';
+				scope.project.companyId = 'companyid';
 
 				scope.ok();
 				mockService.flush();
@@ -223,6 +249,7 @@
 				expect(mockService.idParam.id).toBe(undefined);
 				expect(mockService.dataParam.name).toBe('new');
 				expect(mockService.dataParam.description).toBe('new description');
+				expect(mockService.dataParam.companyId).toBe('companyid');
 			});
 
 			it('should close the dialog', function(){
