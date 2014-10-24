@@ -60,7 +60,8 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 		numeric: { type: Number }
 	},
 	deleted: {
-		type: Boolean
+		type: Boolean,
+		default: false
 	},
 	deletedOn: {
 		type: Date

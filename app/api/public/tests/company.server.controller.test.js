@@ -43,8 +43,6 @@ describe('Public API: Company Controller Integration Tests:', function() {
 				},
 				function(done){
 
-					console.log('test ' + testdata.normalAccountId);
-
 					request('http://localhost:' + config.port)
 						.get('/api/public/companies/' + company.id)
 						.set('Authorization', testdata.normalAccountToken)
