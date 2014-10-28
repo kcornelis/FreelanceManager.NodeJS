@@ -121,11 +121,11 @@ input[type="checkbox"].input-validation-error {
 
 /*
 *
-* SPINNER
+* FM-SPINNER
 *
 */
 
-.spinner {
+.fm-spinner {
     height: 25px;
     width: 25px;
     margin: 0 10px 0 0;
@@ -165,13 +165,9 @@ input[type="checkbox"].input-validation-error {
 
 /*
 *
-* CONFIG VIEWS
+* FM-LIST
 *
 */
-
-.fm-hidden-project {
-    color: #888888;
-}
 
 .fm-list .list-group{
     margin-bottom: 50px;
@@ -184,71 +180,27 @@ input[type="checkbox"].input-validation-error {
 
 /*
 *
-* TIME REGISTRATION VIEWS
+* FM-PAGEACTIONS
 *
 */
 
-.time-registration-list .list-group{
-    display: inline;
-}
-
-/*
-*
-* HOME SCREEN
-*
-*/
-
-.welcome-title{
-    margin-bottom: 30px;
-}
-
-.tile{
-    position: relative; width: 100%; height: 0; padding-bottom: 100%; display:block;
-}
-
-.tile.time{
-    background: url('./images/Clock.png') no-repeat #fff;
-    background-size: cover;
-}
-
-.tile.task{
-    background: url('./images/Tasks.png') no-repeat #fff;
-    background-size: cover;
-}
-
-.tile.contacts{
-    background: url('./images/Contacts.png') no-repeat #fff;
-    background-size: cover;
-}
-
-.tile.config{
-    background: url('./images/Configure.png') no-repeat #fff;
-    background-size: cover;
-}
-
-/*
-*
-* PAGE ACTIONS
-*
-*/
-
-.page-actions {
+.fm-page-actions {
     position: relative;
     display: inline-block;
     margin-top: -1px;
 }
-.page-actions .form-control{
+.fm-page-actions .form-control{
     float: left;
     padding: 0px 12px;
     height: 24px;
     display: inline-block;
     border-left-width: 0px;
 }
-.page-actions .btn{
+.fm-page-actions .btn{
     float:left;
     height: 24px;
     border-left-width: 0px;
 }
-.page-actions > :first-child {
+.fm-page-actions > :first-child {
     border-left-width: 1px;
 }

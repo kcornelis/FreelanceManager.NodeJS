@@ -1,0 +1,8 @@
+.fm-list.timeregistration .list-group {
+    display: inline;
+}
+
+.fm-timeregistrations.list-group {
+	margin-top: 10px;
+	margin-bottom: 15px;
+}
