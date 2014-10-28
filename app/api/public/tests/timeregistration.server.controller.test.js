@@ -11,10 +11,36 @@ var should = require('should'),
 	config = require_config(),
 	uuid = require('node-uuid'),
 	TimeRegistration = require('mongoose').model('TimeRegistration'),
+	Company = require('mongoose').model('Company'),
+	Project = require('mongoose').model('Project'),
 	testdata = require_infrastructure('testdata');
 
 
 describe('Public API: TimeRegistration Controller Integration Tests:', function() {
+
+	var company, project, company2, project2;
+
+	before(function(done){
+		company = Company.create(testdata.normalAccountId, 'My Company');
+		project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+		company2 = Company.create(testdata.normalAccountId, 'My Second Company');
+		project2 = Project.create(testdata.normalAccountId, company2.id, 'FM Manager v2', 'Freelance manager v2');
+
+		async.series([
+			function(done){
+				company.save(done);
+			},
+			function(done){
+				project.save(done);
+			},
+			function(done){
+				company2.save(done);
+			},
+			function(done){
+				project2.save(done);
+			}			
+		], done);
+	});
 
 	/**
 	 * Get by id
@@ -35,9 +61,15 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeRegistration;
 
 		before(function(done){
-			timeRegistration = TimeRegistration.create(testdata.normalAccountId, 'John Doe BVBA', 'Project 1', 'Dev', 'Doing some work', 20001231, 1400, 1359);
-			
+			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1359);
+
 			async.series([
+				function(done){
+					company.save(done);
+				},
+				function(done){
+					project.save(done);
+				},
 				function(done){
 					timeRegistration.save(done);
 				},
@@ -65,12 +97,24 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 
 		it('should return a time registration with the companyId', function(){
-			body.companyId.should.eql('John Doe BVBA');
+			body.companyId.should.eql(company.id);
+		});	
+
+		it('should return a time registration with the company name', function(){
+			body.company.name.should.eql('My Company');
 		});	
 
 		it('should return a time registration with the projectId', function(){
-			body.projectId.should.eql('Project 1');
+			body.projectId.should.eql(project.id);
 		});
+
+		it('should return a time registration with the project name', function(){
+			body.project.name.should.eql('FM Manager');
+		});
+
+		it('should return a time registration with the project description', function(){
+			body.project.description.should.eql('Freelance manager');
+		});				
 
 		it('should return a time registration with the task', function(){
 			body.task.should.eql('Dev');
@@ -111,7 +155,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeRegistration;
 
 		before(function(done){
-			timeRegistration = TimeRegistration.create(uuid.v1(), 'John Doe BVBA', 'Project 1', 'Dev', 'Doing some work', 20001231, 1400, 1500);
+			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1500);
 			
 			async.series([
 				function(done){
@@ -147,24 +191,24 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var response;
 		var body;
 
-		var company1;
-		var company2;
-		var company3;
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
 
 		before(function(done){
-			company1 = TimeRegistration.create(testdata.normalAccountId, 'John Doe BVBA', 'Project 1', 'Dev', 'Doing some work', 20001231, 1400, 1500);
-			company2 = TimeRegistration.create(testdata.normalAccountId, 'John Doe BVBA', 'Project 1', 'Dev', 'Doing some work', 20001231, 1500, 1600);
-			company3 = TimeRegistration.create(uuid.v1(), 'John Doe BVBA', 'Project 1', 'Dev', 'Doing some work', 20001231, 1400, 1359);
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1359);
 			
 			async.series([
 				function(done){
-					company1.save(done);
+					timeregistration1.save(done);
 				},
 				function(done){
-					company2.save(done);
+					timeregistration2.save(done);
 				},
 				function(done){
-					company3.save(done);
+					timeregistration3.save(done);
 				},
 				function(done){
 					
@@ -185,16 +229,28 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			], done);
 		});
 
+		it('should return time registrations with the company name', function(){
+			_.where(body, { id: timeregistration1.id })[0].company.name.should.eql('My Company');
+		});	
+
+		it('should return time registrations with the project name', function(){
+			_.where(body, { id: timeregistration1.id })[0].project.name.should.eql('FM Manager');
+		});	
+
+		it('should return time registrations with the project description', function(){
+			_.where(body, { id: timeregistration1.id })[0].project.description.should.eql('Freelance manager');
+		});	
+
 		it('should return a collection with the first time time registration', function() {
-			_.where(body, { id: company1.id }).should.exist;
+			_.where(body, { id: timeregistration1.id }).should.exist;
 		});
 
 		it('should return a collection with the second time registration', function() {
-			_.where(body, { id: company2.id }).should.exist;
+			_.where(body, { id: timeregistration2.id }).should.exist;
 		});
 
 		it('should not return time registrations from another tenant', function() {
-			_.where(body, { id: company3.id }).should.not.exist;
+			_.where(body, { id: timeregistration3.id }).should.not.exist;
 		});
 	});
 
@@ -224,7 +280,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			request('http://localhost:' + config.port)
 				.post('/api/public/timeregistrations')
 				.set('Authorization', testdata.normalAccountToken)
-				.send({ companyId: 'company', projectId: 'project', task: 'dev',
+				.send({ companyId: company.id, projectId: project.id, task: 'dev',
 						description: 'doing some work', date: 20100304, from: 1015, to: 1215 })
 				.expect('Content-Type', /json/)
 				.expect(200)
@@ -247,11 +303,11 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 
 		it('should create a time registration with the specified company id', function(){
-			timeRegistration.companyId.should.eql('company');
+			timeRegistration.companyId.should.eql(company.id);
 		});
 
 		it('should create a time registration with the specified project id', function(){
-			timeRegistration.projectId.should.eql('project');
+			timeRegistration.projectId.should.eql(project.id);
 		});
 
 		it('should create a time registration with the specified task', function(){
@@ -283,11 +339,23 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 
 		it('should return the company id', function(){
-			body.companyId.should.eql('company');
+			body.companyId.should.eql(company.id);
+		});
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Company');
 		});
 
 		it('should return the project id', function(){
-			body.projectId.should.eql('project');
+			body.projectId.should.eql(project.id);
+		});
+
+		it('should return the project name', function(){
+			body.project.name.should.eql('FM Manager');
+		});
+
+		it('should return the project description', function(){
+			body.project.description.should.eql('Freelance manager');
 		});
 
 		it('should return the task', function(){
@@ -333,7 +401,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		before(function(done) {
 
-			timeRegistration = TimeRegistration.create(testdata.normalAccountId, 'John Doe BVBA', 'Project 1', 'development', 'work', 20001231, 1400, 1359);
+			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'development', 'work', 20001231, 1400, 1359);
 
 			async.series([
 				function(done){
@@ -344,7 +412,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 					request('http://localhost:' + config.port)
 						.post('/api/public/timeregistrations/' + timeRegistration.id)
 						.set('Authorization', testdata.normalAccountToken)
-						.send({ companyId: 'company', projectId: 'project', task: 'dev',
+						.send({ companyId: company2.id, projectId: project2.id, task: 'dev',
 								description: 'doing some work', date: 20100304, from: 1015, to: 1215 })
 						.expect('Content-Type', /json/)
 						.expect(200)
@@ -368,12 +436,12 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeRegistration.should.exist;
 		});
 
-		it('should update the time registration with the updated company id', function(){
-			timeRegistration.companyId.should.eql('company');
+		it('should update the time registration with the new company id', function(){
+			timeRegistration.companyId.should.eql(company2.id);
 		});
 
-		it('should update the time registration with the updated project id', function(){
-			timeRegistration.projectId.should.eql('project');
+		it('should update the time registration with the new project id', function(){
+			timeRegistration.projectId.should.eql(project2.id);
 		});
 
 		it('should update the time registration with the updated task', function(){
@@ -401,11 +469,23 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 
 		it('should return the company id', function(){
-			body.companyId.should.eql('company');
+			body.companyId.should.eql(company2.id);
+		});
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Second Company');
 		});
 
 		it('should return the project id', function(){
-			body.projectId.should.eql('project');
+			body.projectId.should.eql(project2.id);
+		});
+
+		it('should return the project name', function(){
+			body.project.name.should.eql('FM Manager v2');
+		});
+
+		it('should return the project description', function(){
+			body.project.description.should.eql('Freelance manager v2');
 		});
 
 		it('should return the task', function(){
@@ -437,7 +517,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		before(function(done) {
 
-			timeRegistration = TimeRegistration.create(uuid.v1(), 'John Doe BVBA', 'Project 1', 'development', 'work', 20001231, 1400, 1359);
+			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'development', 'work', 20001231, 1400, 1359);
 
 			async.series([
 				function(done){
@@ -448,7 +528,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 					request('http://localhost:' + config.port)
 						.post('/api/public/timeregistrations/' + timeRegistration.id)
 						.set('Authorization', testdata.normalAccountToken)
-						.send({ companyId: 'company', projectId: 'project', task: 'dev',
+						.send({ companyId: company.id, projectId: project.id, task: 'dev',
 								description: 'doing some work', date: 20100304, from: 1015, to: 1215 })
 						.expect('Content-Type', /html/)
 						.expect(404)
@@ -461,8 +541,8 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			TimeRegistration.findById(timeRegistration.id, function(err, c){
 				if(err){ done(err); }
 
-				c.companyId.should.eql('John Doe BVBA');
-				c.projectId.should.eql('Project 1');
+				c.companyId.should.eql(company.id);
+				c.projectId.should.eql(project.id);
 				c.description.should.eql('work');
 				done();
 			});

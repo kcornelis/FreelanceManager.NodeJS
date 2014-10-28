@@ -5,13 +5,27 @@
  */
 var mongoose = require('mongoose'),
 	_ = require('lodash'),
-	TimeRegistration = mongoose.model('TimeRegistration');
+	async = require('async'),
+	TimeRegistration = mongoose.model('TimeRegistration'),
+	Project = mongoose.model('Project'),
+	Company = mongoose.model('Company');
 
-function convert(timeRegistration){
+/**
+ * Private helpers.
+ */
+function convert(timeRegistration, company, project) {
+
 	return {
 		id: timeRegistration.id,
 		companyId: timeRegistration.companyId,
+		company: {
+			name: company.name
+		},
 		projectId: timeRegistration.projectId,
+		project: {
+			name: project.name,
+			description: project.description
+		},
 		task: timeRegistration.task,
 		description: timeRegistration.description,
 		date: timeRegistration.date,
@@ -21,6 +35,54 @@ function convert(timeRegistration){
 	};
 }
 
+function convertSingle(timeregistration, done){
+
+	var project;
+	var company;
+
+	async.parallel([
+		function(done){
+			Company.findById(timeregistration.companyId, function(err, c) { company = c; done(); })
+		},
+		function(done){
+			Project.findById(timeregistration.projectId, function(err, p) { project = p; done(); });
+		}
+	], 
+	function(){
+		done(convert(timeregistration, company, project));
+	});
+}
+
+function convertMultiple(timeRegistrations, done) {
+
+	var projects;
+	var companies;
+
+	var companyIds = _.map(timeRegistrations, function(tr) { return tr.companyId; });
+	var projectIds = _.map(timeRegistrations, function(tr) { return tr.projectId; });
+
+	async.parallel([
+		function(done){
+			Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); })
+		},
+		function(done){
+			Project.find().in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
+		}
+	], 
+	function(){
+		var converted = _.map(timeRegistrations, function(tr) {
+			return convert(tr,
+				_.first(_.where(companies, { id: tr.companyId })),
+				_.first(_.where(projects, { id: tr.projectId })));
+		});
+
+		done(converted);
+	});
+}	
+
+/**
+ * API Actions.
+ */
 exports.getById = function(req, res, next) {
 
 	TimeRegistration.findOne(
@@ -31,7 +93,11 @@ exports.getById = function(req, res, next) {
 	}, 
 	function(err, timeRegistration) {
 		if(timeRegistration)
-			res.send(convert(timeRegistration));
+		{
+			convertSingle(timeRegistration, function(converted){
+				res.send(converted);
+			});
+		}
 		else next();
 	});
 }
@@ -45,7 +111,10 @@ exports.getAll = function(req, res) {
 	},
 	function(err, timeRegistrations) 
 	{
-		res.send(_.map(timeRegistrations, convert));
+		convertMultiple(timeRegistrations, function(converted){
+			console.log(converted);
+			res.send(converted);
+		});
 	});
 }
 
@@ -54,7 +123,9 @@ exports.create = function(req, res, next) {
 	var timeRegistration = TimeRegistration.create(req.user.id, req.body.companyId, req.body.projectId, req.body.task, req.body.description, req.body.date, req.body.from, req.body.to);
 	timeRegistration.save(function(err){
 		if(err){ next(err); }                           
-		res.send(convert(timeRegistration));
+		convertSingle(timeRegistration, function(converted){
+			res.send(converted);
+		});
 	});
 }
 
@@ -73,7 +144,9 @@ exports.update = function(req, res, next) {
 			timeRegistration.changeDetails(req.body.companyId, req.body.projectId, req.body.task, req.body.description, req.body.date, req.body.from, req.body.to);
 			timeRegistration.save(function(err){
 				if(err){ next(err); }
-				res.send(convert(timeRegistration));
+				convertSingle(timeRegistration, function(converted){
+					res.send(converted);
+				});
 			});
 		}
 		else next();
