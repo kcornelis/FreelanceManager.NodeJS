@@ -13,7 +13,7 @@
 		</div>
 		<div class="modal-footer">
 			<div class="pull-left" data-ng-show="isBusy">
-				<i class="spinner"></i><span>{{ message }}</span>
+				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
 			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
 			<button type="submit" class="btn btn-primary" ng-disabled="companyForm.$invalid" data-ng-click="ok()">{{ newCompany ? 'Save' : 'Update' }}</button>
