@@ -208,6 +208,75 @@ describe('Public API: Project Controller Integration Tests:', function() {
 	});
 
 	/**
+	 * Get all active projects
+	 */
+	describe('When all active projects are requested by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/projects/active')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When all active projects are requested', function() {
+
+		var response;
+		var body;
+
+		var project1;
+		var project2;
+		var project3;
+
+		before(function(done){
+			project1 = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project2 = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project3 = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project3.hide();
+			
+			async.series([
+				function(done){
+					project1.save(done);
+				},
+				function(done){
+					project2.save(done);
+				},
+				function(done){
+					project3.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/projects/active')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return a collection with the first project', function() {
+			_.where(body, { id: project1.id }).length.should.eql(1);
+		});
+
+		it('should return a collection with the second project', function() {
+			_.where(body, { id: project2.id }).length.should.eql(1);
+		});
+
+		it('should not return hidden projects', function() {
+			_.where(body, { id: project3.id }).length.should.eql(0);
+		});
+	});
+
+	/**
 	 * Create
 	 */
 	describe('When a project is created by an unauthenticated person', function(){

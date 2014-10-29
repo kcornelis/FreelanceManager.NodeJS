@@ -76,7 +76,7 @@ exports.getAll = function(req, res) {
 	});
 }
 
-exports.getActiveWithCompanies = function(req, res){
+exports.getActive = function(req, res){
 
 	Project.find({ tenant: req.user.id, hidden: false },function(err, projects) {
 		convertMultiple(projects, function(converted){
