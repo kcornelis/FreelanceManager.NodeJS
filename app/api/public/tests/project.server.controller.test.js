@@ -11,10 +11,23 @@ var should = require('should'),
 	config = require_config(),
 	uuid = require('node-uuid'),
 	Project = require('mongoose').model('Project'),
+	Company = require('mongoose').model('Company'),
 	testdata = require_infrastructure('testdata');
 
 
 describe('Public API: Project Controller Integration Tests:', function() {
+
+	var company;
+
+	before(function(done){
+		company = Company.create(testdata.normalAccountId, 'My Company');
+
+		async.series([
+			function(done){
+				company.save(done);
+			}		
+		], done);
+	});
 
 	/**
 	 * Get by id
@@ -35,7 +48,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		var project;
 
 		before(function(done){
-			project = Project.create(testdata.normalAccountId, 'companyId', 'FM Manager', 'Freelance manager');
+			project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
 			
 			async.series([
 				function(done){
@@ -65,8 +78,12 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		});
 
 		it('should return the project with the linked company id', function(){
-			body.companyId.should.eql('companyId');
-		});			
+			body.companyId.should.eql(company.id);
+		});		
+
+		it('should return the project with the linked company name', function(){
+			body.company.name.should.eql('My Company');
+		});				
 
 		it('should return the project with the name', function(){
 			body.name.should.eql('FM Manager');
@@ -99,7 +116,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		var project;
 
 		before(function(done){
-			project = Project.create(uuid.v1(), 'companyId', 'FM Manager', 'Freelance manager');
+			project = Project.create(uuid.v1(), company.id, 'FM Manager', 'Freelance manager');
 			
 			async.series([
 				function(done){
@@ -140,9 +157,9 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		var project3;
 
 		before(function(done){
-			project1 = Project.create(testdata.normalAccountId, 'companyId', 'FM Manager', 'Freelance manager');
-			project2 = Project.create(testdata.normalAccountId, 'companyId', 'FM Manager', 'Freelance manager');
-			project3 = Project.create(uuid.v1(), 'companyId', 'FM Manager', 'Freelance manager');
+			project1 = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project2 = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project3 = Project.create(uuid.v1(), company.id, 'FM Manager', 'Freelance manager');
 			
 			async.series([
 				function(done){
@@ -172,6 +189,10 @@ describe('Public API: Project Controller Integration Tests:', function() {
 				}
 			], done);
 		});
+
+		it('should return a projects with the company name', function() {
+			_.where(body, { id: project1.id })[0].company.name.should.eql('My Company');
+		});
 		
 		it('should return a collection with the first project', function() {
 			_.where(body, { id: project1.id }).length.should.eql(1);
@@ -193,7 +214,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
 				.post('/api/public/projects')
-				.send({ companyId: 'company id', name: 'FM Manager', description: 'Freelance manager' })
+				.send({ companyId: company.id, name: 'FM Manager', description: 'Freelance manager' })
 				.expect(401)
 				.end(done);
 		});
@@ -210,7 +231,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			request('http://localhost:' + config.port)
 				.post('/api/public/projects')
 				.set('Authorization', testdata.normalAccountToken)
-				.send({ companyId: 'company id', name: 'FM Manager', description: 'Freelance manager' })
+				.send({ companyId: company.id, name: 'FM Manager', description: 'Freelance manager' })
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res) {
@@ -236,8 +257,8 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		});
 
 		it('should create a project with the specified company id', function(){
-			project.companyId.should.eql('company id');
-		});
+			project.companyId.should.eql(company.id);
+		});		
 
 		it('should create a project with the specified name', function(){
 			project.name.should.eql('FM Manager');
@@ -259,8 +280,16 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			body.description.should.eql('Freelance manager');
 		});		
 
+		it('should return the companyId', function(){
+			body.companyId.should.eql(company.id);
+		});	
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Company');
+		});			
+
 		it('should return the company id', function(){
-			body.companyId.should.eql('company id');
+			body.companyId.should.eql(company.id);
 		});				
 	});	 
 
@@ -285,7 +314,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			project = Project.create(testdata.normalAccountId, 'company id', 'FM Manager', 'Freelance manager');
+			project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
 
 			async.series([
 				function(done){
@@ -335,6 +364,14 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			body.name.should.eql('Hello');
 		});		
 
+		it('should return the companyId', function(){
+			body.companyId.should.eql(company.id);
+		});	
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Company');
+		});			
+
 		it('should return the description', function(){
 			body.description.should.eql('There');
 		});			
@@ -348,7 +385,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			project = Project.create(uuid.v1(), 'company id', 'FM Manager', 'Freelance manager');
+			project = Project.create(uuid.v1(), company.id, 'FM Manager', 'Freelance manager');
 
 			async.series([
 				function(done){

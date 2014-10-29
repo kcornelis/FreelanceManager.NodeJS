@@ -5,17 +5,47 @@
  */
 var mongoose = require('mongoose'),
 	_ = require('lodash'),
-	Project = mongoose.model('Project');
+	Project = mongoose.model('Project'),
+	Company = mongoose.model('Company');
 
-function convert(project){
+/**
+ * Private helpers.
+ */
+function convert(project, company) {
+
 	return {
 		id: project.id,
 		companyId: project.companyId,
+		company: {
+			name: company.name
+		},
 		name: project.name,
 		description: project.description,
 		tasks: project.tasks,
 		hidden: project.hidden
 	};
+}
+
+function convertSingle(project, done){
+
+	Company.findById(project.companyId, function(err, company) 
+	{ 
+		done(convert(project, company));
+	});
+}
+
+function convertMultiple(projects, done) {
+
+	var companyIds = _.map(projects, function(p) { return p.companyId; });
+
+	Company.find().in('_id', companyIds).exec(function(err, companies) 
+	{ 
+		var converted = _.map(projects, function(p) {
+			return convert(p, _.first(_.where(companies, { id: p.companyId })));
+		});
+
+		done(converted);
+	});
 }
 
 exports.getById = function(req, res) {
@@ -28,7 +58,11 @@ exports.getById = function(req, res) {
 	function(err, project) 
 	{
 		if(project)
-			res.send(convert(project));
+		{
+			convertSingle(project, function(converted){
+				res.send(converted);
+			});
+		}
 		else next();
 	});
 }
@@ -36,7 +70,18 @@ exports.getById = function(req, res) {
 exports.getAll = function(req, res) {
 
 	Project.find({ tenant: req.user.id },function(err, projects) {
-		res.send(_.map(projects, convert));
+		convertMultiple(projects, function(converted){
+			res.send(converted);
+		});
+	});
+}
+
+exports.getActiveWithCompanies = function(req, res){
+
+	Project.find({ tenant: req.user.id, hidden: false },function(err, projects) {
+		convertMultiple(projects, function(converted){
+			res.send(converted);
+		});
 	});
 }
 
@@ -44,8 +89,11 @@ exports.create = function(req, res, next) {
 
 	var project = Project.create(req.user.id, req.body.companyId, req.body.name, req.body.description);
 	project.save(function(err){
-		if(err){ next(err); }                           
-		res.send(convert(project));
+		if(err){ next(err); }       
+
+		convertSingle(project, function(converted){
+			res.send(converted);
+		});
 	});
 }
 
@@ -63,7 +111,10 @@ exports.update = function(req, res, next) {
 			project.changeDetails(req.body.name, req.body.description);
 			project.save(function(err){
 				if(err){ next(err); }
-				res.send(convert(project));
+				
+				convertSingle(project, function(converted){
+					res.send(converted);
+				});
 			});
 		}
 		else next();
