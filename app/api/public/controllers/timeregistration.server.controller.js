@@ -127,9 +127,7 @@ exports.getForDate = function(req, res) {
 	{ 
 		tenant: req.user.id ,
 		deleted: false,
-		date: { 
-			numeric: req.params.date
-		}
+		'date.numeric': req.params.date
 	},
 	function(err, timeRegistrations) 
 	{

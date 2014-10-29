@@ -151,15 +151,15 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		});
 
 		it('should return a collection with the first company', function() {
-			_.where(body, { id: company1.id }).should.exist;
+			_.where(body, { id: company1.id }).length.should.eql(1);
 		});
 
 		it('should return a collection with the second company', function() {
-			_.where(body, { id: company2.id }).should.exist;
+			_.where(body, { id: company2.id }).length.should.eql(1);
 		});
 
 		it('should not return companies from another tenant', function() {
-			_.where(body, { id: company3.id }).should.not.exist;
+			_.where(body, { id: company3.id }).length.should.eql(0);
 		});
 	});
 

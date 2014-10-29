@@ -174,15 +174,15 @@ describe('Public API: Project Controller Integration Tests:', function() {
 		});
 		
 		it('should return a collection with the first project', function() {
-			_.where(body, { id: project1.id }).should.exist;
+			_.where(body, { id: project1.id }).length.should.eql(1);
 		});
 
 		it('should return a collection with the second project', function() {
-			_.where(body, { id: project2.id }).should.exist;
+			_.where(body, { id: project2.id }).length.should.eql(1);
 		});
 
 		it('should not return projects from another tenant', function() {
-			_.where(body, { id: project3.id }).should.not.exist;
+			_.where(body, { id: project3.id }).length.should.eql(0);
 		});
 	});
 

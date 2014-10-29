@@ -132,15 +132,15 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 		
 		it('should return a collection with the first account', function() {
-			_.where(body, { id: account1.id }).should.exist;
+			_.where(body, { id: account1.id }).length.should.eql(1);
 		});
 
 		it('should return a collection with the second account', function() {
-			_.where(body, { id: account2.id }).should.exist;
+			_.where(body, { id: account2.id }).length.should.eql(1);
 		});
 
 		it('should not contain an unexisting id', function() {
-			_.where(body, { id: uuid.v1() }).should.not.exist;
+			_.where(body, { id: uuid.v1() }).length.should.eql(0);
 		});
 	});
 

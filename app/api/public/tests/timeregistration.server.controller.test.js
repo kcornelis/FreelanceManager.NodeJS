@@ -242,15 +242,15 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});	
 
 		it('should return a collection with the first time time registration', function() {
-			_.where(body, { id: timeregistration1.id }).should.exist;
+			_.where(body, { id: timeregistration1.id }).length.should.eql(1);
 		});
 
 		it('should return a collection with the second time registration', function() {
-			_.where(body, { id: timeregistration2.id }).should.exist;
+			_.where(body, { id: timeregistration2.id }).length.should.eql(1);
 		});
 
 		it('should not return time registrations from another tenant', function() {
-			_.where(body, { id: timeregistration3.id }).should.not.exist;
+			_.where(body, { id: timeregistration3.id }).length.should.eql(0);
 		});
 	});
 
@@ -310,15 +310,15 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 
 		it('should return time registrations from the provided date', function() {
-			_.where(body, { id: timeregistration1.id }).should.exist;
+			_.where(body, { id: timeregistration1.id }).length.should.eql(1);
 		});
 
 		it('should not return a time registration from another date', function() {
-			_.where(body, { id: timeregistration2.id }).should.not.exist;
+			_.where(body, { id: timeregistration2.id }).length.should.eql(0);
 		});
 
 		it('should not return time registrations from another tenant', function() {
-			_.where(body, { id: timeregistration3.id }).should.not.exist;
+			_.where(body, { id: timeregistration3.id }).length.should.eql(0);
 		});
 	});
 
