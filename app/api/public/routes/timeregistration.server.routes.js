@@ -12,6 +12,7 @@ module.exports = function(app) {
 	app.use('/api/public', jwt({ secret: config.jwtSecret }));
 
 	app.route('/api/public/timeregistrations').get(timeRegistration.getAll);
+	app.route('/api/public/timeregistrations/bydate/:date').get(timeRegistration.getForDate);
 	app.route('/api/public/timeregistrations/:timeRegistrationId').get(timeRegistration.getById);
 
 	app.route('/api/public/timeregistrations').post(timeRegistration.create);

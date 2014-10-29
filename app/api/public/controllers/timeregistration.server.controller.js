@@ -92,6 +92,8 @@ exports.getById = function(req, res, next) {
 		deleted: false
 	}, 
 	function(err, timeRegistration) {
+		if(err){ next(err); }
+
 		if(timeRegistration)
 		{
 			convertSingle(timeRegistration, function(converted){
@@ -111,8 +113,29 @@ exports.getAll = function(req, res) {
 	},
 	function(err, timeRegistrations) 
 	{
+		if(err){ next(err); }
+		
 		convertMultiple(timeRegistrations, function(converted){
-			console.log(converted);
+			res.send(converted);
+		});
+	});
+}
+
+exports.getForDate = function(req, res) {
+
+	TimeRegistration.find(
+	{ 
+		tenant: req.user.id ,
+		deleted: false,
+		date: { 
+			numeric: req.params.date
+		}
+	},
+	function(err, timeRegistrations) 
+	{
+		if(err){ next(err); }
+
+		convertMultiple(timeRegistrations, function(converted){
 			res.send(converted);
 		});
 	});
@@ -122,7 +145,8 @@ exports.create = function(req, res, next) {
 
 	var timeRegistration = TimeRegistration.create(req.user.id, req.body.companyId, req.body.projectId, req.body.task, req.body.description, req.body.date, req.body.from, req.body.to);
 	timeRegistration.save(function(err){
-		if(err){ next(err); }                           
+		if(err){ next(err); }
+
 		convertSingle(timeRegistration, function(converted){
 			res.send(converted);
 		});

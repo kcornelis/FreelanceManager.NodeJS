@@ -254,6 +254,73 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 	});
 
+	/**
+	 * Get all time registrations by date
+	 */
+	describe('When all time registrations are requested by date by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/timeregistrations/bydate/20141010')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When all time registrations are requested by date', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001230, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1359);
+			
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+					timeregistration3.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/bydate/20001231')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return time registrations from the provided date', function() {
+			_.where(body, { id: timeregistration1.id }).should.exist;
+		});
+
+		it('should not return a time registration from another date', function() {
+			_.where(body, { id: timeregistration2.id }).should.not.exist;
+		});
+
+		it('should not return time registrations from another tenant', function() {
+			_.where(body, { id: timeregistration3.id }).should.not.exist;
+		});
+	});
 
 	/**
 	 * Create
