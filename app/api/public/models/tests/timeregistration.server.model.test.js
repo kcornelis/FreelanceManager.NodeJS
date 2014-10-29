@@ -113,6 +113,27 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 	});
 
+	describe('When an timeRegistration is created with 00:00 time', function() {
+
+		var original;
+
+		before(function(done) {
+			original = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20141020, 0, 0);
+			done();
+		});
+
+		it('should be able to save without problems', function(done) {
+			original.save(function(err) {
+				should.not.exist(err);
+				done();
+			});
+		});
+
+		after(function(done) {
+			TimeRegistration.remove(done);
+		});
+	});
+
 	describe('When a timeRegistration is created with no tenant', function() {
 
 		it('should fail', function(done) {

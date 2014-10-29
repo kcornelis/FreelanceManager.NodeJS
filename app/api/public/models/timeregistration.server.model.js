@@ -90,8 +90,7 @@ function createDateObject(date){
 
 function createTimeObject(time){
 
-	if(!time)
-		return;
+	time = time || 0;
 
 	var hour = Math.floor(time / 100);
 	var minutes = Math.floor(time - (hour * 100));
