@@ -11,6 +11,9 @@
     "angular-bootstrap": "~0.11.2",
     "angular-ui-utils": "~0.1.1",
     "angular-ui-router": "~0.2.10",
-    "components-font-awesome": "~4.1.0"
+    "components-font-awesome": "~4.1.0",
+    "clockpicker": "~0.0.7",
+    "angular-jwt": "~0.0.4",
+    "moment": "~2.8.3"
   }
 }

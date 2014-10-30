@@ -15,6 +15,7 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
+				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/components-font-awesome/css/font-awesome.css'
 			],
 			js: [
@@ -26,7 +27,10 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/bootstrap/dist/js/bootstrap.js',
-				'public/lib/lodash/dist/lodash.js'
+				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
+				'public/lib/lodash/dist/lodash.js',
+				'public/lib/angular-jwt/dist/angular-jwt.js',
+				'public/lib/moment/moment.js'
 			]
 		},
 		css: [
