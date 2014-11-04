@@ -29,6 +29,29 @@
 			});	
 		});
 
+		describe('Get active', function(){
+			var Project,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Project_, _$httpBackend_){
+				Project = _Project_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/projects/active')
+					.respond(200, [{ name: 'project1'}, { name: 'project2'}]);
+
+				response = Project.active();
+				$httpBackend.flush();
+
+			}));
+
+			it('should return all active projects', function(){
+				expect(response[0].name).toBe('project1');
+				expect(response[1].name).toBe('project2');
+			});	
+		});		
+
 		describe('Get by id', function(){
 			var Project,
 				$httpBackend,
