@@ -1,0 +1,27 @@
+.fm-welcome-title{
+    margin-bottom: 30px;
+}
+
+.fm-tile{
+    position: relative; width: 100%; height: 0; padding-bottom: 100%; display:block;
+}
+
+.fm-tile.time{
+    background: url('./images/Clock.png') no-repeat #fff;
+    background-size: cover;
+}
+
+.fm-tile.task{
+    background: url('./images/Tasks.png') no-repeat #fff;
+    background-size: cover;
+}
+
+.fm-tile.contacts{
+    background: url('./images/Contacts.png') no-repeat #fff;
+    background-size: cover;
+}
+
+.fm-tile.config{
+    background: url('./images/Configure.png') no-repeat #fff;
+    background-size: cover;
+}

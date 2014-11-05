@@ -1,4 +1,4 @@
-<div class="navbar navbar-default navbar-static-top" role="navigation">
+<div data-ng-controller="HeaderController" class="navbar navbar-default navbar-static-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -10,7 +10,7 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="/#!/time">Time</a></li>
+				<li><a href="/#!/time/{{ date | date: 'yyyyMMdd' }}">Time</a></li>
 				<li><a href="/#!/projects">Projects</a></li>
 				<li><a href="/#!/companies">CRM</a></li>
 				<li><a href="/#!/">Invoices</a></li>

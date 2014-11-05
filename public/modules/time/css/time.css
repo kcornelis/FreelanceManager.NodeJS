@@ -3,6 +3,6 @@
 }
 
 .fm-timeregistrations.list-group {
-	margin-top: 10px;
-	margin-bottom: 15px;
+	cursor: pointer;
+	color: #666;
 }
