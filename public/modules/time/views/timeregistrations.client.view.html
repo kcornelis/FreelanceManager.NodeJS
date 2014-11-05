@@ -3,7 +3,8 @@
 	<div class="fm-page-actions pull-right">
 
 		<button type="button" class="btn btn-default btn-xs" data-ng-click="previousDate()"><span class="glyphicon glyphicon-chevron-left"></span></button>
-		<input type="text" class="form-control date-selector" data-ng-model="date" style="width: 100px;" />
+		<input type="text" class="form-control date-selector" style="width: 100px;" data-ng-model="displayDate" 
+			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeDate(date, 'YYYY-MM-DD')" />
 		<button type="button" class="btn btn-default btn-xs" data-ng-click="nextDate()"><span class="glyphicon glyphicon-chevron-right"></span></button>
 
 		<div class="btn-group">

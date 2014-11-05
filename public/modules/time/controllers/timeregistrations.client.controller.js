@@ -4,6 +4,7 @@ angular.module('time').controller('TimeRegistrationsController',
 function($scope, $modal, $location, $stateParams, TimeRegistration) {
 
 	$scope.date = new moment($stateParams.date, 'YYYYMMDD');
+	$scope.displayDate = $scope.date.format('YYYY-MM-DD');
 	$scope.hasTimeRegistrations = false;
 
 	$scope.nextDate = function(){
@@ -14,11 +15,22 @@ function($scope, $modal, $location, $stateParams, TimeRegistration) {
 		$location.path('/time/' + $scope.date.subtract('days', 1).format('YYYYMMDD'));
 	};
 
+	$scope.changeDate = function(date, format){
+		$location.path('/time/' + new moment(date, format).format('YYYYMMDD'));
+	};
+
 	$scope.refresh = function() {
 		$scope.timeRegistrations = TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function(){
 			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
 		});
 	};
+
+	$scope.openDateSelector = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		$scope.dateSelectorOpen = true;
+  	};
 
 	$scope.openTimeRegistration = function(timeRegistration){
 

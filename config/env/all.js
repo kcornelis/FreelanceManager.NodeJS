@@ -16,7 +16,8 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
-				'public/lib/components-font-awesome/css/font-awesome.css'
+				'public/lib/components-font-awesome/css/font-awesome.css',
+				'public/lib/bootstrap-datepicker/css/datepicker3.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -30,7 +31,8 @@ module.exports = {
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
 				'public/lib/lodash/dist/lodash.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
-				'public/lib/moment/moment.js'
+				'public/lib/moment/moment.js',
+				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js'
 			]
 		},
 		css: [

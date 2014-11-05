@@ -126,6 +126,18 @@
 			});
 		});
 
+		describe('$scope.changeDate', function(){
+
+			beforeEach(function(){
+				scope.changeDate('2010-12-01', 'YYYY-MM-DD');
+			});
+
+			it('should select the given date', function(){
+
+				expect($location.path()).toBe('/time/20101201');
+			});
+		});		
+
 		describe('$scope.previousDate', function(){
 
 			beforeEach(function(){
