@@ -8,7 +8,6 @@
 			<div class="form-group" ng-class="{ 'has-error' : companyForm.name.$invalid && !companyForm.name.$pristine }">
 				<label>Name</label>
 				<input type="text" name="name" class="form-control" placeholder="Name" data-ng-model="company.name" required autofocus>
-				<p ng-show="companyForm.name.$invalid && !companyForm.name.$pristine" class="help-block">The name of the company is required</p>
 			</div>
 		</div>
 		<div class="modal-footer">
