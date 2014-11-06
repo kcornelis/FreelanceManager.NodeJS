@@ -7,7 +7,7 @@
 		<div class="modal-body">
 			<div class="form-group" ng-class="{ 'has-error' : projectForm.companyId.$invalid && !projectForm.companyId.$pristine }">
 				<label>Company</label>
-				<select class="form-control" ng-model="project.companyId">
+				<select class="form-control" ng-model="project.companyId" data-ng-disabled="!newProject">
 					<option ng-repeat="company in companies" value="{{ company.id }}">{{ company.name }}</option>
 				</select>
 			</div>
