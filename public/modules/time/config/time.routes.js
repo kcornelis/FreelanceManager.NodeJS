@@ -8,12 +8,17 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 		$stateProvider
 		.state('time', {
 			templateUrl: 'modules/time/views/timeregistration.html',
-            access: { requiredLogin: true }
+			access: { requiredLogin: true }
 		})
-		.state('time.timeregistrations', {
+		.state('time.overview', {
+			url: '/time/overview',
+			templateUrl: 'modules/time/views/overview.html',
+			access: { requiredLogin: true }
+		})
+		.state('time.registrations', {
 			url: '/time/:date',
-			templateUrl: 'modules/time/views/timeregistrations.html',
-            access: { requiredLogin: true }
+			templateUrl: 'modules/time/views/registrations.html',
+			access: { requiredLogin: true }
 		});
 	}
 ]);

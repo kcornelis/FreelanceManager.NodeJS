@@ -1,10 +1,10 @@
 'use strict';
 
 (function() {
-	describe('TimeRegistrationsController Unit Tests:', function() {
+	describe('RegistrationsController Unit Tests:', function() {
 
 		var scope, 
-			TimeRegistrationsController,
+			RegistrationsController,
 			$httpBackend,
 			$modal,
 			$stateParams,
@@ -23,7 +23,7 @@
 
 			$stateParams.date = '20100120';
 
-			TimeRegistrationsController = $controller('TimeRegistrationsController', {
+			RegistrationsController = $controller('RegistrationsController', {
 				$scope: scope
 			});
 		}));

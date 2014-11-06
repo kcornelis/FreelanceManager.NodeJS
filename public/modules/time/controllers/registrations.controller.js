@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('time').controller('TimeRegistrationsController',
+angular.module('time').controller('RegistrationsController',
 function($scope, $modal, $location, $stateParams, TimeRegistration) {
 
 	$scope.date = new moment($stateParams.date, 'YYYYMMDD');
