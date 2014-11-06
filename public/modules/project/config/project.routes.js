@@ -6,12 +6,12 @@ angular.module('project').config(['$stateProvider',
 		// project state routing
 		$stateProvider
 		.state('project', {
-			templateUrl: 'modules/project/views/project.client.view.html',
+			templateUrl: 'modules/project/views/project.html',
             access: { requiredLogin: true }
 		})
 		.state('project.projects', {
 			url: '/projects',
-			templateUrl: 'modules/project/views/projects.client.view.html',
+			templateUrl: 'modules/project/views/projects.html',
             access: { requiredLogin: true }
 		});
 	}

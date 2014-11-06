@@ -34,10 +34,10 @@ module.exports = function() {
 	/**
 	 * Add our server node extensions
 	 */
-	require.extensions['.server.controller.js'] = require.extensions['.js'];
-	require.extensions['.server.model.js'] = require.extensions['.js'];
-	require.extensions['.server.routes.js'] = require.extensions['.js'];
-	require.extensions['.server.js'] = require.extensions['.js'];
+	require.extensions['.controller.js'] = require.extensions['.js'];
+	require.extensions['.model.js'] = require.extensions['.js'];
+	require.extensions['.routes.js'] = require.extensions['.js'];
+	require.extensions['.js'] = require.extensions['.js'];
 
 	
 };

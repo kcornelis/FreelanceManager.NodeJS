@@ -35,7 +35,7 @@ function($scope, $modal, $location, $stateParams, TimeRegistration) {
 	$scope.openTimeRegistration = function(timeRegistration){
 
 		var createDialog = $modal.open({
-			templateUrl: '/modules/time/views/timeregistrationdialog.client.view.html',
+			templateUrl: '/modules/time/views/timeregistrationdialog.html',
 			controller: 'TimeRegistrationDialogController',
 			size: 'lg',
 			resolve: {

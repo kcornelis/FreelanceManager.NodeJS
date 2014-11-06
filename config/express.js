@@ -64,10 +64,10 @@ module.exports = function(db) {
 	app.set('showStackError', true);
 
 	// Set swig as the template engine
-	app.engine('server.view.html', consolidate[config.templateEngine]);
+	app.engine('.html', consolidate[config.templateEngine]);
 
 	// Set views path and view engine
-	app.set('view engine', 'server.view.html');
+	app.set('view engine', '.html');
 	app.set('views', './app/default/views');
 
 	// Environment dependent middleware

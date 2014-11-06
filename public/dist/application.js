@@ -88,7 +88,7 @@ angular.module('account').config([
   function ($stateProvider) {
     $stateProvider.state('login', {
       url: '/login',
-      templateUrl: 'modules/account/views/login.client.view.html'
+      templateUrl: 'modules/account/views/login.html'
     });
   }
 ]);angular.module('account').controller('AuthenticateController', [
@@ -125,7 +125,7 @@ angular.module('core').config([
     // Home state routing
     $stateProvider.state('home', {
       url: '/',
-      templateUrl: 'modules/core/views/home.client.view.html',
+      templateUrl: 'modules/core/views/home.html',
       access: { requiredLogin: true }
     });
   }
@@ -334,11 +334,11 @@ angular.module('crm').config([
   function ($stateProvider) {
     // crm state routing
     $stateProvider.state('crm', {
-      templateUrl: 'modules/crm/views/crm.client.view.html',
+      templateUrl: 'modules/crm/views/crm.html',
       access: { requiredLogin: true }
     }).state('crm.companies', {
       url: '/companies',
-      templateUrl: 'modules/crm/views/companies.client.view.html',
+      templateUrl: 'modules/crm/views/companies.html',
       access: { requiredLogin: true }
     });
   }
@@ -353,7 +353,7 @@ angular.module('crm').controller('CompaniesController', [
     };
     $scope.openCompany = function (company) {
       var createDialog = $modal.open({
-          templateUrl: '/modules/crm/views/companydialog.client.view.html',
+          templateUrl: '/modules/crm/views/companydialog.html',
           controller: 'CompanyDialogController',
           resolve: {
             toUpdate: function () {
@@ -411,11 +411,11 @@ angular.module('project').config([
   function ($stateProvider) {
     // project state routing
     $stateProvider.state('project', {
-      templateUrl: 'modules/project/views/project.client.view.html',
+      templateUrl: 'modules/project/views/project.html',
       access: { requiredLogin: true }
     }).state('project.projects', {
       url: '/projects',
-      templateUrl: 'modules/project/views/projects.client.view.html',
+      templateUrl: 'modules/project/views/projects.html',
       access: { requiredLogin: true }
     });
   }
@@ -470,7 +470,7 @@ angular.module('project').controller('ProjectsController', [
     };
     $scope.openProject = function (project) {
       var createDialog = $modal.open({
-          templateUrl: '/modules/project/views/projectdialog.client.view.html',
+          templateUrl: '/modules/project/views/projectdialog.html',
           controller: 'ProjectDialogController',
           resolve: {
             toUpdate: function () {
@@ -495,11 +495,11 @@ angular.module('time').config([
   function ($stateProvider, $urlRouterProvider) {
     // time registration state routing
     $stateProvider.state('time', {
-      templateUrl: 'modules/time/views/timeregistration.client.view.html',
+      templateUrl: 'modules/time/views/timeregistration.html',
       access: { requiredLogin: true }
     }).state('time.timeregistrations', {
       url: '/time/:date',
-      templateUrl: 'modules/time/views/timeregistrations.client.view.html',
+      templateUrl: 'modules/time/views/timeregistrations.html',
       access: { requiredLogin: true }
     });
   }
@@ -600,7 +600,7 @@ angular.module('time').controller('TimeRegistrationsController', [
     };
     $scope.openTimeRegistration = function (timeRegistration) {
       var createDialog = $modal.open({
-          templateUrl: '/modules/time/views/timeregistrationdialog.client.view.html',
+          templateUrl: '/modules/time/views/timeregistrationdialog.html',
           controller: 'TimeRegistrationDialogController',
           size: 'lg',
           resolve: {

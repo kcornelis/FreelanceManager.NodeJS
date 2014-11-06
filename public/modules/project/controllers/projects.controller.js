@@ -10,7 +10,7 @@ function($scope, $modal, Project) {
 	$scope.openProject = function(project){
 
 		var createDialog = $modal.open({
-			templateUrl: '/modules/project/views/projectdialog.client.view.html',
+			templateUrl: '/modules/project/views/projectdialog.html',
 			controller: 'ProjectDialogController',
 			resolve: {
 				toUpdate: function () {

@@ -118,6 +118,7 @@ input[type="checkbox"].input-validation-error {
 .panel { border-radius: 0; }
 .well { border-radius: 0; }
 .nav-tabs > li > a { border-radius: 0; }
+.input-group-addon { border-radius: 0px; }
 
 /*
 *

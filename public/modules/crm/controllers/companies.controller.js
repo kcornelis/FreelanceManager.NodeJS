@@ -10,7 +10,7 @@ function($scope, $modal, Company) {
 	$scope.openCompany = function(company){
 
 		var createDialog = $modal.open({
-			templateUrl: '/modules/crm/views/companydialog.client.view.html',
+			templateUrl: '/modules/crm/views/companydialog.html',
 			controller: 'CompanyDialogController',
 			resolve: {
 				toUpdate: function () {

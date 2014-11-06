@@ -5,7 +5,7 @@ angular.module('account').config(['$stateProvider',
 		$stateProvider.
 		state('login', {
 			url: '/login',
-			templateUrl: 'modules/account/views/login.client.view.html'
+			templateUrl: 'modules/account/views/login.html'
 		});
 	}
 ]);
