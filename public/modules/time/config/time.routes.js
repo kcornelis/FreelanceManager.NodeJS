@@ -16,8 +16,12 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			access: { requiredLogin: true }
 		})
 		.state('time.registrations', {
-			url: '/time/:date',
 			templateUrl: 'modules/time/views/registrations.html',
+			access: { requiredLogin: true }
+		})
+		.state('time.registrations.list', {
+			url: '/time/:date',
+			templateUrl: 'modules/time/views/registrations.list.html',
 			access: { requiredLogin: true }
 		});
 	}

@@ -19,12 +19,8 @@ angular.module('core').directive('fmDatepicker', function ($timeout) {
 				}); 
 			};
 
-			var shouldupdateModel = true;
-
 			ngModel.$render = function() {
-				shouldupdateModel = false;
 				element.datepicker('setDate', ngModel.$viewValue || '');
-				shouldupdateModel = true;
 			};
 
 			element.datepicker({
@@ -34,18 +30,15 @@ angular.module('core').directive('fmDatepicker', function ($timeout) {
 
 				var dateTxt = date.format(attrs.fmDatepickerFormat || 'yyyy-mm-dd');
 				
-				if(shouldupdateModel){
-
-					element.datepicker('remove');
-
+				if(scope.$root && !scope.$root.$$phase){
+					
 					updateModel(dateTxt);
-				
+	
 					if (scope.fmDatepickerDatechanged) {
 						
 						scope.$apply(function() { 
 							scope.fmDatepickerDatechanged({date: dateTxt});
 						}); 
-					
 					}
 				}
 			});

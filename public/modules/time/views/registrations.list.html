@@ -1,0 +1,34 @@
+<div data-ng-controller="RegistrationsListController" data-ng-init="refresh()">
+
+	<h1 class="text-center">{{ date | moment: 'DD MMMM YYYY' }}</h1>
+
+	<div class="panel panel-default panel-margin" data-ng-hide="hasTimeRegistrations">
+		<div class="panel-body text-center">
+			No items
+		</div>
+	</div>
+
+	<div class="fm-timeregistrations list-group">
+		<div class="list-group-item" data-ng-click="openTimeRegistration(timeRegistration)"
+								     data-ng-repeat="timeRegistration in timeRegistrations">
+			<div class="row">
+				<div class="col-xs-2">
+					<strong>{{ timeRegistration.from.hour | formattime }}:{{ timeRegistration.from.minutes | formattime }}</strong><br />
+					<strong>{{ timeRegistration.to.hour | formattime }}:{{ timeRegistration.to.minutes | formattime }}</strong>
+				</div>
+				<div class="col-xs-8">
+					<strong class="hideOverflow">{{ timeRegistration.company.name }} - {{ timeRegistration.project.name }}</strong>
+					<span class="hideOverflow">{{ timeRegistration.task }} - {{ timeRegistration.description }}</span>
+				</div>
+				<div class="col-xs-2">
+					<span data-bind="moment: timespan, pattern: 'HH:mm'">&nbsp;</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<button id="add-timeregistration" type="button" class="btn btn-primary pull-right" data-ng-click="openTimeRegistration()">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+
+</div>
