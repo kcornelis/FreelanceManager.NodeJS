@@ -125,9 +125,27 @@ exports.getForDate = function(req, res) {
 
 	TimeRegistration.find(
 	{ 
-		tenant: req.user.id ,
+		tenant: req.user.id,
 		deleted: false,
 		'date.numeric': req.params.date
+	},
+	function(err, timeRegistrations) 
+	{
+		if(err){ next(err); }
+
+		convertMultiple(timeRegistrations, function(converted){
+			res.send(converted);
+		});
+	});
+}
+
+exports.getForRange= function(req, res) {
+
+	TimeRegistration.find(
+	{ 
+		tenant: req.user.id,
+		deleted: false,
+		'date.numeric': { $gte: req.params.from, $lt: req.params.to }
 	},
 	function(err, timeRegistrations) 
 	{

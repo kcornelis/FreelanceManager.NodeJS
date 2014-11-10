@@ -13,6 +13,7 @@ module.exports = function(app) {
 
 	app.route('/api/public/timeregistrations').get(timeRegistration.getAll);
 	app.route('/api/public/timeregistrations/bydate/:date').get(timeRegistration.getForDate);
+	app.route('/api/public/timeregistrations/byrange/:from/:to').get(timeRegistration.getForRange);
 	app.route('/api/public/timeregistrations/:timeRegistrationId').get(timeRegistration.getById);
 
 	app.route('/api/public/timeregistrations').post(timeRegistration.create);
