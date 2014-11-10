@@ -24,7 +24,9 @@ angular.module('account', ['angular-jwt'])
 .run(function($rootScope, $location, $window, jwtHelper) {
 		$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
 				var loggedIn = $window.sessionStorage.token && !jwtHelper.isTokenExpired($window.sessionStorage.token);
-				if (nextRoute.access.requiredLogin && !loggedIn) {
+				if (nextRoute.access && 
+					nextRoute.access.requiredLogin && 
+					!loggedIn) {
 						$location.path("/login");
 				}
 		});
