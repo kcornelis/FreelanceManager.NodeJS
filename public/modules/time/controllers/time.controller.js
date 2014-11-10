@@ -6,5 +6,5 @@ function($scope, $location, $stateParams) {
 
 	$scope.defaultDate = new moment();
 	$scope.defaultFrom = new moment().subtract(1, 'month');
-	$scope.defaultTo = new moment();
+	$scope.defaultTo = new moment().add(1, 'day');
 });

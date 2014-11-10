@@ -5,6 +5,15 @@ function($scope, $location, $stateParams) {
 
 	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
 	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
+
+	$scope.thisWeek = new moment().day(1).format('YYYYMMDD') + '/' + new moment().day(7).format('YYYYMMDD');
+	$scope.lastWeek = new moment().day(1).subtract('days', 7).format('YYYYMMDD') + '/' + new moment().day(7).subtract('days', 7).format('YYYYMMDD');
+
+	$scope.thisMonth = new moment().set('date', 1).format('YYYYMMDD') + '/' + new moment().set('date', new moment().daysInMonth()).format('YYYYMMDD');
+	$scope.lastMonth = new moment().set('date', 1).subtract('months', 1).format('YYYYMMDD') + '/' + new moment().set('date', new moment().set('date', 1).subtract('months', 1).daysInMonth()).format('YYYYMMDD');
+
+	$scope.thisYear = new moment().set('month', 0).set('date', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).format('YYYYMMDD');
+	$scope.lastYear = new moment().set('month', 0).set('date', 1).subtract('years', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).subtract('years', 1).format('YYYYMMDD');
 	
 	$scope.$watch('from', function(){
 		$scope.displayFrom = $scope.from.format('YYYY-MM-DD');

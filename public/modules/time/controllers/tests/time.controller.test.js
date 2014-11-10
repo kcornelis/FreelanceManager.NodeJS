@@ -27,7 +27,7 @@
 			});
 
 			it('should have a default to', function(){
-				expect(scope.defaultTo.format('YYYY-MM-DD')).toBe(new moment().format('YYYY-MM-DD'));
+				expect(scope.defaultTo.format('YYYY-MM-DD')).toBe(new moment().add(1, 'day').format('YYYY-MM-DD'));
 			});					
 		});
 	});

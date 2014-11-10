@@ -11,7 +11,7 @@
 	<div class="fm-list timeregistration">
 		<div class="panel panel-default" data-ng-repeat="timeRegistration in timeRegistrations">
 			<!-- Default panel contents -->
-			<div class="panel-heading">{{ timeRegistration.date.numeric }}</div>
+			<div class="panel-heading">{{ timeRegistration.date | formatdate }}</div>
 
 			<!-- List group -->
 			<ul class="list-group">
@@ -23,11 +23,11 @@
 						</div>
 						<div class="col-xs-2 pull-right">
 							<div class="pull-right">
-								<span class="hideOverflow">{{ item.from.numeric }} - {{ item.to.numeric }}</span>
+								<span class="hideOverflow">{{ item.from | formattime }} - {{ item.to | formattime }}</span>
 							</div>
 							<div class="clearfix"></div>
 							<div class="pull-right">
-								<strong>{{ item.totalMinutes }}</strong>
+								<strong>{{ item.totalMinutes | formattime }}</strong>
 							</div>
 						</div>
 					</div>

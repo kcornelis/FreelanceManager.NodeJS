@@ -13,8 +13,8 @@
 								     data-ng-repeat="timeRegistration in timeRegistrations">
 			<div class="row">
 				<div class="col-xs-2">
-					<strong>{{ timeRegistration.from.hour | formattime }}:{{ timeRegistration.from.minutes | formattime }}</strong><br />
-					<strong>{{ timeRegistration.to.hour | formattime }}:{{ timeRegistration.to.minutes | formattime }}</strong>
+					<strong>{{ timeRegistration.from | formattime }}</strong><br />
+					<strong>{{ timeRegistration.to | formattime }}</strong>
 				</div>
 				<div class="col-xs-8">
 					<strong class="hideOverflow">{{ timeRegistration.company.name }} - {{ timeRegistration.project.name }}</strong>
