@@ -10,24 +10,17 @@ function($scope, $location, $stateParams) {
 	});
 
 	$scope.nextDate = function(){
-		$scope.date = new moment($scope.date.add('days', 1));
-		$location.path('/time/' + $scope.date.format('YYYYMMDD'));
+		$scope.date = new moment($scope.date.add(1, 'days'));
+		$location.path('/time/registrations/' + $scope.date.format('YYYYMMDD')).replace();
 	};
 
 	$scope.previousDate = function(){
-		$scope.date = new moment($scope.date.subtract('days', 1));
-		$location.path('/time/' + $scope.date.format('YYYYMMDD'));
+		$scope.date = new moment($scope.date.subtract(1, 'days'));
+		$location.path('/time/registrations/' + $scope.date.format('YYYYMMDD')).replace();
 	};
 
 	$scope.changeDate = function(date, format){
 		$scope.date = new moment(date, format);
-		$location.path('/time/' + $scope.date.format('YYYYMMDD'));
+		$location.path('/time/registrations/' + $scope.date.format('YYYYMMDD')).replace();
 	};
-
-	$scope.openDateSelector = function($event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-
-		$scope.dateSelectorOpen = true;
-  	};
 });

@@ -7,8 +7,12 @@ function($scope, $modal, $location, $stateParams, TimeRegistration) {
 	$scope.hasTimeRegistrations = false;
 
 	$scope.refresh = function() {
-		$scope.timeRegistrations = TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function(){
-			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+		TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function(timeRegistrations){
+			$scope.hasTimeRegistrations = timeRegistrations.length > 0;
+			$scope.timeRegistrations = _.sortBy(timeRegistrations,
+				function(i){
+					return i.from.numeric;
+				});
 		});
 	};
 

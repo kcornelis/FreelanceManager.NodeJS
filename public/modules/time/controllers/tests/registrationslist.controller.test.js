@@ -40,8 +40,8 @@
 			beforeEach(function(){
 
 				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20100120').respond([
-					{ description: 'description 1'}, 
-					{ description: 'description 2'}]);
+					{ from: { numeric: 2010 }, description: 'description 2'},
+					{ from: { numeric: 2009 }, description: 'description 1'}]);
 
 				scope.refresh();
 				$httpBackend.flush();
@@ -64,8 +64,8 @@
 				sinon.stub($modal, 'open', function() { return dialog; });
 
 				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20100120').respond([
-					{ id: 1, description: 'description 1'}, 
-					{ id: 2, description: 'description 2'}]);
+					{ id: 1, from: { numeric: 2010 }, description: 'description 1'}, 
+					{ id: 2, from: { numeric: 2011 }, description: 'description 2'}]);
 
 				scope.refresh();
 				$httpBackend.flush();

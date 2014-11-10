@@ -1,0 +1,32 @@
+<section data-ng-controller="OverviewController">
+
+	<div class="fm-page-actions pull-right">
+
+		<input type="text" class="form-control date-selector" style="width: 100px;" data-ng-model="displayFrom" 
+			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeFrom(date, 'YYYY-MM-DD')" />
+		<input type="text" class="form-control date-selector" style="width: 100px;" data-ng-model="displayTo" 
+			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeTo(date, 'YYYY-MM-DD')" />
+		<button type="button" class="btn btn-default btn-xs" data-ng-click="applyDate()"><span class="glyphicon glyphicon-search"></span></button>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+				<span class="glyphicon glyphicon-cog"></span>
+			</button>
+			<ul class="dropdown-menu dropdown-menu-right" role="menu">
+				<li><a href="#" class="change-period" data-period="current" data-periodtype="week">This Week</a></li>
+				<li><a href="#" class="change-period" data-period="previous" data-periodtype="week">Last Week</a></li>
+				<li><a href="#" class="change-period" data-period="current" data-periodtype="month">This Month</a></li>
+				<li><a href="#" class="change-period" data-period="previous" data-periodtype="month">Last Month</a></li>
+				<li><a href="#" class="change-period" data-period="current" data-periodtype="year">This Year</a></li>
+				<li><a href="#" class="change-period" data-period="previous" data-periodtype="year">Last Year</a></li>
+				<li><hr /></li>
+				<li><a href="#" class="export-link">Export</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	<div ui-view></div>	
+
+</section>

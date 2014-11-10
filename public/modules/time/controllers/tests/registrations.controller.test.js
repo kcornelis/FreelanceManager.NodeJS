@@ -40,7 +40,7 @@
 			});
 
 			it('should select the next date', function(){
-				expect($location.path()).toBe('/time/20100121');
+				expect($location.path()).toBe('/time/registrations/20100121');
 			});
 
 			it('should have a new display date', function(){
@@ -56,7 +56,7 @@
 			});
 
 			it('should select the given date', function(){
-				expect($location.path()).toBe('/time/20101201');
+				expect($location.path()).toBe('/time/registrations/20101201');
 			});
 
 			it('should have a new display date', function(){
@@ -72,7 +72,7 @@
 			});
 
 			it('should select the previous date', function(){
-				expect($location.path()).toBe('/time/20100119');
+				expect($location.path()).toBe('/time/registrations/20100119');
 			});
 
 			it('should have a new display date', function(){
