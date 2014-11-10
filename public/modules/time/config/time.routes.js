@@ -8,7 +8,7 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 		$stateProvider
 		
 		.state('time', {
-			templateUrl: 'modules/time/views/timeregistration.html',
+			templateUrl: 'modules/time/views/time.html',
 			access: { requiredLogin: true }
 		})
 

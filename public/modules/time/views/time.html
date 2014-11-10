@@ -1,0 +1,15 @@
+<div id="wrap">
+	<header data-ng-include="'/modules/core/views/header.html'">
+	</header>
+	<div class="container">
+		<ul class="nav nav-tabs" data-ng-controller="TimeController">
+			<li class="active"><a href="/#!/time/registrations/{{ defaultDate | moment: 'YYYYMMDD' }}">Registrations</a></li>
+			<li><a href="/#!/time/overview/{{ defaultFrom | moment: 'YYYYMMDD' }}/{{ defaultTo | moment: 'YYYYMMDD' }}">Overview</a></li>
+			<li><a href="#">Report</a></li>
+		</ul>
+		<div ui-view></div>
+	</div>
+</div>	
+
+<footer data-ng-include="'/modules/core/views/footer.html'">
+</footer>
