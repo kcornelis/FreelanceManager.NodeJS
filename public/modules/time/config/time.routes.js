@@ -13,22 +13,20 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 		})
 
 		.state('time.overview', {
-			templateUrl: 'modules/time/views/overview.html',
-			access: { requiredLogin: true }
-		})
-		.state('time.overview.list', {
 			url: '/time/overview/:from/:to',
-			templateUrl: 'modules/time/views/overview.list.html',
+			templateUrl: 'modules/time/views/overview.html',
 			access: { requiredLogin: true }
 		})
 
 		.state('time.registrations', {
+			url: '/time/registrations/:date',
 			templateUrl: 'modules/time/views/registrations.html',
 			access: { requiredLogin: true }
 		})
-		.state('time.registrations.list', {
-			url: '/time/registrations/:date',
-			templateUrl: 'modules/time/views/registrations.list.html',
+
+		.state('time.report', {
+			url: '/time/report/:from/:to',
+			templateUrl: 'modules/time/views/report.html',
 			access: { requiredLogin: true }
 		});
 	}

@@ -1,0 +1,76 @@
+<section data-ng-controller="ReportController" data-ng-init="refresh()">
+
+	<div class="page-actions pull-right">
+		<button type="button" class="btn btn-default btn-xs" data-bind="click: previousDate"><span class="glyphicon glyphicon-chevron-left"></span></button>
+		<button type="button" class="btn btn-default btn-xs" data-bind="click: nextDate"><span class="glyphicon glyphicon-chevron-right"></span></button>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+				<span class="glyphicon glyphicon-cog"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li><a class="change-period" data-periodtype="week" href="#">Week</a></li>
+				<li><a class="change-period" data-periodtype="month" href="#">Month</a></li>
+				<li><a class="change-period" data-periodtype="year" href="#">Year</a></li>
+				<li><hr /></li>
+				<li><a href="/timeregistration/export">Export</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	<h1 class="text-center" data-bind="text: title"></h1>
+
+	<div class="panel panel-default panel-margin" data-bind="visible: hasNoHours">
+		<div class="panel-body text-center">
+			No hours registered for this period
+		</div>
+	</div>
+
+	<div class="row" style="height: 200px; display:none;" data-bind="visible: !hasNoHours()">
+		<div class="col-xs-12 col-sm-4">
+			<div id="chartContainer" style="width: 100%;height: 200px;" data-bind="dxPieChart: { dataSource: billableUnbillable,
+					series: { argumentField: 'type', valueField: 'value' ,
+						 connector: { visible: true } },
+					tooltip: { enabled: true },
+					legend: {  horizontalAlignment: 'center' , verticalAlignment: 'bottom' } }"></div>
+		</div>
+		<div class="clearfix visible-xs"></div>
+		<div class="col-xs-6 col-sm-4">
+			<h3>Time</h3>
+			<strong>Unbillable:</strong> <span data-bind="text: unbillableHours">&nbsp;</span> Hour(s)<br />
+			<strong>Billable:</strong> <span data-bind="text: billableHours">&nbsp;</span> Hour(s)
+		</div>
+		<div class="col-xs-6 col-sm-4">
+			<h3>Billable</h3>
+			<strong class="text-info"><span class="text-info" data-bind="text: income">&nbsp;</span> €</strong>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	<div data-bind="foreach: infoPerTask">
+		<div class="panel panel-default">
+			<div class="panel-heading"><span data-bind="text: client"></span> - <span data-bind="text: project"></span></div>
+			<div class="panel-body" data-bind="foreach: tasks">
+				<div class="row">
+					<div class="col-xs-12 col-sm-3 text-center visible-xs">
+						<p data-bind="text: task"></p>
+					</div>
+					<div class="col-xs-12 col-sm-3 hidden-xs">
+						<span data-bind="text: task"></span>
+					</div>
+					<div class="clearfix visible-xs"></div>
+					<div class="col-xs-6 col-sm-3"><strong>Billable: </strong><span data-bind="text: billableHours"></span> Hour(s)</div>
+					<div class="col-xs-6 col-sm-3"><strong>Unbillable: </strong><span data-bind="text: unbillableHours"></span> Hour(s)</div>
+					<div class="clearfix visible-xs"></div>
+					<div class="col-xs-12 col-sm-3"><strong>Income: </strong> <span data-bind="text: income"></span> €</div>
+				</div>
+				<hr class="visible-xs hide-last" />
+			</div>
+		</div>
+	</div>
+
+</section>
+

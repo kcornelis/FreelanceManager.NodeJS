@@ -1,4 +1,4 @@
-<section data-ng-controller="OverviewController">
+<section data-ng-controller="OverviewController" data-ng-init="refresh()">
 
 	<div class="fm-page-actions pull-right">
 
@@ -27,6 +27,40 @@
 
 	<div class="clearfix"></div>
 
-	<div ui-view></div>	
+	<h1 class="text-center">{{ title }}</h1>
+
+	<div class="panel panel-default panel-margin" data-ng-hide="hasTimeRegistrations">
+		<div class="panel-body text-center">
+			No hours registered for this period
+		</div>
+	</div>
+
+	<div class="fm-list timeregistration">
+		<div class="panel panel-default" data-ng-repeat="timeRegistration in timeRegistrations">
+			<!-- Default panel contents -->
+			<div class="panel-heading">{{ timeRegistration.date | formatdate }}</div>
+
+			<!-- List group -->
+			<ul class="list-group">
+				<li class="list-group-item" data-ng-repeat="item in timeRegistration.items">
+					<div class="row">
+						<div class="col-xs-8">
+							<strong class="hideOverflow">{{ item.company.name }} - {{ item.project.name }}</strong>
+							<span class="hideOverflow">{{ item.task }} - {{ item.description }}</span>
+						</div>
+						<div class="col-xs-2 pull-right">
+							<div class="pull-right">
+								<span class="hideOverflow">{{ item.from | formattime }} - {{ item.to | formattime }}</span>
+							</div>
+							<div class="clearfix"></div>
+							<div class="pull-right">
+								<strong>{{ item.totalMinutes | formattime }}</strong>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>	
 
 </section>

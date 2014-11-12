@@ -10,6 +10,7 @@ angular.module('core').directive('fmDatepicker', function ($timeout) {
 			fmDatepickerDatechanged: '&'
 		},
 		link: function(scope, element, attrs, ngModel, timeout) {
+
 			if (!ngModel) 
 				return; 
 
@@ -24,14 +25,17 @@ angular.module('core').directive('fmDatepicker', function ($timeout) {
 			};
 
 			element.datepicker({
-				format: attrs.fmDatepickerFormat || 'yyyy-mm-dd'
+				format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
+				autoclose: true,
+				orientation: "auto right",
+				todayBtn: 'linked'
 			})
 			.on('changeDate', function(date) { 
 
 				var dateTxt = date.format(attrs.fmDatepickerFormat || 'yyyy-mm-dd');
 				
 				if(scope.$root && !scope.$root.$$phase){
-					
+
 					updateModel(dateTxt);
 	
 					if (scope.fmDatepickerDatechanged) {

@@ -4,7 +4,7 @@
 angular.module('time').controller('TimeController',
 function($scope, $location, $stateParams) {
 
-	$scope.defaultDate = new moment();
-	$scope.defaultFrom = new moment().subtract(1, 'month');
-	$scope.defaultTo = new moment().add(1, 'day');
+	$scope.today = new moment();
+	$scope.firstOfCurrentMonth = new moment().set('date', 1);
+	$scope.lastOfCurrentMonth = new moment().set('date', new moment().daysInMonth());
 });

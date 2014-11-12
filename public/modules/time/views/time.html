@@ -3,9 +3,9 @@
 	</header>
 	<div class="container">
 		<ul class="nav nav-tabs" data-ng-controller="TimeController">
-			<li class="active"><a href="/#!/time/registrations/{{ defaultDate | moment: 'YYYYMMDD' }}">Registrations</a></li>
-			<li><a href="/#!/time/overview/{{ defaultFrom | moment: 'YYYYMMDD' }}/{{ defaultTo | moment: 'YYYYMMDD' }}">Overview</a></li>
-			<li><a href="#">Report</a></li>
+			<li fm-active-menu-item="time.registrations"><a ui-sref="time.registrations({ date: today.format('YYYYMMDD') })">Registrations</a></li>
+			<li fm-active-menu-item="time.overview"><a ui-sref="time.overview({ from: firstOfCurrentMonth.format('YYYYMMDD'), to: lastOfCurrentMonth.format('YYYYMMDD') })">Overview</a></li>
+			<li fm-active-menu-item="time.report"><a ui-sref="time.report({ from: firstOfCurrentMonth.format('YYYYMMDD'), to: lastOfCurrentMonth.format('YYYYMMDD') })">Report</a></li>
 		</ul>
 		<div ui-view></div>
 	</div>

@@ -18,16 +18,16 @@
 		}));
 
 		describe('initial state', function(){
-			it('should have a default date', function(){
-				expect(scope.defaultDate.format('YYYY-MM-DD')).toBe(new moment().format('YYYY-MM-DD'));
+			it('should store today', function(){
+				expect(scope.today.format('YYYY-MM-DD')).toBe(new moment().format('YYYY-MM-DD'));
 			});
 
-			it('should have a default from', function(){
-				expect(scope.defaultFrom.format('YYYY-MM-DD')).toBe(new moment().subtract(1, 'month').format('YYYY-MM-DD'));
+			it('should have the first of the current month', function(){
+				expect(scope.firstOfCurrentMonth.format('YYYY-MM-DD')).toBe(new moment().set('date', 1).format('YYYY-MM-DD'));
 			});
 
-			it('should have a default to', function(){
-				expect(scope.defaultTo.format('YYYY-MM-DD')).toBe(new moment().add(1, 'day').format('YYYY-MM-DD'));
+			it('should have the last of the current month', function(){
+				expect(scope.lastOfCurrentMonth.format('YYYY-MM-DD')).toBe(new moment().set('date', new moment().daysInMonth()).format('YYYY-MM-DD'));
 			});					
 		});
 	});

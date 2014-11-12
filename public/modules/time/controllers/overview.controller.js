@@ -1,7 +1,12 @@
 'use strict';
 
 angular.module('time').controller('OverviewController',
-function($scope, $location, $stateParams) {
+function($scope, $location, $stateParams, TimeRegistration) {
+
+	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
+	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
+
+	$scope.hasTimeRegistrations = false;	
 
 	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
 	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
@@ -10,7 +15,7 @@ function($scope, $location, $stateParams) {
 	$scope.lastWeek = new moment().day(1).subtract('days', 7).format('YYYYMMDD') + '/' + new moment().day(7).subtract('days', 7).format('YYYYMMDD');
 
 	$scope.thisMonth = new moment().set('date', 1).format('YYYYMMDD') + '/' + new moment().set('date', new moment().daysInMonth()).format('YYYYMMDD');
-	$scope.lastMonth = new moment().set('date', 1).subtract('months', 1).format('YYYYMMDD') + '/' + new moment().set('date', new moment().set('date', 1).subtract('months', 1).daysInMonth()).format('YYYYMMDD');
+	$scope.lastMonth = new moment().set('date', 1).subtract('months', 1).format('YYYYMMDD') + '/' + new moment().subtract('months', 1).set('date', new moment().subtract('months', 1).daysInMonth()).format('YYYYMMDD');
 
 	$scope.thisYear = new moment().set('month', 0).set('date', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).format('YYYYMMDD');
 	$scope.lastYear = new moment().set('month', 0).set('date', 1).subtract('years', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).subtract('years', 1).format('YYYYMMDD');
@@ -34,4 +39,23 @@ function($scope, $location, $stateParams) {
 	$scope.applyDate = function(){
 		$location.path('/time/overview/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
 	};
+
+	$scope.refresh = function() {
+
+		TimeRegistration.byrange({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') }, function(tr){
+
+			 var grouped = _.groupBy(tr, function (i) { return i.date.numeric });
+			 $scope.timeRegistrations = _.sortBy(_.map(grouped, function (g) {
+					return {
+						date: _.first(g).date,
+						items: g
+					};
+				}),
+			 function(i){
+			 	return i.date.numeric;
+			 });
+
+			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+		});
+	};	
 });
