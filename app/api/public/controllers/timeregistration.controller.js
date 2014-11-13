@@ -19,7 +19,8 @@ function convert(timeRegistration, company, project) {
 		id: timeRegistration.id,
 		companyId: timeRegistration.companyId,
 		company: {
-			name: company.name
+			name: company.name,
+			billable: true
 		},
 		projectId: timeRegistration.projectId,
 		project: {
@@ -139,13 +140,13 @@ exports.getForDate = function(req, res) {
 	});
 }
 
-exports.getForRange= function(req, res) {
+exports.getForRange = function(req, res) {
 
 	TimeRegistration.find(
 	{ 
 		tenant: req.user.id,
 		deleted: false,
-		'date.numeric': { $gte: req.params.from, $lt: req.params.to }
+		'date.numeric': { $gte: req.params.from, $lte: req.params.to }
 	},
 	function(err, timeRegistrations) 
 	{
@@ -153,6 +154,72 @@ exports.getForRange= function(req, res) {
 
 		convertMultiple(timeRegistrations, function(converted){
 			res.send(converted);
+		});
+	});
+}
+
+exports.getInfo = function(req, res) {
+
+	TimeRegistration.find(
+	{ 
+		tenant: req.user.id,
+		deleted: false,
+		'date.numeric': { $gte: req.params.from, $lte: req.params.to }
+	},
+	function(err, timeRegistrations) 
+	{
+		if(err){ next(err); }
+
+		convertMultiple(timeRegistrations, function(converted){
+
+			var summary =
+			{
+				count: converted.length,
+				billableMinutes: _.reduce(converted, function(sum, current) {  
+					if(current.company.billable)
+						return sum + current.totalMinutes;
+					else return sum;
+				}, 0),
+				unBillableMinutes: _.reduce(converted, function(sum, current) {  
+					if(!current.company.billable)
+						return sum + current.totalMinutes;
+					else return sum;
+				}, 0)
+			};
+
+			var groupedPerTask = _.groupBy(converted, function(i) { 
+				return JSON.stringify({ 
+					c: i.companyId,
+					p: i.projectId,
+					t: i.task
+				});
+			});
+
+			var perTask = _.map(groupedPerTask, function (g) {
+				return {
+					companyId: g[0].companyId,
+					company: g[0].company,
+					projectId: g[0].projectId,
+					project: g[0].project,
+					task: g[0].task,
+					count: g.length,
+					billableMinutes: _.reduce(g, function(sum, current) {  
+						if(current.company.billable)
+							return sum + current.totalMinutes;
+						else return sum;
+					}, 0),
+					unBillableMinutes: _.reduce(g, function(sum, current) {  
+						if(!current.company.billable)
+							return sum + current.totalMinutes;
+						else return sum;
+					}, 0)
+				};
+			});
+
+			res.send({
+				summary: summary,
+				perTask: perTask
+			});
 		});
 	});
 }
