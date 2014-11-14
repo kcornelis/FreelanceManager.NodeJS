@@ -32,7 +32,10 @@ module.exports = {
 				'public/lib/lodash/dist/lodash.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
 				'public/lib/moment/moment.js',
-				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js'
+				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
+				'public/lib/flot/jquery.flot.js',
+				'public/lib/flot/jquery.flot.pie.js',
+				'public/lib/flot/jquery.flot.resize.js'
 			]
 		},
 		css: [

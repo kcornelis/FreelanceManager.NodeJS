@@ -1,0 +1,340 @@
+'use strict';
+
+(function() {
+	describe('ReportController Unit Tests:', function() {
+
+		// Load the main application module
+		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+
+
+		describe('Year tests:', function(){
+
+			var scope, 
+				ReportController,
+				$stateParams;
+			
+			beforeEach(inject(function($controller, $rootScope, _$stateParams_) {
+				scope = $rootScope.$new();
+
+				$stateParams = _$stateParams_;
+
+				$stateParams.from = '20100101';
+				$stateParams.to = '20101231';
+
+				ReportController = $controller('ReportController', {
+					$scope: scope
+				});
+
+				scope.$apply();
+			}));
+
+			describe('initial state', function(){
+
+				it('should have a title', function(){
+					expect(scope.title).toBe('2010');
+				});
+			
+				it('should have a from date', function(){
+					expect(scope.from.format('YYYY-MM-DD')).toBe('2010-01-01');
+				});
+
+				it('should have a to date', function(){
+					expect(scope.to.format('YYYY-MM-DD')).toBe('2010-12-31');
+				});					
+
+				it('should have a previous from date', function(){
+					expect(scope.previousFrom.format('YYYY-MM-DD')).toBe('2009-01-01');
+				});
+
+				it('should have a previous to date', function(){
+					expect(scope.previousTo.format('YYYY-MM-DD')).toBe('2009-12-31');
+				});
+
+				it('should have a next from date', function(){
+					expect(scope.nextFrom.format('YYYY-MM-DD')).toBe('2011-01-01');
+				});
+
+				it('should have a next to date', function(){
+					expect(scope.nextTo.format('YYYY-MM-DD')).toBe('2011-12-31');
+				});				
+			});
+		});
+
+		describe('Month tests:', function(){
+
+			var scope, 
+				ReportController,
+				$stateParams;			
+			
+			beforeEach(inject(function($controller, $rootScope, _$stateParams_) {
+				scope = $rootScope.$new();
+
+				$stateParams = _$stateParams_;
+
+				$stateParams.from = '20100101';
+				$stateParams.to = '20100131';
+
+				ReportController = $controller('ReportController', {
+					$scope: scope
+				});
+
+				scope.$apply();
+			}));
+
+			describe('initial state', function(){
+
+				it('should have a title', function(){
+					expect(scope.title).toBe('January 2010');
+				});
+			
+				it('should have a from date', function(){
+					expect(scope.from.format('YYYY-MM-DD')).toBe('2010-01-01');
+				});
+
+				it('should have a to date', function(){
+					expect(scope.to.format('YYYY-MM-DD')).toBe('2010-01-31');
+				});					
+
+				it('should have a previous from date', function(){
+					expect(scope.previousFrom.format('YYYY-MM-DD')).toBe('2009-12-01');
+				});
+
+				it('should have a previous to date', function(){
+					expect(scope.previousTo.format('YYYY-MM-DD')).toBe('2009-12-31');
+				});
+
+				it('should have a next from date', function(){
+					expect(scope.nextFrom.format('YYYY-MM-DD')).toBe('2010-02-01');
+				});
+
+				it('should have a next to date', function(){
+					expect(scope.nextTo.format('YYYY-MM-DD')).toBe('2010-02-28');
+				});				
+			});
+		});
+
+		describe('Week tests:', function(){
+
+			var scope, 
+				ReportController,
+				$stateParams;			
+			
+			beforeEach(inject(function($controller, $rootScope, _$stateParams_) {
+				scope = $rootScope.$new();
+
+				$stateParams = _$stateParams_;
+
+				$stateParams.from = '20100101';
+				$stateParams.to = '20100107';
+
+				ReportController = $controller('ReportController', {
+					$scope: scope
+				});
+
+				scope.$apply();
+			}));
+
+			describe('initial state', function(){
+
+				it('should have a title', function(){
+					expect(scope.title).toBe('2010-01-01 - 2010-01-07');
+				});
+			
+				it('should have a from date', function(){
+					expect(scope.from.format('YYYY-MM-DD')).toBe('2010-01-01');
+				});
+
+				it('should have a to date', function(){
+					expect(scope.to.format('YYYY-MM-DD')).toBe('2010-01-07');
+				});					
+
+				it('should have a previous from date', function(){
+					expect(scope.previousFrom.format('YYYY-MM-DD')).toBe('2009-12-25');
+				});
+
+				it('should have a previous to date', function(){
+					expect(scope.previousTo.format('YYYY-MM-DD')).toBe('2009-12-31');
+				});
+
+				it('should have a next from date', function(){
+					expect(scope.nextFrom.format('YYYY-MM-DD')).toBe('2010-01-08');
+				});
+
+				it('should have a next to date', function(){
+					expect(scope.nextTo.format('YYYY-MM-DD')).toBe('2010-01-14');
+				});				
+			});
+		});
+
+		describe('Common tests:', function(){
+
+			var scope, 
+				ReportController,
+				$stateParams,
+				$httpBackend,
+				$location;			
+			
+			beforeEach(inject(function($controller, $rootScope, _$stateParams_, _$location_, _$httpBackend_) {
+				scope = $rootScope.$new();
+
+				$stateParams = _$stateParams_;
+				$httpBackend = _$httpBackend_;
+				$location = _$location_;
+
+				$stateParams.from = '20100101';
+				$stateParams.to = '20100107';
+
+				ReportController = $controller('ReportController', {
+					$scope: scope
+				});
+
+				scope.$apply();
+			}));
+
+			describe('initial state', function(){
+
+				it('should have a week start', function(){
+					expect(scope.weekStart).toBe(new moment().startOf('isoWeek').format('YYYYMMDD'));
+				});
+
+				it('should have a week end', function(){
+					expect(scope.weekEnd).toBe(new moment().endOf('isoWeek').format('YYYYMMDD'));
+				});	
+
+				it('should have a month start', function(){
+					expect(scope.monthStart).toBe(new moment().startOf('month').format('YYYYMMDD'));
+				});
+
+				it('should have a month end', function(){
+					expect(scope.monthEnd).toBe(new moment().endOf('month').format('YYYYMMDD'));
+				});	
+
+				it('should have a year start', function(){
+					expect(scope.yearStart).toBe(new moment().startOf('year').format('YYYYMMDD'));
+				});
+
+				it('should have a year end', function(){
+					expect(scope.yearEnd).toBe(new moment().endOf('year').format('YYYYMMDD'));
+				});												
+			});
+
+			describe('$scope.previous', function(){
+
+				beforeEach(function(){
+					scope.previous();
+					scope.$apply();
+				});				
+
+				it('should refresh the report', function(){
+					expect($location.path()).toBe('/time/report/20091225/20091231');
+				});
+			});	
+
+			describe('$scope.next', function(){
+
+				beforeEach(function(){
+					scope.next();
+					scope.$apply();
+				});					
+
+				it('should refresh the report', function(){
+					expect($location.path()).toBe('/time/report/20100108/20100114');
+				});
+			});		
+
+			describe('$scope.refresh', function(){
+
+				beforeEach(function(){
+
+					$httpBackend.expectGET('/api/public/timeregistrations/getinfo/20100101/20100107').respond(
+					{
+						'summary':{'count':4,'billableMinutes':10,'unBillableMinutes':20},
+						'perTask':[
+							{'companyId':'companyId1','company':{ 'name':'company 1' },'projectId':'projectId1','project':{ 'name':'project 1' },'task':'Analyse','count':1,'billableMinutes':5,'unBillableMinutes':0},
+							{'companyId':'companyId1','company':{ 'name':'company 1' },'projectId':'projectId1','project':{ 'name':'project 1' },'task':'Development','count':1,'billableMinutes':0,'unBillableMinutes':10},
+							{'companyId':'companyId1','company':{ 'name':'companu 1' },'projectId':'projectId2','project':{ 'name':'project 2' },'task':'Development','count':1,'billableMinutes':5,'unBillableMinutes':0},
+							{'companyId':'companyId2','company':{ 'name':'company 2' },'projectId':'projectId3','project':{ 'name':'project 3' },'task':'Development','count':1,'billableMinutes':0,'unBillableMinutes':10}
+						]
+					});
+
+					scope.refresh();
+
+					expect(scope.loading).toBe(true);		
+
+					$httpBackend.flush();
+				});
+
+				it('should set a summary for the period', function() {
+					expect(scope.summary.count).toBe(4);
+					expect(scope.summary.billableMinutes).toBe(10);
+					expect(scope.summary.unBillableMinutes).toBe(20);
+				});
+
+				it('should set chart info', function(){
+					expect(scope.billableUnbillableGraph[0].label).toBe('Billable');
+					expect(scope.billableUnbillableGraph[0].data).toBe(10);	
+
+					expect(scope.billableUnbillableGraph[1].label).toBe('Unbillable');
+					expect(scope.billableUnbillableGraph[1].data).toBe(20);										
+				});
+
+				it('should set the has hours flag flag', function(){
+					expect(scope.hasHours).toBe(true);								
+				});
+
+				it('should clear the loading flag', function(){
+					expect(scope.loading).toBe(false);								
+				});
+
+				it('should group per task info per project (1)', function(){
+					var info = _.first(_.where(scope.infoPerProject, { companyId: 'companyId1', projectId: 'projectId1' }));
+					var task1 = _.first(_.where(info.tasks, { task: 'Analyse' }));
+					var task2 = _.first(_.where(info.tasks, { task: 'Development'}));
+
+					expect(task1.billableMinutes).toBe(5);
+					expect(task2.unBillableMinutes).toBe(10);
+				});
+
+				it('should group per task info per project (2)', function(){
+					var info = _.first(_.where(scope.infoPerProject, { companyId: 'companyId1', projectId: 'projectId2' }));
+					var task = _.first(_.where(info.tasks, { task: 'Development'}));
+
+					expect(task.billableMinutes).toBe(5);
+				});
+
+				it('should group per task info per project (3)', function(){
+					var info = _.first(_.where(scope.infoPerProject, { companyId: 'companyId2', projectId: 'projectId3' }));
+					var task = _.first(_.where(info.tasks, { task: 'Development'}));
+
+					expect(task.unBillableMinutes).toBe(10);
+				});				
+			});
+
+			describe('$scope.refresh no data', function(){
+
+				beforeEach(function(){
+
+					$httpBackend.expectGET('/api/public/timeregistrations/getinfo/20100101/20100107').respond(
+					{
+						'summary':{'count':0,'billableMinutes':0,'unBillableMinutes':0},
+						'perTask':[]
+					});
+
+					scope.refresh();
+
+					expect(scope.loading).toBe(true);		
+
+					$httpBackend.flush();
+				});
+
+				it('should set the has hours flag flag', function(){
+					expect(scope.hasHours).toBe(false);								
+				});
+
+				it('should clear the loading flag', function(){
+					expect(scope.loading).toBe(false);								
+				});			
+			});
+		});
+	});
+})();

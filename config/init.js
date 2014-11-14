@@ -38,6 +38,4 @@ module.exports = function() {
 	require.extensions['.model.js'] = require.extensions['.js'];
 	require.extensions['.routes.js'] = require.extensions['.js'];
 	require.extensions['.js'] = require.extensions['.js'];
-
-	
 };

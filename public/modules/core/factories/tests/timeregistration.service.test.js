@@ -73,7 +73,29 @@
 				expect(response[0].description).toBe('time registration 1');
 				expect(response[1].description).toBe('time registration 2');
 			});	
-		});			
+		});		
+
+		describe('Get info', function(){
+			var TimeRegistration,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+				TimeRegistration = _TimeRegistration_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getinfo/20140101/20140110')
+					.respond(200, { description: 'time registration'});
+
+				response = TimeRegistration.getinfo({ from: 20140101, to: 20140110 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should return all timeregistrations for the given date', function(){
+				expect(response.description).toBe('time registration');
+			});	
+		});				
 
 		describe('Get by id', function(){
 			var TimeRegistration,
