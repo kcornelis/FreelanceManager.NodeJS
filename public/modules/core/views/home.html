@@ -1,8 +1,28 @@
 <div id="wrap">
 	<header data-ng-include="'/modules/core/views/header.html'">
 	</header>
-	<div class="container">
-		<div ui-view></div>
+	<div class="container" data-ng-controller="HomeController">
+		<h1 class="text-center fm-welcome-title">Welcome</h1>
+
+		<div class="row tileRow">
+			<div class="col-xs-6 col-sm-3">
+				<a href="/#!/time/registrations/{{ date | date: 'yyyyMMdd' }}" class="fm-tile time"></a>
+				<h4 class="text-center">Time registration</h4>
+			</div>
+			<div class="col-xs-6 col-sm-3">
+				<a href="/#!/" class="fm-tile task"></a>
+				<h4 class="text-center">Tasks</h4>
+			</div>
+			<div class="clearfix visible-xs"></div>
+			<div class="col-xs-6 col-sm-3">
+				<a href="/#!/" class="fm-tile contacts"></a>
+				<h4 class="text-center">Contacts</h4>
+			</div>
+			<div class="col-xs-6 col-sm-3">
+				<a href="/#!/" class="fm-tile config"></a>
+				<h4 class="text-center">Configuration</h4>
+			</div>
+		</div>
 	</div>
 </div>	
 
