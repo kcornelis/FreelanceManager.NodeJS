@@ -79,7 +79,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 
@@ -142,7 +142,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 
@@ -171,7 +171,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});	
 
@@ -252,7 +252,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john1@doe.com'}, done);
 		});
 	});
 
@@ -270,7 +270,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 
@@ -309,7 +309,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 
@@ -346,7 +346,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 
@@ -365,7 +365,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 
@@ -399,7 +399,7 @@ describe('Account Model Unit Tests:', function() {
 		});
 
 		after(function(done) {
-			Account.remove(done);
+			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
 

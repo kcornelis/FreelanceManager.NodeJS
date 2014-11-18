@@ -477,9 +477,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 							response = res;
 							body = res.body;
-
-							console.log(body);
-
+							
 							done();
 						});
 				}

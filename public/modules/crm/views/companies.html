@@ -1,20 +1,20 @@
 <section data-ng-controller="CompaniesController" data-ng-init="getAllCompanies()">
 
 	<h1 class="text-center">
-	    Companies
+		Companies
 	</h1>
 
 	<div class="fm-list company" data-ng-repeat="company in companies">
 
-	    <div class="btn-group pull-right">
-	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openCompany(company)"><span class="glyphicon glyphicon-edit"></span></button>
-	    </div>
-	    <h3 class="panel-title hideOverflow">{{ company.name }}</h3>
-	    <hr />
+		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-primary btn-xs" data-ng-click="openCompany(company)"><span class="glyphicon glyphicon-edit"></span></button>
+		</div>
+		<h3 class="panel-title hideOverflow">{{ company.name }}</h3>
+		<hr />
 	</div>
 
 	<button id="add-company" type="button" class="btn btn-primary pull-right" data-ng-click="openCompany()">
-	    <span class="glyphicon glyphicon-plus"></span>
+		<span class="glyphicon glyphicon-plus"></span>
 	</button>	
 
 </section>

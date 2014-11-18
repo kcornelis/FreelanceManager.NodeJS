@@ -39,8 +39,8 @@ exports.create = function(req, res, next) {
 
 	var company = Company.create(req.user.id, req.body.name);
 	company.save(function(err){
-		if(err){ next(err); }                           
-		res.send(convert(company));
+		if(err) next(err);                     
+		else res.send(convert(company));
 	});
 }
 
@@ -52,13 +52,12 @@ exports.update = function(req, res, next) {
 		tenant: req.user.id
 	}, 
 	function(err, company) {
-		if(err){ next(err); }
-
-		if(company){
+		if(err) next(err);
+		else if(company){
 			company.changeDetails(req.body.name);
 			company.save(function(err){
-				if(err){ next(err); }
-				res.send(convert(company));
+				if(err) next(err);
+				else res.send(convert(company));
 			});
 		}
 		else next();

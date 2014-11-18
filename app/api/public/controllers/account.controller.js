@@ -20,14 +20,16 @@ function convert(account){
 exports.getById = function(req, res) {
 
 	Account.findById(req.params.accountId, function(err, account) {
-		res.send(convert(account));
+		if(err) next(err);
+		else res.send(convert(account));
 	});
 }
 
 exports.getAll = function(req, res) {
 
 	Account.find({ },function(err, accounts) {
-		res.send(_.map(accounts, convert));
+		if(err) next(err);
+		else res.send(_.map(accounts, convert));
 	});
 }
 
@@ -35,12 +37,29 @@ exports.create = function(req, res, next) {
 
 	var account = Account.create(req.body.name, req.body.firstName, req.body.lastName, req.body.email);
 	account.save(function(err){
-		if(err){ next(err); }
-		res.send(convert(account));
+		if(err) next(err); 
+		else res.send(convert(account));
 	});
 }
 
-exports.update = function(req, res) {	
+exports.update = function(req, res, next) {	
+
+	if(req.user.id != req.params.accountId)
+		return next();
+
+	Account.findById(req.params.accountId, function(err, account) {
+
+		if(err){ next(err); }
+
+		if(account){
+			account.changeDetails(req.body.name, req.body.firstName, req.body.lastName, req.body.email);
+			account.save(function(err){
+				if(err) next(err);
+				else res.send(convert(account));
+			});
+		}
+		else next();
+	});
 }
 
 exports.changepassword = function(req, res) {

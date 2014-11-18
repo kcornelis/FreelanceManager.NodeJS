@@ -1,0 +1,44 @@
+<div id="wrap">
+	<header data-ng-include="'/modules/core/views/header.html'">
+	</header>
+	<div class="container">
+		<h1 class="text-center">
+			Account
+		</h1>
+		<div data-ng-controller="AccountInfoController">
+			<form role="form" name="accountInfoForm" novalidate >
+				<div class="panel panel-default">
+					<div class="panel-heading">Info</div>
+					<div class="panel-body">
+						<div class="form-group" ng-class="{ 'has-error' : accountInfoForm.name.$invalid && !accountInfoForm.name.$pristine }">
+							<label>Name</label>
+							<input type="text" name="name" class="form-control" placeholder="Name" data-ng-model="account.name" required autofocus>
+						</div>
+						<div class="form-group" ng-class="{ 'has-error' : accountInfoForm.firstName.$invalid && !accountInfoForm.firstName.$pristine }">
+							<label>First name</label>
+							<input type="text" name="firstName" class="form-control" placeholder="First name" data-ng-model="account.firstName" required>
+						</div>
+						<div class="form-group" ng-class="{ 'has-error' : accountInfoForm.lastName.$invalid && !accountInfoForm.lastName.$pristine }">
+							<label>Last name</label>
+							<input type="text" name="lastName" class="form-control" placeholder="Last name" data-ng-model="account.lastName" required>
+						</div>
+						<div class="form-group" ng-class="{ 'has-error' : accountInfoForm.email.$invalid && !accountInfoForm.email.$pristine }">
+							<label>Email</label>
+							<input type="text" name="email" class="form-control" placeholder="Email" data-ng-model="account.email" required>
+						</div>
+					</div>
+					<div class="panel-footer">
+						<div class="clearfix">
+							<div class="pull-right">
+								<button type="submit" class="btn btn-primary" data-ng-click="save()">Save</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>	
+
+<footer data-ng-include="'/modules/core/views/footer.html'">
+</footer>

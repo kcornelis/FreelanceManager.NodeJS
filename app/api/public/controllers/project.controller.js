@@ -89,9 +89,8 @@ exports.create = function(req, res, next) {
 
 	var project = Project.create(req.user.id, req.body.companyId, req.body.name, req.body.description);
 	project.save(function(err){
-		if(err){ next(err); }       
-
-		convertSingle(project, function(converted){
+		if(err) next(err);    
+		else convertSingle(project, function(converted){
 			res.send(converted);
 		});
 	});
@@ -105,14 +104,12 @@ exports.update = function(req, res, next) {
 		tenant: req.user.id
 	}, 
 	function(err, project) {
-		if(err){ next(err); }
-
-		if(project){
+		if(err) next(err);
+		else if(project){
 			project.changeDetails(req.body.name, req.body.description);
 			project.save(function(err){
-				if(err){ next(err); }
-				
-				convertSingle(project, function(converted){
+				if(err) next(err);
+				else convertSingle(project, function(converted){
 					res.send(converted);
 				});
 			});

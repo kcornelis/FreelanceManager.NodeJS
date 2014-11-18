@@ -10,7 +10,7 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="/#!/time/registrations/{{ date | date: 'yyyyMMdd' }}">Time</a></li>
+				<li><a href="/#!/time/registrations/{{ date | date: 'yyyyMMdd' }}"><i class="fa fa-clock-o"></i> Time</a></li>
 				<li><a href="/#!/projects">Projects</a></li>
 				<li><a href="/#!/companies">CRM</a></li>
 				<li><a href="/#!/">Invoices</a></li>
@@ -19,9 +19,8 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li id="fat-menu" class="dropdown">
-					<a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">John Doe <b class="caret"></b></a>
+					<a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">{{ fullName }} <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-						<li role="presentation"><a role="menuitem" tabindex="-1" href="/#!/admin/accounts">Admin</a></li>
 						<li role="presentation">
 							<a role="menuitem" tabindex="-1" href="/#!/account">Account</a>
 						</li>

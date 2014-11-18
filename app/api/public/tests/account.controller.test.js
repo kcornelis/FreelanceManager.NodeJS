@@ -225,4 +225,137 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			body.email.should.eql('john_005@doe.com');
 		});					
 	});	 
+
+	/**
+	 * Update
+	 */
+	describe('When a account is updated by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/accounts/' + uuid.v1())
+				.send({ name: 'John BVBA' })
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When updating an account', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done) {
+
+			request('http://localhost:' + config.port)
+				.post('/api/public/accounts/' + testdata.normalAccountId)
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ name: 'Jane BVBA', firstName: 'Jane', lastName: 'D', email: '123456789jane@doe.com' })
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res) {
+
+					if(err)
+						throw err;
+
+					response = res;
+					body = res.body;
+
+					Account.findById(body.id, function(err, c){
+						account = c;
+						done();
+					});
+				});
+		});
+
+		it('should be saved in the database', function() {
+			account.should.exist;
+		});
+
+		it('should update the account with the specified name', function(){
+			account.name.should.eql('Jane BVBA');
+		});
+
+		it('should update the account with the specified first name', function(){
+			account.firstName.should.eql('Jane');
+		});
+
+		it('should update the account with the specified last name', function(){
+			account.lastName.should.eql('D');
+		});		
+
+		it('should update the account with the specified email', function(){
+			account.email.should.eql('123456789jane@doe.com');
+		});				
+		
+		it('should return the id of the account', function() {
+			body.id.should.match(account.id);
+		});
+
+		it('should return the name', function(){
+			body.name.should.eql('Jane BVBA');
+		});	
+
+		it('should return the first name', function(){
+			body.firstName.should.eql('Jane');
+		});	
+
+		it('should return the last name', function(){
+			body.lastName.should.eql('D');
+		});	
+
+		it('should return the email', function(){
+			body.email.should.eql('123456789jane@doe.com');
+		});	
+
+		after(function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/accounts/' + testdata.normalAccountId)
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: '123456789john@doe.com' })
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(done);
+		});								
+	});	 
+
+	describe('When updating a account from another tenant', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done) {
+
+			account = Account.create('Jane BVBA', 'Jane', 'Doe', 'jane@doe.com');
+			account.changePassword('12345');
+
+			async.series([
+				function(done){
+					account.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/accounts/' + account.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: '12345john@doe.com' })
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+
+
+		});
+
+		it('should not be updated', function(done) {
+			Account.findById(account.id, function(err, c){
+				if(err){ done(err); }
+
+				c.name.should.eql('Jane BVBA');
+				done();
+			});
+		});		
+	});
 });

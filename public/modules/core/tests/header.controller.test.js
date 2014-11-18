@@ -2,23 +2,25 @@
 
 (function() {
 	describe('HeaderController', function() {
+		
 		//Initialize global variables
-		var scope, HeaderController, $window, jwtHelper;
+		var scope, HeaderController, window, jwtHelper;
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
-		beforeEach(inject(function($controller, $rootScope, _$window_) {
+		beforeEach(inject(function($controller, $rootScope) {
 			scope = $rootScope.$new();
 
-			$window = _$window_;
-
-			$window.sessionStorage = {
-				token: 'token'
+			window = {
+				sessionStorage: {
+					token: 'token'
+				}
 			};
 
 			jwtHelper = {
 				decodeToken: function(token){
+					console.log(token);
 					if(token == 'token'){
 						return {
 							fullName: 'My Name'
@@ -30,6 +32,7 @@
 
 			HeaderController = $controller('HeaderController', {
 				$scope: scope,
+				$window: window,
 				jwtHelper: jwtHelper
 			});
 		}));
