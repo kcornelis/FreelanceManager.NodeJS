@@ -221,13 +221,32 @@ exports.getInfo = function(req, res) {
 
 exports.create = function(req, res, next) {
 
-	var timeRegistration = TimeRegistration.create(req.user.id, req.body.companyId, req.body.projectId, req.body.task, req.body.description, req.body.date, req.body.from, req.body.to);
-	timeRegistration.save(function(err){
-		if(err) next(err);
-		else convertSingle(timeRegistration, function(converted){
-			res.send(converted);
+	var timeRegistrations = req.body;
+	var domainTimeRegistrations = [];
+
+	if(!_.isArray(timeRegistrations)){
+		timeRegistrations = [ req.body ];
+	}
+	
+	_.forEach(timeRegistrations, function (timeRegistration){
+		var domainTimeRegistration = TimeRegistration.create(req.user.id, timeRegistration.companyId, timeRegistration.projectId, timeRegistration.task, timeRegistration.description, timeRegistration.date, timeRegistration.from, timeRegistration.to);
+		domainTimeRegistrations.push(domainTimeRegistration);
+		domainTimeRegistration.save(function(err){
+			if(err) 
+				next(err);		
 		});
 	});
+
+	if(domainTimeRegistrations.length == 1){
+		convertSingle(domainTimeRegistrations[0], function(converted){
+			res.send(converted);
+		});
+	}
+	else{
+		convertMultiple(domainTimeRegistrations, function(converted){
+			res.send(converted);
+		});
+	}
 }
 
 exports.update = function(req, res, next) {

@@ -659,7 +659,97 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		it('should return the to time', function(){
 			body.to.numeric.should.eql(1215);
 		});
+	});	
+
+	describe('When creating multiple time registrations in batch', function() {
+
+		var response;
+		var body;
+		var timeRegistration1, timeRegistration2;
+
+		before(function(done) {
+			
+			request('http://localhost:' + config.port)
+				.post('/api/public/timeregistrations')
+				.set('Authorization', testdata.normalAccountToken)
+				.send([{ companyId: company.id, projectId: project.id, task: 'dev', description: 'doing some work', date: 20100304, from: 1015, to: 1215 },
+					{ companyId: company.id, projectId: project.id, task: 'meeting', description: 'doing some more work', date: 20100404, from: 1115, to: 1315 }])
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res) {
+					if(err)
+						throw err;
+
+					response = res;
+					body = res.body;
+
+					async.series([
+						function(done){
+							TimeRegistration.findById(body[0].id, function(err, c){
+								timeRegistration1 = c;
+								done();
+							});
+						},
+						function(done){
+							TimeRegistration.findById(body[1].id, function(err, c){
+								timeRegistration2 = c;
+								done();
+							});
+					}], done);
+				});
+		});
+
+		// test some random properties
+
+		it('tr1 should be saved in the database', function() {
+			timeRegistration1.should.exist;
+		});
+
+		it('secontr2 should be saved in the database', function() {
+			timeRegistration2.should.exist;
+		});
+
+		it('first should create a time registration (1) with the specified task', function(){
+			timeRegistration1.task.should.eql('dev');
+		});
+
+		it('first should create a time registration (2) with the specified task', function(){
+			timeRegistration2.task.should.eql('meeting');
+		});
+
+		it('should create a time registration (1) with the specified description', function(){
+			timeRegistration1.description.should.eql('doing some work');
+		});
+
+		it('should create a time registration (2) with the specified description', function(){
+			timeRegistration2.description.should.eql('doing some more work');
+		});
+
+		it('should return the company id (1)', function(){
+			body[0].companyId.should.eql(company.id);
+		});
+
+		it('should return the company id (2)', function(){
+			body[1].companyId.should.eql(company.id);
+		});
+
+		it('should return the company name (1)', function(){
+			body[0].company.name.should.eql('My Company');
+		});
+
+		it('should return the company name (2)', function(){
+			body[1].company.name.should.eql('My Company');
+		});
+
+		it('should return the to time (1)', function(){
+			body[0].to.numeric.should.eql(1215);
+		});
+
+		it('should return the to time (2)', function(){
+			body[1].to.numeric.should.eql(1315);
+		});		
 	});	 
+ 
 
 	/**
 	 * Update
