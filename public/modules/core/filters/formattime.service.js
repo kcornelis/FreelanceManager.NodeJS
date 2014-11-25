@@ -8,7 +8,11 @@ angular.module('core').filter('formattime', function () {
     	else if(_.isNumber(a)){
     		var hour = Math.floor(a / 60);
 			var minutes = Math.floor(a - (hour * 60));
-    		return ("00" + hour).slice(-2) + ':' + ("00" + minutes).slice(-2);
+            if(hour > 99){
+                return hour + ':' + ("00" + minutes).slice(-2); 
+            }else{
+    		  return ("00" + hour).slice(-2) + ':' + ("00" + minutes).slice(-2);
+            }
     	}
         else return '-';
     }

@@ -29,6 +29,11 @@
 			$filter('formattime')(120).should.eql('02:00');
 			$filter('formattime')(0).should.eql('00:00');
 			$filter('formattime')(75).should.eql('01:15');
-		});		
+		});	
+
+		it('should format long times', function(){
+			$filter('formattime')(20160).should.eql('336:00');
+			$filter('formattime')(19470).should.eql('324:30');
+		});
 	});
 })();
