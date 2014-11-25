@@ -35,7 +35,8 @@ module.exports = {
 				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'public/lib/flot/jquery.flot.js',
 				'public/lib/flot/jquery.flot.pie.js',
-				'public/lib/flot/jquery.flot.resize.js'
+				'public/lib/flot/jquery.flot.resize.js',
+				'public/lib/js-xlsx/dist/xlsx.core.min.js'
 			]
 		},
 		css: [

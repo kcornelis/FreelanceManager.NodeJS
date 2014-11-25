@@ -28,6 +28,12 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			url: '/time/report/:from/:to',
 			templateUrl: 'modules/time/views/report.html',
 			access: { requiredLogin: true }
+		})
+
+		.state('time.import', {
+			url: '/time/import',
+			templateUrl: 'modules/time/views/import.html',
+			access: { requiredLogin: true }
 		});
 	}
 ]);

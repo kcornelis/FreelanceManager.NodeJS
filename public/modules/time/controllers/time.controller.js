@@ -1,4 +1,3 @@
-
 'use strict';
 
 angular.module('time').controller('TimeController',
