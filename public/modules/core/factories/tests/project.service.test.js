@@ -118,6 +118,53 @@
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
-		});				
+		});	
+
+
+		describe('Hide', function(){
+			var Project,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Project_, _$httpBackend_){
+				Project = _Project_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectPOST('/api/public/projects/1/hide')
+					.respond(200, { name: 'project1'});
+
+				response = Project.hide({ id: 1 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should hide the project', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+      			$httpBackend.verifyNoOutstandingRequest();
+			});	
+		});		
+
+		describe('Unhide', function(){
+			var Project,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Project_, _$httpBackend_){
+				Project = _Project_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectPOST('/api/public/projects/123/unhide')
+					.respond(200, { name: 'project1'});
+
+				response = Project.unhide({ id: 123 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should hide the project', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+      			$httpBackend.verifyNoOutstandingRequest();
+			});	
+		});							
 	});
 })();
