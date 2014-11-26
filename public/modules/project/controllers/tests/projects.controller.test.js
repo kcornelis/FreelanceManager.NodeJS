@@ -43,7 +43,7 @@
 			}));
 		});	
 
-		describe('$scope.openComany', function(){
+		describe('$scope.openProject', function(){
 
 			beforeEach(function(){
 
@@ -77,6 +77,54 @@
 				expect(scope.projects[2].description).toBe('def');
 			});
 		});
+
+		describe('$scope.hideProject', function(){
+
+			beforeEach(function(){
+
+				$httpBackend.expectGET('/api/public/projects').respond([
+					{ id: 1, name: 'project 1', description: 'description 1', hidden: false }, 
+					{ id: 2, name: 'project 2', description: 'description 2', hidden: false }]);
+
+				scope.getAllProjects();
+				$httpBackend.flush();
+
+
+				$httpBackend.expectPOST('/api/public/projects/1/hide').respond(
+					{ id: 1, name: 'project 1', description: 'description 1', hidden: true });
+
+				scope.hideProject(scope.projects[0]);
+				$httpBackend.flush();
+			});
+
+			it('should store all projects in $scope.projects', inject(function() {
+				expect(scope.projects[0].hidden).toBe(true);
+			}));
+		});	
+
+		describe('$scope.unhideProject', function(){
+
+			beforeEach(function(){
+
+				$httpBackend.expectGET('/api/public/projects').respond([
+					{ id: 1, name: 'project 1', description: 'description 1', hidden: true }, 
+					{ id: 2, name: 'project 2', description: 'description 2', hidden: true }]);
+
+				scope.getAllProjects();
+				$httpBackend.flush();
+
+
+				$httpBackend.expectPOST('/api/public/projects/1/unhide').respond(
+					{ id: 1, name: 'project 1', description: 'description 1', hidden: false });
+
+				scope.unhideProject(scope.projects[0]);
+				$httpBackend.flush();
+			});
+
+			it('should store all projects in $scope.projects', inject(function() {
+				expect(scope.projects[0].hidden).toBe(false);
+			}));
+		});					
 
 		var dialog = {
 		    result: {

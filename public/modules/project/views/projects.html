@@ -4,10 +4,22 @@
 	    Projects
 	</h1>
 
-	<div class="fm-list project" data-ng-repeat="project in projects">
+	<div class="fm-list project" data-ng-repeat="project in projects"
+		ng-class="{ 'fm-hidden-project': project.hidden }">
 
 	    <div class="btn-group pull-right">
-	        <button type="button" class="btn btn-primary btn-xs" data-ng-click="openProject(project)"><span class="glyphicon glyphicon-edit"></span></button>
+	        <button type="button" class="btn btn-primary btn-xs" 
+	        	data-ng-click="hideProject(project)" data-ng-show="!project.hidden">
+	        	<span class="fa fa-close"></span>
+	        </button>
+	        <button type="button" class="btn btn-primary btn-xs" 
+	        	data-ng-click="unhideProject(project)" data-ng-show="project.hidden">
+	        	<span class="fa fa-check"></span>
+	        </button>
+	        <button type="button" class="btn btn-primary btn-xs" 
+	        	data-ng-click="openProject(project)">
+	        	<span class="fa fa-edit"></span>
+	        </button>
 	    </div>
 	    <h3 class="panel-title hideOverflow">{{ project.name }}</h3>
 	    <p class="list-group-item-text">{{ project.description }}</p>
@@ -15,7 +27,7 @@
 	</div>
 
 	<button id="add-project" type="button" class="btn btn-primary pull-right" data-ng-click="openProject()">
-	    <span class="glyphicon glyphicon-plus"></span>
+		<span class="glyphicon glyphicon-plus"></span>
 	</button>	
 
 </section>

@@ -25,4 +25,16 @@ function($scope, $modal, Project) {
 			else $scope.projects.push(project);
 		});		
 	}
+
+	$scope.hideProject = function(project){
+		Project.hide({ id: project.id }, function(){
+			project.hidden = true;
+		});
+	}
+
+	$scope.unhideProject = function(project){
+		Project.unhide({ id: project.id }, function(){
+			project.hidden = false;
+		});
+	}
 });
