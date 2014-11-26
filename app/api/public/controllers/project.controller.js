@@ -117,3 +117,47 @@ exports.update = function(req, res, next) {
 		else next();
 	});
 }
+
+exports.hide = function(req, res, next) {
+	
+	Project.findOne(
+	{
+		_id: req.params.projectId,
+		tenant: req.user.id
+	}, 
+	function(err, project) {
+		if(err) next(err);
+		else if(project){
+			project.hide();
+			project.save(function(err){
+				if(err) next(err);
+				else convertSingle(project, function(converted){
+					res.send(converted);
+				});
+			});
+		}
+		else next();
+	});
+}
+
+exports.unhide = function(req, res, next) {
+	
+	Project.findOne(
+	{
+		_id: req.params.projectId,
+		tenant: req.user.id
+	}, 
+	function(err, project) {
+		if(err) next(err);
+		else if(project){
+			project.unhide();
+			project.save(function(err){
+				if(err) next(err);
+				else convertSingle(project, function(converted){
+					res.send(converted);
+				});
+			});
+		}
+		else next();
+	});
+}

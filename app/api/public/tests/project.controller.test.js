@@ -482,4 +482,233 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			});
 		});		
 	});	
+
+	/**
+	 * Hide
+	 */
+	describe('When a project is hidden by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/projects/' + uuid.v1() + '/hide')
+				.send()
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When hiding a project', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id + '/hide')
+						.set('Authorization', testdata.normalAccountToken)
+						.send()
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+
+							Project.findById(body.id, function(err, c){
+								project = c;
+								done();
+							});
+						});
+				}
+			], done);
+		});
+
+		it('should hide the project', function(){
+			project.hidden.should.eql(true);
+		});
+
+		it('should return the name', function(){
+			body.name.should.eql('FM Manager');
+		});		
+
+		it('should return the description', function(){
+			body.description.should.eql('Freelance manager');
+		});		
+
+		it('should return the companyId', function(){
+			body.companyId.should.eql(company.id);
+		});	
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Company');
+		});			
+
+		it('should return the company id', function(){
+			body.companyId.should.eql(company.id);
+		});			
+	});	 
+
+	describe('When hiding a project from another tenant', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(uuid.v1(), company.id, 'FM Manager', 'Freelance manager');
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id + '/hide')
+						.set('Authorization', testdata.normalAccountToken)
+						.send()
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+		});
+
+		it('should not be updated', function(done) {
+			Project.findById(project.id, function(err, c){
+				if(err){ done(err); }
+
+				c.hidden.should.eql(false);
+				done();
+			});
+		});		
+	});		
+
+
+	/**
+	 * Hide
+	 */
+	describe('When a project is unhidden by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/projects/' + uuid.v1() + '/unhide')
+				.send()
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When hiding a project', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project.hide();
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id + '/unhide')
+						.set('Authorization', testdata.normalAccountToken)
+						.send()
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+
+							Project.findById(body.id, function(err, c){
+								project = c;
+								done();
+							});
+						});
+				}
+			], done);
+		});
+
+		it('should unhide the project', function(){
+			project.hidden.should.eql(false);
+		});
+
+		it('should return the name', function(){
+			body.name.should.eql('FM Manager');
+		});		
+
+		it('should return the description', function(){
+			body.description.should.eql('Freelance manager');
+		});		
+
+		it('should return the companyId', function(){
+			body.companyId.should.eql(company.id);
+		});	
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Company');
+		});			
+
+		it('should return the company id', function(){
+			body.companyId.should.eql(company.id);
+		});			
+	});	 
+
+	describe('When hiding a project from another tenant', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(uuid.v1(), company.id, 'FM Manager', 'Freelance manager');
+			project.hide();
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id + '/unhide')
+						.set('Authorization', testdata.normalAccountToken)
+						.send()
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+		});
+
+		it('should not be updated', function(done) {
+			Project.findById(project.id, function(err, c){
+				if(err){ done(err); }
+
+				c.hidden.should.eql(true);
+				done();
+			});
+		});		
+	});	
 });
