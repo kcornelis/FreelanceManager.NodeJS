@@ -21,7 +21,13 @@ function convert(project, company) {
 		},
 		name: project.name,
 		description: project.description,
-		tasks: project.tasks,
+		tasks: _.map(project.tasks, function(t){
+			return {
+				name: t.name,
+				defaultRateInCents: t.defaultRateInCents,
+				billable: t.defaultRateInCents > 0
+			}
+		}),
 		hidden: project.hidden
 	};
 }

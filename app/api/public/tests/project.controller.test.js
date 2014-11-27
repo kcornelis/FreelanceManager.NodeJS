@@ -49,6 +49,11 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		before(function(done){
 			project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+			project.changeTasks([
+				{ name: 'Development', defaultRateInCents: 50 },		
+				{ name: 'Analyse', defaultRateInCents: 0 },
+				{ name: 'Meeting', defaultRateInCents: 0 }
+			]);
 			
 			async.series([
 				function(done){
@@ -95,7 +100,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 
 		it('should return the project with the tasks', function(){
 			body.tasks[0].name.should.eql('Development');
-			body.tasks[0].defaultRateInCents.should.eql(0);
+			body.tasks[0].defaultRateInCents.should.eql(50);
 
 			body.tasks[1].name.should.eql('Analyse');
 			body.tasks[1].defaultRateInCents.should.eql(0);
@@ -103,6 +108,12 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			body.tasks[2].name.should.eql('Meeting');
 			body.tasks[2].defaultRateInCents.should.eql(0);
 		});	
+
+		it('should return if the tasks are billable', function(){
+			body.tasks[0].billable.should.eql(true);
+			body.tasks[1].billable.should.eql(false);
+			body.tasks[2].billable.should.eql(false);
+		});
 
 		it('should return if the project is hidden', function(){
 			body.hidden.should.eql(false);
