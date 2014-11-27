@@ -1,0 +1,21 @@
+<form role="form" name="projectForm" novalidate >
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-ng-click="cancel()" aria-hidden="true">&times;</button>
+			<h4 class="modal-title">Project Tasks</h4>
+		</div>
+		<div class="modal-body">
+			<div class="form-group" data-ng-repeat="task in project.tasks">
+				<label>{{ task.name }}</label>
+				<input type="text" data-ng-model="task.defaultRateInCents" class="form-control" placeholder="Rate">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="pull-left" data-ng-show="isBusy">
+				<i class="fm-spinner"></i><span>{{ message }}</span>
+			</div>
+			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
+			<button type="submit" class="btn btn-primary" ng-disabled="projectForm.$invalid" data-ng-click="ok()">Save</button>
+		</div>
+	</div>
+</form>

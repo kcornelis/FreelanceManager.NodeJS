@@ -20,10 +20,28 @@ function($scope, $modal, Project) {
 		});
 
 		createDialog.result.then(function (project) {
-			var c = _.find($scope.projects, { 'id': project.id });
-			if(c) angular.copy(project, c);
+			var p = _.find($scope.projects, { 'id': project.id });
+			if(p) angular.copy(project, p);
 			else $scope.projects.push(project);
 		});		
+	}
+
+	$scope.openProjectTasks = function(project){
+		var createDialog = $modal.open({
+			templateUrl: '/modules/project/views/projecttasksdialog.html',
+			controller: 'ProjectTasksDialogController',
+			resolve: {
+				toUpdate: function () {
+					return project;
+				}
+			}
+		});	
+
+		createDialog.result.then(function (project) {
+			var p = _.find($scope.projects, { 'id': project.id });
+			if(p) 
+				angular.copy(project, p);
+		});				
 	}
 
 	$scope.hideProject = function(project){

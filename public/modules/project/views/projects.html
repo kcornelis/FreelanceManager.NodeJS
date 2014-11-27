@@ -17,9 +17,13 @@
 	        	<span class="fa fa-check"></span>
 	        </button>
 	        <button type="button" class="btn btn-primary btn-xs" 
+	        	data-ng-click="openProjectTasks(project)">
+	        	<span class="fa fa-tasks"></span>
+	        </button>
+			<button type="button" class="btn btn-primary btn-xs" 
 	        	data-ng-click="openProject(project)">
 	        	<span class="fa fa-edit"></span>
-	        </button>
+	        </button>	        
 	    </div>
 	    <h3 class="panel-title hideOverflow">{{ project.name }}</h3>
 	    <p class="list-group-item-text">{{ project.description }}</p>

@@ -124,7 +124,39 @@
 			it('should store all projects in $scope.projects', inject(function() {
 				expect(scope.projects[0].hidden).toBe(false);
 			}));
-		});					
+		});	
+
+		describe('$scope.openProjectTasks', function(){
+
+			beforeEach(function(){
+
+				sinon.stub($modal, 'open', function() { return dialog; });
+
+				$httpBackend.expectGET('/api/public/projects').respond([
+					{ id: 1, name: 'project 1', description: 'description 1', tasks: [
+						{ name: 'Development', defaultRateInCents: 50 },
+						{ name: 'Sleeping', defaultRateInCents: 0 }
+					]}, 
+					{ id: 2, name: 'project 2', description: 'description 2', tasks: [
+						{ name: 'Development', defaultRateInCents: 50 },
+						{ name: 'Sleeping', defaultRateInCents: 0 }
+					]}]);
+
+				scope.getAllProjects();
+				$httpBackend.flush();
+			});
+
+			it('should update the project if its updated', function(){
+				scope.openProjectTasks();
+
+				dialog.close({ id: 1, name: 'project 1', description: 'description 1', tasks: [
+						{ name: 'Develepment', defaultRateInCents: 40 },
+						{ name: 'Sleeping', defaultRateInCents: 0 }
+					]});
+
+				expect(scope.projects[0].tasks[0].defaultRateInCents).toBe(40);
+			});
+		});				
 
 		var dialog = {
 		    result: {
