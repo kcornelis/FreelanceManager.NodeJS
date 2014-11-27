@@ -165,6 +165,29 @@
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
-		});							
+		});	
+
+		describe('Change tasks', function(){
+			var Project,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Project_, _$httpBackend_){
+				Project = _Project_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectPOST('/api/public/projects/1/changetasks', [{ name: 'development', defaultRateInCents: 10 }])
+					.respond(200, { name: 'project1'});
+
+				response = Project.changetasks({ id: 1 }, [{ name: 'development', defaultRateInCents: 10 }]);
+				$httpBackend.flush();
+
+			}));
+
+			it('should update the project tasks', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+      			$httpBackend.verifyNoOutstandingRequest();
+			});	
+		});								
 	});
 })();

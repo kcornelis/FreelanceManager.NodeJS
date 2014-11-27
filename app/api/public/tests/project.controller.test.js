@@ -831,7 +831,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			Project.findById(project.id, function(err, c){
 				if(err){ done(err); }
 
-				c.tasks.length.should.eql(3··);
+				c.tasks.length.should.eql(3);
 				done();
 			});
 		});		
