@@ -20,7 +20,6 @@
 
 			jwtHelper = {
 				decodeToken: function(token){
-					console.log(token);
 					if(token == 'token'){
 						return {
 							fullName: 'My Name'

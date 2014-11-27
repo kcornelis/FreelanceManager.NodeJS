@@ -19,4 +19,5 @@ module.exports = function(app) {
 	app.route('/api/public/projects/:projectId').post(project.update);
 	app.route('/api/public/projects/:projectId/hide').post(project.hide);
 	app.route('/api/public/projects/:projectId/unhide').post(project.unhide);
+	app.route('/api/public/projects/:projectId/changetasks').post(project.changeTasks);
 };

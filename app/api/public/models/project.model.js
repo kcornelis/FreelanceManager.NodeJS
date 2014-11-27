@@ -95,6 +95,9 @@ ProjectSchema.methods.changeDetails = function(name, description){
 
 ProjectSchema.methods.changeTasks = function(tasks){
 
+	if(!tasks)
+		return;
+	
 	var changed = false;
 	if (tasks.length != this.tasks.length){
 		changed = true;

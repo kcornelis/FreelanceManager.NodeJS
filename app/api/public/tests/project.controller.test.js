@@ -711,4 +711,129 @@ describe('Public API: Project Controller Integration Tests:', function() {
 			});
 		});		
 	});	
+
+	/**
+	 * Change tasks
+	 */
+	describe('When a project tasks are changed by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/projects/' + uuid.v1() + '/changetasks')
+				.send([{ name: 'Development' }])
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When updating a projects tasks', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id + '/changetasks')
+						.set('Authorization', testdata.normalAccountToken)
+						.send([
+							{ name: 'Development', defaultRateInCents: 50 },
+							{ name: 'Sleeping', defaultRateInCents: 0 }
+						])
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+
+							Project.findById(body.id, function(err, c){
+								project = c;
+								done();
+							});
+						});
+				}
+			], done);
+		});
+
+		it('should update an existing task', function(){
+			project.tasks[0].name.should.eql('Development');
+			project.tasks[0].defaultRateInCents.should.eql(50);
+		});
+
+		it('should create a new task', function(){
+			project.tasks[1].name.should.eql('Sleeping');
+			project.tasks[1].defaultRateInCents.should.eql(0);
+		});
+
+		it('should remove unexisting tasks', function(){
+			project.tasks.length.should.eql(2);
+		});
+
+		it('should return the name', function(){
+			body.name.should.eql('FM Manager');
+		});		
+
+		it('should return the companyId', function(){
+			body.companyId.should.eql(company.id);
+		});	
+
+		it('should return the company name', function(){
+			body.company.name.should.eql('My Company');
+		});			
+
+		it('should return the description', function(){
+			body.description.should.eql('Freelance manager');
+		});			
+	});	 
+
+	describe('When updating a project tasks from another tenant', function() {
+
+		var response;
+		var body;
+		var project;
+
+		before(function(done) {
+
+			project = Project.create(uuid.v1(), company.id, 'FM Manager', 'Freelance manager');
+
+			async.series([
+				function(done){
+					project.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/projects/' + project.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send([
+							{ name: 'Development', defaultRateInCents: 50 },
+							{ name: 'Sleeping', defaultRateInCents: 0 }
+						])
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+		});
+
+		it('should not be updated', function(done) {
+			Project.findById(project.id, function(err, c){
+				if(err){ done(err); }
+
+				c.tasks.length.should.eql(3··);
+				done();
+			});
+		});		
+	});	
 });

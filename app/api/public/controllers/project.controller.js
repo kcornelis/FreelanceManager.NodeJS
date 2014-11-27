@@ -161,3 +161,25 @@ exports.unhide = function(req, res, next) {
 		else next();
 	});
 }
+
+exports.changeTasks = function(req, res, next) {
+	
+	Project.findOne(
+	{
+		_id: req.params.projectId,
+		tenant: req.user.id
+	}, 
+	function(err, project) {
+		if(err) next(err);
+		else if(project){
+			project.changeTasks(req.body);
+			project.save(function(err){
+				if(err) next(err);
+				else convertSingle(project, function(converted){
+					res.send(converted);
+				});
+			});
+		}
+		else next();
+	});
+}
