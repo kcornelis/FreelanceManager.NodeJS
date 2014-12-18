@@ -16,7 +16,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
-				'public/lib/components-font-awesome/css/font-awesome.css',
+				'public/lib/font-awesome/css/font-awesome.css',
 				'public/lib/bootstrap-datepicker/css/datepicker3.css'
 			],
 			js: [

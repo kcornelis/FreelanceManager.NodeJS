@@ -19,8 +19,7 @@ function convert(timeRegistration, company, project) {
 		id: timeRegistration.id,
 		companyId: timeRegistration.companyId,
 		company: {
-			name: company.name,
-			billable: true
+			name: company.name
 		},
 		projectId: timeRegistration.projectId,
 		project: {
@@ -28,6 +27,7 @@ function convert(timeRegistration, company, project) {
 			description: project.description
 		},
 		task: timeRegistration.task,
+		billable: timeRegistration.billable,
 		description: timeRegistration.description,
 		date: timeRegistration.date,
 		from: timeRegistration.from,
@@ -171,12 +171,12 @@ exports.getInfo = function(req, res) {
 			{
 				count: converted.length,
 				billableMinutes: _.reduce(converted, function(sum, current) {  
-					if(current.company.billable)
+					if(current.billable)
 						return sum + current.totalMinutes;
 					else return sum;
 				}, 0),
 				unBillableMinutes: _.reduce(converted, function(sum, current) {  
-					if(!current.company.billable)
+					if(!current.billable)
 						return sum + current.totalMinutes;
 					else return sum;
 				}, 0)
@@ -199,12 +199,12 @@ exports.getInfo = function(req, res) {
 					task: g[0].task,
 					count: g.length,
 					billableMinutes: _.reduce(g, function(sum, current) {  
-						if(current.company.billable)
+						if(current.billable)
 							return sum + current.totalMinutes;
 						else return sum;
 					}, 0),
 					unBillableMinutes: _.reduce(g, function(sum, current) {  
-						if(!current.company.billable)
+						if(!current.billable)
 							return sum + current.totalMinutes;
 						else return sum;
 					}, 0)
@@ -229,7 +229,10 @@ exports.create = function(req, res, next) {
 	}
 	
 	_.forEach(timeRegistrations, function (timeRegistration){
-		var domainTimeRegistration = TimeRegistration.create(req.user.id, timeRegistration.companyId, timeRegistration.projectId, timeRegistration.task, timeRegistration.description, timeRegistration.date, timeRegistration.from, timeRegistration.to);
+		var domainTimeRegistration = TimeRegistration.create(req.user.id, 
+			timeRegistration.companyId, timeRegistration.projectId, timeRegistration.task, 
+			timeRegistration.billable, timeRegistration.description, 
+			timeRegistration.date, timeRegistration.from, timeRegistration.to);
 		domainTimeRegistrations.push(domainTimeRegistration);
 		domainTimeRegistration.save(function(err){
 			if(err) 
@@ -260,7 +263,9 @@ exports.update = function(req, res, next) {
 	function(err, timeRegistration) {
 		if(err) next(err);
 		else if(timeRegistration){
-			timeRegistration.changeDetails(req.body.companyId, req.body.projectId, req.body.task, req.body.description, req.body.date, req.body.from, req.body.to);
+			timeRegistration.changeDetails(req.body.companyId, req.body.projectId, req.body.task, 
+				req.body.billable, req.body.description, 
+				req.body.date, req.body.from, req.body.to);
 			timeRegistration.save(function(err){
 				if(err){ next(err); }
 				convertSingle(timeRegistration, function(converted){

@@ -61,7 +61,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeRegistration;
 
 		before(function(done){
-			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1359);
+			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
 
 			async.series([
 				function(done){
@@ -124,6 +124,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			body.description.should.eql('Doing some work');
 		});
 
+		it('should return if the time registration is billable', function(){
+			body.billable.should.eql(true);
+		});
+
 		it('should return a time registration with the date', function(){
 			body.date.year.should.eql(2000);
 			body.date.month.should.eql(12);
@@ -155,7 +159,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeRegistration;
 
 		before(function(done){
-			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1500);
+			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1500);
 			
 			async.series([
 				function(done){
@@ -196,9 +200,9 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration3;
 
 		before(function(done){
-			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1500);
-			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1500, 1600);
-			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1359);
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1359);
 			
 			async.series([
 				function(done){
@@ -276,9 +280,9 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration3;
 
 		before(function(done){
-			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1500);
-			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20001230, 1500, 1600);
-			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20001231, 1400, 1359);
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001230, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1359);
 			
 			async.series([
 				function(done){
@@ -346,11 +350,11 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration5;
 
 		before(function(done){
-			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20100201, 1400, 1500);
-			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20100202, 1500, 1600);
-			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20100210, 1400, 1500);
-			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20100211, 1400, 1500);
-			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20100205, 1400, 1359);
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100210, 1400, 1500);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100211, 1400, 1500);
+			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
 			
 			async.series([
 				function(done){
@@ -434,13 +438,13 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration7;
 
 		before(function(done){
-			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20110201, 1400, 1500);
-			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20110202, 1500, 1505);
-			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20110210, 1400, 1410);
-			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Meeting', 'Doing some work', 20110202, 1500, 1502);
-			timeregistration5 = TimeRegistration.create(testdata.normalAccountId, company2.id, project2.id, 'Dev', 'Doing some work', 20110210, 1400, 1403);
-			timeregistration6 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', 'Doing some work', 20110211, 1400, 1500);
-			timeregistration7 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', 'Doing some work', 20110205, 1400, 1359);
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110202, 1500, 1505);
+			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110210, 1400, 1410);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Meeting', true, 'Doing some work', 20110202, 1500, 1502);
+			timeregistration5 = TimeRegistration.create(testdata.normalAccountId, company2.id, project2.id, 'Dev', true, 'Doing some work', 20110210, 1400, 1403);
+			timeregistration6 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110211, 1400, 1500);
+			timeregistration7 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', true, 'Doing some work', 20110205, 1400, 1359);
 			
 			async.series([
 				function(done){
@@ -562,7 +566,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			request('http://localhost:' + config.port)
 				.post('/api/public/timeregistrations')
 				.set('Authorization', testdata.normalAccountToken)
-				.send({ companyId: company.id, projectId: project.id, task: 'dev',
+				.send({ companyId: company.id, projectId: project.id, task: 'dev', billable: false,
 						description: 'doing some work', date: 20100304, from: 1015, to: 1215 })
 				.expect('Content-Type', /json/)
 				.expect(200)
@@ -594,6 +598,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		it('should create a time registration with the specified task', function(){
 			timeRegistration.task.should.eql('dev');
+		});
+
+		it('should create a time registration with the specified billable property', function(){
+			timeRegistration.billable.should.eql(false);
 		});
 
 		it('should create a time registration with the specified description', function(){
@@ -644,6 +652,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			body.task.should.eql('dev');
 		});
 
+		it('should return the billable property', function(){
+			body.billable.should.eql(false);
+		});		
+
 		it('should return the description', function(){
 			body.description.should.eql('doing some work');
 		});
@@ -672,8 +684,8 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			request('http://localhost:' + config.port)
 				.post('/api/public/timeregistrations')
 				.set('Authorization', testdata.normalAccountToken)
-				.send([{ companyId: company.id, projectId: project.id, task: 'dev', description: 'doing some work', date: 20100304, from: 1015, to: 1215 },
-					{ companyId: company.id, projectId: project.id, task: 'meeting', description: 'doing some more work', date: 20100404, from: 1115, to: 1315 }])
+				.send([{ companyId: company.id, projectId: project.id, task: 'dev', billable: true, description: 'doing some work', date: 20100304, from: 1015, to: 1215 },
+					{ companyId: company.id, projectId: project.id, task: 'meeting', billable: false, description: 'doing some more work', date: 20100404, from: 1115, to: 1315 }])
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res) {
@@ -725,6 +737,14 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeRegistration2.description.should.eql('doing some more work');
 		});
 
+		it('should create a time registration (1) with the specified billable property', function(){
+			timeRegistration1.billable.should.eql(true);
+		});
+
+		it('should create a time registration (2) with the specified billable property', function(){
+			timeRegistration2.billable.should.eql(false);
+		});
+
 		it('should return the company id (1)', function(){
 			body[0].companyId.should.eql(company.id);
 		});
@@ -773,7 +793,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		before(function(done) {
 
-			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'development', 'work', 20001231, 1400, 1359);
+			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
 
 			async.series([
 				function(done){
@@ -784,7 +804,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 					request('http://localhost:' + config.port)
 						.post('/api/public/timeregistrations/' + timeRegistration.id)
 						.set('Authorization', testdata.normalAccountToken)
-						.send({ companyId: company2.id, projectId: project2.id, task: 'dev',
+						.send({ companyId: company2.id, projectId: project2.id, task: 'dev', billable: true,
 								description: 'doing some work', date: 20100304, from: 1015, to: 1215 })
 						.expect('Content-Type', /json/)
 						.expect(200)
@@ -818,6 +838,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		it('should update the time registration with the updated task', function(){
 			timeRegistration.task.should.eql('dev');
+		});
+
+		it('should update the time registration with the updated billable property', function(){
+			timeRegistration.billable.should.eql(true);
 		});
 
 		it('should update the time registration with the updated description', function(){
@@ -856,6 +880,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			body.project.name.should.eql('FM Manager v2');
 		});
 
+		it('should return the project billable property', function(){
+			body.billable.should.eql(true);
+		});
+
 		it('should return the project description', function(){
 			body.project.description.should.eql('Freelance manager v2');
 		});
@@ -889,7 +917,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		before(function(done) {
 
-			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'development', 'work', 20001231, 1400, 1359);
+			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
 
 			async.series([
 				function(done){
@@ -900,7 +928,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 					request('http://localhost:' + config.port)
 						.post('/api/public/timeregistrations/' + timeRegistration.id)
 						.set('Authorization', testdata.normalAccountToken)
-						.send({ companyId: company.id, projectId: project.id, task: 'dev',
+						.send({ companyId: company.id, projectId: project.id, task: 'dev', billable: true,
 								description: 'doing some work', date: 20100304, from: 1015, to: 1215 })
 						.expect('Content-Type', /html/)
 						.expect(404)

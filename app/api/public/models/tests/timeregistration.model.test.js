@@ -18,7 +18,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20141020, 30, 1205);
+			original = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
 			done();
 		});
 
@@ -59,6 +59,10 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			saved.task.should.eql('task');
 		});
 
+		it('should have a billable property', function(){
+			saved.billable.should.eql(true);
+		});
+
 		it('should have a description', function(){
 			saved.description.should.eql('description');
 		});
@@ -93,7 +97,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		it('should have a created event', function(){
 			saved.events[0].companyId.should.eql('company');			
 			saved.events[0].projectId.should.eql('project');			
-			saved.events[0].task.should.eql('task');			
+			saved.events[0].task.should.eql('task');
+			saved.events[0].billable.should.eql(true);			
 			saved.events[0].description.should.eql('description');			
 			saved.events[0].date.should.eql(20141020);			
 			saved.events[0].from.should.eql(30);			
@@ -118,7 +123,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		var original;
 
 		before(function(done) {
-			original = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20141020, 0, 0);
+			original = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 0, 0);
 			done();
 		});
 
@@ -138,7 +143,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var timeRegistration = TimeRegistration.create(null,'company', 'project', 'task', 'description', 20141020, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(null,'company', 'project', 'task', true, 'description', 20141020, 1030, 1205);
 			timeRegistration.save(function(err) {
 				should.exist(err);
 				done();
@@ -150,7 +155,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant, undefined, 'project', 'task', 'description', 20141020, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant, undefined, 'project', 'task', true, 'description', 20141020, 1030, 1205);
 			timeRegistration.save(function(err) {
 				should.exist(err);
 				done();
@@ -162,7 +167,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', '', 'task', 'description', 20141020, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', '', 'task', true, 'description', 20141020, 1030, 1205);
 			timeRegistration.save(function(err) {
 				should.exist(err);
 				done();
@@ -174,7 +179,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', '', 'description', 20141020, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', '', true, 'description', 20141020, 1030, 1205);
 			timeRegistration.save(function(err) {
 				should.exist(err);
 				done();
@@ -186,7 +191,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', null, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', null, 1030, 1205);
 			timeRegistration.save(function(err) {
 				should.exist(err);
 				done();
@@ -198,7 +203,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 18991010, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 18991010, 1030, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});
@@ -207,7 +212,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 22011010, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 22011010, 1030, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});	
@@ -216,7 +221,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20000010, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20000010, 1030, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});
@@ -225,7 +230,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20001310, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20001310, 1030, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});	
@@ -234,7 +239,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20000100, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20000100, 1030, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});
@@ -243,7 +248,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20001232, 1030, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20001232, 1030, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});	
@@ -252,7 +257,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20001110, 1060, 1205);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20001110, 1060, 1205);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});	
@@ -261,7 +266,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should fail to save', function(done) {
 
-			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20001110, 1059, 1261);
+			var timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20001110, 1059, 1261);
 			timeRegistration.save(function(err) { should.exist(err); done(); });
 		});
 	});				
@@ -271,7 +276,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20141020, 30, 1205);
+			original = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
 			original.save(done);
 		});
 
@@ -282,7 +287,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 				should.not.exist(finderr);
 
-				timeRegistration.changeDetails('John Doe BVBA', 'Project 1', 'Dev', 'Doing some work', 20141010, 1000, 2359);
+				timeRegistration.changeDetails('John Doe BVBA', 'Project 1', 'Dev', false, 'Doing some work', 20141010, 1000, 2359);
 
 				timeRegistration.save(function(saveerr){
 					should.not.exist(saveerr);
@@ -315,6 +320,10 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		it('should have a task', function(){
 			saved.task.should.eql('Dev');
+		});
+
+		it('should have a billable property', function(){
+			saved.billable.should.eql(false);
 		});
 
 		it('should have a description', function(){
@@ -351,7 +360,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		it('should have a created event', function(){
 			saved.events[1].companyId.should.eql('John Doe BVBA');			
 			saved.events[1].projectId.should.eql('Project 1');			
-			saved.events[1].task.should.eql('Dev');			
+			saved.events[1].task.should.eql('Dev');
+			saved.events[1].billable.should.eql(false);	
 			saved.events[1].description.should.eql('Doing some work');			
 			saved.events[1].date.should.eql(20141010);			
 			saved.events[1].from.should.eql(1000);			
@@ -370,8 +380,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		var timeRegistration;
 
 		before(function() {
-			timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', 'description', 20141020, 30, 1205);
-			timeRegistration.changeDetails('company', 'project', 'task', 'description', 20141020, 30, 1205);
+			timeRegistration = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
+			timeRegistration.changeDetails('company', 'project', 'task', true, 'description', 20141020, 30, 1205);
 		});
 
 		it('should not create a new event', function(){

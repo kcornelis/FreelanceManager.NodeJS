@@ -39,6 +39,10 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 		required: true,
 		trim: true
 	},
+	billable: {
+		type: Boolean,
+		default: false
+	},	
 	description: {
 		type: String,
 		trim: true
@@ -105,7 +109,7 @@ function createTimeObject(time){
 /*
  *      Write methods
  */
-TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, task, description, date, from, to){
+TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, task, billable, description, date, from, to){
 	
 	var timeRegistration = new this();
 
@@ -113,6 +117,7 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 	timeRegistration.companyId = companyId;
 	timeRegistration.projectId = projectId;
 	timeRegistration.task = task;
+	timeRegistration.billable = billable;
 	timeRegistration.description = description;
 	timeRegistration.date = createDateObject(date);
 	timeRegistration.from = createTimeObject(from);
@@ -124,6 +129,7 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 		companyId: companyId,
 		projectId: projectId,
 		task: task,
+		billable: billable,
 		description: description,
 		date: date,
 		from: from,
@@ -133,11 +139,12 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 	return timeRegistration;
 };
 
-TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, task, description, date, from, to){
+TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, task, billable, description, date, from, to){
 
 	if( this.companyId != companyId ||
 		this.projectId != projectId ||
 		this.task != task ||
+		this.billable != billable ||
 		this.description != description ||
 		this.date.numeric != date ||
 		this.from.numeric != from ||
@@ -146,6 +153,7 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 		this.companyId = companyId;
 		this.projectId = projectId;
 		this.task = task;
+		this.billable = billable;
 		this.description = description;
 		this.date = createDateObject(date);
 		this.from = createTimeObject(from);
@@ -156,6 +164,7 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 			companyId: companyId,
 			projectId: projectId,
 			task: task,
+			billable: billable,
 			description: description,
 			date: date,
 			from: from,
