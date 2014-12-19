@@ -10,10 +10,15 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 		company: null,
 		project: null,
 		task: null,
+		billable: toUpdate.billable || false,
 		description: toUpdate.description || '',
 		from: toUpdate.from ? convertNumericTimeToDisplay(toUpdate.from.numeric) : '',
 		to: toUpdate.to ? convertNumericTimeToDisplay(toUpdate.to.numeric) : '',
 	};
+
+	$scope.$watch('timeRegistration.task', function () {
+		$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
+	});
 	
 	$scope.isBusy = false;
 	$scope.message = '';
@@ -51,6 +56,7 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 			projectId: $scope.timeRegistration.project.id,
 			task: $scope.timeRegistration.task.name,
 			description: $scope.timeRegistration.description,
+			billable: $scope.timeRegistration.billable,
 			date: date,
 			from: convertDisplayTimeToNumeric($scope.timeRegistration.from),
 			to: convertDisplayTimeToNumeric($scope.timeRegistration.to)
