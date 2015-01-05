@@ -12,19 +12,19 @@
 				mockProjectService.flush = callback;
 				return [
 					{ id: 1, name: 'project 1', companyId: 1,
-					  tasks: [ { name: 'Development' }, { name: 'Meeting' } ],
+					  tasks: [ { name: 'Development', defaultRateInCents: 0 }, { name: 'Meeting', defaultRateInCents: 5 } ],
 					  company: { id: 1, name: 'company 1' } 
 					}, 
 					{ id: 2, name: 'project 2', companyId: 1,
-					  tasks: [ { name: 'Development' }, { name: 'Meeting' } ],
+					  tasks: [ { name: 'Development', defaultRateInCents: 0 }, { name: 'Meeting', defaultRateInCents: 5 } ],
 					  company: { id: 1, name: 'company 1' } 
 					}, 
 					{ id: 3, name: 'project 3', companyId: 1,
-					  tasks: [ { name: 'Development' } ],
+					  tasks: [ { name: 'Development', defaultRateInCents: 0 } ],
 					  company: { id: 1, name: 'company 1' } 
 					}, 
 					{ id: 4, name: 'project 4', companyId: 2,
-					  tasks: [ { name: 'Development' }, { name: 'Meeting' } ],
+					  tasks: [ { name: 'Development', defaultRateInCents: 0 }, { name: 'Meeting', defaultRateInCents: 5 } ],
 					  company: { id: 2, name: 'company 2' } 
 					}];
 			},
@@ -383,13 +383,142 @@
 				expect(mockService.save).not.toHaveBeenCalled();
 			});
 
-
 			it('should close the dialog', function(){
 				
 				scope.cancel();
 
 				expect(scope.$dismiss).toHaveBeenCalled();
 			});
-		});				
+		});	
+
+		describe('when the company is changed for a new time registration', function(){
+
+			beforeEach(inject(function($controller, $rootScope) {
+
+				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+					$scope: scope,
+					Project: mockProjectService,
+					toUpdate: undefined,
+					date: 20100102
+				});
+
+				mockProjectService.flush();
+
+				scope.timeRegistration.company = scope.companies[0];
+				scope.timeRegistration.project = scope.companies[0].projects[0];
+				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
+
+				scope.$apply();
+
+				scope.timeRegistration.company = scope.companies[1];
+
+				scope.$apply();
+			}));
+
+			it('should clear the project', function(){
+				expect(scope.timeRegistration.project).toBe(null);
+			});
+
+			it('should clear the task', function(){
+				expect(scope.timeRegistration.task).toBe(null);
+			});
+		});
+
+		describe('when the project is changed for a new time registration', function(){
+			
+			beforeEach(inject(function($controller, $rootScope) {
+
+				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+					$scope: scope,
+					Project: mockProjectService,
+					toUpdate: undefined,
+					date: 20100102
+				});
+
+				mockProjectService.flush();
+
+				scope.timeRegistration.company = scope.companies[0];
+				scope.timeRegistration.project = scope.companies[0].projects[0];
+				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
+
+				scope.$apply();
+
+				scope.timeRegistration.project = scope.companies[0].projects[1];
+
+				scope.$apply();
+			}));
+
+			it('should clear the task', function(){
+				expect(scope.timeRegistration.task).toBe(null);
+			});
+		});
+
+		describe('when the task is changed for a new time registration', function(){
+			
+			beforeEach(inject(function($controller, $rootScope) {
+
+				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+					$scope: scope,
+					Project: mockProjectService,
+					toUpdate: undefined,
+					date: 20100102
+				});
+
+				mockProjectService.flush();
+
+				scope.timeRegistration.company = scope.companies[0];
+				scope.timeRegistration.project = scope.companies[0].projects[0];
+				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[1];
+
+				scope.$apply();
+			}));			
+
+			it('should update billable if its a new time registration', function(){
+				expect(scope.timeRegistration.billable).toBe(true);
+			});
+
+
+			it('should update billable if its a new time registration and the task is changed again', function(){
+
+				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
+
+				scope.$apply();
+
+				expect(scope.timeRegistration.billable).toBe(false);
+			});
+		});		
+
+		describe('when the task is changed for an existing registration', function(){
+			
+			beforeEach(inject(function($controller, $rootScope) {
+
+				// pick a task that is billable
+				toUpdate = { id: 2, billable: true, companyId: 1, projectId: 1, description: 'description', task: 'Meeting', from: { numeric: 1000 }, to: { numeric: 1100 } };
+
+				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+					$scope: scope,
+					Project: mockProjectService,
+					toUpdate: toUpdate,
+					date: 20100102
+				});
+
+				mockProjectService.flush();
+				scope.$apply();
+			}));			
+
+			it('should initially set billable', function(){
+				expect(scope.timeRegistration.billable).toBe(true);
+			});
+
+
+			it('should not update billable if its an existing time registration and the task is changed again', function(){
+
+				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
+
+				scope.$apply();
+
+				expect(scope.timeRegistration.billable).toBe(true);
+			});
+		});	
 	});
 })();

@@ -16,9 +16,24 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 		to: toUpdate.to ? convertNumericTimeToDisplay(toUpdate.to.numeric) : '',
 	};
 
-	$scope.$watch('timeRegistration.task', function () {
-		$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
+	$scope.$watch('timeRegistration.company', function (newv, oldv) {
+		if(oldv && newv && oldv.id != newv.id){
+			$scope.timeRegistration.project = null;
+			$scope.timeRegistration.task = null;
+		}
 	});
+
+	$scope.$watch('timeRegistration.project', function (newv, oldv) {
+		if(oldv && newv && oldv.id != newv.id){
+			$scope.timeRegistration.task = null;	
+		}
+	});
+
+	$scope.$watch('timeRegistration.task', function () {
+		if($scope.newTimeRegistration && $scope.timeRegistration.task){
+			$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
+		}
+	});		
 	
 	$scope.isBusy = false;
 	$scope.message = '';
@@ -43,6 +58,8 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 
 		if(toUpdate.task && $scope.timeRegistration.project)
 			$scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
+
+		$scope.$apply();
 	});
 
 	$scope.ok = function () {
