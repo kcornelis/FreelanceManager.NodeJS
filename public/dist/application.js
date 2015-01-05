@@ -77,7 +77,7 @@ angular.module('account', ['angular-jwt']).factory('authInterceptor', [
   function ($rootScope, $location, $window, jwtHelper) {
     $rootScope.$on('$stateChangeStart', function (event, nextRoute, currentRoute) {
       var loggedIn = $window.sessionStorage.token && !jwtHelper.isTokenExpired($window.sessionStorage.token);
-      if (nextRoute.access.requiredLogin && !loggedIn) {
+      if (nextRoute.access && nextRoute.access.requiredLogin && !loggedIn) {
         $location.path('/login');
       }
     });
@@ -89,7 +89,26 @@ angular.module('account').config([
     $stateProvider.state('login', {
       url: '/login',
       templateUrl: 'modules/account/views/login.html'
+    }).state('account', {
+      url: '/account',
+      templateUrl: 'modules/account/views/account.html',
+      access: { requiredLogin: true }
     });
+  }
+]);'use strict';
+angular.module('account').controller('AccountInfoController', [
+  '$scope',
+  '$window',
+  'jwtHelper',
+  'Account',
+  function ($scope, $window, jwtHelper, Account) {
+    var token = jwtHelper.decodeToken($window.sessionStorage.token);
+    Account.get({ id: token.id }).$promise.then(function (response) {
+      $scope.account = response;
+    });
+    $scope.save = function () {
+      Account.save(token.id, $scope.account);
+    };
   }
 ]);angular.module('account').controller('AuthenticateController', [
   '$scope',
@@ -132,8 +151,47 @@ angular.module('core').config([
 ]);'use strict';
 angular.module('core').controller('HeaderController', [
   '$scope',
+  '$window',
+  'jwtHelper',
+  function ($scope, $window, jwtHelper) {
+    $scope.date = new Date();
+    var token = jwtHelper.decodeToken($window.sessionStorage.token);
+    $scope.fullName = token.fullName;
+  }
+]);'use strict';
+angular.module('core').controller('HomeController', [
+  '$scope',
   function ($scope) {
     $scope.date = new Date();
+  }
+]);'use strict';
+// TODO unit test this directive
+angular.module('core').directive('fmActiveMenuItem', [
+  '$state',
+  '$stateParams',
+  '$interpolate',
+  function ($state, $stateParams, $interpolate) {
+    return {
+      restrict: 'A',
+      controller: [
+        '$scope',
+        '$element',
+        '$attrs',
+        function ($scope, $element, $attrs) {
+          var state, params, activeClass;
+          state = $attrs.fmActiveMenuItem || '';
+          $scope.$on('$stateChangeSuccess', update);
+          // Update route state
+          function update() {
+            if ($state.$current.self.name.indexOf(state) == 0) {
+              $element.addClass('active');
+            } else {
+              $element.removeClass('active');
+            }
+          }
+        }
+      ]
+    };
   }
 ]);'use strict';
 angular.module('core').directive('autofocus', [
@@ -156,6 +214,86 @@ angular.module('core').directive('fmClockpicker', function () {
     }
   };
 });'use strict';
+// TODO unit test this directive
+angular.module('core').directive('fmDatepicker', [
+  '$timeout',
+  function ($timeout) {
+    return {
+      restrict: 'A',
+      require: '?ngModel',
+      scope: { fmDatepickerDatechanged: '&' },
+      link: function (scope, element, attrs, ngModel, timeout) {
+        if (!ngModel)
+          return;
+        var updateModel = function (dateTxt) {
+          scope.$apply(function () {
+            ngModel.$setViewValue(dateTxt);
+          });
+        };
+        ngModel.$render = function () {
+          element.datepicker('setDate', ngModel.$viewValue || '');
+        };
+        element.datepicker({
+          format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
+          autoclose: true,
+          orientation: 'auto right',
+          todayBtn: 'linked'
+        }).on('changeDate', function (date) {
+          var dateTxt = date.format(attrs.fmDatepickerFormat || 'yyyy-mm-dd');
+          if (scope.$root && !scope.$root.$$phase) {
+            updateModel(dateTxt);
+            if (scope.fmDatepickerDatechanged) {
+              scope.$apply(function () {
+                scope.fmDatepickerDatechanged({ date: dateTxt });
+              });
+            }
+          }
+        });
+      }
+    };
+  }
+]);'use strict';
+// TODO unit test this directive
+angular.module('core').directive('piechart', function () {
+  return {
+    restrict: 'E',
+    link: function (scope, elem, attrs) {
+      var chart = null, options = {
+          series: {
+            pie: {
+              show: true,
+              radius: 1,
+              label: {
+                show: true,
+                radius: 2 / 3,
+                formatter: function (label, series) {
+                  return '<div style=\'font-size:8pt; text-align:center; padding:2px; color:white;\'>' + label + '<br/>' + Math.round(series.percent) + '%</div>';
+                },
+                threshold: 0.1
+              }
+            }
+          },
+          legend: { show: false }
+        };
+      scope.$watch(attrs.ngModel, function (v) {
+        if (!chart) {
+          chart = $.plot(elem, v, options);
+          elem.show();
+        } else {
+          chart.setData(v);
+          chart.setupGrid();
+          chart.draw();
+        }
+      });
+    }
+  };
+});'use strict';
+angular.module('core').factory('Account', [
+  '$resource',
+  function ($resource) {
+    return $resource('/api/public/accounts/:id', { id: '@id' });
+  }
+]);'use strict';
 angular.module('core').factory('Company', [
   '$resource',
   function ($resource) {
@@ -170,6 +308,21 @@ angular.module('core').factory('Project', [
         method: 'GET',
         url: '/api/public/projects/active',
         isArray: true
+      },
+      hide: {
+        method: 'POST',
+        url: '/api/public/projects/:id/hide',
+        isArray: false
+      },
+      unhide: {
+        method: 'POST',
+        url: '/api/public/projects/:id/unhide',
+        isArray: false
+      },
+      changetasks: {
+        method: 'POST',
+        url: '/api/public/projects/:id/changetasks',
+        isArray: false
       }
     });
   }
@@ -183,13 +336,105 @@ angular.module('core').factory('TimeRegistration', [
         url: '/api/public/timeregistrations/bydate/:date',
         params: { date: '@date' },
         isArray: true
+      },
+      byrange: {
+        method: 'GET',
+        url: '/api/public/timeregistrations/byrange/:from/:to',
+        params: {
+          from: '@from',
+          to: '@to'
+        },
+        isArray: true
+      },
+      getinfo: {
+        method: 'GET',
+        url: '/api/public/timeregistrations/getinfo/:from/:to',
+        params: {
+          from: '@from',
+          to: '@to'
+        }
       }
     });
   }
 ]);'use strict';
+// TODO unit test
+angular.module('core').factory('XLSXReader', [
+  '$q',
+  '$rootScope',
+  function ($q, $rootScope) {
+    var service = function (data) {
+      angular.extend(this, data);
+    };
+    service.readFile = function (file) {
+      var deferred = $q.defer();
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, { type: 'binary' });
+        deferred.resolve(convertWorkbook(workbook));
+      };
+      reader.readAsBinaryString(file);
+      return deferred.promise;
+    };
+    function convertWorkbook(workbook) {
+      var sheets = {};
+      _.forEachRight(workbook.SheetNames, function (sheetName) {
+        var sheet = workbook.Sheets[sheetName];
+        sheets[sheetName] = convertSheet(sheet);
+      });
+      return sheets;
+    }
+    function convertSheet(sheet) {
+      var range = XLSX.utils.decode_range(sheet['!ref']);
+      var sheetData = [], header = [];
+      _.forEachRight(_.range(range.s.r, range.e.r + 1), function (row) {
+        var rowData = [];
+        _.forEachRight(_.range(range.s.c, range.e.c + 1), function (column) {
+          var cellIndex = XLSX.utils.encode_cell({
+              'c': column,
+              'r': row
+            });
+          var cell = sheet[cellIndex];
+          rowData[column] = cell ? cell.v : undefined;
+        });
+        if (row == 0)
+          header = rowData;
+        else
+          sheetData[row - 1] = rowData;
+      });
+      return {
+        'header': header,
+        'data': sheetData,
+        'name': sheet.name,
+        'col_size': range.e.c + 1,
+        'row_size': range.e.r
+      };
+    }
+    return service;
+  }
+]);'use strict';
+angular.module('core').filter('formatdate', function () {
+  return function (a) {
+    if (_.has(a, 'year') && _.has(a, 'month') && _.has(a, 'day')) {
+      return a.year + '-' + ('00' + a.month).slice(-2) + '-' + ('00' + a.day).slice(-2);
+    } else
+      return '-';
+  };
+});'use strict';
 angular.module('core').filter('formattime', function () {
   return function (a) {
-    return ('00' + a).slice(-2);
+    if (_.has(a, 'hour') && _.has(a, 'minutes')) {
+      return ('00' + a.hour).slice(-2) + ':' + ('00' + a.minutes).slice(-2);
+    } else if (_.isNumber(a)) {
+      var hour = Math.floor(a / 60);
+      var minutes = Math.floor(a - hour * 60);
+      if (hour > 99) {
+        return hour + ':' + ('00' + minutes).slice(-2);
+      } else {
+        return ('00' + hour).slice(-2) + ':' + ('00' + minutes).slice(-2);
+      }
+    } else
+      return '-';
   };
 });'use strict';
 angular.module('core').filter('moment', function () {
@@ -479,13 +724,78 @@ angular.module('project').controller('ProjectsController', [
           }
         });
       createDialog.result.then(function (project) {
-        var c = _.find($scope.projects, { 'id': project.id });
-        if (c)
-          angular.copy(project, c);
+        var p = _.find($scope.projects, { 'id': project.id });
+        if (p)
+          angular.copy(project, p);
         else
           $scope.projects.push(project);
       });
     };
+    $scope.openProjectTasks = function (project) {
+      var createDialog = $modal.open({
+          templateUrl: '/modules/project/views/projecttasksdialog.html',
+          controller: 'ProjectTasksDialogController',
+          resolve: {
+            toUpdate: function () {
+              return project;
+            }
+          }
+        });
+      createDialog.result.then(function (project) {
+        var p = _.find($scope.projects, { 'id': project.id });
+        if (p)
+          angular.copy(project, p);
+      });
+    };
+    $scope.hideProject = function (project) {
+      Project.hide({ id: project.id }, function () {
+        project.hidden = true;
+      });
+    };
+    $scope.unhideProject = function (project) {
+      Project.unhide({ id: project.id }, function () {
+        project.hidden = false;
+      });
+    };
+  }
+]);'use strict';
+angular.module('project').controller('ProjectTasksDialogController', [
+  '$scope',
+  'Project',
+  'toUpdate',
+  function ($scope, Project, toUpdate) {
+    $scope.originalProject = toUpdate;
+    toUpdate = toUpdate || {};
+    $scope.project = {
+      tasks: _.map(toUpdate.tasks, function (t) {
+        return {
+          name: t.name,
+          defaultRateInCents: t.defaultRateInCents
+        };
+      })
+    };
+    $scope.isBusy = false;
+    $scope.message = '';
+    $scope.ok = function () {
+      showMessage('Saving project...');
+      Project.changetasks({ id: $scope.originalProject.id }, $scope.project.tasks, function (data) {
+        hideMessage();
+        $scope.$close(data);
+      }, function (err) {
+        showMessage('An error occurred...');
+      });
+    };
+    $scope.cancel = function () {
+      $scope.$dismiss('cancel');
+    };
+    function showMessage(message) {
+      $scope.isBusy = true;
+      $scope.message = message;
+    }
+    function hideMessage() {
+      $scope.isBusy = false;
+      $scope.message = '';
+    }
   }
 ]);'use strict';
 // Setting up route
@@ -495,13 +805,357 @@ angular.module('time').config([
   function ($stateProvider, $urlRouterProvider) {
     // time registration state routing
     $stateProvider.state('time', {
-      templateUrl: 'modules/time/views/timeregistration.html',
+      templateUrl: 'modules/time/views/time.html',
       access: { requiredLogin: true }
-    }).state('time.timeregistrations', {
-      url: '/time/:date',
-      templateUrl: 'modules/time/views/timeregistrations.html',
+    }).state('time.overview', {
+      url: '/time/overview/:from/:to',
+      templateUrl: 'modules/time/views/overview.html',
+      access: { requiredLogin: true }
+    }).state('time.registrations', {
+      url: '/time/registrations/:date',
+      templateUrl: 'modules/time/views/registrations.html',
+      access: { requiredLogin: true }
+    }).state('time.report', {
+      url: '/time/report/:from/:to',
+      templateUrl: 'modules/time/views/report.html',
+      access: { requiredLogin: true }
+    }).state('time.import', {
+      url: '/time/import',
+      templateUrl: 'modules/time/views/import.html',
       access: { requiredLogin: true }
     });
+  }
+]);'use strict';
+// TODO unit test
+angular.module('time').controller('ImportController', [
+  '$scope',
+  'XLSXReader',
+  'Project',
+  'TimeRegistration',
+  function ($scope, XLSXReader, Project, TimeRegistration) {
+    // upload, sheet, column, project, import
+    $scope.wizardStep = 1;
+    Project.active(function (projects) {
+      var tasks = [];
+      var id = 0;
+      _.forEach(projects, function (p) {
+        _.forEach(p.tasks, function (t) {
+          tasks.push({
+            project: p,
+            task: t,
+            display: p.name + ' - ' + t.name,
+            id: id++
+          });
+        });
+      });
+      $scope.tasks = tasks;
+    });
+    // step 1 (file selection)
+    // ***********************
+    $scope.fileChanged = function (files) {
+      $scope.excelSheets = [];
+      $scope.excelFile = files[0];
+      XLSXReader.readFile($scope.excelFile, $scope.showPreview).then(function (xlsxData) {
+        $scope.excelSheets = xlsxData;
+        $scope.gotoStep2();
+      });
+    };
+    $scope.gotoStep2 = function () {
+      $scope.wizardStep += 1;
+    };
+    $scope.canGotoStep2 = function () {
+      return true;
+    };
+    // step 2 (sheet selection)
+    // ***********************
+    $scope.selectedSheetName = undefined;
+    $scope.selectedSheet = undefined;
+    $scope.gotoStep3 = function () {
+      $scope.selectedSheet = $scope.excelSheets[$scope.selectedSheetName];
+      var selectedSheetHeader = [];
+      for (var i = 0; i < $scope.selectedSheet.header.length; i++) {
+        selectedSheetHeader.push({
+          key: i,
+          value: $scope.selectedSheet.header[i]
+        });
+      }
+      $scope.selectedSheetHeader = selectedSheetHeader;
+      $scope.wizardStep += 1;
+    };
+    $scope.canGotoStep3 = function () {
+      return $scope.selectedSheetName != null;
+    };
+    // step 3 (column selection)
+    // ***********************	
+    $scope.gotoStep4 = function () {
+      $scope.groupedRows = _.groupBy($scope.selectedSheet.data, function (r) {
+        return r[$scope.selectedProjectColumn] + ' - ' + r[$scope.selectedTaskColumn];
+      });
+      $scope.projectsInExcelSheet = _.map($scope.groupedRows, function (g) {
+        return {
+          project: g[0][$scope.selectedProjectColumn],
+          task: g[0][$scope.selectedTaskColumn],
+          display: g[0][$scope.selectedProjectColumn] + ' - ' + g[0][$scope.selectedTaskColumn]
+        };
+      });
+      $scope.wizardStep += 1;
+    };
+    $scope.canGotoStep4 = function () {
+      return $scope.selectedProjectColumn != null && $scope.selectedTaskColumn != null && $scope.selectedDateColumn != null && $scope.selectedFromColumn != null && $scope.selectedToColumn != null && $scope.selectedDescriptionColumn != null;
+    };
+    // step 4 (project mapping)
+    // ***********************	
+    $scope.gotoStep5 = function () {
+      $scope.wizardStep += 1;
+    };
+    $scope.canGotoStep5 = function () {
+      return _.every($scope.projectsInExcelSheet, function (p) {
+        return p.mappedProjectAndTask != null;
+      });
+    };
+    // step 5 (saving)
+    // ***********************	
+    $scope.import = function () {
+      var registrations = [];
+      _.forEach($scope.groupedRows, function (groupedRow) {
+        var selectedProjectTask = _.first(_.where($scope.projectsInExcelSheet, function (p) {
+            return p.project == groupedRow[0][$scope.selectedProjectColumn] && p.task == groupedRow[0][$scope.selectedTaskColumn];
+          })).mappedProjectAndTask;
+        var project = $scope.tasks[selectedProjectTask].project;
+        var task = $scope.tasks[selectedProjectTask].task;
+        _.forEach(groupedRow, function (row) {
+          registrations.push({
+            companyId: project.companyId,
+            projectId: project.id,
+            task: task.name,
+            description: row[$scope.selectedDescriptionColumn],
+            date: convertDisplayDateToNumeric(row[$scope.selectedDateColumn]),
+            from: convertDisplayTimeToNumeric(row[$scope.selectedFromColumn]),
+            to: convertDisplayTimeToNumeric(row[$scope.selectedToColumn])
+          });
+        });
+      });
+      TimeRegistration.save(registrations, function () {
+        var i = 0;
+      }, function () {
+        var i = 0;
+      });
+    };
+    function convertDisplayDateToNumeric(date) {
+      return parseInt(date.replace(/-/g, ''), 10);
+    }
+    function convertDisplayTimeToNumeric(time) {
+      return parseInt(time.replace(':', ''), 10);
+    }
+  }
+]);'use strict';
+angular.module('time').controller('OverviewController', [
+  '$scope',
+  '$location',
+  '$stateParams',
+  'TimeRegistration',
+  function ($scope, $location, $stateParams, TimeRegistration) {
+    $scope.from = new moment($stateParams.from, 'YYYYMMDD');
+    $scope.to = new moment($stateParams.to, 'YYYYMMDD');
+    $scope.hasTimeRegistrations = false;
+    $scope.from = new moment($stateParams.from, 'YYYYMMDD');
+    $scope.to = new moment($stateParams.to, 'YYYYMMDD');
+    $scope.thisWeek = new moment().day(1).format('YYYYMMDD') + '/' + new moment().day(7).format('YYYYMMDD');
+    $scope.lastWeek = new moment().day(1).subtract('days', 7).format('YYYYMMDD') + '/' + new moment().day(7).subtract('days', 7).format('YYYYMMDD');
+    $scope.thisMonth = new moment().set('date', 1).format('YYYYMMDD') + '/' + new moment().set('date', new moment().daysInMonth()).format('YYYYMMDD');
+    $scope.lastMonth = new moment().set('date', 1).subtract('months', 1).format('YYYYMMDD') + '/' + new moment().subtract('months', 1).set('date', new moment().subtract('months', 1).daysInMonth()).format('YYYYMMDD');
+    $scope.thisYear = new moment().set('month', 0).set('date', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).format('YYYYMMDD');
+    $scope.lastYear = new moment().set('month', 0).set('date', 1).subtract('years', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).subtract('years', 1).format('YYYYMMDD');
+    $scope.$watch('from', function () {
+      $scope.displayFrom = $scope.from.format('YYYY-MM-DD');
+    });
+    $scope.$watch('to', function () {
+      $scope.displayTo = $scope.to.format('YYYY-MM-DD');
+    });
+    $scope.changeFrom = function (date, format) {
+      $scope.from = new moment(date, format);
+    };
+    $scope.changeTo = function (date, format) {
+      $scope.to = new moment(date, format);
+    };
+    $scope.applyDate = function () {
+      $location.path('/time/overview/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
+    };
+    $scope.refresh = function () {
+      TimeRegistration.byrange({
+        from: $scope.from.format('YYYYMMDD'),
+        to: $scope.to.format('YYYYMMDD')
+      }, function (tr) {
+        var grouped = _.groupBy(tr, function (i) {
+            return i.date.numeric;
+          });
+        $scope.timeRegistrations = _.sortBy(_.map(grouped, function (g) {
+          return {
+            date: _.first(g).date,
+            items: g
+          };
+        }), function (i) {
+          return i.date.numeric;
+        });
+        $scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+      });
+    };
+  }
+]);'use strict';
+angular.module('time').controller('RegistrationsController', [
+  '$scope',
+  '$modal',
+  '$location',
+  '$stateParams',
+  'TimeRegistration',
+  function ($scope, $modal, $location, $stateParams, TimeRegistration) {
+    $scope.date = new moment($stateParams.date, 'YYYYMMDD');
+    $scope.hasTimeRegistrations = false;
+    $scope.$watch('date', function () {
+      $scope.displayDate = $scope.date.format('YYYY-MM-DD');
+    });
+    $scope.nextDate = function () {
+      $scope.date = new moment($scope.date.add(1, 'days'));
+      $location.path('/time/registrations/' + $scope.date.format('YYYYMMDD')).replace();
+      $scope.refresh();
+    };
+    $scope.previousDate = function () {
+      $scope.date = new moment($scope.date.subtract(1, 'days'));
+      $location.path('/time/registrations/' + $scope.date.format('YYYYMMDD')).replace();
+      $scope.refresh();
+    };
+    $scope.changeDate = function (date, format) {
+      $scope.date = new moment(date, format);
+      $location.path('/time/registrations/' + $scope.date.format('YYYYMMDD')).replace();
+      $scope.refresh();
+    };
+    $scope.refresh = function () {
+      TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function (timeRegistrations) {
+        $scope.hasTimeRegistrations = timeRegistrations.length > 0;
+        $scope.timeRegistrations = _.sortBy(timeRegistrations, function (i) {
+          return i.from.numeric;
+        });
+      });
+    };
+    $scope.openTimeRegistration = function (timeRegistration) {
+      var createDialog = $modal.open({
+          templateUrl: '/modules/time/views/timeregistrationdialog.html',
+          controller: 'TimeRegistrationDialogController',
+          size: 'lg',
+          resolve: {
+            toUpdate: function () {
+              return timeRegistration;
+            },
+            date: function () {
+              return $scope.date.format('YYYYMMDD');
+            }
+          }
+        });
+      createDialog.result.then(function (timeRegistration) {
+        var c = _.find($scope.timeRegistrations, { 'id': timeRegistration.id });
+        if (c)
+          angular.copy(timeRegistration, c);
+        else
+          $scope.timeRegistrations.push(timeRegistration);
+        $scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+      });
+    };
+  }
+]);'use strict';
+angular.module('time').controller('ReportController', [
+  '$scope',
+  '$location',
+  '$stateParams',
+  'TimeRegistration',
+  function ($scope, $location, $stateParams, TimeRegistration) {
+    $scope.from = new moment($stateParams.from, 'YYYYMMDD');
+    $scope.to = new moment($stateParams.to, 'YYYYMMDD');
+    // is this a full year?
+    if ($scope.from.date() == 1 && $scope.from.month() == 0 && $scope.to.date() == 31 && $scope.to.month() == 11 && $scope.from.year() == $scope.to.year()) {
+      $scope.title = $scope.from.format('YYYY');
+      $scope.previousFrom = new moment($scope.from).subtract(1, 'year');
+      $scope.previousTo = new moment($scope.to).subtract(1, 'year');
+      $scope.nextFrom = new moment($scope.from).add(1, 'year');
+      $scope.nextTo = new moment($scope.to).add(1, 'year');
+    }  // is this a full month?
+    else if ($scope.from.date() == 1 && new moment($scope.from).endOf('month').date() == $scope.to.date() && $scope.from.month() == $scope.to.month() && $scope.from.year() == $scope.to.year()) {
+      $scope.title = $scope.from.format('MMMM YYYY');
+      $scope.previousFrom = new moment($scope.from).subtract(1, 'month').startOf('month');
+      $scope.previousTo = new moment($scope.from).subtract(1, 'month').endOf('month');
+      $scope.nextFrom = new moment($scope.from).add(1, 'month').startOf('month');
+      $scope.nextTo = new moment($scope.from).add(1, 'month').endOf('month');
+    } else {
+      $scope.title = $scope.from.format('YYYY-MM-DD') + ' - ' + $scope.to.format('YYYY-MM-DD');
+      var days = $scope.to.diff($scope.from, 'days') + 1;
+      $scope.previousFrom = new moment($scope.from).subtract(days, 'days');
+      $scope.previousTo = new moment($scope.to).subtract(days, 'days');
+      $scope.nextFrom = new moment($scope.from).add(days, 'days');
+      $scope.nextTo = new moment($scope.to).add(days, 'days');
+    }
+    $scope.weekStart = new moment().startOf('isoWeek').format('YYYYMMDD');
+    $scope.weekEnd = new moment().endOf('isoWeek').format('YYYYMMDD');
+    $scope.monthStart = new moment().startOf('month').format('YYYYMMDD');
+    $scope.monthEnd = new moment().endOf('month').format('YYYYMMDD');
+    $scope.yearStart = new moment().startOf('year').format('YYYYMMDD');
+    $scope.yearEnd = new moment().endOf('year').format('YYYYMMDD');
+    $scope.previous = function () {
+      $location.path('/time/report/' + $scope.previousFrom.format('YYYYMMDD') + '/' + $scope.previousTo.format('YYYYMMDD')).replace();
+    };
+    $scope.next = function () {
+      $location.path('/time/report/' + $scope.nextFrom.format('YYYYMMDD') + '/' + $scope.nextTo.format('YYYYMMDD')).replace();
+    };
+    $scope.refresh = function () {
+      $scope.loading = true;
+      TimeRegistration.getinfo({
+        from: $scope.from.format('YYYYMMDD'),
+        to: $scope.to.format('YYYYMMDD')
+      }).$promise.then(function (b) {
+        $scope.summary = b.summary;
+        var grouped = _.groupBy(b.perTask, function (i) {
+            return JSON.stringify({
+              c: i.companyId,
+              p: i.projectId
+            });
+          });
+        $scope.infoPerProject = _.map(grouped, function (g) {
+          return {
+            companyId: g[0].companyId,
+            company: g[0].company,
+            projectId: g[0].projectId,
+            project: g[0].project,
+            tasks: g
+          };
+        });
+      }).finally(function () {
+        $scope.billableUnbillableGraph = [
+          {
+            label: 'Billable',
+            data: $scope.summary.billableMinutes,
+            color: '#7266BA'
+          },
+          {
+            label: 'Unbillable',
+            data: $scope.summary.unBillableMinutes,
+            color: '#5D9CEC'
+          }
+        ];
+        if ($scope.summary.unBillableMinutes || $scope.summary.billableMinutes)
+          $scope.hasHours = true;
+        else
+          $scope.hasHours = false;
+        $scope.loading = false;
+      });
+    };
+  }
+]);'use strict';
+angular.module('time').controller('TimeController', [
+  '$scope',
+  '$location',
+  '$stateParams',
+  function ($scope, $location, $stateParams) {
+    $scope.today = new moment();
+    $scope.firstOfCurrentMonth = new moment().startOf('month');
+    $scope.lastOfCurrentMonth = new moment().endOf('month');
   }
 ]);'use strict';
 angular.module('time').controller('TimeRegistrationDialogController', [
@@ -518,10 +1172,27 @@ angular.module('time').controller('TimeRegistrationDialogController', [
       company: null,
       project: null,
       task: null,
+      billable: toUpdate.billable || false,
       description: toUpdate.description || '',
       from: toUpdate.from ? convertNumericTimeToDisplay(toUpdate.from.numeric) : '',
       to: toUpdate.to ? convertNumericTimeToDisplay(toUpdate.to.numeric) : ''
     };
+    $scope.$watch('timeRegistration.company', function (newv, oldv) {
+      if (oldv && newv && oldv.id != newv.id) {
+        $scope.timeRegistration.project = null;
+        $scope.timeRegistration.task = null;
+      }
+    });
+    $scope.$watch('timeRegistration.project', function (newv, oldv) {
+      if (oldv && newv && oldv.id != newv.id) {
+        $scope.timeRegistration.task = null;
+      }
+    });
+    $scope.$watch('timeRegistration.task', function () {
+      if ($scope.newTimeRegistration && $scope.timeRegistration.task) {
+        $scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
+      }
+    });
     $scope.isBusy = false;
     $scope.message = '';
     // load all projects and convert them to companies => projects => tasks
@@ -535,9 +1206,13 @@ angular.module('time').controller('TimeRegistrationDialogController', [
           projects: g
         };
       });
-      $scope.timeRegistration.company = _.first(_.where($scope.companies, { id: toUpdate.companyId }));
-      $scope.timeRegistration.project = _.first(_.where($scope.timeRegistration.company.projects, { id: toUpdate.projectId }));
-      $scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
+      if (toUpdate.companyId)
+        $scope.timeRegistration.company = _.first(_.where($scope.companies, { id: toUpdate.companyId }));
+      if (toUpdate.projectId && $scope.timeRegistration.company)
+        $scope.timeRegistration.project = _.first(_.where($scope.timeRegistration.company.projects, { id: toUpdate.projectId }));
+      if (toUpdate.task && $scope.timeRegistration.project)
+        $scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
+      $scope.$apply();
     });
     $scope.ok = function () {
       showMessage('Saving time registration...');
@@ -547,6 +1222,7 @@ angular.module('time').controller('TimeRegistrationDialogController', [
         projectId: $scope.timeRegistration.project.id,
         task: $scope.timeRegistration.task.name,
         description: $scope.timeRegistration.description,
+        billable: $scope.timeRegistration.billable,
         date: date,
         from: convertDisplayTimeToNumeric($scope.timeRegistration.from),
         to: convertDisplayTimeToNumeric($scope.timeRegistration.to)
@@ -574,52 +1250,7 @@ angular.module('time').controller('TimeRegistrationDialogController', [
       return ('00' + hour).slice(-2) + ':' + ('00' + minutes).slice(-2);
     }
     function convertDisplayTimeToNumeric(time) {
-      return parseInt(time.replace(':', ''));
+      return parseInt(time.replace(':', ''), 10);
     }
-  }
-]);'use strict';
-angular.module('time').controller('TimeRegistrationsController', [
-  '$scope',
-  '$modal',
-  '$location',
-  '$stateParams',
-  'TimeRegistration',
-  function ($scope, $modal, $location, $stateParams, TimeRegistration) {
-    $scope.date = new moment($stateParams.date, 'YYYYMMDD');
-    $scope.hasTimeRegistrations = false;
-    $scope.nextDate = function () {
-      $location.path('/time/' + $scope.date.add('days', 1).format('YYYYMMDD'));
-    };
-    $scope.previousDate = function () {
-      $location.path('/time/' + $scope.date.subtract('days', 1).format('YYYYMMDD'));
-    };
-    $scope.refresh = function () {
-      $scope.timeRegistrations = TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function () {
-        $scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
-      });
-    };
-    $scope.openTimeRegistration = function (timeRegistration) {
-      var createDialog = $modal.open({
-          templateUrl: '/modules/time/views/timeregistrationdialog.html',
-          controller: 'TimeRegistrationDialogController',
-          size: 'lg',
-          resolve: {
-            toUpdate: function () {
-              return timeRegistration;
-            },
-            date: function () {
-              return $scope.date.format('YYYYMMDD');
-            }
-          }
-        });
-      createDialog.result.then(function (timeRegistration) {
-        var c = _.find($scope.timeRegistrations, { 'id': timeRegistration.id });
-        if (c)
-          angular.copy(timeRegistration, c);
-        else
-          $scope.timeRegistrations.push(timeRegistration);
-        $scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
-      });
-    };
   }
 ]);
