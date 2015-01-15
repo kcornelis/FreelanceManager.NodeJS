@@ -41,7 +41,8 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 	},
 	billable: {
 		type: Boolean,
-		default: false
+		default: false,
+		index: true
 	},	
 	description: {
 		type: String,
@@ -63,9 +64,21 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 		minutes: { type: Number, required: true, validate: minuteValidation },
 		numeric: { type: Number }
 	},
+	invoiced: {
+		type: Boolean,
+		default: false,
+		index: true
+	},
+	invoicedOn: {
+		type: Date
+	},
+	invoiceId: {
+		type: String
+	},
 	deleted: {
 		type: Boolean,
-		default: false
+		default: false,
+		index: true
 	},
 	deletedOn: {
 		type: Date
@@ -172,6 +185,23 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 		});     
 	}
 };
+
+TimeRegistrationSchema.methods.markInvoiced = function(invoiceId){
+	
+	if(this.invoiced)
+		throw new Error('Can\'t mark a time registration twice as invoiced');
+
+	this.invoiced = true;
+	this.invoicedOn = Date.now();
+	this.invoiceId = invoiceId;
+
+	this.apply('TimeRegistrationMarkedAsInvoiced', 
+	{
+		invoiced: this.invoiced,
+		invoicedOn: this.invoicedOn,
+		invoiceId: this.invoiceId
+	});
+}
 
 TimeRegistrationSchema.methods.totalMinutes = function(){
 

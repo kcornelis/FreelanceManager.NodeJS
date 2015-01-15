@@ -90,6 +90,12 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			saved.totalMinutes().should.eql(695);
 		});
 
+		it('should not be marked as invoiced', function(){
+			saved.invoiced.should.eql(false);
+			(saved.invoicedOn === undefined).should.true;
+			(saved.invoiceId === undefined).should.true;
+		});
+
 		it('should have version 1', function(){
 			saved.version.should.eql(1);
 		});
@@ -390,6 +396,68 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 		after(function(done) {
 			TimeRegistration.remove(done);
+		});
+	});
+
+	describe('When a time registration is marked as invoiced', function(){
+
+		var original, timeRegistration;
+
+		before(function(done) {
+			original = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
+			original.markInvoiced('invoice id');
+			original.save(done);
+		});
+
+		it('should be saved with no problems', function(done) {
+			
+			TimeRegistration.findOne({
+				_id: original._id
+			}, function(finderr, tr) {
+
+				timeRegistration = tr;
+				done();
+			});
+		});
+
+		it('should be marked as invoiced', function(){
+			timeRegistration.invoiced.should.be.true;
+		});
+
+		it('should should contain the invoice id', function(){
+			timeRegistration.invoiceId.should.eql('invoice id');
+		});
+
+		it('should have the invoiced on date', function(){
+			new Date(timeRegistration.invoicedOn).should.greaterThan(new Date(Date.now() - 10000));
+			new Date(timeRegistration.invoicedOn).should.lessThan(new Date(Date.now() + 10000));
+		});
+
+		it('should have version 2', function(){
+			timeRegistration.version.should.eql(2);
+		});
+
+		it('should have a marked invoiced event', function(){
+			timeRegistration.events[1].invoiced.should.be.true;			
+			new Date(timeRegistration.events[1].invoicedOn).should.greaterThan(new Date(Date.now() - 10000));
+			new Date(timeRegistration.events[1].invoicedOn).should.lessThan(new Date(Date.now() + 10000));		
+			timeRegistration.events[1].invoiceId.should.eql('invoice id');
+
+			timeRegistration.events[1].metadata.eventName.should.eql('TimeRegistrationMarkedAsInvoiced');
+		});
+
+		after(function(done) {
+			TimeRegistration.remove(done);
+		});
+	});
+
+	describe('When a time registration is marked as invoiced twice', function(){
+
+		it('should fail', function() {
+			
+			var tr = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
+			tr.markInvoiced('invoice id');
+			tr.markInvoiced.bind('invoice id 2').should.throw();
 		});
 	});
 });
