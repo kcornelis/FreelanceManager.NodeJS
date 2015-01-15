@@ -130,6 +130,7 @@ InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
 	invoice.tenant = tenant;
 	invoice.date = date;
 	invoice.creditTerm = creditTerm;
+	invoice.lines = [];
 
 	// set totals to 0
 	recalculateTotals(invoice);
