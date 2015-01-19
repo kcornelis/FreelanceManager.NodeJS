@@ -407,6 +407,92 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	});
 
 	/**
+	 * Get all uninvoiced time registrations
+	 */
+	describe('When uninvoiced time registrations are requested by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/timeregistrations/uninvoiced')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When uninvoiced time registrations are requested', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+		var timeregistration4;
+		var timeregistration5;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20100201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20100202, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20100210, 1400, 1500);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100211, 1400, 1500);
+			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
+			
+			timeregistration3.markInvoiced('invoiceId');
+
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+
+					timeregistration3.save(done);
+				},
+				function(done){
+					timeregistration4.save(done);
+				},
+				function(done){
+					timeregistration5.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/uninvoiced')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return uninvoiced time registrations', function() {
+			_.where(body, { id: timeregistration1.id }).length.should.eql(1);
+			_.where(body, { id: timeregistration2.id }).length.should.eql(1);
+		});
+
+		it('should not return unbillable time registrations', function() {
+			_.where(body, { id: timeregistration3.id }).length.should.eql(0);
+		});
+
+		it('should not return invoiced time registrations', function() {
+			_.where(body, { id: timeregistration4.id }).length.should.eql(0);
+		});
+
+		it('should not return time registrations from another tenant', function() {
+			_.where(body, { id: timeregistration5.id }).length.should.eql(0);
+		});
+	});
+
+	/**
 	 * Get time registration info
 	 */
 	describe('When time registrations info is requested by an unauthenticated person', function(){

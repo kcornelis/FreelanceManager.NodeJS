@@ -154,6 +154,24 @@ exports.getForRange = function(req, res) {
 	});
 }
 
+exports.getUninvoiced = function(req, res){
+
+	TimeRegistration.find(
+	{ 
+		tenant: req.user.id,
+		deleted: false,
+		invoiced: false,
+		billable: true
+	},
+	function(err, timeRegistrations) 
+	{
+		if(err) next(err);
+		else convertMultiple(timeRegistrations, function(converted){
+			res.send(converted);
+		});
+	});
+}
+
 exports.getInfo = function(req, res) {
 
 	TimeRegistration.find(
