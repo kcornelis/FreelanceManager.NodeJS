@@ -65,12 +65,6 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 			async.series([
 				function(done){
-					company.save(done);
-				},
-				function(done){
-					project.save(done);
-				},
-				function(done){
 					timeRegistration.save(done);
 				},
 				function(done){

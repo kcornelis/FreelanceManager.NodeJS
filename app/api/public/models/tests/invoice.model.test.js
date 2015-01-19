@@ -6,7 +6,11 @@
 var should = require('should'),
 	mongoose = require('mongoose'),
 	uuid = require('node-uuid'),
-	Invoice = mongoose.model('Invoice');
+	async = require('async'),
+	Invoice = mongoose.model('Invoice'),
+	TimeRegistration = require('mongoose').model('TimeRegistration'),
+	Company = require('mongoose').model('Company'),
+	Project = require('mongoose').model('Project');
 
 
 describe('Invoice Model Unit Tests:', function() {
@@ -547,6 +551,121 @@ describe('Invoice Model Unit Tests:', function() {
 
 		it('should not create a new event', function(){
 			invoice.events.should.have.length(3);
+		});
+	});
+
+	describe('When an invoice is linked with time registrations', function() {
+
+		var company, project, timeRegistration1, timeRegistration2, timeRegistration3;
+		var original, saved;
+
+		before(function(done) {
+			
+			company = Company.create('account1', 'My Company');
+			project = Project.create('account1', company.id, 'FM Manager', 'Freelance manager');
+			timeRegistration1 = TimeRegistration.create('account1', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
+			timeRegistration2 = TimeRegistration.create('account1', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
+			timeRegistration3 = TimeRegistration.create('account2', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
+
+			original = Invoice.create('account1', 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+
+			original.changeTemplate('template');
+
+			original.changeTo('to', 'tovat', 'tonumber', {
+				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
+			});	
+
+			original.linkTimeRegistrations([ timeRegistration1.id, timeRegistration2.id, timeRegistration3.id ]);
+
+			async.series([
+				function(done){
+					company.save(done);
+				},
+				function(done){
+					project.save(done);
+				},
+				function(done){
+					timeRegistration1.save(done);
+				},
+				function(done){
+					timeRegistration2.save(done);
+				},
+				function(done){
+					timeRegistration3.save(done);
+				},
+				function(done){
+					original.save(done);
+				}
+			], done);
+		});
+
+		it('should be in the database', function(done) {
+			Invoice.findOne({
+				_id: original._id
+			}, function(err, invoice) {
+
+				should.not.exist(err);
+				should.exist(invoice);
+
+				saved = invoice;
+
+				done();
+			});
+		});
+
+		it('should contain the time registration ids', function(){
+			saved.linkedTimeRegistrations[0].should.eql(timeRegistration1.id);
+			saved.linkedTimeRegistrations[1].should.eql(timeRegistration2.id);
+		});
+
+		it('should have an updated version', function(){
+			saved.version.should.eql(4);
+		});
+
+		it('should have a time registrations linked changed event', function(){
+
+			saved.events[3].timeRegistrationIds[0].should.eql(timeRegistration1.id);
+			saved.events[3].timeRegistrationIds[1].should.eql(timeRegistration2.id);
+
+			saved.events[3].metadata.eventName.should.eql('InvoiceTimeRegistrationsLinked');
+		});
+
+		it('should mark the time registrations as invoiced', function(done){
+
+			var tr1, tr2;
+
+			async.series([
+				function(done){
+					TimeRegistration.findOne({ _id: timeRegistration1.id }, function(err, tr) { tr1 = tr; done(); });
+				},
+				function(done){
+					TimeRegistration.findOne({ _id: timeRegistration2.id }, function(err, tr) { tr2 = tr; done(); });
+				},
+				function(done){
+					tr1.invoiced.should.be.true;
+					tr2.invoiced.should.be.true;
+					done();
+				}
+			], done);
+		});
+
+		it('should not mark time registrations from another tenant as invoiced', function(done){
+
+			var tr1;
+
+			async.series([
+				function(done){
+					TimeRegistration.findOne({ _id: timeRegistration3.id }, function(err, tr) { tr1 = tr; done(); });
+				},
+				function(done){
+					tr1.invoiced.should.be.false;
+					done();
+				}
+			], done);
+		});
+
+		after(function(done) {
+			Invoice.remove(done);
 		});
 	});
 });

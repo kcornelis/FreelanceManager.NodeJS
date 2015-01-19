@@ -42,7 +42,8 @@ function convert(invoice){
 			}
 		}),
 		totalVat: invoice.totalVat,
-		total: invoice.total
+		total: invoice.total,
+		linkedTimeRegistrations: invoice.linkedTimeRegistrations
 	};
 }
 
@@ -78,6 +79,7 @@ exports.create = function(req, res, next) {
 	invoice.changeTemplate(req.body.template);
 	invoice.replaceLines(req.body.lines);
 	invoice.changeTo(req.body.to.name, req.body.to.vatNumber, req.body.to.customerNumber, req.body.to.address);
+	invoice.linkTimeRegistrations(req.body.linkedTimeRegistrationIds);
 
 	invoice.save(function(err){
 		if(err) next(err);                     

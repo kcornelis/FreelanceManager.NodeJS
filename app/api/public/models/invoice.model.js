@@ -115,7 +115,31 @@ var InvoiceSchema = new AggregateRootSchema({
 	total: {
 		type: Number,
 		required: true
-	}
+	},
+	linkedTimeRegistrations: [ String ]
+});
+
+/*
+ *	Middleware
+ */
+
+InvoiceSchema.post('save', function (doc) {
+
+	mongoose.model('TimeRegistration').find(
+	{ 
+		tenant: doc.tenant,
+		deleted: false,
+		_id: { $in : doc.linkedTimeRegistrations }
+	},
+	function(err, timeRegistrations) 
+	{
+		for(var i = 0; i < timeRegistrations.length; i++) {
+			if(!timeRegistrations[i].invoiced) {
+				timeRegistrations[i].markInvoiced(doc.id);
+				timeRegistrations[i].save();
+			}
+		}
+	});
 });
 
 /*
@@ -227,6 +251,21 @@ InvoiceSchema.methods.replaceLines = function(lines){
 			total: this.total
 		});	
 	}
+}
+
+InvoiceSchema.methods.linkTimeRegistrations = function(timeRegistrationIds){
+
+	if(!timeRegistrationIds)
+		return;
+
+	for(var i = 0; i < timeRegistrationIds.length; i++){
+		this.linkedTimeRegistrations.push(timeRegistrationIds[i]);
+	}
+
+	this.apply('InvoiceTimeRegistrationsLinked', 
+	{
+		timeRegistrationIds: timeRegistrationIds
+	});	
 }
 
 function recalculateTotals(invoice){

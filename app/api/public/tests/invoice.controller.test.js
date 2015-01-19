@@ -297,7 +297,8 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 						description: 'item 2', quantity: 1, price: 100, vatPercentage: 20
 					},{
 						description: 'item 3', quantity: 5, price: 100, vatPercentage: 20
-					}]
+					}],
+					linkedTimeRegistrationIds: [ 'abc', 'def' ]
 				})
 				.expect('Content-Type', /json/)
 				.expect(200)
@@ -321,6 +322,49 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 		it('should create a invoice with the specified name', function(){
 			invoice.number.should.eql('20140101');
+		});
+
+		it('should create a invoice with the specified date', function(){
+			new Date(invoice.date).should.eql(new Date(2014, 1, 1));
+		});	
+
+		it('sshould create a invoice with the specified credit term', function(){
+			new Date(invoice.creditTerm).should.eql(new Date(2014, 1, 30));
+		});	
+
+		it('should create a invoice with the specified template', function(){
+			invoice.template.should.eql('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+		});
+
+		it('should create a invoice with the specified to', function(){
+			invoice.to.name.should.eql('John BVBA');
+			invoice.to.vatNumber.should.eql('BE12345678');
+			invoice.to.customerNumber.should.eql('100');
+
+			invoice.to.address.line1.should.eql('Kerkstraat');
+			invoice.to.address.line2.should.eql('Test');
+			invoice.to.address.postalcode.should.eql('9999');
+			invoice.to.address.city.should.eql('Brussel');
+		});	
+
+		it('should create a invoice with the specified lines', function(){
+			
+			invoice.lines[0].description.should.eql('item 1');
+			invoice.lines[0].quantity.should.eql(2);
+			invoice.lines[0].price.should.eql(100);
+			invoice.lines[0].vatPercentage.should.eql(21);
+			invoice.lines[0].total.should.eql(200);
+
+			invoice.lines[1].description.should.eql('item 2');
+			invoice.lines[1].quantity.should.eql(1);
+			invoice.lines[1].price.should.eql(100);
+			invoice.lines[1].vatPercentage.should.eql(20);
+			invoice.lines[1].total.should.eql(100);	
+		});
+
+		it('should create a invoice with the specified linked time registrations', function(){
+			invoice.linkedTimeRegistrations[0].should.eql('abc');
+			invoice.linkedTimeRegistrations[1].should.eql('def');
 		});
 
 		it('should create a invoice for the logged in user', function(){
@@ -387,6 +431,11 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 		it('should return the total of the invoice', function(){
 			body.total.should.eql(962);
-		});		
+		});	
+
+		it('should return the linked time registrations', function(){
+			body.linkedTimeRegistrations[0].should.eql('abc');
+			body.linkedTimeRegistrations[1].should.eql('def');
+		});	
 	});	  
 });
