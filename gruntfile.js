@@ -68,9 +68,10 @@ module.exports = function(grunt) {
 		uglify: {
 			production: {
 				options: {
-					mangle: false
+					mangle: true
 				},
 				files: {
+					'public/dist/base.min.js': 'public/dist/base.js',
 					'public/dist/application.min.js': 'public/dist/application.js'
 				}
 			}
@@ -78,6 +79,7 @@ module.exports = function(grunt) {
 		cssmin: {
 			combine: {
 				files: {
+					'public/dist/base.min.css': '<%= baseCSSFiles %>',
 					'public/dist/application.min.css': '<%= applicationCSSFiles %>'
 				}
 			}
@@ -108,6 +110,7 @@ module.exports = function(grunt) {
         ngmin: {
             production: {
                 files: {
+                    'public/dist/base.js': '<%= baseJavaScriptFiles %>',
                     'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
                 }
             }
@@ -149,6 +152,8 @@ module.exports = function(grunt) {
 		var init = require('./config/init')();
 		var config = require('./config/config');
 
+		grunt.config.set('baseJavaScriptFiles', config.assets.lib.js);
+		grunt.config.set('baseCSSFiles', config.assets.lib.css);
 		grunt.config.set('applicationJavaScriptFiles', config.assets.js);
 		grunt.config.set('applicationCSSFiles', config.assets.css);
 	});

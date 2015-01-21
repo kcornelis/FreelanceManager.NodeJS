@@ -300,6 +300,12 @@ angular.module('core').factory('Company', [
     return $resource('/api/public/companies/:id', { id: '@id' });
   }
 ]);'use strict';
+angular.module('core').factory('Invoice', [
+  '$resource',
+  function ($resource) {
+    return $resource('/api/public/invoices/:id', { id: '@id' });
+  }
+]);'use strict';
 angular.module('core').factory('Project', [
   '$resource',
   function ($resource) {
@@ -344,6 +350,11 @@ angular.module('core').factory('TimeRegistration', [
           from: '@from',
           to: '@to'
         },
+        isArray: true
+      },
+      uninvoiced: {
+        method: 'GET',
+        url: '/api/public/timeregistrations/uninvoiced',
         isArray: true
       },
       getinfo: {
