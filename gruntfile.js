@@ -152,8 +152,10 @@ module.exports = function(grunt) {
 		var init = require('./config/init')();
 		var config = require('./config/config');
 
-		grunt.config.set('baseJavaScriptFiles', config.assets.lib.js);
-		grunt.config.set('baseCSSFiles', config.assets.lib.css);
+		grunt.config.set('baseJavaScriptFiles', config.assets.base.js);
+		grunt.config.set('baseCSSFiles', config.assets.base.css);
+		grunt.config.set('libJavaScriptFiles', config.assets.lib.js);
+		grunt.config.set('libCSSFiles', config.assets.lib.css);
 		grunt.config.set('applicationJavaScriptFiles', config.assets.js);
 		grunt.config.set('applicationCSSFiles', config.assets.css);
 	});

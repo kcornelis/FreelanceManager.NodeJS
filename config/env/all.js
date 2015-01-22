@@ -12,12 +12,9 @@ module.exports = {
 	sessionCollection: 'sessions',
 	jwtSecret: 'MyJwtSecret',
 	assets: {
-		lib: {
+		base: {
 			css: [
-				'public/lib/bootstrap/dist/css/bootstrap.css',
-				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
-				'public/lib/font-awesome/css/font-awesome.css',
-				'public/lib/bootstrap-datepicker/css/datepicker3.css'
+				'public/lib/bootstrap/dist/css/bootstrap.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -28,15 +25,30 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/bootstrap/dist/js/bootstrap.js',
-				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
 				'public/lib/lodash/dist/lodash.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
 				'public/lib/moment/moment.js',
-				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
-				'public/lib/flot/jquery.flot.js',
-				'public/lib/flot/jquery.flot.pie.js',
-				'public/lib/flot/jquery.flot.resize.js',
-				'public/lib/js-xlsx/dist/xlsx.core.min.js'
+				'public/lib/oclazyload/dist/ocLazyLoad.js'
+			]			
+		},
+		lib: {
+			css: [
+				'public/lib/font-awesome/css/font-awesome.css',
+				'public/lib/bootstrap/dist/css/bootstrap.css'
+			],
+			js: [
+				'public/lib/jquery/dist/jquery.js',
+				'public/lib/angular/angular.js',
+				'public/lib/angular-resource/angular-resource.js',
+				'public/lib/angular-animate/angular-animate.js',
+				'public/lib/angular-ui-router/release/angular-ui-router.js',
+				'public/lib/angular-ui-utils/ui-utils.js',
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+				'public/lib/bootstrap/dist/js/bootstrap.js',
+				'public/lib/lodash/dist/lodash.js',
+				'public/lib/angular-jwt/dist/angular-jwt.js',
+				'public/lib/moment/moment.js',
+				'public/lib/oclazyload/dist/ocLazyLoad.js'
 			]
 		},
 		css: [

@@ -8,7 +8,8 @@ var ApplicationConfiguration = function () {
         'ngAnimate',
         'ui.router',
         'ui.bootstrap',
-        'ui.utils'
+        'ui.utils',
+        'oc.lazyLoad'
       ];
     // Add a new vertical module
     var registerModule = function (moduleName) {
@@ -17,10 +18,24 @@ var ApplicationConfiguration = function () {
       // Add the module to the AngularJS configuration file
       angular.module(applicationModuleName).requires.push(moduleName);
     };
+    var scripts = {
+        'flot': ['lib/flot/jquery.flot.js'],
+        'flot-plugins': [
+          'lib/flot/jquery.flot.resize.js',
+          'lib/flot/jquery.flot.pie.js'
+        ],
+        'datetime': [
+          'lib/clockpicker/dist/bootstrap-clockpicker.css',
+          'lib/bootstrap-datepicker/css/datepicker3.css',
+          'lib/clockpicker/dist/bootstrap-clockpicker.js',
+          'lib/bootstrap-datepicker/js/bootstrap-datepicker.js'
+        ]
+      };
     return {
       applicationModuleName: applicationModuleName,
       applicationModuleVendorDependencies: applicationModuleVendorDependencies,
-      registerModule: registerModule
+      registerModule: registerModule,
+      scripts: scripts
     };
   }();'use strict';
 //Start by defining the main module and adding the module dependencies
@@ -277,8 +292,10 @@ angular.module('core').directive('piechart', function () {
         };
       scope.$watch(attrs.ngModel, function (v) {
         if (!chart) {
-          chart = $.plot(elem, v, options);
-          elem.show();
+          if (v) {
+            chart = $.plot(elem, v, options);
+            elem.show();
+          }
         } else {
           chart.setData(v);
           chart.setupGrid();
@@ -813,7 +830,12 @@ angular.module('project').controller('ProjectTasksDialogController', [
 angular.module('time').config([
   '$stateProvider',
   '$urlRouterProvider',
-  function ($stateProvider, $urlRouterProvider) {
+  '$ocLazyLoadProvider',
+  function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
+    $ocLazyLoadProvider.config({
+      debug: false,
+      events: true
+    });
     // time registration state routing
     $stateProvider.state('time', {
       templateUrl: 'modules/time/views/time.html',
@@ -821,20 +843,65 @@ angular.module('time').config([
     }).state('time.overview', {
       url: '/time/overview/:from/:to',
       templateUrl: 'modules/time/views/overview.html',
-      access: { requiredLogin: true }
+      access: { requiredLogin: true },
+      resolve: resolveFor('datetime')
     }).state('time.registrations', {
       url: '/time/registrations/:date',
       templateUrl: 'modules/time/views/registrations.html',
-      access: { requiredLogin: true }
+      access: { requiredLogin: true },
+      resolve: resolveFor('datetime')
     }).state('time.report', {
       url: '/time/report/:from/:to',
       templateUrl: 'modules/time/views/report.html',
-      access: { requiredLogin: true }
+      access: { requiredLogin: true },
+      resolve: resolveFor('flot', 'flot-plugins')
     }).state('time.import', {
       url: '/time/import',
       templateUrl: 'modules/time/views/import.html',
       access: { requiredLogin: true }
     });
+    // Generates a resolve object by passing script names
+    // previously configured in constant.APP_REQUIRES
+    function resolveFor() {
+      var _args = arguments;
+      return {
+        deps: [
+          '$ocLazyLoad',
+          '$q',
+          function ($ocLL, $q) {
+            // Creates a promise chain for each argument
+            var promise = $q.when(1);
+            // empty promise
+            for (var i = 0, len = _args.length; i < len; i++) {
+              promise = andThen(_args[i]);
+            }
+            return promise;
+            // creates promise to chain dynamically
+            function andThen(_arg) {
+              // also support a function that returns a promise
+              if (typeof _arg == 'function')
+                return promise.then(_arg);
+              else
+                return promise.then(function () {
+                  // if is a module, pass the name. If not, pass the array
+                  var whatToLoad = getRequired(_arg);
+                  // simple error check
+                  if (!whatToLoad)
+                    return $.error('Route resolve: Bad resource name [' + _arg + ']');
+                  // finally, return a promise
+                  return $ocLL.load(whatToLoad);
+                });
+            }
+            // check and returns required data
+            // analyze module items with the form [name: '', files: []]
+            // and also simple array of script files (for not angular js)
+            function getRequired(name) {
+              return ApplicationConfiguration.scripts && ApplicationConfiguration.scripts[name];
+            }
+          }
+        ]
+      };
+    }
   }
 ]);'use strict';
 // TODO unit test

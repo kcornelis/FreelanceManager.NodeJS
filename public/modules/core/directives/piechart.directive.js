@@ -30,8 +30,10 @@ angular.module('core').directive('piechart', function(){
 
 			scope.$watch(attrs.ngModel, function(v){
 				if(!chart){
-					chart = $.plot(elem, v , options);
-					elem.show();
+					if(v) {
+						chart = $.plot(elem, v , options);
+						elem.show();
+					}
 				}else{
 					chart.setData(v);
 					chart.setupGrid();
