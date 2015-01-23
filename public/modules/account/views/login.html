@@ -1,13 +1,35 @@
-<div class="stretch-viewport login" data-ng-controller="AuthenticateController">
-	<div class="container">
-		<form data-ng-submit="submit()" class="form-signin">
-			<div data-ng-show="error" class="alert alert-danger">
-				<div data-ng-bind="error"></div>
-			</div>
-			<h2 class="form-signin-heading">Please sign in</h2>
-			<input class="form-control" data-ng-model="user.email" type="text" name="email" placeholder="Email" autofocus />
-			<input class="form-control" data-ng-model="user.password" type="password" name="password" placeholder="Password" />
-			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-		</form>
+<div class="block-center mt-xl wd-xl" data-ng-controller="AuthenticateController">
+	<!-- START panel-->
+	<div class="panel panel-dark panel-flat">
+		<div class="panel-heading text-center">
+			<a href="#" class="fm-logo-text">
+				<i>FM</i>
+			</a>
+		</div>
+		<div class="panel-body">
+			<p class="text-center pv">SIGN IN TO CONTINUE</p>
+			<div data-ng-show="error" class="alert alert-danger text-center">{{ error }}</div>
+			<form role="form" ng-submit="submit()" validate-form="" novalidate="" class="mb-lg">
+				<div class="form-group has-feedback">
+					<input type="email" placeholder="Enter email" autocomplete="off" ng-model="user.email" required="required" class="form-control" />
+					<span class="fa fa-envelope form-control-feedback text-muted"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="password" placeholder="Password" ng-model="user.password" required="required" class="form-control" />
+					<span class="fa fa-lock form-control-feedback text-muted"></span>
+				</div>
+				<button type="submit" class="btn btn-block btn-primary mt-lg">Login</button>
+			</form>
+			
+		</div>
 	</div>
+	<!-- END panel-->
+	<div class="p-lg text-center">
+		<span>&copy;</span>
+		<span> 2015 </span>
+		<span>-</span>
+		<span> Kevin Cornelis</span>
+		<br/>
+		<span> Freelance manager</span>
+	</div>	
 </div>

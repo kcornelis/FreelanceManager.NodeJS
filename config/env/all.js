@@ -14,7 +14,6 @@ module.exports = {
 	assets: {
 		base: {
 			css: [
-				'public/lib/bootstrap/dist/css/bootstrap.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -33,8 +32,9 @@ module.exports = {
 		},
 		lib: {
 			css: [
-				'public/lib/font-awesome/css/font-awesome.css',
-				'public/lib/bootstrap/dist/css/bootstrap.css'
+				'public/angle/css/app.css',
+				'public/lib/font-awesome/css/font-awesome.css'
+				
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
