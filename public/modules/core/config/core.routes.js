@@ -1,17 +1,25 @@
 'use strict';
 
 // Setting up route
-angular.module('core').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
+angular.module('core').config(['$stateProvider', '$urlRouterProvider', 'APP_REQUIRES',
+	function($stateProvider, $urlRouterProvider, appRequires) {
+		
 		// Redirect to home view when route not found
-		$urlRouterProvider.otherwise('/');
+		$urlRouterProvider.otherwise('/app/dashboard');
 
 		// Home state routing
-		$stateProvider.
-		state('home', {
-			url: '/',
-			templateUrl: 'modules/core/views/home.html',
-			access: { requiredLogin: true }
+		$stateProvider
+		.state('app', {
+			url: '/app',
+			abstract: true,
+			templateUrl: 'modules/core/views/app.html',
+			controller: 'AppController',
+			resolve: ApplicationConfiguration.resolve('fastclick', 'modernizr', 'icons', 'screenfull', 'animo', 'sparklines', 'slimscroll', 'classyloader', 'toaster', 'whirl')
+		})
+		.state('app.dashboard', {
+			url: '/dashboard',
+			title: 'Dashboard',
+			templateUrl: 'modules/core/views/dashboard.html'
 		});
 	}
 ]);

@@ -1,0 +1,19 @@
+[
+	{
+		"text": "Main Navigation",
+		"heading": "true"
+	},
+	{
+		"text": "Dashboard",
+		"sref": "app.dashboard",
+		"icon": "icon-speedometer"
+	},
+	{
+		"text": "Time",
+		"sref": "#",
+		"icon": "icon-clock",
+		"submenu": [
+			{ "text": "New...", "sref": "app.time" }
+		]
+	}
+]
