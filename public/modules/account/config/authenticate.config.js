@@ -1,7 +1,8 @@
-'use strict';
-
 angular.module('account', ['angular-jwt'])
+
 .factory('authInterceptor', function ($rootScope, $q, $window) {
+	'use strict';
+
 	return {
 		request: function (config) {
 			config.headers = config.headers || {};
@@ -18,16 +19,22 @@ angular.module('account', ['angular-jwt'])
 		}
 	};
 })
+
 .config(function ($httpProvider) {
+	'use strict';
+
 	$httpProvider.interceptors.push('authInterceptor');
 })
+
 .run(function($rootScope, $location, $window, jwtHelper) {
-		$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
-				var loggedIn = $window.sessionStorage.token && !jwtHelper.isTokenExpired($window.sessionStorage.token);
-				if (nextRoute.access && 
-					nextRoute.access.requiredLogin && 
-					!loggedIn) {
-						$location.path("/login");
-				}
-		});
+	'use strict';
+
+	$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
+			var loggedIn = $window.sessionStorage.token && !jwtHelper.isTokenExpired($window.sessionStorage.token);
+			if (nextRoute.access && 
+				nextRoute.access.requiredLogin && 
+				!loggedIn) {
+					$location.path("/login");
+			}
+	});
 });

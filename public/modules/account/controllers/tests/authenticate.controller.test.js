@@ -1,6 +1,6 @@
-'use strict';
-
 (function() {
+	'use strict';
+
 	describe('AuthenticateController Unit Tests:', function() {
 		//Initialize global variables
 		var scope, 

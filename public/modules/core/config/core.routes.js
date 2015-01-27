@@ -14,12 +14,14 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider', 'APP_REQU
 			abstract: true,
 			templateUrl: 'modules/core/views/app.html',
 			controller: 'AppController',
-			resolve: ApplicationConfiguration.resolve('fastclick', 'modernizr', 'icons', 'screenfull', 'animo', 'sparklines', 'slimscroll', 'classyloader', 'toaster', 'whirl')
+			resolve: ApplicationConfiguration.resolve('fastclick', 'modernizr', 'icons', 'screenfull', 'animo', 'sparklines', 'slimscroll', 'classyloader', 'toaster', 'whirl'),
+			access: { requiredLogin: true }
 		})
 		.state('app.dashboard', {
 			url: '/dashboard',
 			title: 'Dashboard',
-			templateUrl: 'modules/core/views/dashboard.html'
+			templateUrl: 'modules/core/views/dashboard.html',
+			access: { requiredLogin: true }
 		});
 	}
 ]);

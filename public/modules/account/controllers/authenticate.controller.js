@@ -1,5 +1,7 @@
-angular.module('account').controller('AuthenticateController', function ($scope, $http, $window, $location) {
-	
+angular.module('account').controller('AuthenticateController', 
+function ($scope, $http, $window, $location) {
+	'use strict';
+
 	$scope.user = { email: '', password: '' };
 	$scope.error = '';
 	

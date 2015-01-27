@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('account').controller('AccountInfoController', ['$scope', '$window', 'jwtHelper', 'Account',
 function($scope, $window, jwtHelper, Account) {
+	'use strict';
 
 	var token = jwtHelper.decodeToken($window.sessionStorage.token);
 
