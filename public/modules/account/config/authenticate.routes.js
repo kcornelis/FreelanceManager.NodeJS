@@ -8,7 +8,7 @@ angular.module('account').config(['$stateProvider',
 		state('login', {
 			url: '/login',
 			templateUrl: 'modules/account/views/login.html'
-		}).
+		}).	
 
 		state('app.account', {
 			url: '/account',

@@ -1,6 +1,6 @@
-//'use strict';
-
 (function() {
+	'use strict';
+	
 	describe('Invoice Factory Unit Tests:', function() {
 
 		// Load the main application module

@@ -1,5 +1,5 @@
-angular.module('account').controller('AuthenticateController', 
-function ($scope, $http, $window, $location) {
+angular.module('account').controller('AuthenticateController', ['$rootScope', '$scope', '$http', '$window', '$location', 'jwtHelper',
+function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
 	'use strict';
 
 	$scope.user = { email: '', password: '' };
@@ -8,15 +8,20 @@ function ($scope, $http, $window, $location) {
 	$scope.submit = function () {
 		$http.post('/security/authenticate', $scope.user)
 			.success(function (data, status, headers, config) {
-				$window.sessionStorage.token = data.token;
+
+				var decrypted = jwtHelper.decodeToken(data.token);
+				$window.localStorage.user = decrypted.fullName;
+
+				$window.localStorage.token = data.token;
 				$location.path('/');
 			})
 			.error(function (data, status, headers, config) {
 				// Erase the token if the user fails to log in
-				delete $window.sessionStorage.token;
+				delete $window.localStorage.token;
+				delete $rootScope.$storage.user;
 
 				// Handle login errors here
 				$scope.error = 'Invalid email or password';
 			});
 	};
-});
+}]);

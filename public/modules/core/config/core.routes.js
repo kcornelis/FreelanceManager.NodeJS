@@ -1,14 +1,12 @@
-'use strict';
-
-// Setting up route
 angular.module('core').config(['$stateProvider', '$urlRouterProvider', 'APP_REQUIRES',
-	function($stateProvider, $urlRouterProvider, appRequires) {
+function($stateProvider, $urlRouterProvider, appRequires) {
+		'use strict';
 		
-		// Redirect to home view when route not found
+		// Redirect to the dashboard view when route not found
 		$urlRouterProvider.otherwise('/app/dashboard');
 
-		// Home state routing
 		$stateProvider
+
 		.state('app', {
 			url: '/app',
 			abstract: true,
@@ -17,6 +15,7 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider', 'APP_REQU
 			resolve: ApplicationConfiguration.resolve('fastclick', 'modernizr', 'icons', 'screenfull', 'animo', 'sparklines', 'slimscroll', 'classyloader', 'toaster', 'whirl'),
 			access: { requiredLogin: true }
 		})
+
 		.state('app.dashboard', {
 			url: '/dashboard',
 			title: 'Dashboard',

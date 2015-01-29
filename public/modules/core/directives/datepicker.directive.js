@@ -1,8 +1,8 @@
-'use strict';
-
 // TODO unit test this directive
-
-angular.module('core').directive('fmDatepicker', function ($timeout) {
+angular.module('core').directive('fmDatepicker', 
+function ($timeout) {
+	'use strict';
+	
 	return {
 		restrict: 'A',
 		require: '?ngModel',

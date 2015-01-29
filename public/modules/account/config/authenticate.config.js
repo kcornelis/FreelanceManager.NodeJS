@@ -6,8 +6,8 @@ angular.module('account', ['angular-jwt'])
 	return {
 		request: function (config) {
 			config.headers = config.headers || {};
-			if ($window.sessionStorage.token) {
-				config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+			if ($window.localStorage.token) {
+				config.headers.Authorization = 'Bearer ' + $window.localStorage.token;
 			}
 			return config;
 		},
@@ -30,7 +30,7 @@ angular.module('account', ['angular-jwt'])
 	'use strict';
 
 	$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
-			var loggedIn = $window.sessionStorage.token && !jwtHelper.isTokenExpired($window.sessionStorage.token);
+			var loggedIn = $window.localStorage.token && !jwtHelper.isTokenExpired($window.localStorage.token);
 			if (nextRoute.access && 
 				nextRoute.access.requiredLogin && 
 				!loggedIn) {

@@ -2,7 +2,7 @@ angular.module('account').controller('AccountInfoController', ['$scope', '$windo
 function($scope, $window, jwtHelper, Account) {
 	'use strict';
 
-	var token = jwtHelper.decodeToken($window.sessionStorage.token);
+	var token = jwtHelper.decodeToken($window.localStorage.token);
 
 	Account.get({ id: token.id }).$promise.then(function(response){
 		$scope.account = response;

@@ -1,7 +1,8 @@
-//'use strict';
-
 (function() {
+	'use strict';
+
 	describe('Moment Filter Unit Tests:', function() {
+		
 		//Initialize global variables
 		var $filter;
 

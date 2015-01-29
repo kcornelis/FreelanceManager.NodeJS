@@ -1,7 +1,8 @@
-'use strict';
-
-angular.module('core').filter('moment', function () {
-    return function(date, format){
-        return date.format(format);
-    }
+angular.module('core').filter('moment', 
+function () {
+	'use strict';
+	
+	return function(date, format){
+		return date.format(format);
+	}
 });

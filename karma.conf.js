@@ -12,7 +12,9 @@ module.exports = function(config) {
 		frameworks: ['jasmine', 'sinon-chai'],
 
 		// List of files / patterns to load in the browser
-		files: applicationConfiguration.assets.lib.js.concat(applicationConfiguration.assets.js, applicationConfiguration.assets.tests),
+		files: applicationConfiguration.assets.lib.js.concat(
+			applicationConfiguration.assets.js, applicationConfiguration.assets.lib.js, 
+			applicationConfiguration.assets.tests),
 
 		// Test results reporter to use
 		// Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'

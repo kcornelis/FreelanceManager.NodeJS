@@ -1,6 +1,6 @@
-//'use strict';
-
 (function() {
+	'use strict';
+	
 	describe('Time Picker Directive Unit Tests:', function() {
 		//Initialize global variables
 		var element,

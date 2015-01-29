@@ -1,7 +1,8 @@
-//'use strict';
-
 (function() {
+	'use strict';
+
 	describe('FormatTime Filter Unit Tests:', function() {
+		
 		//Initialize global variables
 		var $filter;
 

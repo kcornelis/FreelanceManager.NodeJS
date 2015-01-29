@@ -1,6 +1,6 @@
-//'use strict';
-
 (function() {
+	'use strict';
+	
 	describe('Project Factory Unit Tests:', function() {
 
 		// Load the main application module

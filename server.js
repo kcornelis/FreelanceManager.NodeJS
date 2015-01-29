@@ -14,7 +14,7 @@ var init = require('./config/init')(),
 var app;
 var initialized = false;
 
-mongoose.connection.on("connected", function(ref) {
+function initialize(){
 	
 	console.log("Connected to db");
 
@@ -32,8 +32,20 @@ mongoose.connection.on("connected", function(ref) {
 
 	// Logging initialization
 	console.log('Application started on port ' + config.port);
-	initialized = true;
-});
+	initialized = true;	
+}
 
-// Bootstrap db connection
-var db = mongoose.connect(config.db);
+if (process.env.NODE_ENV === 'test') {
+	
+	var db = mongoose.connect(config.db);
+	initialize();
+}
+else {
+
+	mongoose.connection.on("connected", function(ref) {
+		initialize();
+	});
+
+	var db = mongoose.connect(config.db);
+}
+
