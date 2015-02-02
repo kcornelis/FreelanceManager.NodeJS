@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('project').controller('ProjectTasksDialogController',
 function($scope, Project, toUpdate) {
+	'use strict';
 
 	$scope.originalProject = toUpdate;
 	toUpdate = toUpdate || { };

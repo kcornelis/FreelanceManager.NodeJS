@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('project').controller('ProjectDialogController',
 function($scope, Project, Company, toUpdate) {
+	'use strict';
 
 	$scope.originalProject = toUpdate;
 	$scope.newProject = toUpdate == undefined;

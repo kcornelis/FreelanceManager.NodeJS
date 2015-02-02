@@ -1,6 +1,6 @@
-'use strict';
-
 (function() {
+	'use strict';
+
 	describe('ProjectTasksDialogController Unit Tests:', function() {
 
 		var scope, 

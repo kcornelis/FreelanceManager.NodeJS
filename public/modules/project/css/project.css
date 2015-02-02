@@ -1,3 +1,8 @@
 .fm-hidden-project {
     color: #888888;
 }
+
+.fm-projects dl {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}

@@ -5,13 +5,13 @@
 			<h4 class="modal-title">Project</h4>
 		</div>
 		<div class="modal-body">
-			<div class="form-group" ng-class="{ 'has-error' : projectForm.companyId.$invalid && !projectForm.companyId.$pristine }">
+			<div class="form-group" data-fm-add-error-for="projectForm.companyId">
 				<label>Company</label>
 				<select class="form-control" ng-model="project.companyId" data-ng-disabled="!newProject">
 					<option ng-repeat="company in companies" value="{{ company.id }}">{{ company.name }}</option>
 				</select>
 			</div>
-			<div class="form-group" ng-class="{ 'has-error' : projectForm.name.$invalid && !projectForm.name.$pristine }">
+			<div class="form-group" data-fm-add-error-for="projectForm.name">
 				<label>Name</label>
 				<input type="text" name="name" class="form-control" placeholder="Name" data-ng-model="project.name" required autofocus>
 			</div>
@@ -25,7 +25,7 @@
 				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
 			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
-			<button type="submit" class="btn btn-primary" ng-disabled="projectForm.$invalid" data-ng-click="ok()">{{ newProject ? 'Save' : 'Update' }}</button>
+			<button type="submit" class="btn btn-primary" ng-disabled="projectForm.$invalid" data-ng-click="ok()">{{ newProject ? 'Create' : 'Update' }}</button>
 		</div>
 	</div>
 </form>

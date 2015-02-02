@@ -17,6 +17,14 @@
 		]
 	},
 	{
+		"text": "Projects",
+		"sref": "#",
+		"icon": "icon-rocket",
+		"submenu": [
+			{ "text": "Overview", "sref": "app.projects" }
+		]
+	},	
+	{
 		"text": "Time",
 		"sref": "#",
 		"icon": "icon-clock",

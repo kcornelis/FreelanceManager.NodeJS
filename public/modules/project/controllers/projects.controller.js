@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('project').controller('ProjectsController',
 function($scope, $modal, Project) {
+	'use strict';
 
 	$scope.getAllProjects = function() {
 		$scope.projects = Project.query();
@@ -10,7 +9,7 @@ function($scope, $modal, Project) {
 	$scope.openProject = function(project){
 
 		var createDialog = $modal.open({
-			templateUrl: '/modules/project/views/projectdialog.html',
+			templateUrl: '/modules/project/views/editproject.html',
 			controller: 'ProjectDialogController',
 			resolve: {
 				toUpdate: function () {
