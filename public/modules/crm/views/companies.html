@@ -1,20 +1,31 @@
-<section data-ng-controller="CompaniesController" data-ng-init="getAllCompanies()">
+<h3>
+	<button class="btn btn-primary pull-right" data-ng-click="openCompany()">
+		<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Company
+	</button>
+	Companies
+	<small>Manage your companies</small>
+</h3>
 
-	<h1 class="text-center">
-		Companies
-	</h1>
 
-	<div class="fm-list company" data-ng-repeat="company in companies">
-
-		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-primary btn-xs" data-ng-click="openCompany(company)"><span class="glyphicon glyphicon-edit"></span></button>
-		</div>
-		<h3 class="panel-title hideOverflow">{{ company.name }}</h3>
-		<hr />
+<div class="panel panel-default" data-ng-init="getAllCompanies()">
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th style="width:5%;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="company in companies">
+					<td>{{ company.name }}</td>
+					<td class="text-right">
+						<button class="btn btn-primary btn-xs" data-ng-click="openCompany(company)">
+							<span class="btn-label"><i class="fa fa-pencil"></i></span> Edit
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
-
-	<button id="add-company" type="button" class="btn btn-primary pull-right" data-ng-click="openCompany()">
-		<span class="glyphicon glyphicon-plus"></span>
-	</button>	
-
-</section>
+</div>

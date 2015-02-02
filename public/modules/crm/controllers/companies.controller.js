@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('crm').controller('CompaniesController',
 function($scope, $modal, Company) {
+	'use strict';
 
 	$scope.getAllCompanies = function() {
 		$scope.companies = Company.query();
@@ -10,7 +9,7 @@ function($scope, $modal, Company) {
 	$scope.openCompany = function(company){
 
 		var createDialog = $modal.open({
-			templateUrl: '/modules/crm/views/companydialog.html',
+			templateUrl: '/modules/crm/views/editcompany.html',
 			controller: 'CompanyDialogController',
 			resolve: {
 				toUpdate: function () {

@@ -9,6 +9,14 @@
 		"icon": "icon-speedometer"
 	},
 	{
+		"text": "CRM",
+		"sref": "#",
+		"icon": "icon-users",
+		"submenu": [
+			{ "text": "Companies", "sref": "app.companies" }
+		]
+	},
+	{
 		"text": "Time",
 		"sref": "#",
 		"icon": "icon-clock",

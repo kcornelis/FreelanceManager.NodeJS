@@ -1,6 +1,6 @@
-'use strict';
-
 (function() {
+	'use strict';
+	
 	describe('CompaniesController Unit Tests:', function() {
 
 		var scope, 

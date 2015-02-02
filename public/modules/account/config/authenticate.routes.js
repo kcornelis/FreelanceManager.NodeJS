@@ -13,7 +13,6 @@ angular.module('account').config(['$stateProvider',
 		state('app.account', {
 			url: '/account',
 			templateUrl: 'modules/account/views/account.html',
-			resolve: ApplicationConfiguration.resolve('parsley'),
 			access: { requiredLogin: true }
 		});
 	}

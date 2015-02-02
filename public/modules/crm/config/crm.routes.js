@@ -1,18 +1,14 @@
-'use strict';
-
-// Setting up route
 angular.module('crm').config(['$stateProvider',
 	function($stateProvider) {
-		// crm state routing
+		'use strict';
+		
 		$stateProvider
-		.state('crm', {
-			templateUrl: 'modules/crm/views/crm.html',
-            access: { requiredLogin: true }
-		})
-		.state('crm.companies', {
-			url: '/companies',
+
+		.state('app.companies', {
+			url: '/crm/companies',
 			templateUrl: 'modules/crm/views/companies.html',
-            access: { requiredLogin: true }
+			controller: 'CompaniesController',
+			access: { requiredLogin: true }
 		});
 	}
 ]);

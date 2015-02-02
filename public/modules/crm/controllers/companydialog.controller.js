@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('crm').controller('CompanyDialogController',
 function($scope, Company, toUpdate) {
+	'use strict';
 
 	$scope.originalCompany = toUpdate;
 	$scope.newCompany = toUpdate == undefined;
