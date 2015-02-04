@@ -6,53 +6,61 @@
 		</div>
 		<div class="modal-body">
 			<div class="row">
+
 				<div class="col-xs-12 col-md-4">
-					<div class="form-group" ng-class="{ 'has-error' : timeRegistrationForm.company.$invalid && !timeRegistrationForm.company.$pristine }">
+					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.company">
 						<label>Company</label>
 						<select class="form-control" name="company" data-ng-model="timeRegistration.company" data-ng-options="c.name for c in companies" required></select>
 					</div>
 				</div>
+
 				<div class="col-xs-12 col-md-4">
-					<div class="form-group" ng-class="{ 'has-error' : timeRegistrationForm.project.$invalid && !timeRegistrationForm.project.$pristine }">
+					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.project">
 						<label>Project</label>
 						<select class="form-control" name="project" data-ng-model="timeRegistration.project" data-ng-options="p.name for p in timeRegistration.company.projects" required></select>
 					</div>	
 				</div>
+
 				<div class="col-xs-12 col-md-4">					
-					<div class="form-group" ng-class="{ 'has-error' : timeRegistrationForm.task.$invalid && !timeRegistrationForm.task.$pristine }">
+					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.task">
 						<label>Task</label>
 						<select class="form-control" name="task" data-ng-model="timeRegistration.task" data-ng-options="t.name for t in timeRegistration.project.tasks" required></select>
 					</div>	
 				</div>
 			</div>		
-			<div class="form-group" ng-class="{ 'has-error' : timeRegistrationForm.description.$invalid && !timeRegistrationForm.description.$pristine }">
+
+			<div class="form-group" data-fm-add-error-for="timeRegistrationForm.description">
 				<label>Description</label>
 				<input type="text" name="description" class="form-control" placeholder="Description" data-ng-model="timeRegistration.description" required autofocus>
 			</div>
+
 			<div class="row">
+
 				<div class="col-xs-6">
-					<div class="form-group" ng-class="{ 'has-error' : timeRegistrationForm.from.$invalid && !timeRegistrationForm.from.$pristine }">
+					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.from">
 						<label>From</label>
 						<div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true" data-fm-clockpicker>
 							<input type="text" name="from" class="form-control" data-ng-model="timeRegistration.from" required>
 							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-time"></span>
+								<span class="fa fa-clock-o"></span>
 							</span>
 						</div>
 					</div>	
 				</div>
+
 				<div class="col-xs-6">
-					<div class="form-group" ng-class="{ 'has-error' : timeRegistrationForm.to.$invalid && !timeRegistrationForm.to.$pristine }">
+					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.to">
 						<label>To</label>
 						<div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true" data-fm-clockpicker>
-							<input id="abc" name="to" type="text" class="form-control" data-ng-model="timeRegistration.to" required>
+							<input name="to" type="text" class="form-control" data-ng-model="timeRegistration.to" required>
 							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-time"></span>
+								<span class="fa fa-clock-o"></span>
 							</span>
 						</div>
 					</div>					
 				</div>
 			</div>	
+			
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" data-ng-model="timeRegistration.billable"> Billable
@@ -64,7 +72,7 @@
 				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
 			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
-			<button type="submit" class="btn btn-primary" ng-disabled="timeRegistrationForm.$invalid" data-ng-click="ok()">{{ newTimeRegistration ? 'Save' : 'Update' }}</button>
+			<button type="submit" class="btn btn-primary" ng-disabled="timeRegistrationForm.$invalid" data-ng-click="ok()">{{ newTimeRegistration ? 'Create' : 'Update' }}</button>
 		</div>
 	</div>
 </form>

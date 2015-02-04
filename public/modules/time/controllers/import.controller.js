@@ -1,10 +1,8 @@
-'use strict';
-
 // TODO unit test
-
 angular.module('time').controller('ImportController',
 function($scope, XLSXReader, Project, TimeRegistration) {
-
+	'use strict';
+	
 	// upload, sheet, column, project, import
 	$scope.wizardStep = 1;
 	Project.active(function(projects){

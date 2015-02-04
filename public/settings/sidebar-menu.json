@@ -29,7 +29,10 @@
 		"sref": "#",
 		"icon": "icon-clock",
 		"submenu": [
-			{ "text": "New...", "sref": "app.time" }
+			{ "text": "Overview", "sref": "app.time_overview" },
+			{ "text": "Report", "sref": "app.time_report" },
+			{ "text": "Import", "sref": "app.time_import" },
+			{ "text": "Export", "sref": "app.time_export" }
 		]
 	}
 ]

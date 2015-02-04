@@ -35,7 +35,7 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angular-loading-bar/build/loading-bar.js',
 
-
+				'public/lib/bootstrap/dist/js/bootstrap.js',
 				'public/lib/lodash/dist/lodash.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
 				'public/lib/moment/moment.js'
@@ -68,7 +68,7 @@ module.exports = {
 				'public/lib/angular-loading-bar/build/loading-bar.js',
 
 
-
+				'public/lib/bootstrap/dist/js/bootstrap.js',
 				'public/lib/lodash/dist/lodash.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
 				'public/lib/moment/moment.js'

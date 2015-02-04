@@ -1,7 +1,6 @@
-'use strict';
-
 angular.module('time').controller('TimeRegistrationDialogController',
 function($scope, Project, TimeRegistration, toUpdate, date) {
+	'use strict';
 
 	$scope.originalTimeRegistration = toUpdate;
 	$scope.newTimeRegistration = toUpdate == undefined;

@@ -1,66 +1,45 @@
-<section data-ng-controller="OverviewController" data-ng-init="refresh()">
+<h3>
+	<button class="btn btn-primary pull-right" data-ng-click="openTimeRegistration()">
+		<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Registration
+	</button>
+	Time
+	<small>Manage your time</small>
+</h3>
 
-	<div class="fm-page-actions pull-right">
+<div class="fm-time-overview" data-ng-init="refresh()">
 
-		<input type="text" class="form-control date-selector" style="width: 100px;" data-ng-model="displayFrom" 
-			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeFrom(date, 'YYYY-MM-DD')" />
-		<input type="text" class="form-control date-selector" style="width: 100px;" data-ng-model="displayTo" 
-			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeTo(date, 'YYYY-MM-DD')" />
-		<button type="button" class="btn btn-default btn-xs" data-ng-click="applyDate()"><span class="glyphicon glyphicon-search"></span></button>
-
-		<div class="btn-group">
-			<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-				<span class="glyphicon glyphicon-cog"></span>
-			</button>
-			<ul class="dropdown-menu dropdown-menu-right" role="menu">
-				<li><a href="/#!/time/overview/{{ thisWeek }}">This Week</a></li>
-				<li><a href="/#!/time/overview/{{ lastWeek }}">Last Week</a></li>
-				<li><a href="/#!/time/overview/{{ thisMonth }}">This Month</a></li>
-				<li><a href="/#!/time/overview/{{ lastMonth }}">Last Month</a></li>
-				<li><a href="/#!/time/overview/{{ thisYear }}">This Year</a></li>
-				<li><a href="/#!/time/overview/{{ lastYear }}">Last Year</a></li>
-				<li><hr /></li>
-				<li><a href="#" class="export-link">Export</a></li>
-			</ul>
-		</div>
+	<button class="btn btn-default pull-left" data-ng-click="previousDate()"><span class="fa fa-chevron-left"></span></button>
+	<div class="btn-group pull-right">
+		<button class="btn btn-default" data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeDate(date, 'YYYY-MM-DD')">
+			<span class="fa fa-calendar-o"></span>
+		</button>
+		<button class="btn btn-default" data-ng-click="nextDate()"><span class="fa fa-chevron-right"></span></button>
 	</div>
-
-	<div class="clearfix"></div>
-
-	<h1 class="text-center">{{ title }}</h1>
+	<h1 class="text-center">{{ date | moment: 'DD MMMM YYYY' }}</h1>
 
 	<div class="panel panel-default panel-margin" data-ng-hide="hasTimeRegistrations">
 		<div class="panel-body text-center">
-			No hours registered for this period
+			No items
 		</div>
 	</div>
 
-	<div class="fm-list timeregistration">
-		<div class="panel panel-default" data-ng-repeat="timeRegistration in timeRegistrations">
-			<!-- Default panel contents -->
-			<div class="panel-heading">{{ timeRegistration.date | formatdate }}</div>
-
-			<!-- List group -->
-			<ul class="list-group">
-				<li class="list-group-item" data-ng-repeat="item in timeRegistration.items">
-					<div class="row">
-						<div class="col-xs-8">
-							<strong class="hideOverflow">{{ item.company.name }} - {{ item.project.name }}</strong>
-							<span class="hideOverflow">{{ item.task }} - {{ item.description }}</span>
-						</div>
-						<div class="col-xs-2 pull-right">
-							<div class="pull-right">
-								<span class="hideOverflow">{{ item.from | formattime }} - {{ item.to | formattime }}</span>
-							</div>
-							<div class="clearfix"></div>
-							<div class="pull-right">
-								<strong>{{ item.totalMinutes | formattime }}</strong>
-							</div>
-						</div>
-					</div>
-				</li>
-			</ul>
+	<div class="list-group">
+		<div class="list-group-item" data-ng-click="openTimeRegistration(timeRegistration)"
+			 data-ng-repeat="timeRegistration in timeRegistrations">
+			<div class="row">
+				<div class="col-xs-2">
+					<strong>{{ timeRegistration.from | formattime }}</strong><br />
+					<strong>{{ timeRegistration.to | formattime }}</strong>
+				</div>
+				<div class="col-xs-8">
+					<strong class="hideOverflow">{{ timeRegistration.company.name }} - {{ timeRegistration.project.name }}</strong>
+					<span class="hideOverflow">{{ timeRegistration.task }} - {{ timeRegistration.description }}</span>
+				</div>
+				<div class="col-xs-2">
+					<span class="pull-right">{{ timeRegistration.totalMinutes | formattime }}</span>
+				</div>
+			</div>
 		</div>
-	</div>	
+	</div>
+</div>	
 
-</section>

@@ -1,6 +1,6 @@
-'use strict';
-
 (function() {
+	'use strict';
+
 	describe('TimeRegistrationDialogController Unit Tests:', function() {
 
 		var scope, 

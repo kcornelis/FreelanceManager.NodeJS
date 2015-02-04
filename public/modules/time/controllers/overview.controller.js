@@ -1,61 +1,61 @@
-'use strict';
-
 angular.module('time').controller('OverviewController',
-function($scope, $location, $stateParams, TimeRegistration) {
+function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
+	'use strict';
 
-	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
-	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
+	$scope.date = new moment($stateParams.date, 'YYYYMMDD');
+	$scope.hasTimeRegistrations = false;
 
-	$scope.hasTimeRegistrations = false;	
-
-	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
-	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
-
-	$scope.thisWeek = new moment().day(1).format('YYYYMMDD') + '/' + new moment().day(7).format('YYYYMMDD');
-	$scope.lastWeek = new moment().day(1).subtract('days', 7).format('YYYYMMDD') + '/' + new moment().day(7).subtract('days', 7).format('YYYYMMDD');
-
-	$scope.thisMonth = new moment().set('date', 1).format('YYYYMMDD') + '/' + new moment().set('date', new moment().daysInMonth()).format('YYYYMMDD');
-	$scope.lastMonth = new moment().set('date', 1).subtract('months', 1).format('YYYYMMDD') + '/' + new moment().subtract('months', 1).set('date', new moment().subtract('months', 1).daysInMonth()).format('YYYYMMDD');
-
-	$scope.thisYear = new moment().set('month', 0).set('date', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).format('YYYYMMDD');
-	$scope.lastYear = new moment().set('month', 0).set('date', 1).subtract('years', 1).format('YYYYMMDD') + '/' + new moment().set('month', 11).set('date', 31).subtract('years', 1).format('YYYYMMDD');
-	
-	$scope.$watch('from', function(){
-		$scope.displayFrom = $scope.from.format('YYYY-MM-DD');
+	$scope.$watch('date', function(){
+		$scope.displayDate = $scope.date.format('YYYY-MM-DD');
 	});
 
-	$scope.$watch('to', function(){
-		$scope.displayTo = $scope.to.format('YYYY-MM-DD');
-	});	
-
-	$scope.changeFrom = function(date, format){
-		$scope.from = new moment(date, format);
+	$scope.nextDate = function(){
+		$scope.date = new moment($scope.date.add(1, 'days'));
+		$state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
 	};
 
-	$scope.changeTo = function(date, format){
-		$scope.to = new moment(date, format);
+	$scope.previousDate = function(){
+		$scope.date = new moment($scope.date.subtract(1, 'days'));
+		$state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
 	};
 
-	$scope.applyDate = function(){
-		$location.path('/time/overview/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
+	$scope.changeDate = function(date, format){
+		$scope.date = new moment(date, format);
+		$state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.refresh = function() {
+		TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function(timeRegistrations){
+			$scope.hasTimeRegistrations = timeRegistrations.length > 0;
+			$scope.timeRegistrations = _.sortBy(timeRegistrations,
+				function(i){
+					return i.from.numeric;
+				});
+		});
+	};
 
-		TimeRegistration.byrange({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') }, function(tr){
+	$scope.openTimeRegistration = function(timeRegistration){
 
-			 var grouped = _.groupBy(tr, function (i) { return i.date.numeric });
-			 $scope.timeRegistrations = _.sortBy(_.map(grouped, function (g) {
-					return {
-						date: _.first(g).date,
-						items: g
-					};
-				}),
-			 function(i){
-			 	return i.date.numeric;
-			 });
+		var createDialog = $modal.open({
+			templateUrl: '/modules/time/views/timeregistrationdialog.html',
+			controller: 'TimeRegistrationDialogController',
+			size: 'lg',
+			resolve: {
+				toUpdate: function () {
+					return timeRegistration;
+				},
+				date: function(){
+					return $scope.date.format('YYYYMMDD');
+				}
+			}
+		});
+
+		createDialog.result.then(function (timeRegistration) {
+			var c = _.find($scope.timeRegistrations, { 'id': timeRegistration.id });
+			if(c) angular.copy(timeRegistration, c);
+			else $scope.timeRegistrations.push(timeRegistration);
 
 			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
-		});
-	};	
+		});		
+	}
 });

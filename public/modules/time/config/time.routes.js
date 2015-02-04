@@ -1,42 +1,49 @@
-'use strict';
-
-// Setting up route
 angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 	function($stateProvider, $urlRouterProvider) {
+		'use strict';
 
-		// time registration state routing
 		$stateProvider
-		
-		.state('time', {
-			templateUrl: 'modules/time/views/time.html',
-			access: { requiredLogin: true }
-		})
 
-		.state('time.overview', {
-			url: '/time/overview/:from/:to',
+		.state('app.time_overview', {
+			url: '/overview/:date',
 			templateUrl: 'modules/time/views/overview.html',
+			controller: 'OverviewController',
 			access: { requiredLogin: true },
-			resolve: ApplicationConfiguration.resolve('datetime')
+			resolve: ApplicationConfiguration.resolve('datetime'),
+			onEnter: function($state, $stateParams){
+				if(!$stateParams.date){
+					$state.go('app.time_overview', { date: new moment().format('YYYYMMDD') }, { location: 'replace' });
+				}
+			}
 		})
 
-		.state('time.registrations', {
-			url: '/time/registrations/:date',
-			templateUrl: 'modules/time/views/registrations.html',
-			access: { requiredLogin: true },
-			resolve: ApplicationConfiguration.resolve('datetime')
-		})
-
-		.state('time.report', {
-			url: '/time/report/:from/:to',
+		.state('app.time_report', {
+			url: '/report/:from/:to',
 			templateUrl: 'modules/time/views/report.html',
+			controller: 'ReportController',
 			access: { requiredLogin: true },
-			resolve: ApplicationConfiguration.resolve('flot-charts', 'flot-charts-plugins')
+			resolve: ApplicationConfiguration.resolve('flot-chart', 'flot-chart-plugins'),
+			onEnter: function($state, $stateParams){
+				if(!$stateParams.from || !$stateParams.to){
+					$state.go('app.time_report', { from: new moment().startOf('month').format('YYYYMMDD'), to: new moment().endOf('month').format('YYYYMMDD') }, { location: 'replace' });
+				}
+			}
 		})
 
-		.state('time.import', {
-			url: '/time/import',
+		.state('app.time_import', {
+			url: '/import',
 			templateUrl: 'modules/time/views/import.html',
 			access: { requiredLogin: true }
+		})
+
+		.state('app.time_export', {
+			url: '/registrations/:from/:to',
+			templateUrl: 'modules/time/views/export.html',
+			access: { requiredLogin: true },
+			resolve: ApplicationConfiguration.resolve('datetime')
 		});
+
+		$urlRouterProvider
+		.when('/app/time/overview', '/app/time/overview/')
 	}
 ]);

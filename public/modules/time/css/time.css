@@ -1,10 +1,34 @@
 .fm-list.timeregistration .list-group {
     display: inline;
     margin-bottom: 5px;
-	margin-top: 5px;
+	
 }
 
-.fm-timeregistrations.list-group {
+/*
+ * Time registration overview
+ */
+
+.fm-time-overview .list-group {
 	cursor: pointer;
-	color: #666;
+	margin-top: 30px;
+}
+
+/*
+ * Time registration report
+ */
+
+.fm-time-report .btn-group > .btn:first-child:not(:last-child) {
+	border-bottom-right-radius: 0;
+	border-top-right-radius: 0;
+}
+.fm-time-report .btn-group > .btn:not(:first-child) {
+	margin-left: -1px;
+}
+
+.fm-time-report .fm-time-infoperproject h4 {
+	margin-top: 5px;
+	margin-bottom: 0;
+}
+.fm-time-report .fm-time-infoperproject p {
+	margin: 5px 0 0 0;
 }

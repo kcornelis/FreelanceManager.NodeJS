@@ -1,9 +1,7 @@
-
-'use strict';
-
 angular.module('time').controller('ReportController',
-function($scope, $location, $stateParams, TimeRegistration) {
-	
+function($scope, $location, $state, $stateParams, TimeRegistration) {
+	'use strict';
+
 	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
 	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
 
@@ -50,11 +48,11 @@ function($scope, $location, $stateParams, TimeRegistration) {
 
 
 	$scope.previous = function(){
-		$location.path('/time/report/' + $scope.previousFrom.format('YYYYMMDD') + '/' + $scope.previousTo.format('YYYYMMDD')).replace();
+		$state.go('app.time_report', { from: $scope.previousFrom.format('YYYYMMDD'), to: $scope.previousTo.format('YYYYMMDD')}, { location: 'replace' });
 	}
 
 	$scope.next = function(){
-		$location.path('/time/report/' + $scope.nextFrom.format('YYYYMMDD') + '/' + $scope.nextTo.format('YYYYMMDD')).replace();
+		$state.go('app.time_report', { from: $scope.nextFrom.format('YYYYMMDD'), to: $scope.nextTo.format('YYYYMMDD')}, { location: 'replace' });
 	}
 
 	$scope.refresh = function() {
