@@ -11,10 +11,11 @@ function ($timeout) {
 		},
 		link: function(scope, element, attrs, ngModel, timeout) {
 
+			var position = attrs.fmDatepickerHPosition || 'right';
 			element.datepicker({
 				format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
 				autoclose: true,
-				orientation: "auto right",
+				orientation: "auto " + position,
 				todayBtn: 'linked'
 			})
 			.on('changeDate', function(date) { 

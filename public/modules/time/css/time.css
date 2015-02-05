@@ -1,9 +1,3 @@
-.fm-list.timeregistration .list-group {
-    display: inline;
-    margin-bottom: 5px;
-	
-}
-
 /*
  * Time registration overview
  */
@@ -12,6 +6,7 @@
 	cursor: pointer;
 	margin-top: 30px;
 }
+
 
 /*
  * Time registration report
@@ -33,10 +28,41 @@
 	margin: 5px 0 0 0;
 }
 
+
 /*
  * Time registration import
  */
 
- .fm-time-import fieldset .form-group{
- 	margin-bottom: 10px;
- }
+.fm-time-import fieldset .form-group{
+	margin-bottom: 10px;
+}
+
+
+/*
+ * Time registration import
+ */
+
+.fm-time-export .date-selector{
+ 	float: left;
+ 	height: 33px;
+}
+.fm-time-export .btn-group > .date-selector:not(:first-child) {
+	margin-left: -1px;
+}
+.fm-time-export .btn-group > .date-selector:not(:first-child) {
+	border-bottom-left-radius: 0;
+	border-top-left-radius: 0;
+}
+.fm-time-export .btn-group > .date-selector:not(:last-child) {
+	border-bottom-right-radius: 0;
+	border-top-right-radius: 0;	
+}
+.fm-time-export .btn-group > .btn:not(:first-child) {
+	margin-left: -1px;
+}
+
+.fm-time-export .result .list-group {
+    display: inline;
+    margin-bottom: 5px;
+	
+}

@@ -1,4 +1,4 @@
-angular.module('time').controller('OverviewController',
+angular.module('time').controller('ExportController',
 function($scope, $location, $stateParams, TimeRegistration) {
 	'use strict';
 
@@ -6,6 +6,7 @@ function($scope, $location, $stateParams, TimeRegistration) {
 	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
 
 	$scope.hasTimeRegistrations = false;	
+	$scope.loading = false;
 
 	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
 	$scope.to = new moment($stateParams.to, 'YYYYMMDD');
@@ -36,10 +37,12 @@ function($scope, $location, $stateParams, TimeRegistration) {
 	};
 
 	$scope.applyDate = function(){
-		$location.path('/time/overview/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
+		$location.path('/app/time/export/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
 	};
 
 	$scope.refresh = function() {
+
+		$scope.loading = true;
 
 		TimeRegistration.byrange({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') }, function(tr){
 
@@ -55,6 +58,7 @@ function($scope, $location, $stateParams, TimeRegistration) {
 			 });
 
 			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+			$scope.loading = false;
 		});
 	};	
 });
