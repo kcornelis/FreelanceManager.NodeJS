@@ -1,3 +1,5 @@
+/* SPINNER */
+
 .fm-spinner {
     height: 25px;
     width: 25px;
@@ -34,4 +36,15 @@
 @keyframes rotation {
     from {transform: rotate(0deg);}
     to {transform: rotate(359deg);}
+}
+
+/* WHRIL */
+
+.fm-wait-panel.whirl {
+    height: 60px;
+    display:block;
+}
+.fm-wait-panel.whirl:before {
+  background-color: transparent;
+  opacity: 1;
 }

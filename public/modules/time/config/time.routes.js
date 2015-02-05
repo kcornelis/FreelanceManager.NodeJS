@@ -5,7 +5,7 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 		$stateProvider
 
 		.state('app.time_overview', {
-			url: '/overview/:date',
+			url: '/time/overview/:date',
 			templateUrl: 'modules/time/views/overview.html',
 			controller: 'OverviewController',
 			access: { requiredLogin: true },
@@ -18,7 +18,7 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 		})
 
 		.state('app.time_report', {
-			url: '/report/:from/:to',
+			url: '/time/report/:from/:to',
 			templateUrl: 'modules/time/views/report.html',
 			controller: 'ReportController',
 			access: { requiredLogin: true },
@@ -31,13 +31,15 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 		})
 
 		.state('app.time_import', {
-			url: '/import',
+			url: '/time/import',
 			templateUrl: 'modules/time/views/import.html',
+			controller: 'ImportController',
+			resolve: ApplicationConfiguration.resolve('excel', 'ngTable'),
 			access: { requiredLogin: true }
 		})
 
 		.state('app.time_export', {
-			url: '/registrations/:from/:to',
+			url: '/time/registrations/:from/:to',
 			templateUrl: 'modules/time/views/export.html',
 			access: { requiredLogin: true },
 			resolve: ApplicationConfiguration.resolve('datetime')

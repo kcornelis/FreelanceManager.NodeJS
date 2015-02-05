@@ -1,10 +1,35 @@
 // TODO unit test
 angular.module('time').controller('ImportController',
-function($scope, XLSXReader, Project, TimeRegistration) {
+function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegistration) {
 	'use strict';
-	
-	// upload, sheet, column, project, import
-	$scope.wizardStep = 1;
+
+	// Wizard helpers
+	// **************
+	var steps;
+
+	function createsteps(q) {
+		steps = [];
+		for(var i = 1; i <= q; i++) steps[i] = false;
+	};
+
+	function activate(step){
+		for(var i in steps){
+			steps[i] = false;
+		}
+		steps[step] = true;
+	}
+
+	$scope.init = function() {
+		createsteps(4);
+		activate(1);
+	};
+
+	$scope.active = function(step) {
+		return !!steps[step];
+	};
+
+	// Preload data
+	// ************
 	Project.active(function(projects){
 		var tasks = [];
 		var id = 0;
@@ -31,16 +56,8 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 
 		XLSXReader.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
 			$scope.excelSheets = xlsxData;
-			$scope.gotoStep2();
+			activate(2);
 		});
-	};
-
-	$scope.gotoStep2 = function(){
-		$scope.wizardStep += 1;
-	};
-
-	$scope.canGotoStep2 = function(){
-		return true;
 	};
 
 	// step 2 (sheet selection)
@@ -49,7 +66,7 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 	$scope.selectedSheetName = undefined;
 	$scope.selectedSheet = undefined;
 
-	$scope.gotoStep3 = function(){
+	$scope.goto3 = function(){
 		
 		$scope.selectedSheet = $scope.excelSheets[$scope.selectedSheetName];
 
@@ -59,17 +76,17 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 		}
 		$scope.selectedSheetHeader = selectedSheetHeader;
 
-		$scope.wizardStep += 1;
+		activate(3);
 	};
 
-	$scope.canGotoStep3 = function(){
+	$scope.canGoto3 = function(){
 		return $scope.selectedSheetName != null;
 	};
 
 	// step 3 (column selection)
 	// ***********************	
 
-	$scope.gotoStep4 = function(){
+	$scope.goto4 = function(){
 
 		$scope.groupedRows = _.groupBy($scope.selectedSheet.data, function(r){
 			return r[$scope.selectedProjectColumn] + ' - ' + r[$scope.selectedTaskColumn];
@@ -83,10 +100,10 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 			}
 		});
 
-		$scope.wizardStep += 1;
+		activate(4);
 	};
 
-	$scope.canGotoStep4 = function(){
+	$scope.canGoto4 = function(){
 		return $scope.selectedProjectColumn != null &&
 			$scope.selectedTaskColumn != null && 
 			$scope.selectedDateColumn != null &&
@@ -98,11 +115,11 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 	// step 4 (project mapping)
 	// ***********************	
 
-	$scope.gotoStep5 = function(){
-		$scope.wizardStep += 1;
+	$scope.goto5 = function(){
+		activate(5);
 	};
 
-	$scope.canGotoStep5 = function(){
+	$scope.canGoto5 = function(){
 		return _.every($scope.projectsInExcelSheet, function(p) {
 			return p.mappedProjectAndTask != null;
 		});
@@ -111,9 +128,12 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 	// step 5 (saving)
 	// ***********************	
 
+	$scope.importing = false;
+
 	$scope.import = function(){
 
 		var registrations = [];
+		$scope.importing = true;
 
 		_.forEach($scope.groupedRows, function(groupedRow){
 
@@ -138,11 +158,14 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 			});
 		});
 
-		TimeRegistration.save(registrations, function(){
-			var i = 0;
-		}, function(){
-			var i = 0;
-		})
+		TimeRegistration.save(registrations, function(data){
+			$scope.importing = false;
+			$scope.timeRegistrationsImported = data;
+			$scope.summaryTableParams.count(10);
+			activate(6);
+		}, function(err){
+			$scope.importing = false;
+		});
 	};
 	
 	function convertDisplayDateToNumeric(date){
@@ -152,4 +175,27 @@ function($scope, XLSXReader, Project, TimeRegistration) {
 	function convertDisplayTimeToNumeric(time){
 		return parseInt(time.replace(':', ''), 10);
 	}
+
+
+
+	// step 6 (summary)
+	// ***********************	
+
+	$scope.summaryTableParams = new ngTableParams({
+		page: 1,
+		count: 1
+	}, 
+	{
+		getData: function ($defer, params) {
+			if(!$scope.timeRegistrationsImported)
+				return;
+
+			// use build-in angular filter
+			var filteredData = params.filter() ? $filter('filter')($scope.timeRegistrationsImported, params.filter()) : $scope.timeRegistrationsImported;
+			var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : $scope.timeRegistrationsImported;
+
+			params.total(orderedData.length); // set total for recalc pagination
+			$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+		}
+	});
 });
