@@ -2478,10 +2478,11 @@ angular.module('core').directive('fmDatepicker', [
       require: '?ngModel',
       scope: { fmDatepickerDatechanged: '&' },
       link: function (scope, element, attrs, ngModel, timeout) {
+        var position = attrs.fmDatepickerHPosition || 'right';
         element.datepicker({
           format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
           autoclose: true,
-          orientation: 'auto right',
+          orientation: 'auto ' + position,
           todayBtn: 'linked'
         }).on('changeDate', function (date) {
           var dateTxt = date.format(attrs.fmDatepickerFormat || 'yyyy-mm-dd');
@@ -2955,14 +2956,22 @@ angular.module('core').factory('XLSXReader', [
       resolve: ApplicationConfiguration.resolve('excel', 'ngTable'),
       access: { requiredLogin: true }
     }).state('app.time_export', {
-      url: '/time/registrations/:from/:to',
+      url: '/time/export/:from/:to',
       templateUrl: 'modules/time/views/export.html',
+      controller: 'ExportController',
       access: { requiredLogin: true },
-      resolve: ApplicationConfiguration.resolve('datetime')
+      resolve: ApplicationConfiguration.resolve('ngTable', 'datetime'),
+      onEnter: function ($state, $stateParams) {
+        if (!$stateParams.from || !$stateParams.to) {
+          $state.go('app.time_export', {
+            from: new moment().startOf('month').format('YYYYMMDD'),
+            to: new moment().endOf('month').format('YYYYMMDD')
+          }, { location: 'replace' });
+        }
+      }
     });
-    $urlRouterProvider.when('/app/time/overview', '/app/time/overview/');
   }
-]);angular.module('time').controller('OverviewController', [
+]);angular.module('time').controller('ExportController', [
   '$scope',
   '$location',
   '$stateParams',
@@ -2972,6 +2981,7 @@ angular.module('core').factory('XLSXReader', [
     $scope.from = new moment($stateParams.from, 'YYYYMMDD');
     $scope.to = new moment($stateParams.to, 'YYYYMMDD');
     $scope.hasTimeRegistrations = false;
+    $scope.loading = false;
     $scope.from = new moment($stateParams.from, 'YYYYMMDD');
     $scope.to = new moment($stateParams.to, 'YYYYMMDD');
     $scope.thisWeek = new moment().day(1).format('YYYYMMDD') + '/' + new moment().day(7).format('YYYYMMDD');
@@ -2993,9 +3003,10 @@ angular.module('core').factory('XLSXReader', [
       $scope.to = new moment(date, format);
     };
     $scope.applyDate = function () {
-      $location.path('/time/overview/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
+      $location.path('/app/time/export/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
     };
     $scope.refresh = function () {
+      $scope.loading = true;
       TimeRegistration.byrange({
         from: $scope.from.format('YYYYMMDD'),
         to: $scope.to.format('YYYYMMDD')
@@ -3012,6 +3023,7 @@ angular.module('core').factory('XLSXReader', [
           return i.date.numeric;
         });
         $scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+        $scope.loading = false;
       });
     };
   }
