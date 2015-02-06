@@ -2,6 +2,9 @@ angular.module('account').controller('AuthenticateController', ['$rootScope', '$
 function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
 	'use strict';
 
+	delete $window.localStorage.token;
+	delete $window.localStorage.user;
+
 	$scope.user = { email: '', password: '' };
 	$scope.error = '';
 	
@@ -16,9 +19,10 @@ function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
 				$location.path('/');
 			})
 			.error(function (data, status, headers, config) {
+				
 				// Erase the token if the user fails to log in
 				delete $window.localStorage.token;
-				delete $rootScope.$storage.user;
+				delete $window.localStorage.user;
 
 				// Handle login errors here
 				$scope.error = 'Invalid email or password';

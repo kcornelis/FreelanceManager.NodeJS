@@ -1,8 +1,7 @@
-<!-- START Top Navbar-->
 <nav role="navigation" class="navbar topnavbar">
-	<!-- START navbar header-->
+
 	<div class="navbar-header">
-		<a href="#/" class="navbar-brand">
+		<a data-ui-sref="app.dashboard" class="navbar-brand">
 			<div class="brand-logo">
 				<img src="app/img/logo.png" alt="App Logo" class="img-responsive" />
 			</div>
@@ -11,57 +10,43 @@
 			</div>
 		</a>
 	</div>
-	<!-- END navbar header-->
-	<!-- START Nav wrapper-->
+
 	<div class="nav-wrapper">
-		<!-- START Left navbar-->
 		<ul class="nav navbar-nav">
 			<li>
-				<!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-				<a href="#" ng-click="app.layout.isCollapsed = !app.layout.isCollapsed" class="hidden-xs">
+				<a href="#" data-ng-click="app.layout.isCollapsed = !app.layout.isCollapsed" class="hidden-xs">
 					<em class="fa fa-navicon"></em>
 				</a>
-				<!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
 				<a href="#" toggle-state="aside-toggled" no-persist="no-persist" class="visible-xs sidebar-toggle">
 					<em class="fa fa-navicon"></em>
 				</a>
 			</li>
-			<!-- START User avatar toggle-->
 			<li>
-				<!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-				<a ui-sref="app.account">
+				<a data-ui-sref="app.account">
 					<em class="icon-user"></em>
 				</a>
 			</li>
-			<!-- END User avatar toggle-->			
-			<!-- START lock screen-->
 			<li>
-				<a ui-sref="page.lock" title="Lock screen">
+				<a data-ui-sref="login" title="Lock screen">
 					<em class="icon-lock"></em>
 				</a>
 			</li>
-         <!-- END lock screen-->
 		</ul>
-		<!-- END Left navbar-->
-		<!-- START Right Navbar-->
+
 		<ul class="nav navbar-nav navbar-right">
-			<!-- Search icon-->
 			<li>
 				<a href="#" search-open="search-open">
 					<em class="icon-magnifier"></em>
 				</a>
 			</li>
-			<!-- Fullscreen (only desktops)-->
 			<li class="visible-lg">
 				<a href="#" toggle-fullscreen="toggle-fullscreen">
 					<em class="fa fa-expand"></em>
 				</a>
 			</li>
 		</ul>
-		<!-- END Right Navbar-->
 	</div>
-	<!-- END Nav wrapper-->
-	<!-- START Search form-->
+
 	<form role="search" action="search.html" class="navbar-form">
 		<div class="form-group has-feedback">
 			<input type="text" placeholder="Search" class="form-control" />
@@ -69,6 +54,4 @@
 		</div>
 		<button type="submit" class="hidden btn btn-default">Submit</button>
 	</form>
-	<!-- END Search form-->
 </nav>
-<!-- END Top Navbar-->
