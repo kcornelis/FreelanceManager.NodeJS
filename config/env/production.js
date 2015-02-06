@@ -4,7 +4,7 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
-				'public/lib/angle.css',
+				'public/dist/angle.css',
 				'public/lib/font-awesome/css/font-awesome.css',
 				'public/dist/base.min.css'
 				
