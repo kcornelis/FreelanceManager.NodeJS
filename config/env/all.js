@@ -85,6 +85,7 @@ module.exports = {
 		],
 		tests: [
 			'public/lib/angular-mocks/angular-mocks.js',
+			'public/karma.js',
 			'public/modules/**/*.test.js'
 		]
 	}

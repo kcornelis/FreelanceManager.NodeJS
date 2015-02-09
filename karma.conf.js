@@ -7,14 +7,30 @@ var applicationConfiguration = require('./config/config');
 
 // Karma configuration
 module.exports = function(config) {
+
+	var files = [];
+	files = files.concat(applicationConfiguration.assets.lib.js);
+	files = files.concat(applicationConfiguration.assets.js);
+	files = files.concat(applicationConfiguration.assets.tests);
+	files.push({ pattern: 'public/i18n/en.json', included: false, served: true });
+	files.push({ pattern: 'public/lib/**/*.js', included: false, served: true });
+	files.push({ pattern: 'public/unmanagedbowerlib/**/*.js', included: false, served: true });
+	files.push({ pattern: 'public/modules/**/*.html', included: false, served: true });
+	//console.log(JSON.stringify(files));
+
 	config.set({
 		// Frameworks to use
 		frameworks: ['jasmine', 'sinon-chai'],
 
 		// List of files / patterns to load in the browser
-		files: applicationConfiguration.assets.lib.js.concat(
-			applicationConfiguration.assets.js, applicationConfiguration.assets.lib.js, 
-			applicationConfiguration.assets.tests),
+		files: files,
+
+		proxies: {
+		  '/i18n/': 'http://localhost:9876/base/public/i18n/',
+		  '/lib/': 'http://localhost:9876/base/public/lib/',
+		  '/unmanagedbowerlib/': 'http://localhost:9876/base/public/unmanagedbowerlib/',
+		  '/modules/': 'http://localhost:9876/base/public/modules/'		  
+		},
 
 		// Test results reporter to use
 		// Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
