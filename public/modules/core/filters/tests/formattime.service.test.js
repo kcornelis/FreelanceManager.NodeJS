@@ -3,11 +3,11 @@
 
 	describe('FormatTime Filter Unit Tests:', function() {
 		
-		//Initialize global variables
 		var $filter;
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		beforeEach(inject(function(_$filter_){
 

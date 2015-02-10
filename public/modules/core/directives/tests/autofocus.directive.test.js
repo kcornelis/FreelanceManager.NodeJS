@@ -24,6 +24,7 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		describe('When an element has the autofocus attribute', function() {
 			

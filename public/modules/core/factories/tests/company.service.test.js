@@ -5,8 +5,10 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		describe('Get all', function(){
+			
 			var Company,
 				$httpBackend,
 				response;
@@ -30,6 +32,7 @@
 		});
 
 		describe('Get by id', function(){
+			
 			var Company,
 				$httpBackend,
 				response;
@@ -52,6 +55,7 @@
 		});	
 
 		describe('Update', function(){
+			
 			var Company,
 				$httpBackend,
 				response;
@@ -75,6 +79,7 @@
 		});		
 
 		describe('Create', function(){
+			
 			var Company,
 				$httpBackend,
 				response;

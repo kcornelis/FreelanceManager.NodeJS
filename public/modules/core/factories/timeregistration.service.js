@@ -8,6 +8,6 @@ function($resource) {
 		byrange: { method:'GET', url: '/api/public/timeregistrations/byrange/:from/:to', params: { from: '@from', to: '@to' }, isArray: true },
 		uninvoiced: { method:'GET', url: '/api/public/timeregistrations/uninvoiced', isArray: true },
 		getinfo: { method:'GET', url: '/api/public/timeregistrations/getinfo/:from/:to', params: { from: '@from', to: '@to' } },
-		save: { method:'POST', url: '/api/public/timeregistrations', isArray: true }
+		saveMultiple: { method:'POST', url: '/api/public/timeregistrations/multiple', isArray: true }
 	}); 
 }]);

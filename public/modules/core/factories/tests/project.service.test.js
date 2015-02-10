@@ -5,8 +5,10 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		describe('Get all', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -30,6 +32,7 @@
 		});
 
 		describe('Get active', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -53,6 +56,7 @@
 		});		
 
 		describe('Get by id', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -75,6 +79,7 @@
 		});	
 
 		describe('Update', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -98,6 +103,7 @@
 		});		
 
 		describe('Create', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -122,6 +128,7 @@
 
 
 		describe('Hide', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -145,6 +152,7 @@
 		});		
 
 		describe('Unhide', function(){
+			
 			var Project,
 				$httpBackend,
 				response;
@@ -168,6 +176,7 @@
 		});	
 
 		describe('Change tasks', function(){
+			
 			var Project,
 				$httpBackend,
 				response;

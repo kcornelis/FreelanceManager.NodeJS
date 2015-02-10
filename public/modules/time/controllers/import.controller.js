@@ -158,7 +158,7 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 			});
 		});
 
-		TimeRegistration.save(registrations, function(data){
+		TimeRegistration.saveMultiple(registrations, function(data){
 			$scope.importing = false;
 			$scope.timeRegistrationsImported = data;
 			$scope.summaryTableParams.count(10);

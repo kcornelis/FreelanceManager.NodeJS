@@ -5,8 +5,10 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		describe('Get all', function(){
+			
 			var Account,
 				$httpBackend,
 				response;
@@ -20,7 +22,6 @@
 
 				response = Account.query();
 				$httpBackend.flush();
-
 			}));
 
 			it('should return all accounts', function(){
@@ -30,6 +31,7 @@
 		});
 
 		describe('Get by id', function(){
+			
 			var Account,
 				$httpBackend,
 				response;
@@ -43,7 +45,6 @@
 
 				response = Account.get({ id: 1 });
 				$httpBackend.flush();
-
 			}));
 
 			it('should return the account', function(){
@@ -52,6 +53,7 @@
 		});	
 
 		describe('Update', function(){
+			
 			var Account,
 				$httpBackend,
 				response;
@@ -75,6 +77,7 @@
 		});		
 
 		describe('Create', function(){
+			
 			var Account,
 				$httpBackend,
 				response;

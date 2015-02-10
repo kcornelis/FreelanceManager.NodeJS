@@ -5,8 +5,10 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		describe('Get all', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -30,6 +32,7 @@
 		});
 
 		describe('Get by date', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -53,6 +56,7 @@
 		});		
 
 		describe('Get by range', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -76,6 +80,7 @@
 		});		
 
 		describe('Get uninvoiced', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -99,6 +104,7 @@
 		});			
 
 		describe('Get info', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -121,6 +127,7 @@
 		});				
 
 		describe('Get by id', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -143,6 +150,7 @@
 		});	
 
 		describe('Update', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -166,6 +174,7 @@
 		});		
 
 		describe('Create', function(){
+			
 			var TimeRegistration,
 				$httpBackend,
 				response;
@@ -186,6 +195,31 @@
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
-		});				
+		});	
+
+
+		describe('Create Multiple', function(){
+			
+			var TimeRegistration,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+				TimeRegistration = _TimeRegistration_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectPOST('/api/public/timeregistrations/multiple', [{ description: 'time registration 1'}])
+					.respond(200, [{ description: 'time registration 1'}]);
+
+				response = TimeRegistration.saveMultiple([{ description: 'time registration 1'}]);
+				$httpBackend.flush();
+
+			}));
+
+			it('should create the time registration', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+      			$httpBackend.verifyNoOutstandingRequest();
+			});	
+		});			
 	});
 })();

@@ -2,7 +2,7 @@
 	'use strict';
 	
 	describe('Time Picker Directive Unit Tests:', function() {
-		//Initialize global variables
+
 		var element,
 			$compile,
 			$rootScope,
@@ -33,6 +33,7 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		describe('When an element contains the clockpicker attribute and gets focus', function() {
 			

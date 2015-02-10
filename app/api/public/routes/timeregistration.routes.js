@@ -19,5 +19,6 @@ module.exports = function(app) {
 	app.route('/api/public/timeregistrations/uninvoiced').get(timeRegistration.getUninvoiced);
 
 	app.route('/api/public/timeregistrations').post(timeRegistration.create);
+	app.route('/api/public/timeregistrations/multiple').post(timeRegistration.create);
 	app.route('/api/public/timeregistrations/:timeRegistrationId').post(timeRegistration.update);
 };

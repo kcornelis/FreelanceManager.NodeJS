@@ -753,7 +753,21 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 	});	
 
-	describe('When creating multiple time registrations in batch', function() {
+	/**
+	 * Create Multiple
+	 */
+	describe('When multiple time registrations are created by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/timeregistrations/multiple')
+				.send([{ companyId: company.id, projectId: project.id, task: 'dev', billable: true, description: 'doing some work', date: 20100304, from: 1015, to: 1215 },
+					{ companyId: company.id, projectId: project.id, task: 'meeting', billable: false, description: 'doing some more work', date: 20100404, from: 1115, to: 1315 }])
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When creating multiple time registrations', function() {
 
 		var response;
 		var body;
@@ -762,7 +776,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		before(function(done) {
 			
 			request('http://localhost:' + config.port)
-				.post('/api/public/timeregistrations')
+				.post('/api/public/timeregistrations/multiple')
 				.set('Authorization', testdata.normalAccountToken)
 				.send([{ companyId: company.id, projectId: project.id, task: 'dev', billable: true, description: 'doing some work', date: 20100304, from: 1015, to: 1215 },
 					{ companyId: company.id, projectId: project.id, task: 'meeting', billable: false, description: 'doing some more work', date: 20100404, from: 1115, to: 1315 }])
@@ -797,15 +811,15 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeRegistration1.should.exist;
 		});
 
-		it('secontr2 should be saved in the database', function() {
+		it('tr2 should be saved in the database', function() {
 			timeRegistration2.should.exist;
 		});
 
-		it('first should create a time registration (1) with the specified task', function(){
+		it('should create a time registration (1) with the specified task', function(){
 			timeRegistration1.task.should.eql('dev');
 		});
 
-		it('first should create a time registration (2) with the specified task', function(){
+		it('should create a time registration (2) with the specified task', function(){
 			timeRegistration2.task.should.eql('meeting');
 		});
 
