@@ -10,6 +10,7 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		beforeEach(inject(function($controller, $rootScope, _$httpBackend_, _$modal_) {
 			scope = $rootScope.$new();
