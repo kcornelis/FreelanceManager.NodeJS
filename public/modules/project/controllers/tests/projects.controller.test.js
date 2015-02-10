@@ -10,6 +10,7 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		beforeEach(inject(function($controller, $rootScope, _$httpBackend_, _$modal_) {
 			scope = $rootScope.$new();
@@ -97,7 +98,12 @@
 				$httpBackend.flush();
 			});
 
-			it('should store all projects in $scope.projects', inject(function() {
+			it('should send the request to the backend', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+				$httpBackend.verifyNoOutstandingRequest();
+			});
+
+			it('should mark the selected project as hidden', inject(function() {
 				expect(scope.projects[0].hidden).toBe(true);
 			}));
 		});	
@@ -121,7 +127,12 @@
 				$httpBackend.flush();
 			});
 
-			it('should store all projects in $scope.projects', inject(function() {
+			it('should send the request to the backend', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+				$httpBackend.verifyNoOutstandingRequest();
+			});
+
+			it('should mark the selected project as unhidden', inject(function() {
 				expect(scope.projects[0].hidden).toBe(false);
 			}));
 		});	

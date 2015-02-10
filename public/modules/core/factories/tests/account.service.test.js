@@ -72,7 +72,7 @@
 
 			it('should update the account', function(){
 				$httpBackend.verifyNoOutstandingExpectation();
-      			$httpBackend.verifyNoOutstandingRequest();
+				$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
