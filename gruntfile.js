@@ -68,10 +68,12 @@ module.exports = function(grunt) {
 		uglify: {
 			production: {
 				options: {
-					mangle: false
+					preserveComments: false,
+					compressor: true
 				},
 				files: {
 					'public/dist/base.min.js': 'public/dist/base.js',
+					'public/dist/lib.min.js': 'public/dist/lib.js',
 					'public/dist/application.min.js': 'public/dist/application.js'
 				}
 			}
@@ -80,6 +82,7 @@ module.exports = function(grunt) {
 			combine: {
 				files: {
 					'public/dist/base.min.css': '<%= baseCSSFiles %>',
+					'public/dist/lib.min.css': '<%= libCSSFiles %>',
 					'public/dist/application.min.css': '<%= applicationCSSFiles %>'
 				}
 			}
@@ -111,6 +114,7 @@ module.exports = function(grunt) {
             production: {
                 files: {
                     'public/dist/base.js': '<%= baseJavaScriptFiles %>',
+                    'public/dist/lib.js': '<%= libJavaScriptFiles %>',
                     'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
                 }
             }
@@ -171,6 +175,12 @@ module.exports = function(grunt) {
 
 	// Build task(s).
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngmin', 'uglify', 'cssmin']);
+
+	// Test task.
+	grunt.registerTask('testserver', ['env:test', 'mochaTest']);
+
+		// Test task.
+	grunt.registerTask('testclient', ['env:test', 'karma:unit']);
 
 	// Test task.
 	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);

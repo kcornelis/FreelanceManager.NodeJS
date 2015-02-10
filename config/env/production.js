@@ -2,16 +2,15 @@
 
 module.exports = {
 	assets: {
-		lib: {
-			css: [
-				'public/dist/angle.css',
-				'public/lib/font-awesome/css/font-awesome.css',
-				'public/dist/base.min.css'
-				
-			],
-			js: ['public/dist/base.min.js']
+		base: {
+			css: [ 'public/dist/base.min.css' ],
+			js: [ 'public/dist/base.min.js' ]
 		},
-		css: ['public/dist/application.min.css'],
-		js: ['public/dist/application.min.js']
+		lib: {
+			css: [ 'public/dist/lib.min.css' ],
+			js: ['public/dist/lib.min.js']
+		},
+		css: [ 'public/dist/application.min.css' ],
+		js: [ 'public/dist/application.min.js' ]
 	}
 };

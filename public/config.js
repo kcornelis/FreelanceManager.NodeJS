@@ -4,7 +4,7 @@ var ApplicationConfiguration = (function() {
 
 	// Init module configuration options
 	var applicationModuleName = 'freelancemanager';
-	var applicationModuleVendorDependencies = ['ngRoute', 'ngAnimate', 'ngStorage', 'ngCookies', 'pascalprecht.translate', 'ui.bootstrap', 'ui.router', 'ui.utils', 'oc.lazyLoad', 'cfp.loadingBar', 'ngSanitize', 'ngResource'];
+	var applicationModuleVendorDependencies = ['ngRoute', 'ngAnimate', 'ngStorage', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ui.utils', 'oc.lazyLoad', 'cfp.loadingBar', 'ngSanitize', 'ngResource'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName) {
@@ -21,7 +21,7 @@ var ApplicationConfiguration = (function() {
 	var resolve = function() {
 		var _args = arguments;
 		return {
-			deps: ['$ocLazyLoad','$q', 'APP_REQUIRES', function ($ocLL, $q, appRequires) {
+			deps: ['$ocLazyLoad','$q', 'APP_REQUIRES', function ($ocLL, $q) {
 				// Creates a promise chain for each argument
 				var promise = $q.when(1); // empty promise
 				for(var i=0, len=_args.length; i < len; i ++){
@@ -36,25 +36,9 @@ var ApplicationConfiguration = (function() {
 							return promise.then(_arg);
 					else
 							return promise.then(function() {
-								// if is a module, pass the name. If not, pass the array
-								var whatToLoad = getRequired(_arg);
-								// simple error check
-								if(!whatToLoad) return $.error('Route resolve: Bad resource name [' + _arg + ']');
-								// finally, return a promise
-								return $ocLL.load( whatToLoad );
+								return $ocLL.load( _arg );
 							});
 				}
-				// check and returns required data
-				// analyze module items with the form [name: '', files: []]
-				// and also simple array of script files (for not angular js)
-				function getRequired(name) {
-					if (appRequires.modules)
-							for(var m in appRequires.modules)
-									if(appRequires.modules[m].name && appRequires.modules[m].name === name)
-											return appRequires.modules[m];
-					return appRequires.scripts && appRequires.scripts[name];
-				}
-
 			}]};
 	};
 

@@ -22,56 +22,47 @@ module.exports = {
 				'public/lib/angular-cookies/angular-cookies.js',
 				'public/lib/angular-animate/angular-animate.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
-				'public/lib/ngstorage/ngStorage.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-resource/angular-resource.js',
-				'public/lib/angular-translate/angular-translate.js',
-				'public/lib/angular-translate-loader-url/angular-translate-loader-url.js',
-				'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-				'public/lib/angular-translate-storage-local/angular-translate-storage-local.js',
-				'public/lib/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
-				'public/lib/oclazyload/dist/ocLazyLoad.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-				'public/lib/angular-loading-bar/build/loading-bar.js',
-
-				'public/lib/bootstrap/dist/js/bootstrap.js',
-				'public/lib/lodash/dist/lodash.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
-				'public/lib/moment/moment.js'
 			]			
 		},
 		lib: {
 			css: [
-				'public/dist/angle.css',
-				'public/lib/font-awesome/css/font-awesome.css'
-				
+				'public/lib/font-awesome/css/font-awesome.css',
+				'public/lib/simple-line-icons/css/simple-line-icons.css',
+				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
+				'public/lib/bootstrap-datepicker/css/datepicker3.css',
+				'public/lib/ng-table/ng-table.min.css',
+
+				'public/dist/angle.css'
 			],
 			js: [
-				'public/lib/jquery/dist/jquery.js',
-				'public/lib/angular/angular.js',
-				'public/lib/angular-route/angular-route.js',
-				'public/lib/angular-cookies/angular-cookies.js',
-				'public/lib/angular-animate/angular-animate.js',
-				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/ngstorage/ngStorage.js',
-				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-sanitize/angular-sanitize.js',
-				'public/lib/angular-resource/angular-resource.js',
-				'public/lib/angular-translate/angular-translate.js',
-				'public/lib/angular-translate-loader-url/angular-translate-loader-url.js',
-				'public/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-				'public/lib/angular-translate-storage-local/angular-translate-storage-local.js',
-				'public/lib/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angular-loading-bar/build/loading-bar.js',
-
-
 				'public/lib/bootstrap/dist/js/bootstrap.js',
 				'public/lib/lodash/dist/lodash.js',
-				'public/lib/angular-jwt/dist/angular-jwt.js',
-				'public/lib/moment/moment.js'
+				'public/lib/moment/moment.js',
+
+				'public/lib/fastclick/lib/fastclick.js',
+				'public/lib/modernizr/modernizr.js',
+				'public/lib/screenfull/dist/screenfull.min.js',
+				'public/lib/animo.js/animo.js',
+				'public/lib/slimScroll/jquery.slimscroll.min.js',
+				'public/lib/jquery-classyloader/js/jquery.classyloader.min.js',
+				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
+				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
+				'public/lib/ng-table/ng-table.min.js',
+				'public/lib/Flot/jquery.flot.js',
+				'public/lib/flot.tooltip/js/jquery.flot.tooltip.min.js',
+				'public/lib/Flot/jquery.flot.resize.js',
+				'public/lib/Flot/jquery.flot.pie.js',
+				'public/lib/Flot/jquery.flot.time.js',
+				'public/lib/Flot/jquery.flot.categories.js',
+				'public/lib/flot-spline/js/jquery.flot.spline.min.js'
 			]
 		},
 		css: [
@@ -84,8 +75,8 @@ module.exports = {
 			'public/modules/*/*[!tests]*/*.js'
 		],
 		tests: [
-			'public/lib/angular-mocks/angular-mocks.js',
 			'public/karma.js',
+			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/**/*.test.js'
 		]
 	}

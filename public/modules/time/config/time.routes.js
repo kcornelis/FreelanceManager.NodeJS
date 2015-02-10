@@ -9,7 +9,6 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			templateUrl: 'modules/time/views/overview.html',
 			controller: 'OverviewController',
 			access: { requiredLogin: true },
-			resolve: ApplicationConfiguration.resolve('datetime'),
 			onEnter: function($state, $stateParams){
 				if(!$stateParams.date){
 					$state.go('app.time_overview', { date: new moment().format('YYYYMMDD') }, { location: 'replace' });
@@ -22,7 +21,6 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			templateUrl: 'modules/time/views/report.html',
 			controller: 'ReportController',
 			access: { requiredLogin: true },
-			resolve: ApplicationConfiguration.resolve('flot-chart', 'flot-chart-plugins'),
 			onEnter: function($state, $stateParams){
 				if(!$stateParams.from || !$stateParams.to){
 					$state.go('app.time_report', { from: new moment().startOf('month').format('YYYYMMDD'), to: new moment().endOf('month').format('YYYYMMDD') }, { location: 'replace' });
@@ -34,7 +32,7 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			url: '/time/import',
 			templateUrl: 'modules/time/views/import.html',
 			controller: 'ImportController',
-			resolve: ApplicationConfiguration.resolve('excel', 'ngTable'),
+			resolve: ApplicationConfiguration.resolve('lib/js-xlsx/dist/xlsx.core.min.js'),
 			access: { requiredLogin: true }
 		})
 
@@ -43,7 +41,6 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			templateUrl: 'modules/time/views/export.html',
 			controller: 'ExportController',
 			access: { requiredLogin: true },
-			resolve: ApplicationConfiguration.resolve('ngTable','datetime'),
 			onEnter: function($state, $stateParams){
 				if(!$stateParams.from || !$stateParams.to){
 					$state.go('app.time_export', { from: new moment().startOf('month').format('YYYYMMDD'), to: new moment().endOf('month').format('YYYYMMDD') }, { location: 'replace' });

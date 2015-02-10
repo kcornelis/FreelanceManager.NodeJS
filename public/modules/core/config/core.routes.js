@@ -12,7 +12,6 @@ function($stateProvider, $urlRouterProvider, appRequires) {
 			abstract: true,
 			templateUrl: 'modules/core/views/app.html',
 			controller: 'AppController',
-			resolve: ApplicationConfiguration.resolve('fastclick', 'modernizr', 'icons', 'screenfull', 'animo', 'sparklines', 'slimscroll', 'classyloader', 'toaster', 'whirl'),
 			access: { requiredLogin: true }
 		})
 
