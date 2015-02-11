@@ -57,8 +57,6 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 
 		if(toUpdate.task && $scope.timeRegistration.project)
 			$scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
-
-		$scope.$apply();
 	});
 
 	$scope.ok = function () {

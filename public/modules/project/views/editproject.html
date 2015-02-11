@@ -5,9 +5,9 @@
 			<h4 class="modal-title">Project</h4>
 		</div>
 		<div class="modal-body">
-			<div class="form-group" data-fm-add-error-for="projectForm.companyId">
+			<div class="form-group">
 				<label>Company</label>
-				<select class="form-control" ng-model="project.companyId" data-ng-disabled="!newProject">
+				<select class="form-control" ng-model="project.companyId" data-ng-disabled="!newProject" required>
 					<option ng-repeat="company in companies" value="{{ company.id }}">{{ company.name }}</option>
 				</select>
 			</div>
