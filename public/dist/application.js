@@ -8,14 +8,14 @@ var ApplicationConfiguration = function () {
         'ngAnimate',
         'ngStorage',
         'ngCookies',
-        'pascalprecht.translate',
         'ui.bootstrap',
         'ui.router',
         'ui.utils',
         'oc.lazyLoad',
         'cfp.loadingBar',
         'ngSanitize',
-        'ngResource'
+        'ngResource',
+        'ngTable'
       ];
     // Add a new vertical module
     var registerModule = function (moduleName) {
@@ -32,7 +32,7 @@ var ApplicationConfiguration = function () {
           '$ocLazyLoad',
           '$q',
           'APP_REQUIRES',
-          function ($ocLL, $q, appRequires) {
+          function ($ocLL, $q) {
             // Creates a promise chain for each argument
             var promise = $q.when(1);
             // empty promise
@@ -47,24 +47,8 @@ var ApplicationConfiguration = function () {
                 return promise.then(_arg);
               else
                 return promise.then(function () {
-                  // if is a module, pass the name. If not, pass the array
-                  var whatToLoad = getRequired(_arg);
-                  // simple error check
-                  if (!whatToLoad)
-                    return $.error('Route resolve: Bad resource name [' + _arg + ']');
-                  // finally, return a promise
-                  return $ocLL.load(whatToLoad);
+                  return $ocLL.load(_arg);
                 });
-            }
-            // check and returns required data
-            // analyze module items with the form [name: '', files: []]
-            // and also simple array of script files (for not angular js)
-            function getRequired(name) {
-              if (appRequires.modules)
-                for (var m in appRequires.modules)
-                  if (appRequires.modules[m].name && appRequires.modules[m].name === name)
-                    return appRequires.modules[m];
-              return appRequires.scripts && appRequires.scripts[name];
             }
           }
         ]
@@ -76,8 +60,7 @@ var ApplicationConfiguration = function () {
       registerModule: registerModule,
       resolve: resolve
     };
-  }();'use strict';
-//Start by defining the main module and adding the module dependencies
+  }();//Start by defining the main module and adding the module dependencies
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 // Setting HTML5 Location Mode
 angular.module(ApplicationConfiguration.applicationModuleName).config([
@@ -152,9 +135,7 @@ angular.element(document).ready(function () {
   function ($scope, $window, jwtHelper, Account) {
     'use strict';
     var token = jwtHelper.decodeToken($window.localStorage.token);
-    Account.get({ id: token.id }).$promise.then(function (response) {
-      $scope.account = response;
-    });
+    $scope.account = Account.get({ id: token.id });
     $scope.save = function () {
       Account.save(token.id, $scope.account);
     };
@@ -168,6 +149,8 @@ angular.element(document).ready(function () {
   'jwtHelper',
   function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
     'use strict';
+    delete $window.localStorage.token;
+    delete $window.localStorage.user;
     $scope.user = {
       email: '',
       password: ''
@@ -182,7 +165,7 @@ angular.element(document).ready(function () {
       }).error(function (data, status, headers, config) {
         // Erase the token if the user fails to log in
         delete $window.localStorage.token;
-        delete $rootScope.$storage.user;
+        delete $window.localStorage.user;
         // Handle login errors here
         $scope.error = 'Invalid email or password';
       });
@@ -217,16 +200,6 @@ App.config([
       events: true,
       modules: appRequires.modules
     });
-  }
-]).config([
-  '$translateProvider',
-  function ($translateProvider) {
-    $translateProvider.useStaticFilesLoader({
-      prefix: 'i18n/',
-      suffix: '.json'
-    });
-    $translateProvider.preferredLanguage('en');
-    $translateProvider.useLocalStorage();
   }
 ]).config([
   'cfpLoadingBarProvider',
@@ -437,7 +410,6 @@ App.controller('AppController', [
   '$rootScope',
   '$scope',
   '$state',
-  '$translate',
   '$window',
   '$localStorage',
   '$timeout',
@@ -445,7 +417,7 @@ App.controller('AppController', [
   'colors',
   'browser',
   'cfpLoadingBar',
-  function ($rootScope, $scope, $state, $translate, $window, $localStorage, $timeout, toggle, colors, browser, cfpLoadingBar) {
+  function ($rootScope, $scope, $state, $window, $localStorage, $timeout, toggle, colors, browser, cfpLoadingBar) {
     'use strict';
     // Loading bar transition
     // ----------------------------------- 
@@ -510,27 +482,6 @@ App.controller('AppController', [
     $scope.toggleUserBlock = function () {
       $scope.$broadcast('toggleUserBlock');
     };
-    // Internationalization
-    // ----------------------
-    $scope.language = {
-      listIsOpen: false,
-      available: { 'en': 'English' },
-      init: function () {
-        var proposedLanguage = $translate.proposedLanguage() || $translate.use();
-        var preferredLanguage = $translate.preferredLanguage();
-        // we know we have set a preferred one in app.config
-        $scope.language.selected = $scope.language.available[proposedLanguage || preferredLanguage];
-      },
-      set: function (localeId, ev) {
-        // Set the new idiom
-        $translate.use(localeId);
-        // save a reference for the current language
-        $scope.language.selected = $scope.language.available[localeId];
-        // finally toggle dropdown
-        $scope.language.listIsOpen = !$scope.language.listIsOpen;
-      }
-    };
-    $scope.language.init();
     // Restore application classes state
     toggle.restoreState($(document.body));
     // Applies animation to main view for the next pages to load
@@ -2418,7 +2369,6 @@ App.service('vectorMap', function () {
       abstract: true,
       templateUrl: 'modules/core/views/app.html',
       controller: 'AppController',
-      resolve: ApplicationConfiguration.resolve('fastclick', 'modernizr', 'icons', 'screenfull', 'animo', 'sparklines', 'slimscroll', 'classyloader', 'toaster', 'whirl'),
       access: { requiredLogin: true }
     }).state('app.dashboard', {
       url: '/dashboard',
@@ -2610,9 +2560,9 @@ angular.module('core').directive('piechart', function () {
           to: '@to'
         }
       },
-      save: {
+      saveMultiple: {
         method: 'POST',
-        url: '/api/public/timeregistrations',
+        url: '/api/public/timeregistrations/multiple',
         isArray: true
       }
     });
@@ -2929,10 +2879,9 @@ angular.module('core').factory('XLSXReader', [
       templateUrl: 'modules/time/views/overview.html',
       controller: 'OverviewController',
       access: { requiredLogin: true },
-      resolve: ApplicationConfiguration.resolve('datetime'),
-      onEnter: function ($state, $stateParams) {
-        if (!$stateParams.date) {
-          $state.go('app.time_overview', { date: new moment().format('YYYYMMDD') }, { location: 'replace' });
+      params: {
+        date: function () {
+          return new moment().format('YYYYMMDD');
         }
       }
     }).state('app.time_report', {
@@ -2940,43 +2889,41 @@ angular.module('core').factory('XLSXReader', [
       templateUrl: 'modules/time/views/report.html',
       controller: 'ReportController',
       access: { requiredLogin: true },
-      resolve: ApplicationConfiguration.resolve('flot-chart', 'flot-chart-plugins'),
-      onEnter: function ($state, $stateParams) {
-        if (!$stateParams.from || !$stateParams.to) {
-          $state.go('app.time_report', {
-            from: new moment().startOf('month').format('YYYYMMDD'),
-            to: new moment().endOf('month').format('YYYYMMDD')
-          }, { location: 'replace' });
+      params: {
+        from: function () {
+          return new moment().startOf('month').format('YYYYMMDD');
+        },
+        to: function () {
+          return new moment().endOf('month').format('YYYYMMDD');
         }
       }
     }).state('app.time_import', {
       url: '/time/import',
       templateUrl: 'modules/time/views/import.html',
       controller: 'ImportController',
-      resolve: ApplicationConfiguration.resolve('excel', 'ngTable'),
+      resolve: ApplicationConfiguration.resolve('lib/js-xlsx/dist/xlsx.core.min.js'),
       access: { requiredLogin: true }
     }).state('app.time_export', {
       url: '/time/export/:from/:to',
       templateUrl: 'modules/time/views/export.html',
       controller: 'ExportController',
       access: { requiredLogin: true },
-      resolve: ApplicationConfiguration.resolve('ngTable', 'datetime'),
-      onEnter: function ($state, $stateParams) {
-        if (!$stateParams.from || !$stateParams.to) {
-          $state.go('app.time_export', {
-            from: new moment().startOf('month').format('YYYYMMDD'),
-            to: new moment().endOf('month').format('YYYYMMDD')
-          }, { location: 'replace' });
+      params: {
+        from: function () {
+          return new moment().startOf('month').format('YYYYMMDD');
+        },
+        to: function () {
+          return new moment().endOf('month').format('YYYYMMDD');
         }
       }
     });
   }
 ]);angular.module('time').controller('ExportController', [
   '$scope',
-  '$location',
+  '$state',
   '$stateParams',
   'TimeRegistration',
-  function ($scope, $location, $stateParams, TimeRegistration) {
+  function ($scope, $state, $stateParams, TimeRegistration) {
     'use strict';
     $scope.from = new moment($stateParams.from, 'YYYYMMDD');
     $scope.to = new moment($stateParams.to, 'YYYYMMDD');
@@ -3003,7 +2950,10 @@ angular.module('core').factory('XLSXReader', [
       $scope.to = new moment(date, format);
     };
     $scope.applyDate = function () {
-      $location.path('/app/time/export/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
+      $state.go('app.time_export', {
+        from: $scope.from.format('YYYYMMDD'),
+        to: $scope.to.format('YYYYMMDD')
+      }, { location: 'replace' });
     };
     $scope.refresh = function () {
       $scope.loading = true;
@@ -3158,7 +3108,7 @@ angular.module('time').controller('ImportController', [
           });
         });
       });
-      TimeRegistration.save(registrations, function (data) {
+      TimeRegistration.saveMultiple(registrations, function (data) {
         $scope.importing = false;
         $scope.timeRegistrationsImported = data;
         $scope.summaryTableParams.count(10);
@@ -3206,16 +3156,13 @@ angular.module('time').controller('ImportController', [
       $scope.displayDate = $scope.date.format('YYYY-MM-DD');
     });
     $scope.nextDate = function () {
-      $scope.date = new moment($scope.date.add(1, 'days'));
-      $state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
+      $state.go('app.time_overview', { date: new moment($scope.date.add(1, 'days')).format('YYYYMMDD') }, { location: 'replace' });
     };
     $scope.previousDate = function () {
-      $scope.date = new moment($scope.date.subtract(1, 'days'));
-      $state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
+      $state.go('app.time_overview', { date: $scope.date.subtract(1, 'days').format('YYYYMMDD') }, { location: 'replace' });
     };
     $scope.changeDate = function (date, format) {
-      $scope.date = new moment(date, format);
-      $state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
+      $state.go('app.time_overview', { date: new moment(date, format).format('YYYYMMDD') }, { location: 'replace' });
     };
     $scope.refresh = function () {
       TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function (timeRegistrations) {
