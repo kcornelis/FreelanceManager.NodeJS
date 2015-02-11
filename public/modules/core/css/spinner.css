@@ -40,11 +40,20 @@
 
 /* WHIRL */
 
-.fm-wait-panel.whirl {
-    height: 60px;
-    display:block;
-}
-.fm-wait-panel.whirl:before {
-  background-color: transparent;
-  opacity: 1;
+.fm-wait-panel {
+    height: 40px;
+    width: 40px;
+    margin: 20px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-animation: rotation .6s infinite linear;
+    -moz-animation: rotation .6s infinite linear;
+    -o-animation: rotation .6s infinite linear;
+    animation: rotation .6s infinite linear;
+    border-left: 4px solid rgba(0,174,239,.15);
+    border-right: 4px solid rgba(0,174,239,.15);
+    border-bottom: 4px solid rgba(0,174,239,.15);
+    border-top: 4px solid rgba(0,174,239,.8);
+    border-radius: 100%;
 }
