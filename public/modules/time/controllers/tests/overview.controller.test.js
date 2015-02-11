@@ -1,29 +1,30 @@
 (function() {
 	'use strict';
 	
-	describe('RegistrationsController Unit Tests:', function() {
+	describe('OverviewController Unit Tests:', function() {
 
 		var scope, 
-			RegistrationsController,
+			OverviewController,
 			$httpBackend,
 			$modal,
 			$stateParams,
-			$location;
+			$state;
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
-		beforeEach(inject(function($controller, $rootScope, _$location_, _$stateParams_, _$httpBackend_, _$modal_) {
+		beforeEach(inject(function($controller, $rootScope, _$state_, _$stateParams_, _$httpBackend_, _$modal_) {
+			
 			scope = $rootScope.$new();
-
 			$stateParams = _$stateParams_;
 			$httpBackend = _$httpBackend_;
 			$modal = _$modal_;
-			$location = _$location_;
+			$state = _$state_;
 
 			$stateParams.date = '20100120';
 
-			RegistrationsController = $controller('RegistrationsController', {
+			OverviewController = $controller('OverviewController', {
 				$scope: scope
 			});
 
@@ -44,56 +45,44 @@
 		describe('$scope.nextDate', function(){
 
 			beforeEach(function(){
-				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20100121').respond([]);
+				$state.expectTransitionTo("app.time_overview", { date: "20100121" });
 
 				scope.nextDate();
 				scope.$apply();
 			});
 
-			it('should select the next date', function(){
-				expect($location.path()).toBe('/time/registrations/20100121');
-			});
-
-			it('should have a new display date', function(){
-				expect(scope.displayDate).toBe('2010-01-21');
+			it('should navigate to the time overview state with the new params', function(){
+				$state.ensureAllTransitionsHappened();
 			});
 		});
 
 		describe('$scope.changeDate', function(){
 
 			beforeEach(function(){
-				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20101201').respond([]);
+				$state.expectTransitionTo("app.time_overview", { date: "20101201" });
 
 				scope.changeDate('2010-12-01', 'YYYY-MM-DD');
 				scope.$apply();
 			});
 
-			it('should select the given date', function(){
-				expect($location.path()).toBe('/time/registrations/20101201');
-			});
-
-			it('should have a new display date', function(){
-				expect(scope.displayDate).toBe('2010-12-01');
+			it('should navigate to the time overview state with the new params', function(){
+				$state.ensureAllTransitionsHappened();
 			});
 		});		
 
 		describe('$scope.previousDate', function(){
 
 			beforeEach(function(){
-				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20100119').respond([]);
+				$state.expectTransitionTo("app.time_overview", { date: "20100119" });
 
 				scope.previousDate();
 				scope.$apply();
 			});
 
-			it('should select the previous date', function(){
-				expect($location.path()).toBe('/time/registrations/20100119');
+			it('should navigate to the time overview state with the new params', function(){
+				$state.ensureAllTransitionsHappened();
 			});
-
-			it('should have a new display date', function(){
-				expect(scope.displayDate).toBe('2010-01-19');
-			});
-		});	
+		});
 
 		describe('$scope.refresh', function(){
 

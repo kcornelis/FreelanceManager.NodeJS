@@ -1,5 +1,5 @@
 angular.module('time').controller('ExportController',
-function($scope, $location, $stateParams, TimeRegistration) {
+function($scope, $state, $stateParams, TimeRegistration) {
 	'use strict';
 
 	$scope.from = new moment($stateParams.from, 'YYYYMMDD');
@@ -37,7 +37,7 @@ function($scope, $location, $stateParams, TimeRegistration) {
 	};
 
 	$scope.applyDate = function(){
-		$location.path('/app/time/export/' + $scope.from.format('YYYYMMDD') + '/' + $scope.to.format('YYYYMMDD')).replace();
+		$state.go('app.time_export', { from: $scope.from.format('YYYYMMDD'), to: $scope.to.format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.refresh = function() {

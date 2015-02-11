@@ -1,36 +1,34 @@
 // TODO test thisWeek, lastWeek, ...
-
 (function() {
 	'use strict';
 
-	describe('OverviewController Unit Tests:', function() {
+	describe('ExportController Unit Tests:', function() {
 
 		var scope, 
-			OverviewController,
+			ExportController,
 			$stateParams,
-			$location,
+			$state,
 			$modal,
 			$httpBackend;
 
-		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
-		beforeEach(inject(function($controller, $rootScope, _$location_, _$stateParams_, _$httpBackend_, _$modal_) {
+		beforeEach(inject(function($controller, $rootScope, _$state_, _$stateParams_, _$httpBackend_, _$modal_, $templateCache) {
+			
 			scope = $rootScope.$new();
-
 			$stateParams = _$stateParams_;
 			$httpBackend = _$httpBackend_;
 			$modal = _$modal_;
-			$location = _$location_;
+			$state = _$state_;
 
 			$stateParams.from = '20100120';
 			$stateParams.to = '20100130';
 
-			OverviewController = $controller('OverviewController', {
-				$scope: scope
+			ExportController = $controller('ExportController', {
+				$scope: scope,
+				$stateParams: $stateParams
 			});
-
-			$location.path('/time/overview/20100120/20100130');
 
 			scope.$apply();
 		}));
@@ -70,7 +68,7 @@
 			});
 
 			it('should not be applied', function(){
-				expect($location.path()).toBe('/time/overview/20100120/20100130');
+				expect($state.current.name).toBe('');
 			});
 		});		
 
@@ -86,21 +84,23 @@
 			});
 
 			it('should not be applied', function(){
-				expect($location.path()).toBe('/time/overview/20100120/20100130');
+				expect($state.current.name).toBe('');
 			});
 		});	
 
 		describe('$scope.applyDate', function(){
 
 			beforeEach(function(){
+
+				$state.expectTransitionTo("app.time_export", { from: "20101201", to: "20121202"});
+
 				scope.changeFrom('2010-12-01', 'YYYY-MM-DD');
-				scope.changeTo('2012-12-01', 'YYYY-MM-DD');
+				scope.changeTo('2012-12-02', 'YYYY-MM-DD');
 				scope.applyDate();
-				scope.$apply();
 			});
 
-			it('should refresh the overview', function(){
-				expect($location.path()).toBe('/time/overview/20101201/20121201');
+			it('should navigate the the state with the new params', function(){
+				$state.ensureAllTransitionsHappened();
 			});
 		});	
 

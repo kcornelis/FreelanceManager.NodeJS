@@ -33,6 +33,7 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module('karma'));
 
 		beforeEach(inject(function($rootScope) {
 			scope = $rootScope.$new();

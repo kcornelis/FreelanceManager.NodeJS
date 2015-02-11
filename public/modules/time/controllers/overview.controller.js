@@ -10,18 +10,15 @@ function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 	});
 
 	$scope.nextDate = function(){
-		$scope.date = new moment($scope.date.add(1, 'days'));
-		$state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
+		$state.go('app.time_overview', { date: new moment($scope.date.add(1, 'days')).format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.previousDate = function(){
-		$scope.date = new moment($scope.date.subtract(1, 'days'));
-		$state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
+		$state.go('app.time_overview', { date: $scope.date.subtract(1, 'days').format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.changeDate = function(date, format){
-		$scope.date = new moment(date, format);
-		$state.go('app.time_overview', { date: $scope.date.format('YYYYMMDD') }, { location: 'replace' });
+		$state.go('app.time_overview', { date: new moment(date, format).format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.refresh = function() {

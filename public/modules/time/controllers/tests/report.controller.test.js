@@ -5,7 +5,7 @@
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
-
+		beforeEach(module('karma'));
 
 		describe('Year tests:', function(){
 
@@ -172,14 +172,14 @@
 				ReportController,
 				$stateParams,
 				$httpBackend,
-				$location;			
+				$state;			
 			
-			beforeEach(inject(function($controller, $rootScope, _$stateParams_, _$location_, _$httpBackend_) {
+			beforeEach(inject(function($controller, $rootScope, _$stateParams_, _$state_, _$httpBackend_) {
 				scope = $rootScope.$new();
 
 				$stateParams = _$stateParams_;
 				$httpBackend = _$httpBackend_;
-				$location = _$location_;
+				$state = _$state_;
 
 				$stateParams.from = '20100101';
 				$stateParams.to = '20100107';
@@ -221,26 +221,30 @@
 			describe('$scope.previous', function(){
 
 				beforeEach(function(){
+					$state.expectTransitionTo("app.time_report", { from: "20091225", to: "20091231"});
+
 					scope.previous();
 					scope.$apply();
 				});				
 
-				it('should refresh the report', function(){
-					expect($location.path()).toBe('/time/report/20091225/20091231');
+				it('should navigate to the time report state with the new params', function(){
+					$state.ensureAllTransitionsHappened();
 				});
 			});	
 
 			describe('$scope.next', function(){
 
 				beforeEach(function(){
+					$state.expectTransitionTo("app.time_report", { from: "20100108", to: "20100114"});
+
 					scope.next();
 					scope.$apply();
-				});					
+				});				
 
-				it('should refresh the report', function(){
-					expect($location.path()).toBe('/time/report/20100108/20100114');
+				it('should navigate to the time report state with the new params', function(){
+					$state.ensureAllTransitionsHappened();
 				});
-			});		
+			});	
 
 			describe('$scope.refresh', function(){
 
