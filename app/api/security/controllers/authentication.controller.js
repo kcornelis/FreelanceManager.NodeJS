@@ -20,7 +20,7 @@ exports.authenticate = function(req, res, next) {
 					firstName: account.firstName,
 					lastName: account.lastName,
 					fullName: account.fullName
-				}
+				};
 
 				var token = jwt.sign(profile, config.jwtSecret, { expiresInMinutes: 60*5 });
 
@@ -31,4 +31,4 @@ exports.authenticate = function(req, res, next) {
 			}
 		}
 	});
-}
+};

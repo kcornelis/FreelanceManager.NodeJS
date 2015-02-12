@@ -47,7 +47,7 @@ function AggregateRootSchema() {
 		this.version += 1;
 		addMetadataToEvent(this, event, eventName, this._version);
 		this.events.push(event);
-	}
+	};
 }
 
 util.inherits(AggregateRootSchema, Schema);

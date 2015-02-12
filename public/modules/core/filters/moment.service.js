@@ -4,5 +4,5 @@ function () {
 	
 	return function(date, format){
 		return date.format(format);
-	}
+	};
 });

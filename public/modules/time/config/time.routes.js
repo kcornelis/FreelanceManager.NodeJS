@@ -10,7 +10,7 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			controller: 'OverviewController',
 			access: { requiredLogin: true },
 			params: {
-				date: function(){ return new moment().format('YYYYMMDD'); }
+				date: function(){ return moment().format('YYYYMMDD'); }
 			}
 		})
 
@@ -20,8 +20,8 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			controller: 'ReportController',
 			access: { requiredLogin: true },
 			params: {
-				from: function(){ return new moment().startOf('month').format('YYYYMMDD'); },
-				to: function(){ return new moment().endOf('month').format('YYYYMMDD'); }
+				from: function(){ return moment().startOf('month').format('YYYYMMDD'); },
+				to: function(){ return moment().endOf('month').format('YYYYMMDD'); }
 			}
 		})
 
@@ -39,8 +39,8 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			controller: 'ExportController',
 			access: { requiredLogin: true },
 			params: {
-				from: function(){ return new moment().startOf('month').format('YYYYMMDD'); },
-				to: function(){ return new moment().endOf('month').format('YYYYMMDD'); }
+				from: function(){ return moment().startOf('month').format('YYYYMMDD'); },
+				to: function(){ return moment().endOf('month').format('YYYYMMDD'); }
 			}
 		});
 	}

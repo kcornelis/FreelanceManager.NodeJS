@@ -48,7 +48,7 @@ function($q, $rootScope) {
 				var cell = sheet[cellIndex];
 				rowData[column] = cell ? cell.v : undefined;
 			});
-			if(row == 0)
+			if(row === 0)
 				header = rowData;
 			else sheetData[row - 1] = rowData;
 		});
@@ -59,7 +59,7 @@ function($q, $rootScope) {
 			'name': sheet.name,
 			'col_size': range.e.c + 1,
 			'row_size': range.e.r
-		}
+		};
 	}
 	return service;
 }]);

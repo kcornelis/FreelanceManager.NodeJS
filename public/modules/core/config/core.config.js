@@ -11,9 +11,9 @@ angular.module('core')
 
 .controller('NullController', function() {})
 
-.run(["$rootScope", "$state", "$stateParams",  '$window', '$templateCache', function ($rootScope, $state, $stateParams, $window, $templateCache) {
+.run(['$rootScope', '$state', '$stateParams',  '$window', '$templateCache', function ($rootScope, $state, $stateParams, $window, $templateCache) {
 	'use strict';
-		
+
 	// Set reference to access them from any scope
 	$rootScope.$state = $state;
 	$rootScope.$stateParams = $stateParams;

@@ -112,7 +112,7 @@ describe('Company Model Unit Tests:', function() {
 
 				should.not.exist(finderr);
 
-				company.changeDetails('Jane Doe')
+				company.changeDetails('Jane Doe');
 
 				company.save(function(saveerr){
 					should.not.exist(saveerr);

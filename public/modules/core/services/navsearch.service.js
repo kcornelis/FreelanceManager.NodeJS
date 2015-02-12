@@ -1,6 +1,8 @@
 // TODO unit test
 // From the angle project
 angular.module('core').service('navSearch', function() {
+	'use strict';
+	
 	var navbarFormSelector = 'form.navbar-form';
 	return {
 		toggle: function() {

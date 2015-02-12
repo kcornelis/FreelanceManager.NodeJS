@@ -9,7 +9,7 @@ function($scope, Project, toUpdate) {
 			return {
 				name: t.name,
 				defaultRateInCents: t.defaultRateInCents
-			}
+			};
 		})
 	};
 	

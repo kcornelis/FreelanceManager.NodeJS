@@ -72,15 +72,15 @@ ProjectSchema.statics.create = function(tenant, companyId, name, description){
 
 	project.apply('ProjectTasksChanged', {
 		tasks: project.tasks
-	})	
+	});
 
 	return project;
 };
 
 ProjectSchema.methods.changeDetails = function(name, description){
 
-	if( this.name != name ||
-		this.description != description){
+	if( this.name !== name ||
+		this.description !== description){
 		
 		this.name = name;
 		this.description = description;
@@ -99,15 +99,15 @@ ProjectSchema.methods.changeTasks = function(tasks){
 		return;
 	
 	var changed = false;
-	if (tasks.length != this.tasks.length){
+	if (tasks.length !== this.tasks.length){
 		changed = true;
 	}
 	else {
 
 		for(var i = 0; i < tasks.length; i++){
 
-			if (tasks[i].name != this.tasks[i].name ||
-				tasks[i].defaultRateInCents != this.tasks[i].defaultRateInCents)
+			if (tasks[i].name !== this.tasks[i].name ||
+				tasks[i].defaultRateInCents !== this.tasks[i].defaultRateInCents)
 			{
 				changed = true;
 				break;

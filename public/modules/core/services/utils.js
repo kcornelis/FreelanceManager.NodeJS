@@ -49,8 +49,8 @@
 	$.support.touch                 = (
 		('ontouchstart' in window && navigator.userAgent.toLowerCase().match(/mobile|tablet/)) ||
 		(window.DocumentTouch && document instanceof window.DocumentTouch)  ||
-		(window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0) || //IE 10
-		(window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0) || //IE >=11
+		(window.navigator.msPointerEnabled && window.navigator.msMaxTouchPoints > 0) || //IE 10
+		(window.navigator.pointerEnabled && window.navigator.maxTouchPoints > 0) || //IE >=11
 		false
 	);
 	$.support.mutationobserver      = (window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver || null);
@@ -121,25 +121,10 @@
 		}
 	};
 
-	$.Utils.options = function(string) {
-
-		if ($.isPlainObject(string)) return string;
-
-		var start = (string ? string.indexOf('{') : -1), options = {};
-
-		if (start != -1) {
-			try {
-				options = (new Function('', 'var json = ' + string.substr(start) + '; return JSON.parse(JSON.stringify(json));'))();
-			} catch (e) {}
-		}
-
-		return options;
-	};
-
 	$.Utils.events       = {};
 	$.Utils.events.click = $.support.touch ? 'tap' : 'click';
 
-	$.langdirection = $html.attr('dir') == 'rtl' ? 'right' : 'left';
+	$.langdirection = $html.attr('dir') === 'rtl' ? 'right' : 'left';
 
 	$(function(){
 

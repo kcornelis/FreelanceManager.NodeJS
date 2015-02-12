@@ -23,7 +23,7 @@
 					return {
 						compare: function(actual) {
 							return {
-								pass: $(actual).closest('body').find('.clockpicker-popover').length == 0
+								pass: $(actual).closest('body').find('.clockpicker-popover').length === 0
 							};
 						}
 					};

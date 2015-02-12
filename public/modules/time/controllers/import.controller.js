@@ -1,6 +1,6 @@
 // TODO unit test
 angular.module('time').controller('ImportController',
-function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegistration) {
+function($scope, $state, XLSXReader, NgTableParams, $filter, Project, TimeRegistration) {
 	'use strict';
 
 	// Wizard helpers
@@ -10,7 +10,7 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 	function createsteps(q) {
 		steps = [];
 		for(var i = 1; i <= q; i++) steps[i] = false;
-	};
+	}
 
 	function activate(step){
 		for(var i in steps){
@@ -80,7 +80,7 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 	};
 
 	$scope.canGoto3 = function(){
-		return $scope.selectedSheetName != null;
+		return $scope.selectedSheetName !== null;
 	};
 
 	// step 3 (column selection)
@@ -97,20 +97,20 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 				project: g[0][$scope.selectedProjectColumn],
 				task: g[0][$scope.selectedTaskColumn],
 				display: g[0][$scope.selectedProjectColumn] + ' - ' + g[0][$scope.selectedTaskColumn]
-			}
+			};
 		});
 
 		activate(4);
 	};
 
 	$scope.canGoto4 = function(){
-		return $scope.selectedProjectColumn != null &&
-			$scope.selectedTaskColumn != null && 
-			$scope.selectedDateColumn != null &&
-			$scope.selectedFromColumn != null && 
-			$scope.selectedToColumn != null && 
-			$scope.selectedDescriptionColumn != null;
-	}
+		return $scope.selectedProjectColumn !== null &&
+			$scope.selectedTaskColumn !== null && 
+			$scope.selectedDateColumn !== null &&
+			$scope.selectedFromColumn !== null && 
+			$scope.selectedToColumn !== null && 
+			$scope.selectedDescriptionColumn !== null;
+	};
 
 	// step 4 (project mapping)
 	// ***********************	
@@ -121,7 +121,7 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 
 	$scope.canGoto5 = function(){
 		return _.every($scope.projectsInExcelSheet, function(p) {
-			return p.mappedProjectAndTask != null;
+			return p.mappedProjectAndTask !== null;
 		});
 	};
 
@@ -138,7 +138,7 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 		_.forEach($scope.groupedRows, function(groupedRow){
 
 			var selectedProjectTask = _.first(_.where($scope.projectsInExcelSheet, function(p){
-				return p.project == groupedRow[0][$scope.selectedProjectColumn] && p.task == groupedRow[0][$scope.selectedTaskColumn];
+				return p.project === groupedRow[0][$scope.selectedProjectColumn] && p.task === groupedRow[0][$scope.selectedTaskColumn];
 			})).mappedProjectAndTask;
 
 			var project = $scope.tasks[selectedProjectTask].project;
@@ -181,7 +181,7 @@ function($scope, $state, XLSXReader, ngTableParams, $filter, Project, TimeRegist
 	// step 6 (summary)
 	// ***********************	
 
-	$scope.summaryTableParams = new ngTableParams({
+	$scope.summaryTableParams = new NgTableParams({
 		page: 1,
 		count: 1
 	}, 

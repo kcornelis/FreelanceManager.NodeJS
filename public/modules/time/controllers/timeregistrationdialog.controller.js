@@ -2,8 +2,14 @@ angular.module('time').controller('TimeRegistrationDialogController',
 function($scope, Project, TimeRegistration, toUpdate, date) {
 	'use strict';
 
+	function convertNumericTimeToDisplay(time){
+		var hour = Math.floor(time / 100);
+		var minutes = Math.floor(time - (hour * 100));
+		return ('00' + hour).slice(-2) + ':' + ('00' + minutes).slice(-2);
+	}
+
 	$scope.originalTimeRegistration = toUpdate;
-	$scope.newTimeRegistration = toUpdate == undefined;
+	$scope.newTimeRegistration = toUpdate === undefined;
 	toUpdate = toUpdate || { };
 	$scope.timeRegistration =  { 
 		company: null,
@@ -16,14 +22,14 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 	};
 
 	$scope.$watch('timeRegistration.company', function (newv, oldv) {
-		if(oldv && newv && oldv.id != newv.id){
+		if(oldv && newv && oldv.id !== newv.id){
 			$scope.timeRegistration.project = null;
 			$scope.timeRegistration.task = null;
 		}
 	});
 
 	$scope.$watch('timeRegistration.project', function (newv, oldv) {
-		if(oldv && newv && oldv.id != newv.id){
+		if(oldv && newv && oldv.id !== newv.id){
 			$scope.timeRegistration.task = null;	
 		}
 	});
@@ -96,12 +102,6 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 	function hideMessage() {
 		$scope.isBusy = false;
 		$scope.message = '';
-	}
-
-	function convertNumericTimeToDisplay(time){
-		var hour = Math.floor(time / 100);
-		var minutes = Math.floor(time - (hour * 100));
-		return ('00' + hour).slice(-2) + ':' + ('00' + minutes).slice(-2);
 	}
 
 	function convertDisplayTimeToNumeric(time){

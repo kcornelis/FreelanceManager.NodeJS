@@ -28,7 +28,7 @@ angular.module('core')
 			$(inputSelector)
 				.on('click', function (e) { e.stopPropagation(); })
 				.on('keyup', function(e) {
-					if (e.keyCode == 27) // ESC
+					if (e.keyCode === 27) // ESC
 						navSearch.dismiss();
 				});
 				

@@ -101,10 +101,10 @@ AccountSchema.methods.makeAdmin = function(){
 
 AccountSchema.methods.changeDetails = function(name, firstName, lastName, email){
 
-	if( this.name != name ||
-		this.firstName != firstName ||
-		this.lastName != lastName ||
-		this.email != email)
+	if( this.name !== name ||
+		this.firstName !== firstName ||
+		this.lastName !== lastName ||
+		this.email !== email)
 	{
 		this.name = name;
 		this.firstName = firstName;

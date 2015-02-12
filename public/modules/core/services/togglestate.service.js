@@ -1,7 +1,8 @@
 // TODO unit test
 // From the angle project
 angular.module('core').service('toggleStateService', ['$rootScope', function($rootScope) {
-
+	'use strict';
+	
 	var storageKeyName  = 'toggleState';
 
 	// Helper object to check for words in a phrase //

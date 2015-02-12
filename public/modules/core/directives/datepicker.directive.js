@@ -15,7 +15,7 @@ function ($timeout) {
 			element.datepicker({
 				format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
 				autoclose: true,
-				orientation: "auto " + position,
+				orientation: 'auto ' + position,
 				todayBtn: 'linked'
 			})
 			.on('changeDate', function(date) { 

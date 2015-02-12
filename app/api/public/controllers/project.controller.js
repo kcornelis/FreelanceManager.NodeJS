@@ -26,7 +26,7 @@ function convert(project, company) {
 				name: t.name,
 				defaultRateInCents: t.defaultRateInCents,
 				billable: t.defaultRateInCents > 0
-			}
+			};
 		}),
 		hidden: project.hidden
 	};
@@ -54,7 +54,7 @@ function convertMultiple(projects, done) {
 	});
 }
 
-exports.getById = function(req, res) {
+exports.getById = function(req, res, next) {
 
 	Project.findOne(
 	{
@@ -71,7 +71,7 @@ exports.getById = function(req, res) {
 		}
 		else next();
 	});
-}
+};
 
 exports.getAll = function(req, res) {
 
@@ -80,7 +80,7 @@ exports.getAll = function(req, res) {
 			res.send(converted);
 		});
 	});
-}
+};
 
 exports.getActive = function(req, res){
 
@@ -89,7 +89,7 @@ exports.getActive = function(req, res){
 			res.send(converted);
 		});
 	});
-}
+};
 
 exports.create = function(req, res, next) {
 
@@ -100,7 +100,7 @@ exports.create = function(req, res, next) {
 			res.send(converted);
 		});
 	});
-}
+};
 
 exports.update = function(req, res, next) {
 	
@@ -122,7 +122,7 @@ exports.update = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};
 
 exports.hide = function(req, res, next) {
 	
@@ -144,7 +144,7 @@ exports.hide = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};
 
 exports.unhide = function(req, res, next) {
 	
@@ -166,7 +166,7 @@ exports.unhide = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};
 
 exports.changeTasks = function(req, res, next) {
 	
@@ -188,4 +188,4 @@ exports.changeTasks = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};

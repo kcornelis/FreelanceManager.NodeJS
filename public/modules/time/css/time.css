@@ -60,8 +60,3 @@
 .fm-time-export .btn-group > .btn:not(:first-child) {
 	margin-left: -1px;
 }
-
-.fm-time-export .result .list-group {
-    display: inline;
-    margin-bottom: 5px;
-}

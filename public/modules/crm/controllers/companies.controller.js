@@ -23,5 +23,5 @@ function($scope, $modal, Company) {
 			if(c) angular.copy(company, c);
 			else $scope.companies.push(company);
 		});		
-	}
+	};
 });

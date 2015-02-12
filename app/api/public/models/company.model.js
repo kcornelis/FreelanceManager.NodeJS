@@ -44,7 +44,7 @@ CompanySchema.statics.create = function(tenant, name){
 
 CompanySchema.methods.changeDetails = function(name){
 
-	if(this.name != name){
+	if(this.name !== name){
 		
 		this.name = name;
 		

@@ -17,6 +17,7 @@
 	"strict": true, // Require `use strict` pragma in every file.
 	"trailing": true, // Prohibit trailing whitespaces.
 	"smarttabs": false, // Suppresses warnings about mixed tabs and spaces
+	"expr": true, // This option allows warnings about the use of expressions where normally you would expect to see assignments or function calls. 
 	"globals": { // Globals variables.
 		"jasmine": true,
 		"angular": true,

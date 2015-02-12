@@ -1,7 +1,8 @@
 // TODO unit test
 // From the angle project
 angular.module('core').directive('href', function() {
-
+	'use strict';
+	
 	return {
 		restrict: 'A',
 		compile: function(element, attr) {

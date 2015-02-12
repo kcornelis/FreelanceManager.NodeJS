@@ -32,14 +32,14 @@ function convert(invoice){
 				price: l.price,
 				vatPercentage: l.vatPercentage,
 				total: l.total
-			}
+			};
 		}),
 		subTotal: invoice.subTotal,
 		vatPerPercentages: _.map(invoice.vatPerPercentages, function(p){
 			return {
 				vatPercentage: p.vatPercentage,
 				totalVat: p.totalVat
-			}
+			};
 		}),
 		totalVat: invoice.totalVat,
 		total: invoice.total,
@@ -59,9 +59,9 @@ exports.getById = function(req, res, next) {
 			res.send(convert(invoice));
 		else next();
 	});
-}
+};
 
-exports.getAll = function(req, res) {
+exports.getAll = function(req, res, next) {
 
 	Invoice.find(
 	{ 
@@ -71,7 +71,7 @@ exports.getAll = function(req, res) {
 		if(err) next(err);
 		else res.send(_.map(invoices, convert));
 	});
-}
+};
 
 exports.create = function(req, res, next) {
 
@@ -85,4 +85,4 @@ exports.create = function(req, res, next) {
 		if(err) next(err);                     
 		else res.send(convert(invoice));
 	});
-}
+};

@@ -14,9 +14,9 @@ var init = require('./config/init')(),
 var app;
 var initialized = false;
 
-function initialize(){
+function initialize(db){
 	
-	console.log("Connected to db");
+	console.log('Connected to db');
 
 	if(initialized)
 		return;
@@ -38,14 +38,16 @@ function initialize(){
 if (process.env.NODE_ENV === 'test') {
 	
 	var db = mongoose.connect(config.db);
-	initialize();
+	initialize(db);
 }
 else {
 
-	mongoose.connection.on("connected", function(ref) {
-		initialize();
+	var db;
+
+	mongoose.connection.on('connected', function(ref) {
+		initialize(db);
 	});
 
-	var db = mongoose.connect(config.db);
+	db = mongoose.connect(config.db);
 }
 

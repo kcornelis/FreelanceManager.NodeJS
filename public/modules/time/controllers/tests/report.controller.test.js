@@ -194,34 +194,34 @@
 			describe('initial state', function(){
 
 				it('should have a week start', function(){
-					expect(scope.weekStart).toBe(new moment().startOf('isoWeek').format('YYYYMMDD'));
+					expect(scope.weekStart).toBe(moment().startOf('isoWeek').format('YYYYMMDD'));
 				});
 
 				it('should have a week end', function(){
-					expect(scope.weekEnd).toBe(new moment().endOf('isoWeek').format('YYYYMMDD'));
+					expect(scope.weekEnd).toBe(moment().endOf('isoWeek').format('YYYYMMDD'));
 				});	
 
 				it('should have a month start', function(){
-					expect(scope.monthStart).toBe(new moment().startOf('month').format('YYYYMMDD'));
+					expect(scope.monthStart).toBe(moment().startOf('month').format('YYYYMMDD'));
 				});
 
 				it('should have a month end', function(){
-					expect(scope.monthEnd).toBe(new moment().endOf('month').format('YYYYMMDD'));
+					expect(scope.monthEnd).toBe(moment().endOf('month').format('YYYYMMDD'));
 				});	
 
 				it('should have a year start', function(){
-					expect(scope.yearStart).toBe(new moment().startOf('year').format('YYYYMMDD'));
+					expect(scope.yearStart).toBe(moment().startOf('year').format('YYYYMMDD'));
 				});
 
 				it('should have a year end', function(){
-					expect(scope.yearEnd).toBe(new moment().endOf('year').format('YYYYMMDD'));
+					expect(scope.yearEnd).toBe(moment().endOf('year').format('YYYYMMDD'));
 				});												
 			});
 
 			describe('$scope.previous', function(){
 
 				beforeEach(function(){
-					$state.expectTransitionTo("app.time_report", { from: "20091225", to: "20091231"});
+					$state.expectTransitionTo('app.time_report', { from: '20091225', to: '20091231'});
 
 					scope.previous();
 					scope.$apply();
@@ -235,7 +235,7 @@
 			describe('$scope.next', function(){
 
 				beforeEach(function(){
-					$state.expectTransitionTo("app.time_report", { from: "20100108", to: "20100114"});
+					$state.expectTransitionTo('app.time_report', { from: '20100108', to: '20100114'});
 
 					scope.next();
 					scope.$apply();

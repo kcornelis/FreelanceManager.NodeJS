@@ -154,14 +154,14 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 
 TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, task, billable, description, date, from, to){
 
-	if( this.companyId != companyId ||
-		this.projectId != projectId ||
-		this.task != task ||
-		this.billable != billable ||
-		this.description != description ||
-		this.date.numeric != date ||
-		this.from.numeric != from ||
-		this.to.numeric != to){
+	if( this.companyId !== companyId ||
+		this.projectId !== projectId ||
+		this.task !== task ||
+		this.billable !== billable ||
+		this.description !== description ||
+		this.date.numeric !== date ||
+		this.from.numeric !== from ||
+		this.to.numeric !== to){
 
 		this.companyId = companyId;
 		this.projectId = projectId;
@@ -201,7 +201,7 @@ TimeRegistrationSchema.methods.markInvoiced = function(invoiceId){
 		invoicedOn: this.invoicedOn,
 		invoiceId: this.invoiceId
 	});
-}
+};
 
 TimeRegistrationSchema.methods.totalMinutes = function(){
 

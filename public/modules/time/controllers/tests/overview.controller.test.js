@@ -45,7 +45,7 @@
 		describe('$scope.nextDate', function(){
 
 			beforeEach(function(){
-				$state.expectTransitionTo("app.time_overview", { date: "20100121" });
+				$state.expectTransitionTo('app.time_overview', { date: '20100121' });
 
 				scope.nextDate();
 				scope.$apply();
@@ -59,7 +59,7 @@
 		describe('$scope.changeDate', function(){
 
 			beforeEach(function(){
-				$state.expectTransitionTo("app.time_overview", { date: "20101201" });
+				$state.expectTransitionTo('app.time_overview', { date: '20101201' });
 
 				scope.changeDate('2010-12-01', 'YYYY-MM-DD');
 				scope.$apply();
@@ -73,7 +73,7 @@
 		describe('$scope.previousDate', function(){
 
 			beforeEach(function(){
-				$state.expectTransitionTo("app.time_overview", { date: "20100119" });
+				$state.expectTransitionTo('app.time_overview', { date: '20100119' });
 
 				scope.previousDate();
 				scope.$apply();

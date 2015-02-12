@@ -1,43 +1,13 @@
 // TODO unit test
 // From the angle project
 angular.module('core').directive('sidebar', ['$window', 'const_mediaquery', function($window, mq) {
-	
+	'use strict';
+
 	var $win  = $($window);
 	var $html = $('html');
 	var $body = $('body');
 	var $scope;
 	var $sidebar;
-
-	return {
-		restrict: 'EA',
-		template: '<nav class="sidebar" ng-transclude></nav>',
-		transclude: true,
-		replace: true,
-		link: function(scope, element, attrs) {
-			
-			$scope   = scope;
-			$sidebar = element;
-
-			var eventName = isTouch() ? 'click' : 'mouseenter' ;
-			var subNav = $();
-			$sidebar.on( eventName, '.nav > li', function() {
-
-				if( isSidebarCollapsed() && !isMobile() ) {
-
-					subNav.trigger('mouseleave');
-					subNav = toggleMenuItem( $(this) );
-
-				}
-
-			});
-
-			scope.$on('closeSidebarMenu', function() {
-				removeFloatingNav();
-				$('.sidebar li.open').removeClass('open');
-			});
-		}
-	};
-
 
 	// Open the collapse sidebar submenu items when on touch devices 
 	// - desktop only opens on hover
@@ -104,5 +74,35 @@ angular.module('core').directive('sidebar', ['$window', 'const_mediaquery', func
 	}
 	function isMobile() {
 		return $win.width() < mq.tablet;
-	}
+	}	
+
+	return {
+		restrict: 'EA',
+		template: '<nav class="sidebar" ng-transclude></nav>',
+		transclude: true,
+		replace: true,
+		link: function(scope, element, attrs) {
+			
+			$scope   = scope;
+			$sidebar = element;
+
+			var eventName = isTouch() ? 'click' : 'mouseenter' ;
+			var subNav = $();
+			$sidebar.on( eventName, '.nav > li', function() {
+
+				if( isSidebarCollapsed() && !isMobile() ) {
+
+					subNav.trigger('mouseleave');
+					subNav = toggleMenuItem( $(this) );
+
+				}
+
+			});
+
+			scope.$on('closeSidebarMenu', function() {
+				removeFloatingNav();
+				$('.sidebar li.open').removeClass('open');
+			});
+		}
+	};
 }]);

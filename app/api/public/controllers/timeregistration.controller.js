@@ -43,7 +43,7 @@ function convertSingle(timeregistration, done){
 
 	async.parallel([
 		function(done){
-			Company.findById(timeregistration.companyId, function(err, c) { company = c; done(); })
+			Company.findById(timeregistration.companyId, function(err, c) { company = c; done(); });
 		},
 		function(done){
 			Project.findById(timeregistration.projectId, function(err, p) { project = p; done(); });
@@ -64,7 +64,7 @@ function convertMultiple(timeRegistrations, done) {
 
 	async.parallel([
 		function(done){
-			Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); })
+			Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
 		},
 		function(done){
 			Project.find().in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
@@ -102,9 +102,9 @@ exports.getById = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};
 
-exports.getAll = function(req, res) {
+exports.getAll = function(req, res, next) {
 
 	TimeRegistration.find(
 	{ 
@@ -118,9 +118,9 @@ exports.getAll = function(req, res) {
 			res.send(converted);
 		});
 	});
-}
+};
 
-exports.getForDate = function(req, res) {
+exports.getForDate = function(req, res, next) {
 
 	TimeRegistration.find(
 	{ 
@@ -135,9 +135,9 @@ exports.getForDate = function(req, res) {
 			res.send(converted);
 		});
 	});
-}
+};
 
-exports.getForRange = function(req, res) {
+exports.getForRange = function(req, res, next) {
 
 	TimeRegistration.find(
 	{ 
@@ -152,9 +152,9 @@ exports.getForRange = function(req, res) {
 			res.send(converted);
 		});
 	});
-}
+};
 
-exports.getUninvoiced = function(req, res){
+exports.getUninvoiced = function(req, res, next){
 
 	TimeRegistration.find(
 	{ 
@@ -170,9 +170,9 @@ exports.getUninvoiced = function(req, res){
 			res.send(converted);
 		});
 	});
-}
+};
 
-exports.getInfo = function(req, res) {
+exports.getInfo = function(req, res, next) {
 
 	TimeRegistration.find(
 	{ 
@@ -235,7 +235,7 @@ exports.getInfo = function(req, res) {
 			});
 		});
 	});
-}
+};
 
 exports.create = function(req, res, next) {
 
@@ -258,7 +258,7 @@ exports.create = function(req, res, next) {
 		});
 	});
 
-	if(domainTimeRegistrations.length == 1){
+	if(domainTimeRegistrations.length === 1){
 		convertSingle(domainTimeRegistrations[0], function(converted){
 			res.send(converted);
 		});
@@ -268,7 +268,7 @@ exports.create = function(req, res, next) {
 			res.send(converted);
 		});
 	}
-}
+};
 
 exports.update = function(req, res, next) {
 	
@@ -293,4 +293,4 @@ exports.update = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};

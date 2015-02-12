@@ -146,6 +146,46 @@ InvoiceSchema.post('save', function (doc) {
  *	Write methods
  */
 
+ function recalculateTotals(invoice){
+
+	var total = 0;
+	var totalPerPercentage = {};
+	var totalVat = 0;
+
+	invoice.vatPerPercentages = [];
+
+	if(invoice.lines.length > 0){
+
+		for(var i = 0; i < invoice.lines.length; i++) {
+
+			var varPercentage = invoice.lines[i].vatPercentage.toString();
+
+			if(!totalPerPercentage.hasOwnProperty(varPercentage)){
+				totalPerPercentage[varPercentage] = 0;
+			}
+
+			total += invoice.lines[i].total;
+			totalPerPercentage[varPercentage] += invoice.lines[i].total;
+		}
+
+		for(var percentage in totalPerPercentage) {
+
+			var totalVatForKey = Math.round((totalPerPercentage[percentage] * percentage) / 100);
+
+			invoice.vatPerPercentages.push({
+				vatPercentage: percentage,
+				totalVat: totalVatForKey
+			});
+
+			totalVat += totalVatForKey;
+		}
+	}
+
+	invoice.subTotal = total;
+	invoice.totalVat = totalVat;
+	invoice.total = total + totalVat;
+}
+
 InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
 	
 	var invoice = new this();
@@ -172,7 +212,7 @@ InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
 
 InvoiceSchema.methods.changeTemplate = function(template){
 
-	if(this.template != template){
+	if(this.template !== template){
 		
 		this.template = template;
 		
@@ -181,17 +221,17 @@ InvoiceSchema.methods.changeTemplate = function(template){
 			template: template
 		});
 	}
-}
+};
 
 InvoiceSchema.methods.changeTo = function(name, vatNumber, customerNumber, address){
 
-	if(this.to.name != name ||
-	   this.to.vatNumber != vatNumber ||
-	   this.to.customerNumber != customerNumber ||
-	   this.to.address.line1 != address.line1 ||
-	   this.to.address.line2 != address.line2 ||
-	   this.to.address.postalcode != address.postalcode ||
-	   this.to.address.city != address.city){
+	if(this.to.name !== name ||
+	   this.to.vatNumber !== vatNumber ||
+	   this.to.customerNumber !== customerNumber ||
+	   this.to.address.line1 !== address.line1 ||
+	   this.to.address.line2 !== address.line2 ||
+	   this.to.address.postalcode !== address.postalcode ||
+	   this.to.address.city !== address.city){
 		
 		this.to.name = name;
 		this.to.vatNumber = vatNumber;
@@ -206,6 +246,16 @@ InvoiceSchema.methods.changeTo = function(name, vatNumber, customerNumber, addre
 			address: address
 		});
 	}
+};
+
+function createLine(description, quantity, price, vatPercentage){
+	return {
+		description: description,
+		quantity: quantity,
+		price: price,
+		vatPercentage: vatPercentage,
+		total: Math.round(quantity * price)
+	};
 }
 
 InvoiceSchema.methods.replaceLines = function(lines){
@@ -214,17 +264,17 @@ InvoiceSchema.methods.replaceLines = function(lines){
 		return;
 	
 	var changed = false;
-	if (lines.length != this.lines.length) {
+	if (lines.length !== this.lines.length) {
 		changed = true;
 	}
 	else {
 
 		for(var i = 0; i < lines.length; i++){
 
-			if (lines[i].description != this.lines[i].description ||
-				lines[i].quantity != this.lines[i].quantity ||
-				lines[i].price != this.lines[i].price ||
-				lines[i].vatPercentage != this.lines[i].vatPercentage)
+			if (lines[i].description !== this.lines[i].description ||
+				lines[i].quantity !== this.lines[i].quantity ||
+				lines[i].price !== this.lines[i].price ||
+				lines[i].vatPercentage !== this.lines[i].vatPercentage)
 			{
 				changed = true;
 				break;
@@ -236,8 +286,8 @@ InvoiceSchema.methods.replaceLines = function(lines){
 		
 		this.lines = [];
 
-		for(var i = 0; i < lines.length; i++) {
-			this.lines.push(createLine(lines[i].description, lines[i].quantity, lines[i].price, lines[i].vatPercentage));
+		for(var j = 0; j < lines.length; j++) {
+			this.lines.push(createLine(lines[j].description, lines[j].quantity, lines[j].price, lines[j].vatPercentage));
 		}
 
 		recalculateTotals(this);
@@ -251,7 +301,7 @@ InvoiceSchema.methods.replaceLines = function(lines){
 			total: this.total
 		});	
 	}
-}
+};
 
 InvoiceSchema.methods.linkTimeRegistrations = function(timeRegistrationIds){
 
@@ -266,56 +316,6 @@ InvoiceSchema.methods.linkTimeRegistrations = function(timeRegistrationIds){
 	{
 		timeRegistrationIds: timeRegistrationIds
 	});	
-}
-
-function recalculateTotals(invoice){
-
-	var total = 0;
-	var totalPerVat = {};
-	var totalVat = 0;
-
-	invoice.vatPerPercentages = [];
-
-	if(invoice.lines.length > 0){
-
-		for(var i = 0; i < invoice.lines.length; i++) {
-
-			var vatKey = invoice.lines[i].vatPercentage.toString()
-
-			if(!totalPerVat.hasOwnProperty(vatKey)){
-				totalPerVat[vatKey] = 0;
-			}
-
-			total += invoice.lines[i].total;
-			totalPerVat[vatKey] += invoice.lines[i].total;
-		}
-
-		for(var vatKey in totalPerVat) {
-
-			var totalVatForKey = Math.round((totalPerVat[vatKey] * vatKey) / 100);
-
-			invoice.vatPerPercentages.push({
-				vatPercentage: vatKey,
-				totalVat: totalVatForKey
-			});
-
-			totalVat += totalVatForKey;
-		}
-	}
-
-	invoice.subTotal = total;
-	invoice.totalVat = totalVat;
-	invoice.total = total + totalVat;
-}
-
-function createLine(description, quantity, price, vatPercentage){
-	return {
-		description: description,
-		quantity: quantity,
-		price: price,
-		vatPercentage: vatPercentage,
-		total: Math.round(quantity * price)
-	};
-}
+};
 
 mongoose.model('Invoice', InvoiceSchema);

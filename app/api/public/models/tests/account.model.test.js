@@ -191,7 +191,7 @@ describe('Account Model Unit Tests:', function() {
 
 				should.not.exist(finderr);
 
-				account.changeDetails('John Doe 1', 'John 1', 'Doe 1', 'john1@doe.com')
+				account.changeDetails('John Doe 1', 'John 1', 'Doe 1', 'john1@doe.com');
 
 				account.save(function(saveerr){
 					should.not.exist(saveerr);

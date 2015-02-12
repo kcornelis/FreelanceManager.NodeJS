@@ -3,7 +3,7 @@ function($scope, Company, toUpdate) {
 	'use strict';
 
 	$scope.originalCompany = toUpdate;
-	$scope.newCompany = toUpdate == undefined;
+	$scope.newCompany = toUpdate === undefined;
 	toUpdate = toUpdate || { };
 	$scope.company =  { name: toUpdate.name || '' };
 	

@@ -160,7 +160,7 @@ describe('Project Model Unit Tests:', function() {
 
 				should.not.exist(err);
 
-				project.changeDetails('Freelance Manager', 'Test project')
+				project.changeDetails('Freelance Manager', 'Test project');
 
 				project.save(function(saveerr){
 					should.not.exist(saveerr);

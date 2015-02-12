@@ -2,7 +2,7 @@ angular.module('time').controller('OverviewController',
 function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 	'use strict';
 
-	$scope.date = new moment($stateParams.date, 'YYYYMMDD');
+	$scope.date = moment($stateParams.date, 'YYYYMMDD');
 	$scope.hasTimeRegistrations = false;
 
 	$scope.$watch('date', function(){
@@ -10,7 +10,7 @@ function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 	});
 
 	$scope.nextDate = function(){
-		$state.go('app.time_overview', { date: new moment($scope.date.add(1, 'days')).format('YYYYMMDD') }, { location: 'replace' });
+		$state.go('app.time_overview', { date: moment($scope.date.add(1, 'days')).format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.previousDate = function(){
@@ -18,7 +18,7 @@ function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 	};
 
 	$scope.changeDate = function(date, format){
-		$state.go('app.time_overview', { date: new moment(date, format).format('YYYYMMDD') }, { location: 'replace' });
+		$state.go('app.time_overview', { date: moment(date, format).format('YYYYMMDD') }, { location: 'replace' });
 	};
 
 	$scope.refresh = function() {
@@ -54,5 +54,5 @@ function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 
 			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
 		});		
-	}
+	};
 });

@@ -23,7 +23,7 @@ function($scope, $modal, Project) {
 			if(p) angular.copy(project, p);
 			else $scope.projects.push(project);
 		});		
-	}
+	};
 
 	$scope.openProjectTasks = function(project){
 		var createDialog = $modal.open({
@@ -41,17 +41,17 @@ function($scope, $modal, Project) {
 			if(p) 
 				angular.copy(project, p);
 		});				
-	}
+	};
 
 	$scope.hideProject = function(project){
 		Project.hide({ id: project.id }, function(){
 			project.hidden = true;
 		});
-	}
+	};
 
 	$scope.unhideProject = function(project){
 		Project.unhide({ id: project.id }, function(){
 			project.hidden = false;
 		});
-	}
+	};
 });

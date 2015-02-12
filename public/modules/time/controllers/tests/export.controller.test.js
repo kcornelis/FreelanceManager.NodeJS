@@ -92,7 +92,7 @@
 
 			beforeEach(function(){
 
-				$state.expectTransitionTo("app.time_export", { from: "20101201", to: "20121202"});
+				$state.expectTransitionTo('app.time_export', { from: '20101201', to: '20121202'});
 
 				scope.changeFrom('2010-12-01', 'YYYY-MM-DD');
 				scope.changeTo('2012-12-02', 'YYYY-MM-DD');

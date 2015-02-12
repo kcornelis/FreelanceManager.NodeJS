@@ -2,7 +2,8 @@
 // From the angle project
 angular.module('core').controller('SidebarController', ['$rootScope', '$scope', '$state', '$location', '$http', '$timeout', 'const_mediaquery',
 function($rootScope, $scope, $state, $location, $http, $timeout, mq){
-
+	'use strict';
+	
 	var currentState = $rootScope.$state.current.name;
 	var $win = $(window);
 	var $html = $('html');
@@ -30,7 +31,7 @@ function($rootScope, $scope, $state, $location, $http, $timeout, mq){
 
 		if(!item) return;
 
-		if( !item.sref || item.sref == '#') {
+		if( !item.sref || item.sref === '#') {
 			var foundActive = false;
 			angular.forEach(item.submenu, function(value, key) {
 				if(isActive(value)) foundActive = true;
@@ -91,15 +92,15 @@ function($rootScope, $scope, $state, $location, $http, $timeout, mq){
 		}
 	
 		return true;
-	
-		function closeAllBut(index) {
-			index += '';
-			for(var i in collapseList) {
-				if(index < 0 || index.indexOf(i) < 0)
-					collapseList[i] = true;
-			}
-		}
 	};
+
+	function closeAllBut(index) {
+		index += '';
+		for(var i in collapseList) {
+			if(index < 0 || index.indexOf(i) < 0)
+				collapseList[i] = true;
+		}
+	}
 
 	// Helper checks
 	// ----------------------------------- 

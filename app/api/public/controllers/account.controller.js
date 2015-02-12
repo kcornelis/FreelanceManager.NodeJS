@@ -17,21 +17,21 @@ function convert(account){
 	};
 }
 
-exports.getById = function(req, res) {
+exports.getById = function(req, res, next) {
 
 	Account.findById(req.params.accountId, function(err, account) {
 		if(err) next(err);
 		else res.send(convert(account));
 	});
-}
+};
 
-exports.getAll = function(req, res) {
+exports.getAll = function(req, res, next) {
 
 	Account.find({ },function(err, accounts) {
 		if(err) next(err);
 		else res.send(_.map(accounts, convert));
 	});
-}
+};
 
 exports.create = function(req, res, next) {
 
@@ -40,11 +40,11 @@ exports.create = function(req, res, next) {
 		if(err) next(err); 
 		else res.send(convert(account));
 	});
-}
+};
 
 exports.update = function(req, res, next) {	
 
-	if(req.user.id != req.params.accountId)
+	if(req.user.id !== req.params.accountId)
 		return next();
 
 	Account.findById(req.params.accountId, function(err, account) {
@@ -60,7 +60,7 @@ exports.update = function(req, res, next) {
 		}
 		else next();
 	});
-}
+};
 
 exports.changepassword = function(req, res) {
-}
+};

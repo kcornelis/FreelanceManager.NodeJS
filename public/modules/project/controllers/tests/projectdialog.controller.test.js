@@ -9,7 +9,7 @@
 
 		var mockCompanyService = {
 			query: function(){
-				return [{ id: 1, name: 'company 1' }, { id: 2, name: 'company 2' }]
+				return [{ id: 1, name: 'company 1' }, { id: 2, name: 'company 2' }];
 			}
 		};
 
