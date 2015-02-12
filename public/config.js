@@ -21,7 +21,7 @@ var ApplicationConfiguration = (function() {
 	var resolve = function() {
 		var _args = arguments;
 		return {
-			deps: ['$ocLazyLoad','$q', 'APP_REQUIRES', function ($ocLL, $q) {
+			deps: ['$ocLazyLoad','$q', function ($ocLL, $q) {
 				// Creates a promise chain for each argument
 				var promise = $q.when(1); // empty promise
 				for(var i=0, len=_args.length; i < len; i ++){

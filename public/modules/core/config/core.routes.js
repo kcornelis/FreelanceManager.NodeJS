@@ -1,5 +1,5 @@
-angular.module('core').config(['$stateProvider', '$urlRouterProvider', 'APP_REQUIRES',
-function($stateProvider, $urlRouterProvider, appRequires) {
+angular.module('core').config(['$stateProvider', '$urlRouterProvider',
+function($stateProvider, $urlRouterProvider) {
 		'use strict';
 		
 		// Redirect to the dashboard view when route not found

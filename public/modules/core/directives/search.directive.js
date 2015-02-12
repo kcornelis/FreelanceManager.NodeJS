@@ -1,0 +1,45 @@
+// TODO unit test
+// From the angle project
+angular.module('core')
+
+.directive('searchOpen', ['navSearch', function(navSearch) {
+	'use strict';
+
+	return {
+		restrict: 'A',
+		controller: function($scope, $element) {
+			$element
+				.on('click', function (e) { e.stopPropagation(); })
+				.on('click', navSearch.toggle);
+		}
+	};
+
+}])
+
+.directive('searchDismiss', ['navSearch', function(navSearch) {
+	'use strict';
+
+	var inputSelector = '.navbar-form input[type="text"]';
+
+	return {
+		restrict: 'A',
+		controller: function($scope, $element) {
+
+			$(inputSelector)
+				.on('click', function (e) { e.stopPropagation(); })
+				.on('keyup', function(e) {
+					if (e.keyCode == 27) // ESC
+						navSearch.dismiss();
+				});
+				
+			// click anywhere closes the search
+			$(document).on('click', navSearch.dismiss);
+			// dismissable options
+			$element
+				.on('click', function (e) { e.stopPropagation(); })
+				.on('click', navSearch.dismiss);
+		}
+	};
+
+}]);
+
