@@ -498,7 +498,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	describe('When time registrations info is requested by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
 			request('http://localhost:' + config.port)
-				.get('/api/public/timeregistrations/getinfo/20100202/20100210')
+				.get('/api/public/timeregistrations/getinfoforperiod/20100202/20100210')
 				.expect(401)
 				.end(done);
 		});
@@ -551,7 +551,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 				function(done){
 					
 					request('http://localhost:' + config.port)
-						.get('/api/public/timeregistrations/getinfo/20110202/20110210')
+						.get('/api/public/timeregistrations/getinfoforperiod/20110202/20110210')
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -568,20 +568,97 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			], done);
 		});
 
-		it('should return the time registration length for the given range', function() {
-			body.summary.count.should.eql(4);
+		it('should return the time registration count for the given range', function() {
+			body.count.should.eql(4);
 		});
 
 		it('should return the billable minutes', function() {
-			body.summary.billableMinutes.should.eql(20);
+			body.billableMinutes.should.eql(20);
 		});
 
 		it('should return the unbillable minutes', function() {
-			body.summary.unBillableMinutes.should.eql(0);
+			body.unBillableMinutes.should.eql(0);
+		});
+	});
+
+	/**
+	 * Get time registration info per task
+	 */
+	describe('When time registrations info per task is requested by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/timeregistrations/getinfoforperiodpertask/20100202/20100210')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When time registrations info per task is requested', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+		var timeregistration4;
+		var timeregistration5;
+		var timeregistration6;
+		var timeregistration7;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150202, 1500, 1505);
+			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150210, 1400, 1410);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Meeting', true, 'Doing some work', 20150202, 1500, 1502);
+			timeregistration5 = TimeRegistration.create(testdata.normalAccountId, company2.id, project2.id, 'Dev', true, 'Doing some work', 20150210, 1400, 1403);
+			timeregistration6 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150211, 1400, 1500);
+			timeregistration7 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', true, 'Doing some work', 20150205, 1400, 1359);
+			
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+					timeregistration3.save(done);
+				},
+				function(done){
+					timeregistration4.save(done);
+				},
+				function(done){
+					timeregistration5.save(done);
+				},
+				function(done){
+					timeregistration6.save(done);
+				},
+				function(done){
+					timeregistration7.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/getinfoforperiodpertask/20150202/20150210')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							
+							done();
+						});
+				}
+			], done);
 		});
 
 		it('should return info per task', function() {
-			var perTask = _.first(_.where(body.perTask, { companyId: company.id, task: 'Dev' }));
+			var perTask = _.first(_.where(body, { companyId: company.id, task: 'Dev' }));
 
 			perTask.companyId.should.eql(company.id);
 			perTask.company.name.should.eql('My Company');
@@ -594,7 +671,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 
 		it('should return info per task (other task)', function() {
-			var perTask = _.first(_.where(body.perTask, { companyId: company.id, task: 'Meeting' }));
+			var perTask = _.first(_.where(body, { companyId: company.id, task: 'Meeting' }));
 
 			perTask.companyId.should.eql(company.id);
 			perTask.company.name.should.eql('My Company');
@@ -608,7 +685,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 		it('should return info per task (other company)', function() {
 
-			var perTask = _.first(_.where(body.perTask, { companyId: company2.id, task: 'Dev' }));
+			var perTask = _.first(_.where(body, { companyId: company2.id, task: 'Dev' }));
 
 			perTask.companyId.should.eql(company2.id);
 			perTask.company.name.should.eql('My Second Company');

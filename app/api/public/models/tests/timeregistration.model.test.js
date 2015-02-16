@@ -87,7 +87,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 
 		it('should have a total minutes', function(){
-			saved.totalMinutes().should.eql(695);
+			saved.totalMinutes.should.eql(695);
 		});
 
 		it('should not be marked as invoiced', function(){
@@ -360,7 +360,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 
 		it('should have a total minutes', function(){
-			saved.totalMinutes().should.eql(839);
+			saved.totalMinutes.should.eql(839);
 		});
 
 		it('should have a created event', function(){

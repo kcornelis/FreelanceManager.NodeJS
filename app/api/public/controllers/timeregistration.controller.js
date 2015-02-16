@@ -32,7 +32,7 @@ function convert(timeRegistration, company, project) {
 		date: timeRegistration.date,
 		from: timeRegistration.from,
 		to: timeRegistration.to,
-		totalMinutes: timeRegistration.totalMinutes()
+		totalMinutes: timeRegistration.totalMinutes
 	};
 }
 
@@ -172,69 +172,89 @@ exports.getUninvoiced = function(req, res, next){
 	});
 };
 
-exports.getInfo = function(req, res, next) {
+exports.getInfoForPeriod = function(req, res, next){
 
-	TimeRegistration.find(
-	{ 
-		tenant: req.user.id,
-		deleted: false,
-		'date.numeric': { $gte: req.params.from, $lte: req.params.to }
-	},
-	function(err, timeRegistrations) 
+	TimeRegistration.aggregate([
 	{
+		$match: {
+			tenant: req.user.id,
+			deleted: false,
+			"date.numeric": { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
+		}
+	},
+	{ 	
+		$group: { 
+			_id: null, 
+			count: { $sum: 1 }, 
+			billable: { $sum: { $cond: [ '$billable', '$totalMinutes', 0 ] } },
+			total: { $sum: '$totalMinutes' }
+		}
+	}], 
+	function (err, result) {
+
 		if(err) next(err);
-		else convertMultiple(timeRegistrations, function(converted){
-
-			var summary =
-			{
-				count: converted.length,
-				billableMinutes: _.reduce(converted, function(sum, current) {  
-					if(current.billable)
-						return sum + current.totalMinutes;
-					else return sum;
-				}, 0),
-				unBillableMinutes: _.reduce(converted, function(sum, current) {  
-					if(!current.billable)
-						return sum + current.totalMinutes;
-					else return sum;
-				}, 0)
-			};
-
-			var groupedPerTask = _.groupBy(converted, function(i) { 
-				return JSON.stringify({ 
-					c: i.companyId,
-					p: i.projectId,
-					t: i.task
-				});
-			});
-
-			var perTask = _.map(groupedPerTask, function (g) {
-				return {
-					companyId: g[0].companyId,
-					company: g[0].company,
-					projectId: g[0].projectId,
-					project: g[0].project,
-					task: g[0].task,
-					count: g.length,
-					billableMinutes: _.reduce(g, function(sum, current) {  
-						if(current.billable)
-							return sum + current.totalMinutes;
-						else return sum;
-					}, 0),
-					unBillableMinutes: _.reduce(g, function(sum, current) {  
-						if(!current.billable)
-							return sum + current.totalMinutes;
-						else return sum;
-					}, 0)
-				};
-			});
-
-			res.send({
-				summary: summary,
-				perTask: perTask
-			});
+		else res.send({
+			count: (result[0] ? result[0].count : 0),
+			billableMinutes: (result[0] ? result[0].billable : 0),
+			unBillableMinutes: (result[0] ? result[0].total - result[0].billable : 0)
 		});
-	});
+	});	
+};
+
+exports.getInfoForPeriodPerTask = function(req, res, next){
+	
+	TimeRegistration.aggregate([
+	{
+		$match: {
+			tenant: req.user.id,
+			deleted: false,
+			"date.numeric": { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
+		}
+	},
+	{ 	
+		$group: { 
+			_id: { companyId: "$companyId", projectId: "$projectId", task: "$task" }, 
+			count: { $sum: 1 }, 
+			billable: { $sum: { $cond: [ '$billable', '$totalMinutes', 0 ] } },
+			total: { $sum: '$totalMinutes' }
+		}
+	}], 
+	function (err, result) {
+		
+		if(err) next(err);
+		else
+		{ 
+			var projects;
+			var companies;
+
+			var companyIds = _.uniq(_.map(result, function(tr) { return tr._id.companyId; }));
+			var projectIds = _.uniq(_.map(result, function(tr) { return tr._id.projectId; }));
+
+			async.parallel([
+				function(done){
+					Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
+				},
+				function(done){
+					Project.find().in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
+				}
+			], 
+			function(){
+
+				res.send(_.map(result, function(r){
+					return {
+						companyId: r._id.companyId,
+						company: _.first(_.where(companies, { id: r._id.companyId })),
+						projectId: r._id.projectId,
+						project: _.first(_.where(projects, { id: r._id.projectId })),
+						task: r._id.task,
+						count: r.count,
+						billableMinutes: r.billable,
+						unBillableMinutes: r.total - r.billable
+					};
+				}));
+			});
+		}
+	});	
 };
 
 exports.create = function(req, res, next) {

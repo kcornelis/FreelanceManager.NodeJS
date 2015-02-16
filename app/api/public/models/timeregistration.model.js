@@ -42,6 +42,7 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 	billable: {
 		type: Boolean,
 		default: false,
+		required: true,
 		index: true
 	},	
 	description: {
@@ -52,7 +53,7 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 		year: { type: Number, required: true, validate: yearValidation },
 		month: { type: Number, required: true, validate: monthValidation },
 		day: { type: Number, required: true, validate: dayValidation },
-		numeric: { type: Number, required: true }
+		numeric: { type: Number, required: true, index: true }
 	},
 	from: {
 		hour: { type: Number, required: true, validate: hourValidation },
@@ -63,6 +64,11 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 		hour: { type: Number, required: true, validate: hourValidation },
 		minutes: { type: Number, required: true, validate: minuteValidation },
 		numeric: { type: Number }
+	},
+	totalMinutes: {
+		type: Number, 
+		default: 0,
+		required: true
 	},
 	invoiced: {
 		type: Boolean,
@@ -119,6 +125,16 @@ function createTimeObject(time){
 	};
 }
 
+function calculateTotalMinutes(from, to){
+
+	var difference = ((to.hour * 60) + to.minutes) - ((from.hour * 60) + from.minutes);
+
+	if (difference < 0)
+		difference = ((60 * 24) + difference);
+
+	return difference;
+}
+
 /*
  *      Write methods
  */
@@ -135,6 +151,7 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 	timeRegistration.date = createDateObject(date);
 	timeRegistration.from = createTimeObject(from);
 	timeRegistration.to = createTimeObject(to);
+	timeRegistration.totalMinutes = calculateTotalMinutes(timeRegistration.from, timeRegistration.to);
 
 	timeRegistration.apply('TimeRegistrationCreated', 
 	{
@@ -146,7 +163,8 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 		description: description,
 		date: date,
 		from: from,
-		to: to
+		to: to,
+		totalMinutes: timeRegistration.totalMinutes
 	});             
 
 	return timeRegistration;
@@ -171,6 +189,7 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 		this.date = createDateObject(date);
 		this.from = createTimeObject(from);
 		this.to = createTimeObject(to);
+		this.totalMinutes = calculateTotalMinutes(this.from, this.to);
 		
 		this.apply('TimeRegistrationDetailsChanged', 
 		{
@@ -181,7 +200,8 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 			description: description,
 			date: date,
 			from: from,
-			to: to
+			to: to,
+			totalMinutes: this.totalMinutes
 		});     
 	}
 };
@@ -201,16 +221,6 @@ TimeRegistrationSchema.methods.markInvoiced = function(invoiceId){
 		invoicedOn: this.invoicedOn,
 		invoiceId: this.invoiceId
 	});
-};
-
-TimeRegistrationSchema.methods.totalMinutes = function(){
-
-	var difference = ((this.to.hour * 60) + this.to.minutes) - ((this.from.hour * 60) + this.from.minutes);
-
-	if (difference < 0)
-		difference = ((60 * 24) + difference);
-
-	return difference;
 };
 
 mongoose.model('TimeRegistration', TimeRegistrationSchema);
