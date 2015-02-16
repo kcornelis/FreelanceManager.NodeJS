@@ -3,7 +3,8 @@
 module.exports = {
 	app: {
 		title: 'Freelance Manager',
-		description: 'Freelance Manager',
+		description: 'A demo application in NodeJS',
+		author: 'Kevin Cornelis',
 		keywords: ''
 	},
 	port: process.env.PORT || 3000,

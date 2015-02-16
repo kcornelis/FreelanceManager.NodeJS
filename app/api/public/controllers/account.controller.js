@@ -50,8 +50,7 @@ exports.update = function(req, res, next) {
 	Account.findById(req.params.accountId, function(err, account) {
 
 		if(err){ next(err); }
-
-		if(account){
+		else if(account){
 			account.changeDetails(req.body.name, req.body.firstName, req.body.lastName, req.body.email);
 			account.save(function(err){
 				if(err) next(err);
