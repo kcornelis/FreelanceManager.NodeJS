@@ -103,7 +103,7 @@
 			});	
 		});			
 
-		describe('Get info', function(){
+		describe('Get info for period', function(){
 			
 			var TimeRegistration,
 				$httpBackend,
@@ -113,18 +113,41 @@
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
-				$httpBackend.expectGET('/api/public/timeregistrations/getinfo/20140101/20140110')
-					.respond(200, { description: 'time registration'});
+				$httpBackend.expectGET('/api/public/timeregistrations/getinfoforperiod/20140101/20140110')
+					.respond(200, { total: 10 });
 
-				response = TimeRegistration.getinfo({ from: 20140101, to: 20140110 });
+				response = TimeRegistration.getinfoforperiod({ from: 20140101, to: 20140110 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should return info about the time registrations for the given date range', function(){
+				expect(response.total).toBe(10);
+			});	
+		});
+
+		describe('Get info for period per task', function(){
+			
+			var TimeRegistration,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+				TimeRegistration = _TimeRegistration_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getinfoforperiodpertask/20140101/20140110')
+					.respond(200, [{ total: 20 }]);
+
+				response = TimeRegistration.getinfoforperiodpertask({ from: 20140101, to: 20140110 });
 				$httpBackend.flush();
 
 			}));
 
 			it('should return all timeregistrations for the given date', function(){
-				expect(response.description).toBe('time registration');
+				expect(response[0].total).toBe(20);
 			});	
-		});				
+		});						
 
 		describe('Get by id', function(){
 			

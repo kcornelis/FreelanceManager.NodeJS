@@ -153,7 +153,8 @@ function($scope, $state, XLSXReader, NgTableParams, $filter, Project, TimeRegist
 					description: row[$scope.selectedDescriptionColumn],
 					date: convertDisplayDateToNumeric(row[$scope.selectedDateColumn]),
 					from: convertDisplayTimeToNumeric(row[$scope.selectedFromColumn]),
-					to: convertDisplayTimeToNumeric(row[$scope.selectedToColumn])
+					to: convertDisplayTimeToNumeric(row[$scope.selectedToColumn]),
+					billable: task.billable
 				});
 			});
 		});

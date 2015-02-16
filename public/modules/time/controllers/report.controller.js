@@ -46,7 +46,6 @@ function($scope, $location, $state, $stateParams, TimeRegistration) {
 	$scope.yearStart = moment().startOf('year').format('YYYYMMDD');
 	$scope.yearEnd = moment().endOf('year').format('YYYYMMDD');
 
-
 	$scope.previous = function(){
 		$state.go('app.time_report', { from: $scope.previousFrom.format('YYYYMMDD'), to: $scope.previousTo.format('YYYYMMDD')}, { location: 'replace' });
 	};
@@ -59,12 +58,25 @@ function($scope, $location, $state, $stateParams, TimeRegistration) {
 
 		$scope.loading = true;
 
-		TimeRegistration.getinfo({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') })
-			.$promise.then(function(b){
+		TimeRegistration.getinfoforperiod({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') },
+			function(result){
+				$scope.summary = result;
+								
+				$scope.billableUnbillableGraph = [
+					{ label: 'Billable', data: $scope.summary.billableMinutes, color: '#7266BA' },
+					{ label: 'Unbillable', data: $scope.summary.unBillableMinutes, color: '#5D9CEC' }
+				];
+				
+				if($scope.summary.unBillableMinutes || $scope.summary.billableMinutes)
+					$scope.hasHours = true;
+				else $scope.hasHours = false;
 
-				$scope.summary = b.summary;
+				$scope.loading = false;
+			});
 
-				var grouped = _.groupBy(b.perTask, function(i) { 
+		TimeRegistration.getinfoforperiodpertask({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') },
+			function(result){
+				var grouped = _.groupBy(result, function(i) { 
 					return JSON.stringify({ 
 						c: i.companyId,
 						p: i.projectId
@@ -80,18 +92,6 @@ function($scope, $location, $state, $stateParams, TimeRegistration) {
 						tasks: g
 					};
 				});
-			})
-			.finally(function(){
-				$scope.billableUnbillableGraph = [
-					{ label: 'Billable', data: $scope.summary.billableMinutes, color: '#7266BA' },
-					{ label: 'Unbillable', data: $scope.summary.unBillableMinutes, color: '#5D9CEC' }
-				];
-				
-				if($scope.summary.unBillableMinutes || $scope.summary.billableMinutes)
-					$scope.hasHours = true;
-				else $scope.hasHours = false;
-				
-				$scope.loading = false;
 			});
 	};
 });

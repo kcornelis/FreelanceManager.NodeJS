@@ -179,7 +179,7 @@ exports.getInfoForPeriod = function(req, res, next){
 		$match: {
 			tenant: req.user.id,
 			deleted: false,
-			"date.numeric": { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
+			'date.numeric': { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
 		}
 	},
 	{ 	
@@ -208,12 +208,12 @@ exports.getInfoForPeriodPerTask = function(req, res, next){
 		$match: {
 			tenant: req.user.id,
 			deleted: false,
-			"date.numeric": { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
+			'date.numeric': { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
 		}
 	},
 	{ 	
 		$group: { 
-			_id: { companyId: "$companyId", projectId: "$projectId", task: "$task" }, 
+			_id: { companyId: '$companyId', projectId: '$projectId', task: '$task' }, 
 			count: { $sum: 1 }, 
 			billable: { $sum: { $cond: [ '$billable', '$totalMinutes', 0 ] } },
 			total: { $sum: '$totalMinutes' }

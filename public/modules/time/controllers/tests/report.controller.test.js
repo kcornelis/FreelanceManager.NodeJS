@@ -250,16 +250,17 @@
 
 				beforeEach(function(){
 
-					$httpBackend.expectGET('/api/public/timeregistrations/getinfo/20100101/20100107').respond(
+					$httpBackend.expectGET('/api/public/timeregistrations/getinfoforperiod/20100101/20100107').respond(
 					{
-						'summary':{'count':4,'billableMinutes':10,'unBillableMinutes':20},
-						'perTask':[
-							{'companyId':'companyId1','company':{ 'name':'company 1' },'projectId':'projectId1','project':{ 'name':'project 1' },'task':'Analyse','count':1,'billableMinutes':5,'unBillableMinutes':0},
-							{'companyId':'companyId1','company':{ 'name':'company 1' },'projectId':'projectId1','project':{ 'name':'project 1' },'task':'Development','count':1,'billableMinutes':0,'unBillableMinutes':10},
-							{'companyId':'companyId1','company':{ 'name':'companu 1' },'projectId':'projectId2','project':{ 'name':'project 2' },'task':'Development','count':1,'billableMinutes':5,'unBillableMinutes':0},
-							{'companyId':'companyId2','company':{ 'name':'company 2' },'projectId':'projectId3','project':{ 'name':'project 3' },'task':'Development','count':1,'billableMinutes':0,'unBillableMinutes':10}
-						]
+						'count':4,'billableMinutes':10,'unBillableMinutes':20
 					});
+
+					$httpBackend.expectGET('/api/public/timeregistrations/getinfoforperiodpertask/20100101/20100107').respond([
+						{'companyId':'companyId1','company':{ 'name':'company 1' },'projectId':'projectId1','project':{ 'name':'project 1' },'task':'Analyse','count':1,'billableMinutes':5,'unBillableMinutes':0},
+						{'companyId':'companyId1','company':{ 'name':'company 1' },'projectId':'projectId1','project':{ 'name':'project 1' },'task':'Development','count':1,'billableMinutes':0,'unBillableMinutes':10},
+						{'companyId':'companyId1','company':{ 'name':'companu 1' },'projectId':'projectId2','project':{ 'name':'project 2' },'task':'Development','count':1,'billableMinutes':5,'unBillableMinutes':0},
+						{'companyId':'companyId2','company':{ 'name':'company 2' },'projectId':'projectId3','project':{ 'name':'project 3' },'task':'Development','count':1,'billableMinutes':0,'unBillableMinutes':10}
+					]);
 
 					scope.refresh();
 
@@ -318,11 +319,12 @@
 
 				beforeEach(function(){
 
-					$httpBackend.expectGET('/api/public/timeregistrations/getinfo/20100101/20100107').respond(
+					$httpBackend.expectGET('/api/public/timeregistrations/getinfoforperiod/20100101/20100107').respond(
 					{
-						'summary':{'count':0,'billableMinutes':0,'unBillableMinutes':0},
-						'perTask':[]
+						'count':0,'billableMinutes':0,'unBillableMinutes':0
 					});
+
+					$httpBackend.expectGET('/api/public/timeregistrations/getinfoforperiodpertask/20100101/20100107').respond([]);
 
 					scope.refresh();
 
