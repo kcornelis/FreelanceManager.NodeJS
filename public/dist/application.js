@@ -140,6 +140,35 @@ angular.element(document).ready(function () {
       Account.save(token.id, $scope.account);
     };
   }
+]);angular.module('account').controller('AccountPasswordController', [
+  '$scope',
+  '$window',
+  'jwtHelper',
+  'Account',
+  function ($scope, $window, jwtHelper, Account) {
+    'use strict';
+    var token = jwtHelper.decodeToken($window.localStorage.token);
+    $scope.oldPassword = '';
+    $scope.newPassword = '';
+    $scope.newPasswordConfirm = '';
+    $scope.save = function () {
+      $scope.isSaving = true;
+      $scope.hasError = false;
+      Account.changePassword({ id: token.id }, {
+        oldPassword: $scope.oldPassword,
+        newPassword: $scope.newPassword
+      }, function () {
+        $scope.isSaving = false;
+        $scope.oldPassword = '';
+        $scope.newPassword = '';
+        $scope.newPasswordConfirm = '';
+        $scope.accountPasswordForm.$setPristine();
+      }, function (err) {
+        $scope.isSaving = false;
+        $scope.hasError = true;
+      });
+    };
+  }
 ]);angular.module('account').controller('AuthenticateController', [
   '$rootScope',
   '$scope',
@@ -501,7 +530,38 @@ angular.module('core').directive('href', function () {
       };
     }
   };
-});// TODO unit test
+});angular.module('core').directive('fmMatch', [
+  '$parse',
+  function match($parse) {
+    'use strict';
+    return {
+      require: '?ngModel',
+      restrict: 'A',
+      link: function (scope, elem, attrs, ctrl) {
+        if (!ctrl) {
+          if (console && console.warn) {
+            console.warn('Match validation requires ngModel to be on the element');
+          }
+          return;
+        }
+        var matchGetter = $parse(attrs.fmMatch);
+        function getMatchValue() {
+          var match = matchGetter(scope);
+          if (angular.isObject(match) && match.hasOwnProperty('$viewValue')) {
+            match = match.$viewValue;
+          }
+          return match;
+        }
+        scope.$watch(getMatchValue, function () {
+          ctrl.$validate();
+        });
+        ctrl.$validators.match = function () {
+          return ctrl.$viewValue === getMatchValue();
+        };
+      }
+    };
+  }
+]);// TODO unit test
 // From the angle project
 angular.module('core').directive('now', [
   'dateFilter',
@@ -738,7 +798,13 @@ angular.module('core').directive('toggleState', [
   '$resource',
   function ($resource) {
     'use strict';
-    return $resource('/api/public/accounts/:id', { id: '@id' });
+    return $resource('/api/public/accounts/:id', { id: '@id' }, {
+      changePassword: {
+        method: 'POST',
+        url: '/api/public/accounts/:id/changepassword',
+        params: { id: '@id' }
+      }
+    });
   }
 ]);angular.module('core').factory('Company', [
   '$resource',
