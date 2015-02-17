@@ -1119,4 +1119,105 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			});
 		});		
 	});	 
+
+	/**
+	 * Delete
+	 */
+	describe('When a time registration is deleted by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.delete('/api/public/timeregistrations/' + uuid.v1())
+				.send()
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When deleting a time registration', function() {
+
+		var response;
+		var body;
+		var timeRegistration;
+
+		before(function(done) {
+
+			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
+
+			async.series([
+				function(done){
+					timeRegistration.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.delete('/api/public/timeregistrations/' + timeRegistration.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send()
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+
+							TimeRegistration.findById(timeRegistration.id, function(err, c){
+								timeRegistration = c;
+								done();
+							});
+						});
+				}
+			], done);
+		});
+
+		it('should be saved in the database', function() {
+			timeRegistration.should.exist;
+		});
+
+		it('should delete the time registration', function(){
+			timeRegistration.deleted.should.eql(true);
+		});
+
+		it('should return deleted true', function(){
+			body.deleted.should.eql(true);
+		});			
+	});	 
+
+	describe('When deleting a time registration from another tenant', function() {
+
+		var response;
+		var body;
+		var timeRegistration;
+
+		before(function(done) {
+
+			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
+
+			async.series([
+				function(done){
+					timeRegistration.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.delete('/api/public/timeregistrations/' + timeRegistration.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.send()
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+		});
+
+		it('should not be updated', function(done) {
+			TimeRegistration.findById(timeRegistration.id, function(err, c){
+				if(err){ done(err); }
+
+				c.deleted.should.eql(false);
+				done();
+			});
+		});		
+	});	 
 });

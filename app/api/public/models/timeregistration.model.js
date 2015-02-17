@@ -223,4 +223,19 @@ TimeRegistrationSchema.methods.markInvoiced = function(invoiceId){
 	});
 };
 
+TimeRegistrationSchema.methods.delete = function(){
+	
+	if(this.deleted)
+		throw new Error('Can\'t delete a time registration twice');
+
+	this.deleted = true;
+	this.deletedOn = Date.now();
+
+	this.apply('TimeRegistrationDeleted', 
+	{
+		deleted: this.deleted,
+		deletedOn: this.deletedOn
+	});
+};
+
 mongoose.model('TimeRegistration', TimeRegistrationSchema);

@@ -22,4 +22,6 @@ module.exports = function(app) {
 	app.route('/api/public/timeregistrations').post(timeRegistration.create);
 	app.route('/api/public/timeregistrations/multiple').post(timeRegistration.create);
 	app.route('/api/public/timeregistrations/:timeRegistrationId').post(timeRegistration.update);
+
+	app.route('/api/public/timeregistrations/:timeRegistrationId').delete(timeRegistration.delete);
 };

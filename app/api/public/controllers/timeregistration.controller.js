@@ -305,10 +305,32 @@ exports.update = function(req, res, next) {
 				req.body.billable, req.body.description, 
 				req.body.date, req.body.from, req.body.to);
 			timeRegistration.save(function(err){
-				if(err){ next(err); }
-				convertSingle(timeRegistration, function(converted){
+				if(err) next(err);
+				else convertSingle(timeRegistration, function(converted){
 					res.send(converted);
 				});
+			});
+		}
+		else next();
+	});
+};
+
+
+exports.delete = function(req, res, next) {
+	
+	TimeRegistration.findOne(
+	{ 
+		_id: req.params.timeRegistrationId,
+		tenant: req.user.id,
+		deleted: false
+	}, 
+	function(err, timeRegistration) {
+		if(err) next(err);
+		else if(timeRegistration){
+			timeRegistration.delete();
+			timeRegistration.save(function(err){
+				if(err) next(err);
+				else res.send({ deleted: true });
 			});
 		}
 		else next();

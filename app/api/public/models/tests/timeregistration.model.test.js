@@ -96,7 +96,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			(saved.invoiceId === undefined).should.true;
 		});
 
-		it('should have version 1', function(){
+		it('should have a version', function(){
 			saved.version.should.eql(1);
 		});
 
@@ -355,7 +355,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			saved.to.numeric.should.eql(2359);
 		});
 
-		it('should have version 2', function(){
+		it('should have a new version', function(){
 			saved.version.should.eql(2);
 		});
 
@@ -433,7 +433,7 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			new Date(timeRegistration.invoicedOn).should.lessThan(new Date(Date.now() + 10000));
 		});
 
-		it('should have version 2', function(){
+		it('should have a new version', function(){
 			timeRegistration.version.should.eql(2);
 		});
 
@@ -460,4 +460,61 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			tr.markInvoiced.bind('invoice id 2').should.throw();
 		});
 	});
+
+	describe('When a time registration is deleted', function(){
+
+		var original, timeRegistration;
+
+		before(function(done) {
+			original = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
+			original.delete();
+			original.save(done);
+		});
+
+		it('should be saved with no problems', function(done) {
+			
+			TimeRegistration.findOne({
+				_id: original._id
+			}, function(finderr, tr) {
+
+				timeRegistration = tr;
+				done();
+			});
+		});
+
+		it('should be marked as deleted', function(){
+			timeRegistration.deleted.should.be.true;
+		});
+
+		it('should have the deleted on date', function(){
+			new Date(timeRegistration.deletedOn).should.greaterThan(new Date(Date.now() - 10000));
+			new Date(timeRegistration.deletedOn).should.lessThan(new Date(Date.now() + 10000));
+		});
+
+		it('should have a new version', function(){
+			timeRegistration.version.should.eql(2);
+		});
+
+		it('should have a deleted event', function(){
+			timeRegistration.events[1].deleted.should.be.true;			
+			new Date(timeRegistration.events[1].deletedOn).should.greaterThan(new Date(Date.now() - 10000));
+			new Date(timeRegistration.events[1].deletedOn).should.lessThan(new Date(Date.now() + 10000));		
+
+			timeRegistration.events[1].metadata.eventName.should.eql('TimeRegistrationDeleted');
+		});
+
+		after(function(done) {
+			TimeRegistration.remove(done);
+		});
+	});
+
+	describe('When a time registration is deleted twice', function(){
+
+		it('should fail', function() {
+			
+			var tr = TimeRegistration.create(tenant,'company', 'project', 'task', true, 'description', 20141020, 30, 1205);
+			tr.delete();
+			tr.delete.bind().should.throw();
+		});
+	});	
 });
