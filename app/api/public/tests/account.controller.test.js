@@ -327,7 +327,7 @@ describe('Public API: Account Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			account = Account.create('Jane BVBA', 'Jane', 'Doe', 'jane@doe.com');
+			account = Account.create('Jane BVBA', 'Jane', 'Doe', 'jane67890@doe.com');
 			account.changePassword('12345');
 
 			async.series([
@@ -358,4 +358,129 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			});
 		});		
 	});
+
+	describe('When changing an account password', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done) {
+
+			request('http://localhost:' + config.port)
+				.post('/api/public/accounts/' + testdata.normalAccountId + '/changepassword')
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ oldPassword: '12345', newPassword: '67890' })
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res) {
+
+					if(err)
+						throw err;
+
+					response = res;
+					body = res.body;
+
+					Account.findById(testdata.normalAccountId, function(err, c){
+						account = c;
+						done();
+					});
+				});		
+
+		});
+
+		it('should update the account password with the specified new password', function(){
+			account.authenticate('67890').should.be.true;
+		});
+
+		it('should return ok', function(){
+			body.ok.should.be.true;
+		});
+
+		after(function(done){
+			request('http://localhost:' + config.port)
+				.post('/api/public/accounts/' + testdata.normalAccountId + '/changepassword')
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ oldPassword: '67890', newPassword: '12345' })
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(done);
+		});								
+	});	
+
+	describe('When changing an account password with the wrong old password', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done) {
+
+			request('http://localhost:' + config.port)
+				.post('/api/public/accounts/' + testdata.normalAccountId + '/changepassword')
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ oldPassword: 'wrong', newPassword: '67890' })
+				.expect('Content-Type', /html/)
+				.expect(404)
+				.end(function(err, res) {
+
+					if(err)
+						throw err;
+
+					response = res;
+					body = res.body;
+
+					Account.findById(testdata.normalAccountId, function(err, c){
+						account = c;
+						done();
+					});
+				});					
+
+		});
+
+		it('should not update the account password with the specified new password', function(){
+			account.authenticate('12345').should.be.true;
+		});							
+	});	 	 
+
+	describe('When updating an account password from another tenant', function() {
+
+		var response;
+		var body;
+		var account;
+
+		before(function(done) {
+
+			account = Account.create('Jane BVBA', 'Jane', 'Doe', 'jane1234567@doe.com');
+			account.changePassword('12345');
+
+			async.series([
+				function(done){
+					account.save(done);
+				},
+				function(done){
+
+					request('http://localhost:' + config.port)
+						.post('/api/public/accounts/' + account.id + '/changepassword')
+						.set('Authorization', testdata.normalAccountToken)
+						.send({ oldPassword: '12345', newPassword: '5678' })
+						.expect('Content-Type', /html/)
+						.expect(404)
+						.end(done);
+				}
+			], done);
+
+
+		});
+
+		it('should not be updated', function(done) {
+			Account.findById(account.id, function(err, c){
+				if(err){ done(err); }
+
+				account.authenticate('12345').should.be.true;
+
+				done();
+			});
+		});		
+	});	
 });

@@ -96,8 +96,32 @@
 
 			it('should create the account', function(){
 				$httpBackend.verifyNoOutstandingExpectation();
-      			$httpBackend.verifyNoOutstandingRequest();
+				$httpBackend.verifyNoOutstandingRequest();
 			});	
-		});				
+		});	
+
+		describe('Change password', function(){
+			
+			var Account,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Account_, _$httpBackend_){
+				Account = _Account_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectPOST('/api/public/accounts/1/changepassword', { oldPassword: '1234', newPassword: '4567'})
+					.respond(200, { ok: true });
+
+				response = Account.changePassword({ id: 1 }, { oldPassword: '1234', newPassword: '4567'});
+				$httpBackend.flush();
+
+			}));
+
+			it('should update the account', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+				$httpBackend.verifyNoOutstandingRequest();
+			});	
+		});						
 	});
 })();

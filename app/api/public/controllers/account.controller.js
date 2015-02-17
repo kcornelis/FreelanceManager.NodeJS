@@ -61,5 +61,22 @@ exports.update = function(req, res, next) {
 	});
 };
 
-exports.changepassword = function(req, res) {
+exports.changepassword = function(req, res, next) {
+	
+	if(req.user.id !== req.params.accountId)
+		return next();
+
+	Account.findById(req.params.accountId, function(err, account) {
+
+		if(err){ next(err); }
+		else if(account && account.authenticate(req.body.oldPassword)){
+			
+			account.changePassword(req.body.newPassword);
+			account.save(function(err){
+				if(err) next(err);
+				else res.send({ ok: true });
+			});
+		}
+		else next();
+	});
 };
