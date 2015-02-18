@@ -1179,8 +1179,8 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeRegistration.deleted.should.eql(true);
 		});
 
-		it('should return deleted true', function(){
-			body.deleted.should.eql(true);
+		it('should return the id of the deleted item', function(){
+			body.deleted.should.eql(timeRegistration.id);
 		});			
 	});	 
 

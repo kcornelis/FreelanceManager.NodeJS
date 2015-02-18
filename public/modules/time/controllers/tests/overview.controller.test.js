@@ -137,9 +137,19 @@
 				// new time registration at the end of the list
 				expect(scope.timeRegistrations[2].description).toBe('def');
 			});
+
+			it('should update the ui if a time registration is deleted', function(){
+				scope.openTimeRegistration();
+
+				dialog.close({ deleted: 2 });
+
+				// item with id 2 is deleted
+				expect(scope.timeRegistrations.length).toBe(1);
+				expect(scope.timeRegistrations[0].id).toBe(1);
+			});			
 		});
 
-		describe('$scope.openTimeRegistration', function(){
+		describe('$scope.openTimeRegistration when adding the first time registration', function(){
 
 			beforeEach(function(){
 

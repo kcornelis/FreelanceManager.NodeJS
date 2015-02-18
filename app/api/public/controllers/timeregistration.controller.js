@@ -330,7 +330,7 @@ exports.delete = function(req, res, next) {
 			timeRegistration.delete();
 			timeRegistration.save(function(err){
 				if(err) next(err);
-				else res.send({ deleted: true });
+				else res.send({ deleted: req.params.timeRegistrationId });
 			});
 		}
 		else next();

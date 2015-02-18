@@ -2,24 +2,31 @@ angular.module('time').controller('TimeRegistrationDialogController',
 function($scope, Project, TimeRegistration, toUpdate, date) {
 	'use strict';
 
+	// private methods
+	// ---------------
+
 	function convertNumericTimeToDisplay(time){
 		var hour = Math.floor(time / 100);
 		var minutes = Math.floor(time - (hour * 100));
 		return ('00' + hour).slice(-2) + ':' + ('00' + minutes).slice(-2);
 	}
 
-	$scope.originalTimeRegistration = toUpdate;
-	$scope.newTimeRegistration = toUpdate === undefined;
-	toUpdate = toUpdate || { };
-	$scope.timeRegistration =  { 
-		company: null,
-		project: null,
-		task: null,
-		billable: toUpdate.billable || false,
-		description: toUpdate.description || '',
-		from: toUpdate.from ? convertNumericTimeToDisplay(toUpdate.from.numeric) : '',
-		to: toUpdate.to ? convertNumericTimeToDisplay(toUpdate.to.numeric) : '',
-	};
+	function showMessage(message) {
+		$scope.isBusy = true;
+		$scope.message = message;
+	}
+
+	function hideMessage() {
+		$scope.isBusy = false;
+		$scope.message = '';
+	}
+
+	function convertDisplayTimeToNumeric(time){
+		return parseInt(time.replace(':', ''), 10);
+	}
+
+	// scope watches
+	// -------------
 
 	$scope.$watch('timeRegistration.company', function (newv, oldv) {
 		if(oldv && newv && oldv.id !== newv.id){
@@ -38,11 +45,27 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 		if($scope.newTimeRegistration && $scope.timeRegistration.task){
 			$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
 		}
-	});		
-	
+	});	
+
+	// scope properties
+	// ----------------	
+
 	$scope.isBusy = false;
 	$scope.message = '';
 
+	$scope.originalTimeRegistration = toUpdate;
+	$scope.newTimeRegistration = toUpdate === undefined;
+	toUpdate = toUpdate || { };
+	$scope.timeRegistration =  { 
+		company: null,
+		project: null,
+		task: null,
+		billable: toUpdate.billable || false,
+		description: toUpdate.description || '',
+		from: toUpdate.from ? convertNumericTimeToDisplay(toUpdate.from.numeric) : '',
+		to: toUpdate.to ? convertNumericTimeToDisplay(toUpdate.to.numeric) : '',
+	};	
+	
 	// load all projects and convert them to companies => projects => tasks
 	$scope.projects = Project.active(function(){
 		$scope.companies = _.map(
@@ -64,6 +87,9 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 		if(toUpdate.task && $scope.timeRegistration.project)
 			$scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
 	});
+
+	// scope actions
+	// -------------
 
 	$scope.ok = function () {
 		showMessage('Saving time registration...');
@@ -90,21 +116,22 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 		});
 	};
 
+	$scope.delete = function(){
+		showMessage('Deleting time registration...');
+
+		var id = $scope.newTimeRegistration ? {} : { id: $scope.originalTimeRegistration.id };
+
+		TimeRegistration.delete({ id: $scope.originalTimeRegistration.id },
+		function(data) {
+			hideMessage();
+			$scope.$close(data);
+		},
+		function(err) { 
+			showMessage('An error occurred...'); 
+		});		
+	};
+
 	$scope.cancel = function () {
 		$scope.$dismiss('cancel');
 	};
-
-	function showMessage(message) {
-		$scope.isBusy = true;
-		$scope.message = message;
-	}
-
-	function hideMessage() {
-		$scope.isBusy = false;
-		$scope.message = '';
-	}
-
-	function convertDisplayTimeToNumeric(time){
-		return parseInt(time.replace(':', ''), 10);
-	}
 });

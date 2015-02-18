@@ -68,7 +68,10 @@
 			</div>		
 		</div>		
 		<div class="modal-footer">
-			<div class="pull-left" data-ng-show="isBusy">
+			<div class="pull-left" data-ng-show="!newTimeRegistration">
+				<button type="button" class="btn btn-default" data-ng-click="delete()">Delete</button>
+			</div>		
+			<div class="pull-left mt-sm ml-lg" data-ng-show="isBusy">
 				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
 			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>

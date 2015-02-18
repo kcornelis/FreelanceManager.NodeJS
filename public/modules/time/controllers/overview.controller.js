@@ -47,10 +47,15 @@ function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 			}
 		});
 
-		createDialog.result.then(function (timeRegistration) {
-			var c = _.find($scope.timeRegistrations, { 'id': timeRegistration.id });
-			if(c) angular.copy(timeRegistration, c);
-			else $scope.timeRegistrations.push(timeRegistration);
+		createDialog.result.then(function (data) {
+			if(data.deleted) {
+				_.remove($scope.timeRegistrations, function(item) { return item.id === data.deleted });
+			}
+			else {
+				var c = _.find($scope.timeRegistrations, { 'id': data.id });
+				if(c) angular.copy(data, c);
+				else $scope.timeRegistrations.push(data);
+			}
 
 			$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
 		});		
