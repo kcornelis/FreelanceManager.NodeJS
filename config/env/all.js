@@ -19,14 +19,7 @@ module.exports = {
 			js: [
 				'public/lib/jquery/dist/jquery.js',
 				'public/lib/angular/angular.js',
-				'public/lib/angular-route/angular-route.js',
-				'public/lib/angular-cookies/angular-cookies.js',
-				'public/lib/angular-animate/angular-animate.js',
-				'public/lib/angular-ui-router/release/angular-ui-router.js',
-				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-sanitize/angular-sanitize.js',
-				'public/lib/angular-resource/angular-resource.js',
-				'public/lib/angular-jwt/dist/angular-jwt.js',
+				'public/lib/modernizr/modernizr.js'
 			]			
 		},
 		lib: {
@@ -40,6 +33,15 @@ module.exports = {
 				'public/dist/angle.css'
 			],
 			js: [
+				'public/lib/angular-route/angular-route.js',
+				'public/lib/angular-cookies/angular-cookies.js',
+				'public/lib/angular-animate/angular-animate.js',
+				'public/lib/angular-ui-router/release/angular-ui-router.js',
+				'public/lib/angular-ui-utils/ui-utils.js',
+				'public/lib/angular-sanitize/angular-sanitize.js',
+				'public/lib/angular-resource/angular-resource.js',
+				'public/lib/angular-jwt/dist/angular-jwt.js',
+			
 				'public/lib/ngstorage/ngStorage.js',
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
@@ -49,7 +51,6 @@ module.exports = {
 				'public/lib/moment/moment.js',
 
 				'public/lib/fastclick/lib/fastclick.js',
-				'public/lib/modernizr/modernizr.js',
 				'public/lib/screenfull/dist/screenfull.min.js',
 				'public/lib/animo.js/animo.js',
 				'public/lib/slimScroll/jquery.slimscroll.min.js',

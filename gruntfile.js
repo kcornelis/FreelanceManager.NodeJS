@@ -72,7 +72,6 @@ module.exports = function(grunt) {
 					compressor: true
 				},
 				files: {
-					'public/dist/base.min.js': 'public/dist/base.js',
 					'public/dist/lib.min.js': 'public/dist/lib.js',
 					'public/dist/application.min.js': 'public/dist/application.js'
 				}
@@ -81,7 +80,6 @@ module.exports = function(grunt) {
 		cssmin: {
 			combine: {
 				files: {
-					'public/dist/base.min.css': '<%= baseCSSFiles %>',
 					'public/dist/lib.min.css': '<%= libCSSFiles %>',
 					'public/dist/application.min.css': '<%= applicationCSSFiles %>'
 				}
@@ -110,15 +108,14 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-        ngmin: {
-            production: {
-                files: {
-                    'public/dist/base.js': '<%= baseJavaScriptFiles %>',
-                    'public/dist/lib.js': '<%= libJavaScriptFiles %>',
-                    'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
-                }
-            }
-        },
+		ngmin: {
+			production: {
+				files: {
+					'public/dist/lib.js': '<%= libJavaScriptFiles %>',
+					'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
+				}
+			}
+		},
 		concurrent: {
 			default: ['nodemon', 'watch'],
 			debug: ['nodemon', 'watch', 'node-inspector'],
@@ -156,8 +153,6 @@ module.exports = function(grunt) {
 		var init = require('./config/init')();
 		var config = require('./config/config');
 
-		grunt.config.set('baseJavaScriptFiles', config.assets.base.js);
-		grunt.config.set('baseCSSFiles', config.assets.base.css);
 		grunt.config.set('libJavaScriptFiles', config.assets.lib.js);
 		grunt.config.set('libCSSFiles', config.assets.lib.css);
 		grunt.config.set('applicationJavaScriptFiles', config.assets.js);
