@@ -13,6 +13,9 @@ var init = require('./config/init')(),
 
 var app;
 var initialized = false;
+var options = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
+				replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } };       
+
 
 function initialize(db){
 	
@@ -22,7 +25,7 @@ function initialize(db){
 		return;
 
 	// Init the express application
-	var app = require('./config/express')(db);
+	var app = require('./config/express')(mongoose);
 
 	// Start the app by listening on <port>
 	app.listen(config.port);
@@ -31,23 +34,40 @@ function initialize(db){
 	exports = module.exports = app;
 
 	// Logging initialization
-	console.log('Application started on port ' + config.port);
+	console.log('Application started on port ' + config.port);	
+
 	initialized = true;	
 }
 
 if (process.env.NODE_ENV === 'test') {
 	
-	var db = mongoose.connect(config.db);
-	initialize(db);
+	mongoose.connect(config.db);
+	initialize();
 }
 else {
 
-	var db;
+	var db = mongoose.connection;
 
-	mongoose.connection.on('connected', function(ref) {
-		initialize(db);
+	db.on('error',function (err) { 
+		console.log('Mongoose default connection error: ' + err);
+	}); 
+
+	db.on('disconnected', function () { 
+		console.log('Mongoose default connection disconnected'); 
 	});
 
-	db = mongoose.connect(config.db);
+	// If the Node process ends, close the Mongoose connection 
+	process.on('SIGINT', function() {  
+		db.close(function () { 
+			console.log('Mongoose default connection disconnected through app termination'); 
+			process.exit(0); 
+		}); 
+	}); 
+
+	db.once('open', function() {
+		initialize();	
+	});
+
+	mongoose.connect(config.db, options);
 }
 

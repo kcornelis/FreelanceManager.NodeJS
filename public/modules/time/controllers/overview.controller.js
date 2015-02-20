@@ -49,7 +49,7 @@ function($scope, $modal, $location, $state, $stateParams, TimeRegistration) {
 
 		createDialog.result.then(function (data) {
 			if(data.deleted) {
-				_.remove($scope.timeRegistrations, function(item) { return item.id === data.deleted });
+				_.remove($scope.timeRegistrations, function(item) { return item.id === data.deleted; });
 			}
 			else {
 				var c = _.find($scope.timeRegistrations, { 'id': data.id });

@@ -15,17 +15,17 @@ module.exports = {
 	assets: {
 		base: {
 			css: [
+				'public/lib/font-awesome/css/font-awesome.css',
+				'public/lib/simple-line-icons/css/simple-line-icons.css',
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
 				'public/lib/angular/angular.js',
 				'public/lib/modernizr/modernizr.js'
-			]			
+			]
 		},
 		lib: {
 			css: [
-				'public/lib/font-awesome/css/font-awesome.css',
-				'public/lib/simple-line-icons/css/simple-line-icons.css',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/bootstrap-datepicker/css/datepicker3.css',
 				'public/lib/ng-table/ng-table.min.css',
@@ -41,7 +41,7 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
-			
+
 				'public/lib/ngstorage/ngStorage.js',
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',

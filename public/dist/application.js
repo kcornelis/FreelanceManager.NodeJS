@@ -644,21 +644,25 @@ angular.module('core').directive('searchOpen', [
     var inputSelector = '.navbar-form input[type="text"]';
     return {
       restrict: 'A',
-      controller: function ($scope, $element) {
-        $(inputSelector).on('click', function (e) {
-          e.stopPropagation();
-        }).on('keyup', function (e) {
-          if (e.keyCode === 27)
-            // ESC
-            navSearch.dismiss();
-        });
-        // click anywhere closes the search
-        $(document).on('click', navSearch.dismiss);
-        // dismissable options
-        $element.on('click', function (e) {
-          e.stopPropagation();
-        }).on('click', navSearch.dismiss);
-      }
+      controller: [
+        '$scope',
+        '$element',
+        function ($scope, $element) {
+          $(inputSelector).on('click', function (e) {
+            e.stopPropagation();
+          }).on('keyup', function (e) {
+            if (e.keyCode === 27)
+              // ESC
+              navSearch.dismiss();
+          });
+          // click anywhere closes the search
+          $(document).on('click', navSearch.dismiss);
+          // dismissable options
+          $element.on('click', function (e) {
+            e.stopPropagation();
+          }).on('click', navSearch.dismiss);
+        }
+      ]
     };
   }
 ]);// TODO unit test
