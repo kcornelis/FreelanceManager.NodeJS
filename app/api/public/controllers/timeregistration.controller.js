@@ -137,6 +137,33 @@ exports.getForDate = function(req, res, next) {
 	});
 };
 
+exports.search = function(req, res, next) {
+
+	var searchOptions = {
+		tenant: req.user.id,
+		deleted: false
+	};
+
+	if(req.query.from)
+		_.merge(searchOptions, { 'date.numeric': { $gte: req.query.from } });
+
+	if(req.query.to)
+		_.merge(searchOptions, { 'date.numeric': { $lte: req.query.to } });
+
+	if(req.query.project)
+		searchOptions.projectId = req.query.project;
+
+
+	TimeRegistration.find(searchOptions,
+	function(err, timeRegistrations) 
+	{
+		if(err) next(err);
+		else convertMultiple(timeRegistrations, function(converted){
+			res.send(converted);
+		});
+	});
+};
+
 exports.getForRange = function(req, res, next) {
 
 	TimeRegistration.find(

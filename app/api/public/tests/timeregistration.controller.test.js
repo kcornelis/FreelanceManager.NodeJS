@@ -407,6 +407,196 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	});
 
 	/**
+	 * Get all time registrations by range
+	 */
+	describe('When time registrations are searched by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/timeregistrations/search')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When time registrations are searched (no filter)', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
+			
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+					timeregistration3.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/search')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return all time registrations (1)', function() {
+			_.where(body, { id: timeregistration1.id }).length.should.eql(1);
+		});
+
+		it('should return all time registration (2)', function() {
+			_.where(body, { id: timeregistration2.id }).length.should.eql(1);
+		});
+
+		it('should not return time registrations from another tenant', function() {
+			_.where(body, { id: timeregistration3.id }).length.should.eql(0);
+		});
+	});
+
+	describe('When time registrations are searched (date range filter)', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+		var timeregistration4;
+		var timeregistration5;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
+			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100210, 1400, 1500);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100211, 1400, 1500);
+			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
+			
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+					timeregistration3.save(done);
+				},
+				function(done){
+					timeregistration4.save(done);
+				},
+				function(done){
+					timeregistration5.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/search?from=20100202&to=20100210')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return time registrations from the provided date (min)', function() {
+			_.where(body, { id: timeregistration2.id }).length.should.eql(1);
+		});
+
+		it('should return time registrations from the provided date (max)', function() {
+			_.where(body, { id: timeregistration3.id }).length.should.eql(1);
+		});
+
+		it('should not return a time registration outside the range (min)', function() {
+			_.where(body, { id: timeregistration1.id }).length.should.eql(0);
+		});
+
+		it('should not return a time registration outside the range (max)', function() {
+			_.where(body, { id: timeregistration4.id }).length.should.eql(0);
+		});
+
+		it('should not return time registrations from another tenant', function() {
+			_.where(body, { id: timeregistration5.id }).length.should.eql(0);
+		});
+	});
+
+	describe('When time registrations are searched (project filter)', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project2.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
+			
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/search?project=' + project.id)
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return time registrations from the provided project', function() {
+			_.where(body, { id: timeregistration1.id }).length.should.eql(1);
+		});
+
+		it('should not return a time registration from another project', function() {
+			_.where(body, { id: timeregistration2.id }).length.should.eql(0);
+		});
+	});
+
+	/**
 	 * Get all uninvoiced time registrations
 	 */
 	describe('When uninvoiced time registrations are requested by an unauthenticated person', function(){
