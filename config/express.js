@@ -90,6 +90,20 @@ module.exports = function(db) {
 	// Enable jsonp
 	app.enable('jsonp callback');
 
+	app.use(function(req, res, next) {
+		res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+		res.header('Access-Control-Allow-Headers', 'Content-Type');
+		  
+		// intercept OPTIONS method
+		if ('OPTIONS' == req.method) {
+		  res.send(200);
+		}
+		else {
+		  next();
+		}
+	});
+
 	// CookieParser should be above session
 	app.use(cookieParser());
 
