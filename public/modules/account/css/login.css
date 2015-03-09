@@ -1,5 +1,9 @@
-.fm-logo-text {
+.fm-login .fm-logo-text {
 	font-size: 24px;
 	font-style: italic;
 	font-weight: bold;
+}
+
+.fm-login .form-control-feedback{
+	top: 0;
 }
