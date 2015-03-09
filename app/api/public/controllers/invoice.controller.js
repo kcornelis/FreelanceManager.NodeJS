@@ -14,35 +14,35 @@ function convert(invoice){
 		date: invoice.date,
 		creditTerm: invoice.creditTerm,
 		template: invoice.template,
-		to: {
-			name: invoice.to.name,
-			vatNumber: invoice.to.vatNumber,
-			customerNumber: invoice.to.customerNumber,
+		customer: {
+			name: invoice.customer.name,
+			vatNumber: invoice.customer.vatNumber,
+			number: invoice.customer.number,
 			address: {
-				line1: invoice.to.address.line1,
-				line2: invoice.to.address.line2,
-				postalcode: invoice.to.address.postalcode,
-				city: invoice.to.address.city
+				line1: invoice.customer.address.line1,
+				line2: invoice.customer.address.line2,
+				postalcode: invoice.customer.address.postalcode,
+				city: invoice.customer.address.city
 			}
 		},
 		lines: _.map(invoice.lines, function(l){
 			return {
 				description: l.description,
 				quantity: l.quantity,
-				price: l.price,
+				priceInCents: l.priceInCents,
 				vatPercentage: l.vatPercentage,
-				total: l.total
+				totalInCents: l.totalInCents
 			};
 		}),
-		subTotal: invoice.subTotal,
+		subTotalInCents: invoice.subTotalInCents,
 		vatPerPercentages: _.map(invoice.vatPerPercentages, function(p){
 			return {
 				vatPercentage: p.vatPercentage,
-				totalVat: p.totalVat
+				totalVatInCents: p.totalVatInCents
 			};
 		}),
-		totalVat: invoice.totalVat,
-		total: invoice.total,
+		totalVatInCents: invoice.totalVatInCents,
+		totalInCents: invoice.totalInCents,
 		linkedTimeRegistrations: invoice.linkedTimeRegistrations
 	};
 }
@@ -78,7 +78,7 @@ exports.create = function(req, res, next) {
 	var invoice = Invoice.create(req.user.id, req.body.number, req.body.date, req.body.creditTerm);
 	invoice.changeTemplate(req.body.template);
 	invoice.replaceLines(req.body.lines);
-	invoice.changeTo(req.body.to.name, req.body.to.vatNumber, req.body.to.customerNumber, req.body.to.address);
+	invoice.changeCustomer(req.body.customer.name, req.body.customer.vatNumber, req.body.customer.number, req.body.customer.address);
 	invoice.linkTimeRegistrations(req.body.linkedTimeRegistrationIds);
 
 	invoice.save(function(err){

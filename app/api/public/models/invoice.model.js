@@ -33,7 +33,7 @@ var InvoiceSchema = new AggregateRootSchema({
 		required: true,
 		trim: true
 	},
-	to: {
+	customer: {
 		name: {
 			type: String,
 			required: true,
@@ -44,7 +44,7 @@ var InvoiceSchema = new AggregateRootSchema({
 			required: true,
 			trim: true
 		}, 
-		customerNumber: {
+		number: {
 			type: String,
 			required: true,
 			trim: true
@@ -81,7 +81,7 @@ var InvoiceSchema = new AggregateRootSchema({
 			type: Number,
 			required: true
 		},
-		price: {
+		priceInCents: {
 			type: Number,
 			required: true
 		},
@@ -89,12 +89,12 @@ var InvoiceSchema = new AggregateRootSchema({
 			type: Number,
 			required: true
 		},
-		total: {
+		totalInCents: {
 			type: Number,
 			required: true	
 		}
 	}],
-	subTotal: {
+	subTotalInCents: {
 		type: Number,
 		required: true
 	},
@@ -103,16 +103,16 @@ var InvoiceSchema = new AggregateRootSchema({
 			type: Number,
 			required: true
 		},
-		totalVat: {
+		totalVatInCents: {
 			type: Number,
 			required: true	
 		}
 	}],
-	totalVat: {
+	totalVatInCents: {
 		type: Number,
 		required: true
 	},
-	total: {
+	totalInCents: {
 		type: Number,
 		required: true
 	},
@@ -148,9 +148,9 @@ InvoiceSchema.post('save', function (doc) {
 
  function recalculateTotals(invoice){
 
-	var total = 0;
+	var totalInCents = 0;
 	var totalPerPercentage = {};
-	var totalVat = 0;
+	var totalVatInCents = 0;
 
 	invoice.vatPerPercentages = [];
 
@@ -164,26 +164,26 @@ InvoiceSchema.post('save', function (doc) {
 				totalPerPercentage[varPercentage] = 0;
 			}
 
-			total += invoice.lines[i].total;
-			totalPerPercentage[varPercentage] += invoice.lines[i].total;
+			totalInCents += invoice.lines[i].totalInCents;
+			totalPerPercentage[varPercentage] += invoice.lines[i].totalInCents;
 		}
 
 		for(var percentage in totalPerPercentage) {
 
-			var totalVatForKey = Math.round((totalPerPercentage[percentage] * percentage) / 100);
+			var totalVatInCentsForKey = Math.round((totalPerPercentage[percentage] * percentage) / 100);
 
 			invoice.vatPerPercentages.push({
 				vatPercentage: percentage,
-				totalVat: totalVatForKey
+				totalVatInCents: totalVatInCentsForKey
 			});
 
-			totalVat += totalVatForKey;
+			totalVatInCents += totalVatInCentsForKey;
 		}
 	}
 
-	invoice.subTotal = total;
-	invoice.totalVat = totalVat;
-	invoice.total = total + totalVat;
+	invoice.subTotalInCents = totalInCents;
+	invoice.totalVatInCents = totalVatInCents;
+	invoice.totalInCents = totalInCents + totalVatInCents;
 }
 
 InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
@@ -223,38 +223,38 @@ InvoiceSchema.methods.changeTemplate = function(template){
 	}
 };
 
-InvoiceSchema.methods.changeTo = function(name, vatNumber, customerNumber, address){
+InvoiceSchema.methods.changeCustomer = function(name, vatNumber, number, address){
 
-	if(this.to.name !== name ||
-	   this.to.vatNumber !== vatNumber ||
-	   this.to.customerNumber !== customerNumber ||
-	   this.to.address.line1 !== address.line1 ||
-	   this.to.address.line2 !== address.line2 ||
-	   this.to.address.postalcode !== address.postalcode ||
-	   this.to.address.city !== address.city){
+	if(this.customer.name !== name ||
+	   this.customer.vatNumber !== vatNumber ||
+	   this.customer.number !== number ||
+	   this.customer.address.line1 !== address.line1 ||
+	   this.customer.address.line2 !== address.line2 ||
+	   this.customer.address.postalcode !== address.postalcode ||
+	   this.customer.address.city !== address.city){
 		
-		this.to.name = name;
-		this.to.vatNumber = vatNumber;
-		this.to.customerNumber = customerNumber;
-		this.to.address = address;
+		this.customer.name = name;
+		this.customer.vatNumber = vatNumber;
+		this.customer.number = number;
+		this.customer.address = address;
 		
-		this.apply('InvoiceToChanged', 
+		this.apply('InvoiceCustomerChanged', 
 		{
 			name: name,
-			customerNumber: customerNumber,
+			number: number,
 			vatNumber: vatNumber,
 			address: address
 		});
 	}
 };
 
-function createLine(description, quantity, price, vatPercentage){
+function createLine(description, quantity, priceInCents, vatPercentage){
 	return {
 		description: description,
 		quantity: quantity,
-		price: price,
+		priceInCents: priceInCents,
 		vatPercentage: vatPercentage,
-		total: Math.round(quantity * price)
+		totalInCents: Math.round(quantity * priceInCents)
 	};
 }
 
@@ -273,7 +273,7 @@ InvoiceSchema.methods.replaceLines = function(lines){
 
 			if (lines[i].description !== this.lines[i].description ||
 				lines[i].quantity !== this.lines[i].quantity ||
-				lines[i].price !== this.lines[i].price ||
+				lines[i].priceInCents !== this.lines[i].priceInCents ||
 				lines[i].vatPercentage !== this.lines[i].vatPercentage)
 			{
 				changed = true;
@@ -287,7 +287,7 @@ InvoiceSchema.methods.replaceLines = function(lines){
 		this.lines = [];
 
 		for(var j = 0; j < lines.length; j++) {
-			this.lines.push(createLine(lines[j].description, lines[j].quantity, lines[j].price, lines[j].vatPercentage));
+			this.lines.push(createLine(lines[j].description, lines[j].quantity, lines[j].priceInCents, lines[j].vatPercentage));
 		}
 
 		recalculateTotals(this);
@@ -295,10 +295,10 @@ InvoiceSchema.methods.replaceLines = function(lines){
 		this.apply('InvoiceLinesChanged', 
 		{
 			lines: this.lines,
-			subTotal: this.subTotal,
+			subTotalInCents: this.subTotalInCents,
 			vatPerPercentages: this.vatPerPercentages,
-			totalVat: this.totalVat,
-			total: this.total
+			totalVatInCents: this.totalVatInCents,
+			totalInCents: this.totalInCents
 		});	
 	}
 };

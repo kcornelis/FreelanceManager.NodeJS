@@ -40,12 +40,12 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 			invoice.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 
-			invoice.changeTo('John BVBA', 'BE12345678', '100', {
+			invoice.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 
 			invoice.replaceLines([{
-				description: 'item 1', quantity: 2, price: 100, vatPercentage: 21
+				description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
 			}]);
 
 			async.series([
@@ -92,38 +92,38 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});
 
 		it('should return info about the receiver of the invoice', function(){
-			body.to.name.should.eql('John BVBA');
-			body.to.vatNumber.should.eql('BE12345678');
-			body.to.customerNumber.should.eql('100');
+			body.customer.name.should.eql('John BVBA');
+			body.customer.vatNumber.should.eql('BE12345678');
+			body.customer.number.should.eql('100');
 
-			body.to.address.line1.should.eql('Kerkstraat');
-			body.to.address.postalcode.should.eql('9999');
-			body.to.address.city.should.eql('Brussel');
+			body.customer.address.line1.should.eql('Kerkstraat');
+			body.customer.address.postalcode.should.eql('9999');
+			body.customer.address.city.should.eql('Brussel');
 		});	
 
 		it('should return the lines of the invoice', function(){
 			body.lines[0].description.should.eql('item 1');
 			body.lines[0].quantity.should.eql(2);
-			body.lines[0].price.should.eql(100);
+			body.lines[0].priceInCents.should.eql(100);
 			body.lines[0].vatPercentage.should.eql(21);
-			body.lines[0].total.should.eql(200);
+			body.lines[0].totalInCents.should.eql(200);
 		});	
 
-		it('should return the sub total of the invoice', function(){
-			body.subTotal.should.eql(200);
+		it('should return the sub total of the invoice in cents', function(){
+			body.subTotalInCents.should.eql(200);
 		});	
 
 		it('should return the vat per percentage of the invoice', function(){
 			body.vatPerPercentages[0].vatPercentage.should.eql(21);
-			body.vatPerPercentages[0].totalVat.should.eql(42);
+			body.vatPerPercentages[0].totalVatInCents.should.eql(42);
 		});	
 
-		it('should return the total vat of the invoice', function(){
-			body.totalVat.should.eql(42);
+		it('should return the total vat of the invoice in cents', function(){
+			body.totalVatInCents.should.eql(42);
 		});	
 
-		it('should return the total of the invoice', function(){
-			body.total.should.eql(242);
+		it('should return the total of the invoice in cents', function(){
+			body.totalInCents.should.eql(242);
 		});	
 
 	});
@@ -140,12 +140,12 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 			invoice.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 
-			invoice.changeTo('John BVBA', 'BE12345678', '100', {
+			invoice.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 
 			invoice.replaceLines([{
-				description: 'item 1', quantity: 2, price: 100, vatPercentage: 21
+				description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
 			}]);
 			
 			async.series([
@@ -190,19 +190,19 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 		 	invoice1 = Invoice.create(testdata.normalAccountId, '20140301', new Date(2014, 3, 31), new Date(2014, 4, 30));
 			invoice1.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
-			invoice1.changeTo('John BVBA', 'BE12345678', '100', {
+			invoice1.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 
 			invoice2 = Invoice.create(testdata.normalAccountId, '20140302', new Date(2014, 3, 31), new Date(2014, 4, 30));
 			invoice2.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
-			invoice2.changeTo('John BVBA', 'BE12345678', '100', {
+			invoice2.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 
 			invoice3 = Invoice.create(uuid.v1(), '20140303', new Date(2014, 3, 31), new Date(2014, 4, 30));
 			invoice3.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
-			invoice3.changeTo('John BVBA', 'BE12345678', '100', {
+			invoice3.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 			
@@ -280,10 +280,10 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 					date: new Date(2014, 1, 1),
 					creditTerm: new Date(2014, 1, 30),
 					template: '<h1>INVOICE</h1><p>{{ invoice.number }}</p>',
-					to: {
+					customer: {
 						name: 'John BVBA',
 						vatNumber: 'BE12345678',
-						customerNumber: '100',
+						number: '100',
 						address: {
 							line1: 'Kerkstraat',
 							line2: 'Test',
@@ -292,11 +292,11 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 						}
 					},
 					lines: [{
-						description: 'item 1', quantity: 2, price: 100, vatPercentage: 21
+						description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
 					},{
-						description: 'item 2', quantity: 1, price: 100, vatPercentage: 20
+						description: 'item 2', quantity: 1, priceInCents: 100, vatPercentage: 20
 					},{
-						description: 'item 3', quantity: 5, price: 100, vatPercentage: 20
+						description: 'item 3', quantity: 5, priceInCents: 100, vatPercentage: 20
 					}],
 					linkedTimeRegistrationIds: [ 'abc', 'def' ]
 				})
@@ -337,29 +337,29 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});
 
 		it('should create a invoice with the specified to', function(){
-			invoice.to.name.should.eql('John BVBA');
-			invoice.to.vatNumber.should.eql('BE12345678');
-			invoice.to.customerNumber.should.eql('100');
+			invoice.customer.name.should.eql('John BVBA');
+			invoice.customer.vatNumber.should.eql('BE12345678');
+			invoice.customer.number.should.eql('100');
 
-			invoice.to.address.line1.should.eql('Kerkstraat');
-			invoice.to.address.line2.should.eql('Test');
-			invoice.to.address.postalcode.should.eql('9999');
-			invoice.to.address.city.should.eql('Brussel');
+			invoice.customer.address.line1.should.eql('Kerkstraat');
+			invoice.customer.address.line2.should.eql('Test');
+			invoice.customer.address.postalcode.should.eql('9999');
+			invoice.customer.address.city.should.eql('Brussel');
 		});	
 
 		it('should create a invoice with the specified lines', function(){
 			
 			invoice.lines[0].description.should.eql('item 1');
 			invoice.lines[0].quantity.should.eql(2);
-			invoice.lines[0].price.should.eql(100);
+			invoice.lines[0].priceInCents.should.eql(100);
 			invoice.lines[0].vatPercentage.should.eql(21);
-			invoice.lines[0].total.should.eql(200);
+			invoice.lines[0].totalInCents.should.eql(200);
 
 			invoice.lines[1].description.should.eql('item 2');
 			invoice.lines[1].quantity.should.eql(1);
-			invoice.lines[1].price.should.eql(100);
+			invoice.lines[1].priceInCents.should.eql(100);
 			invoice.lines[1].vatPercentage.should.eql(20);
-			invoice.lines[1].total.should.eql(100);	
+			invoice.lines[1].totalInCents.should.eql(100);	
 		});
 
 		it('should create a invoice with the specified linked time registrations', function(){
@@ -388,49 +388,49 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});
 
 		it('should return info about the receiver of the invoice', function(){
-			body.to.name.should.eql('John BVBA');
-			body.to.vatNumber.should.eql('BE12345678');
-			body.to.customerNumber.should.eql('100');
+			body.customer.name.should.eql('John BVBA');
+			body.customer.vatNumber.should.eql('BE12345678');
+			body.customer.number.should.eql('100');
 
-			body.to.address.line1.should.eql('Kerkstraat');
-			body.to.address.line2.should.eql('Test');
-			body.to.address.postalcode.should.eql('9999');
-			body.to.address.city.should.eql('Brussel');
+			body.customer.address.line1.should.eql('Kerkstraat');
+			body.customer.address.line2.should.eql('Test');
+			body.customer.address.postalcode.should.eql('9999');
+			body.customer.address.city.should.eql('Brussel');
 		});	
 
 		it('should return the lines of the invoice', function(){
 			
 			body.lines[0].description.should.eql('item 1');
 			body.lines[0].quantity.should.eql(2);
-			body.lines[0].price.should.eql(100);
+			body.lines[0].priceInCents.should.eql(100);
 			body.lines[0].vatPercentage.should.eql(21);
-			body.lines[0].total.should.eql(200);
+			body.lines[0].totalInCents.should.eql(200);
 
 			body.lines[1].description.should.eql('item 2');
 			body.lines[1].quantity.should.eql(1);
-			body.lines[1].price.should.eql(100);
+			body.lines[1].priceInCents.should.eql(100);
 			body.lines[1].vatPercentage.should.eql(20);
-			body.lines[1].total.should.eql(100);	
+			body.lines[1].totalInCents.should.eql(100);	
 		});
 
 		it('should return the subtotal of the invoice', function(){
-			body.subTotal.should.eql(800);
+			body.subTotalInCents.should.eql(800);
 		});
 
 		it('should return the per vat totals of the invoice', function(){
 			body.vatPerPercentages[0].vatPercentage.should.eql(20);
-			body.vatPerPercentages[0].totalVat.should.eql(120);
+			body.vatPerPercentages[0].totalVatInCents.should.eql(120);
 
 			body.vatPerPercentages[1].vatPercentage.should.eql(21);
-			body.vatPerPercentages[1].totalVat.should.eql(42);
+			body.vatPerPercentages[1].totalVatInCents.should.eql(42);
 		});
 
-		it('should return the total vat of the invoice', function(){
-			body.totalVat.should.eql(162);
+		it('should return the total vat of the invoice in cents', function(){
+			body.totalVatInCents.should.eql(162);
 		});
 
-		it('should return the total of the invoice', function(){
-			body.total.should.eql(962);
+		it('should return the total of the invoice in cents', function(){
+			body.totalInCents.should.eql(962);
 		});	
 
 		it('should return the linked time registrations', function(){

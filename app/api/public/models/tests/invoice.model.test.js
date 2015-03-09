@@ -27,7 +27,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			original.changeTemplate('template');
 
-			original.changeTo('to', 'tovat', 'tonumber', {
+			original.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
@@ -80,20 +80,20 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.version.should.eql(3);
 		});
 
-		it('should have no sub total', function(){
-			saved.subTotal.should.eql(0);
+		it('should have no sub totalInCents', function(){
+			saved.subTotalInCents.should.eql(0);
 		});
 
 		it('should have no per vat totals', function(){
 			saved.vatPerPercentages.length.should.eql(0);
 		});
 
-		it('should have no total vat', function(){
-			saved.totalVat.should.eql(0);
+		it('should have no totalInCents vat', function(){
+			saved.totalVatInCents.should.eql(0);
 		});
 
-		it('should have no total', function(){
-			saved.total.should.eql(0);
+		it('should have no totalInCents', function(){
+			saved.totalInCents.should.eql(0);
 		});
 
 		it('should have a created event', function(){
@@ -129,7 +129,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
@@ -148,7 +148,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
@@ -167,7 +167,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
@@ -186,7 +186,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
@@ -206,7 +206,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			original.changeTemplate('template');
 
-			original.changeTo('to', 'tovat', 'tonumber', {
+			original.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 		});
@@ -265,7 +265,7 @@ describe('Invoice Model Unit Tests:', function() {
 			invoice.changeTemplate('template');
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 		});
@@ -281,7 +281,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			var invoice = Invoice.create(tenant, 'number', new Date(2014, 1, 1), new Date(2014, 2, 1));
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
@@ -292,7 +292,7 @@ describe('Invoice Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When an invoice to is changed', function() {
+	describe('When an invoice customer is changed', function() {
 
 		var original, saved;
 
@@ -301,7 +301,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			original.changeTemplate('template');
 
-			original.changeTo('to', 'tovat', 'tonumber', {
+			original.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 		});
@@ -327,28 +327,28 @@ describe('Invoice Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated to name', function(){
-			saved.to.name.should.eql('to');
+		it('should have an updated customer name', function(){
+			saved.customer.name.should.eql('to');
 		});
 
-		it('should have an updated to vat number', function(){
-			saved.to.vatNumber.should.eql('tovat');
+		it('should have an updated customer vat number', function(){
+			saved.customer.vatNumber.should.eql('tovat');
 		});
 
-		it('should have an updated to customer number', function(){
-			saved.to.customerNumber.should.eql('tonumber');
+		it('should have an updated customer customer number', function(){
+			saved.customer.number.should.eql('tonumber');
 		});
 
-		it('should have an updated to address line1', function(){
-			saved.to.address.line1.should.eql('to line 1');
+		it('should have an updated customer address line1', function(){
+			saved.customer.address.line1.should.eql('to line 1');
 		});
 
-		it('should have an updated to address postalcode', function(){
-			saved.to.address.postalcode.should.eql('to postalcode');
+		it('should have an updated customer address postalcode', function(){
+			saved.customer.address.postalcode.should.eql('to postalcode');
 		});
 
-		it('should have an updated to address city', function(){
-			saved.to.address.city.should.eql('to city');
+		it('should have an updated customer address city', function(){
+			saved.customer.address.city.should.eql('to city');
 		});															
 
 		it('should have the same created on date', function(){
@@ -359,15 +359,15 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.version.should.eql(3);
 		});
 
-		it('should have a to changed event', function(){
+		it('should have a customer changed event', function(){
 			saved.events[2].name.should.eql('to');
 			saved.events[2].vatNumber.should.eql('tovat');
-			saved.events[2].customerNumber.should.eql('tonumber');
+			saved.events[2].number.should.eql('tonumber');
 			saved.events[2].address.line1.should.eql('to line 1');
 			saved.events[2].address.postalcode.should.eql('to postalcode');
 			saved.events[2].address.city.should.eql('to city');
 
-			saved.events[2].metadata.eventName.should.eql('InvoiceToChanged');
+			saved.events[2].metadata.eventName.should.eql('InvoiceCustomerChanged');
 		});
 
 		after(function(done) {
@@ -375,7 +375,7 @@ describe('Invoice Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When an invoice to is changed with the same value', function() {
+	describe('When an invoice customer is changed with the same value', function() {
 
 		var invoice;
 
@@ -384,11 +384,11 @@ describe('Invoice Model Unit Tests:', function() {
 
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});			
 		});
@@ -422,16 +422,16 @@ describe('Invoice Model Unit Tests:', function() {
 
 			original.changeTemplate('template');
 
-			original.changeTo('to', 'tovat', 'tonumber', {
+			original.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
 			original.replaceLines([{
-				description: 'item 1', quantity: 2, price: 100, vatPercentage: 21
+				description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
 			},{
-				description: 'item 2', quantity: 1, price: 100, vatPercentage: 20
+				description: 'item 2', quantity: 1, priceInCents: 100, vatPercentage: 20
 			},{
-				description: 'item 3', quantity: 5, price: 100, vatPercentage: 20
+				description: 'item 3', quantity: 5, priceInCents: 100, vatPercentage: 20
 			}]);
 		});
 
@@ -459,15 +459,15 @@ describe('Invoice Model Unit Tests:', function() {
 		it('should have updated lines', function(){
 			saved.lines[0].description.should.eql('item 1');
 			saved.lines[0].quantity.should.eql(2);
-			saved.lines[0].price.should.eql(100);
+			saved.lines[0].priceInCents.should.eql(100);
 			saved.lines[0].vatPercentage.should.eql(21);
-			saved.lines[0].total.should.eql(200);
+			saved.lines[0].totalInCents.should.eql(200);
 
 			saved.lines[1].description.should.eql('item 2');
 			saved.lines[1].quantity.should.eql(1);
-			saved.lines[1].price.should.eql(100);
+			saved.lines[1].priceInCents.should.eql(100);
 			saved.lines[1].vatPercentage.should.eql(20);
-			saved.lines[1].total.should.eql(100);			
+			saved.lines[1].totalInCents.should.eql(100);			
 		});
 
 		it('should have the same created on date', function(){
@@ -479,23 +479,23 @@ describe('Invoice Model Unit Tests:', function() {
 		});
 
 		it('should update the subtotal', function(){
-			saved.subTotal.should.eql(800);
+			saved.subTotalInCents.should.eql(800);
 		});
 
 		it('should update the per vat totals', function(){
 			saved.vatPerPercentages[0].vatPercentage.should.eql(20);
-			saved.vatPerPercentages[0].totalVat.should.eql(120);
+			saved.vatPerPercentages[0].totalVatInCents.should.eql(120);
 
 			saved.vatPerPercentages[1].vatPercentage.should.eql(21);
-			saved.vatPerPercentages[1].totalVat.should.eql(42);
+			saved.vatPerPercentages[1].totalVatInCents.should.eql(42);
 		});
 
-		it('should update the total vat', function(){
-			saved.totalVat.should.eql(162);
+		it('should update the totalInCents vat', function(){
+			saved.totalVatInCents.should.eql(162);
 		});
 
-		it('should update the total', function(){
-			saved.total.should.eql(962);
+		it('should update the totalInCents', function(){
+			saved.totalInCents.should.eql(962);
 		});
 
 		it('should have a template changed event', function(){
@@ -503,27 +503,27 @@ describe('Invoice Model Unit Tests:', function() {
 			// invoice lines
 			saved.events[3].lines[0].description.should.eql('item 1');
 			saved.events[3].lines[0].quantity.should.eql(2);
-			saved.events[3].lines[0].price.should.eql(100);
+			saved.events[3].lines[0].priceInCents.should.eql(100);
 			saved.events[3].lines[0].vatPercentage.should.eql(21);
-			saved.events[3].lines[0].total.should.eql(200);
+			saved.events[3].lines[0].totalInCents.should.eql(200);
 
 			saved.events[3].lines[1].description.should.eql('item 2');
 			saved.events[3].lines[1].quantity.should.eql(1);
-			saved.events[3].lines[1].price.should.eql(100);
+			saved.events[3].lines[1].priceInCents.should.eql(100);
 			saved.events[3].lines[1].vatPercentage.should.eql(20);
-			saved.events[3].lines[1].total.should.eql(100);	
+			saved.events[3].lines[1].totalInCents.should.eql(100);	
 
 			// totals
-			saved.events[3].total.should.eql(962);	
-			saved.events[3].subTotal.should.eql(800);	
-			saved.events[3].totalVat.should.eql(162);	
+			saved.events[3].totalInCents.should.eql(962);	
+			saved.events[3].subTotalInCents.should.eql(800);	
+			saved.events[3].totalVatInCents.should.eql(162);	
 
 			// vat percentages
 			saved.events[3].vatPerPercentages[0].vatPercentage.should.eql(20);
-			saved.events[3].vatPerPercentages[0].totalVat.should.eql(120);
+			saved.events[3].vatPerPercentages[0].totalVatInCents.should.eql(120);
 
 			saved.events[3].vatPerPercentages[1].vatPercentage.should.eql(21);
-			saved.events[3].vatPerPercentages[1].totalVat.should.eql(42);
+			saved.events[3].vatPerPercentages[1].totalVatInCents.should.eql(42);
 
 			// metadata
 			saved.events[3].metadata.eventName.should.eql('InvoiceLinesChanged');
@@ -544,7 +544,7 @@ describe('Invoice Model Unit Tests:', function() {
 			invoice.changeTemplate('template');
 			invoice.changeTemplate('template');
 
-			invoice.changeTo('to', 'tovat', 'tonumber', {
+			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 		});
@@ -571,7 +571,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 			original.changeTemplate('template');
 
-			original.changeTo('to', 'tovat', 'tonumber', {
+			original.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
 			});	
 
