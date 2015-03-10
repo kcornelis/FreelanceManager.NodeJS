@@ -31,6 +31,30 @@
 			});	
 		});
 
+		describe('Search', function(){
+			
+			var TimeRegistration,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+				TimeRegistration = _TimeRegistration_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/timeregistrations/search?from=20101010')
+					.respond(200, [{ description: 'time registration 1'}, { description: 'time registration 2'}]);
+
+				response = TimeRegistration.search({ project: null, from: '20101010' });
+				$httpBackend.flush();
+
+			}));
+
+			it('should return all timeregistrations', function(){
+				expect(response[0].description).toBe('time registration 1');
+				expect(response[1].description).toBe('time registration 2');
+			});	
+		});		
+
 		describe('Get by date', function(){
 			
 			var TimeRegistration,

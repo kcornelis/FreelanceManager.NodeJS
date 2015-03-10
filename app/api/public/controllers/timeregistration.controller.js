@@ -144,18 +144,20 @@ exports.search = function(req, res, next) {
 		deleted: false
 	};
 
-	if(req.query.from)
+	if(!_.isUndefined(req.query.from))
 		_.merge(searchOptions, { 'date.numeric': { $gte: req.query.from } });
 
-	if(req.query.to)
+	if(!_.isUndefined(req.query.to))
 		_.merge(searchOptions, { 'date.numeric': { $lte: req.query.to } });
 
-	if(req.query.project)
+	if(!_.isUndefined(req.query.project))
 		searchOptions.projectId = req.query.project;
 
+	if(!_.isUndefined(req.query.invoiced))
+		searchOptions.invoiced = req.query.invoiced;
 
-	TimeRegistration.find(searchOptions,
-	function(err, timeRegistrations) 
+
+	TimeRegistration.find(searchOptions, function(err, timeRegistrations) 
 	{
 		if(err) next(err);
 		else convertMultiple(timeRegistrations, function(converted){

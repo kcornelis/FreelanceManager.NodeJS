@@ -596,6 +596,55 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 	});
 
+	describe('When time registrations are searched (invoiced filter)', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+
+		before(function(done){
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project2.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
+			timeregistration2.markInvoiced();
+
+			async.series([
+				function(done){
+					timeregistration1.save(done);
+				},
+				function(done){
+					timeregistration2.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/search?invoiced=true')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return not return uninvoiced time registrations', function() {
+			_.where(body, { id: timeregistration1.id }).length.should.eql(0);
+		});
+
+		it('should return invoiced time registration', function() {
+			_.where(body, { id: timeregistration2.id }).length.should.eql(1);
+		});
+	});
+
 	/**
 	 * Get all uninvoiced time registrations
 	 */
