@@ -243,7 +243,12 @@
 				<!-- STEP 4: Summary -->
 				<div data-ng-show="active(4)">
 					<h3 class="text-center">Invoice Preview</h3>
-					<div class="fm-invoice-preview" data-fm-dynamic="invoice.template" data-fm-dynamic-bind="invoice" />
+					<div data-ng-show="loading">
+						<div class="fm-wait-panel mt-xl center" ></div>
+					</div>
+					<div data-ng-show="!loading">
+						<div class="fm-invoice-preview" data-fm-dynamic="invoice.template" data-fm-dynamic-bind="invoicePreview" />
+					</div>
 					<ul class="pager pull-right">
 						<li><button class="btn btn-default" data-ng-click="create()">Create</button></li>
 					</ul>	

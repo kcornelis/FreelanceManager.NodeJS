@@ -100,6 +100,30 @@
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
-		});				
+		});	
+
+		describe('Preview', function(){
+			
+			var Invoice,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+				Invoice = _Invoice_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectPOST('/api/public/invoices/preview', { name: 'invoice1'})
+					.respond(200, { name: 'invoice1'});
+
+				response = Invoice.preview({ name: 'invoice1'});
+				$httpBackend.flush();
+
+			}));
+
+			it('should return a preview of the invoice', function(){
+				$httpBackend.verifyNoOutstandingExpectation();
+      			$httpBackend.verifyNoOutstandingRequest();
+			});	
+		});						
 	});
 })();

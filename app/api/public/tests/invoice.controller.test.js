@@ -105,27 +105,41 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.lines[0].description.should.eql('item 1');
 			body.lines[0].quantity.should.eql(2);
 			body.lines[0].priceInCents.should.eql(100);
+			body.lines[0].price.should.eql(1);
 			body.lines[0].vatPercentage.should.eql(21);
 			body.lines[0].totalInCents.should.eql(200);
+			body.lines[0].total.should.eql(2);
 		});	
 
 		it('should return the sub total of the invoice in cents', function(){
 			body.subTotalInCents.should.eql(200);
 		});	
 
+		it('should return the sub total of the invoice', function(){
+			body.subTotal.should.eql(2);
+		});			
+
 		it('should return the vat per percentage of the invoice', function(){
 			body.vatPerPercentages[0].vatPercentage.should.eql(21);
 			body.vatPerPercentages[0].totalVatInCents.should.eql(42);
+			body.vatPerPercentages[0].totalVat.should.eql(0.42);
 		});	
 
 		it('should return the total vat of the invoice in cents', function(){
 			body.totalVatInCents.should.eql(42);
 		});	
 
+		it('should return the total vat of the invoice', function(){
+			body.totalVat.should.eql(0.42);
+		});			
+
 		it('should return the total of the invoice in cents', function(){
 			body.totalInCents.should.eql(242);
 		});	
 
+		it('should return the total of the invoice', function(){
+			body.total.should.eql(2.42);
+		});	
 	});
 
 	describe('When a invoice is requested by id by another tenant', function() {
@@ -403,26 +417,36 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.lines[0].description.should.eql('item 1');
 			body.lines[0].quantity.should.eql(2);
 			body.lines[0].priceInCents.should.eql(100);
+			body.lines[0].price.should.eql(1);
 			body.lines[0].vatPercentage.should.eql(21);
 			body.lines[0].totalInCents.should.eql(200);
+			body.lines[0].total.should.eql(2);
 
 			body.lines[1].description.should.eql('item 2');
 			body.lines[1].quantity.should.eql(1);
 			body.lines[1].priceInCents.should.eql(100);
+			body.lines[1].price.should.eql(1);
 			body.lines[1].vatPercentage.should.eql(20);
 			body.lines[1].totalInCents.should.eql(100);	
+			body.lines[1].total.should.eql(1);	
+		});
+
+		it('should return the subtotal of the invoice in cents', function(){
+			body.subTotalInCents.should.eql(800);
 		});
 
 		it('should return the subtotal of the invoice', function(){
-			body.subTotalInCents.should.eql(800);
+			body.subTotal.should.eql(8);
 		});
 
 		it('should return the per vat totals of the invoice', function(){
 			body.vatPerPercentages[0].vatPercentage.should.eql(20);
 			body.vatPerPercentages[0].totalVatInCents.should.eql(120);
+			body.vatPerPercentages[0].totalVat.should.eql(1.2);
 
 			body.vatPerPercentages[1].vatPercentage.should.eql(21);
 			body.vatPerPercentages[1].totalVatInCents.should.eql(42);
+			body.vatPerPercentages[1].totalVat.should.eql(0.42);
 		});
 
 		it('should return the total vat of the invoice in cents', function(){
@@ -433,9 +457,159 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.totalInCents.should.eql(962);
 		});	
 
+		it('should return the total vat of the invoice', function(){
+			body.totalVat.should.eql(1.62);
+		});
+
+		it('should return the total of the invoice', function(){
+			body.total.should.eql(9.62);
+		});
+
 		it('should return the linked time registrations', function(){
 			body.linkedTimeRegistrations[0].should.eql('abc');
 			body.linkedTimeRegistrations[1].should.eql('def');
 		});	
-	});	  
+	});	
+
+	describe('When previewing an invoice', function() {
+
+		var response;
+		var body;
+		var invoice;
+
+		before(function(done) {
+			
+			request('http://localhost:' + config.port)
+				.post('/api/public/invoices/preview')
+				.set('Authorization', testdata.normalAccountToken)
+				.send({ 
+					number: '20140101',
+					date: new Date(2014, 1, 1),
+					creditTerm: new Date(2014, 1, 30),
+					template: '<h1>INVOICE</h1><p>{{ invoice.number }}</p>',
+					customer: {
+						name: 'John BVBA',
+						vatNumber: 'BE12345678',
+						number: '100',
+						address: {
+							line1: 'Kerkstraat',
+							line2: 'Test',
+							postalcode: '9999',
+							city: 'Brussel'
+						}
+					},
+					lines: [{
+						description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
+					},{
+						description: 'item 2', quantity: 1, priceInCents: 100, vatPercentage: 20
+					},{
+						description: 'item 3', quantity: 5, priceInCents: 100, vatPercentage: 20
+					}],
+					linkedTimeRegistrationIds: [ 'abc', 'def' ]
+				})
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res) {
+					if(err)
+						throw err;
+
+					response = res;
+					body = res.body;
+
+					Invoice.findById(body.id, function(err, c){
+						invoice = c;
+						done();
+					});
+				});
+		});
+
+		it('should not be saved in the database', function() {
+			should.not.exist(invoice);
+		});
+		
+		it('should return the number of the invoice', function(){
+			body.number.should.eql('20140101');
+		});			
+
+		it('should return the date of the invoice', function(){
+			new Date(body.date).should.eql(new Date(2014, 1, 1));
+		});	
+
+		it('should return the credit term of the invoice', function(){
+			new Date(body.creditTerm).should.eql(new Date(2014, 1, 30));
+		});	
+
+		it('should return the template of the invoice', function(){
+			body.template.should.eql('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+		});
+
+		it('should return info about the receiver of the invoice', function(){
+			body.customer.name.should.eql('John BVBA');
+			body.customer.vatNumber.should.eql('BE12345678');
+			body.customer.number.should.eql('100');
+
+			body.customer.address.line1.should.eql('Kerkstraat');
+			body.customer.address.line2.should.eql('Test');
+			body.customer.address.postalcode.should.eql('9999');
+			body.customer.address.city.should.eql('Brussel');
+		});	
+
+		it('should return the lines of the invoice', function(){
+			
+			body.lines[0].description.should.eql('item 1');
+			body.lines[0].quantity.should.eql(2);
+			body.lines[0].priceInCents.should.eql(100);
+			body.lines[0].price.should.eql(1);
+			body.lines[0].vatPercentage.should.eql(21);
+			body.lines[0].totalInCents.should.eql(200);
+			body.lines[0].total.should.eql(2);
+
+			body.lines[1].description.should.eql('item 2');
+			body.lines[1].quantity.should.eql(1);
+			body.lines[1].priceInCents.should.eql(100);
+			body.lines[1].price.should.eql(1);
+			body.lines[1].vatPercentage.should.eql(20);
+			body.lines[1].totalInCents.should.eql(100);	
+			body.lines[1].total.should.eql(1);	
+		});
+
+		it('should return the subtotal of the invoice in cents', function(){
+			body.subTotalInCents.should.eql(800);
+		});
+
+		it('should return the subtotal of the invoice', function(){
+			body.subTotal.should.eql(8);
+		});
+
+		it('should return the per vat totals of the invoice', function(){
+			body.vatPerPercentages[0].vatPercentage.should.eql(20);
+			body.vatPerPercentages[0].totalVatInCents.should.eql(120);
+			body.vatPerPercentages[0].totalVat.should.eql(1.2);
+
+			body.vatPerPercentages[1].vatPercentage.should.eql(21);
+			body.vatPerPercentages[1].totalVatInCents.should.eql(42);
+			body.vatPerPercentages[1].totalVat.should.eql(0.42);
+		});
+
+		it('should return the total vat of the invoice in cents', function(){
+			body.totalVatInCents.should.eql(162);
+		});
+
+		it('should return the total of the invoice in cents', function(){
+			body.totalInCents.should.eql(962);
+		});	
+
+		it('should return the total vat of the invoice', function(){
+			body.totalVat.should.eql(1.62);
+		});
+
+		it('should return the total of the invoice', function(){
+			body.total.should.eql(9.62);
+		});
+
+		it('should return the linked time registrations', function(){
+			body.linkedTimeRegistrations[0].should.eql('abc');
+			body.linkedTimeRegistrations[1].should.eql('def');
+		});	
+	});		  
 });

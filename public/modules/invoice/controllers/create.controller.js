@@ -142,6 +142,13 @@ function($scope, $state, $stateParams, Project, TimeRegistration, Template, Invo
 
 	$scope.goto4 = function(){
 
+		$scope.loading = true;
+
+		Invoice.save($scope.invoice, function(invoice){
+			$scope.invoicePreview = invoice;
+			$scope.loading = false;
+		});
+
 		activate(4);
 	};
 

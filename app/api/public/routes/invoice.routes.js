@@ -15,4 +15,5 @@ module.exports = function(app) {
 	app.route('/api/public/invoices/:invoiceId').get(invoice.getById);
 
 	app.route('/api/public/invoices').post(invoice.create);
+	app.route('/api/public/invoices/preview').post(invoice.preview);
 };
