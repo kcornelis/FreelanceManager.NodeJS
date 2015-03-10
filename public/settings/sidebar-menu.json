@@ -34,5 +34,14 @@
 			{ "text": "Import", "sref": "app.time_import" },
 			{ "text": "Export", "sref": "app.time_export" }
 		]
-	}
+	},
+	{
+		"text": "Invoices",
+		"sref": "#",
+		"icon": "icon-envelope",
+		"submenu": [
+			{ "text": "Create", "sref": "app.invoice_create" },
+			{ "text": "Overview", "sref": "app.invoice_overview" }
+		]
+	}	
 ]

@@ -65,3 +65,8 @@
 	border-top: 4px solid rgba(0,174,239,.8);
 	border-radius: 100%;
 }
+
+.fm-wait-panel.center{
+	display: block;
+	margin: 20px auto;
+}
