@@ -1,0 +1,13 @@
+.fa {
+	color: #656565;
+}
+
+.fa.fa-hover{
+	color: #AAAAAA;
+
+}
+
+.fa.fa-hover:hover{
+	color: #656565;
+	cursor: pointer;
+}

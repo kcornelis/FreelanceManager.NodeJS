@@ -108,6 +108,20 @@ function($scope, $state, $stateParams, Project, TimeRegistration, Template, Invo
 			}, 0);
 
 		activate(2);
+	};
+
+	$scope.removeInvoiceLine = function(invoiceLine){
+		_.remove($scope.invoice.lines, invoiceLine);
+	};
+
+	$scope.addInvoiceLine = function(){
+		$scope.invoice.lines.push({
+			description: '',
+			quantity: 1,
+			vatPercentage: 21,
+			price: 0,
+			priceInCents: 0			
+		});
 	};	
 
 	$scope.$watch('invoice.lines', function(lines) {

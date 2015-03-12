@@ -133,30 +133,60 @@
 
 				<!-- STEP 2: Invoice lines -->
 				<div data-ng-show="active(2)">
-					<div class="table-responsive">
-						<table class="table fm-edit-invoicelines">
-							<thead>
-								<tr>
-									<th>Description</th>
-									<th>Quantity</th>
-									<th>Price</th>
-									<th>VAT</th>
-									<th>Total</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr data-ng-repeat="item in invoice.lines">
-									<td><textarea type="text" class="form-control fm-edit-invoice-line" data-ng-model="item.description" rows="3" /></td>
-									<td><input type="text" class="form-control" data-ng-model="item.quantity" /></td>
-									<td><input type="text" class="form-control" data-ng-model="item.price" /></td>
-									<td><input type="text" class="form-control" data-ng-model="item.vatPercentage" /></td>
-									<td>{{ item.total }}</td>
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
+
+					<div class="row mt-xl visible-lg">
+						<div class="col-xs-3">
+							<label>Description</label>
+						</div>
+						<div class="col-xs-2">
+							<label>Quantity</label>
+						</div>
+						<div class="col-xs-2">
+							<label>Price</label>
+						</div>
+						<div class="col-xs-2">
+							<label>VAT</label>
+						</div>
+						<div class="col-xs-2">
+							<label>Total (exl)</label>
+						</div>
+						<div class="col-xs-1"></div>
 					</div>
+					<div class="row" data-ng-repeat="item in invoice.lines">
+						<div class="col-md-3">
+							<label class="hidden-lg">Description</label>
+							<textarea type="text" class="form-control fm-edit-invoice-line mb-lg" data-ng-model="item.description" rows="3" />
+						</div>
+						<div class="col-md-2">
+							<label class="hidden-lg">Quantity</label>
+							<input type="text" class="form-control mb-lg" data-ng-model="item.quantity" />
+						</div>
+						<div class="col-md-2">
+							<label class="hidden-lg">Price</label>
+							<input type="text" class="form-control mb-lg" data-ng-model="item.price" />
+						</div>
+						<div class="col-md-2">
+							<label class="hidden-lg">VAT</label>
+							<input type="text" class="form-control mb-lg" data-ng-model="item.vatPercentage" />
+						</div>
+						<div class="col-md-2">
+							<label class="hidden-lg">Total (exl)</label>
+							<input type="text" class="form-control mb-lg" disabled data-ng-model="item.total" />
+						</div>
+						<div class="col-md-1">
+							<div class="pull-right mb-lg">
+								<span data-ng-click="removeInvoiceLine(item)" data-ng-show="invoice.lines.length > 1"
+									class="fa fa-remove fa-hover"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 hidden-lg">
+							<hr class="" />
+						</div>
+					</div>
+
+					<ul class="pager pull-left">
+						<li><button class="btn btn-default" data-ng-click="addInvoiceLine()">Add Line</button></li>
+					</ul>
 
 					<ul class="pager pull-right">
 						<li><button class="btn btn-default" data-ng-click="goto3()">Next <span>&rarr;</span></button></li>
