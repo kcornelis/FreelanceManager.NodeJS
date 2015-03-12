@@ -26,7 +26,7 @@
 
 			beforeEach(inject(function($controller) {
 				
-				toUpdate = { id: 2, name: 'abc' };
+				toUpdate = { id: 2, name: 'abc', number: '1', vatNumber: 'BE1234', address: { line1: 'l1', line2: 'l2', postalcode: 'pc', city: 'c'} };
 
 				CompanyDialogController = $controller('CompanyDialogController', {
 					$scope: scope,
@@ -52,9 +52,23 @@
 			});
 
 			it('should have a copy of the company to update', function(){
-				toUpdate.name = 'updatedName';
+				toUpdate.name = 'updated name';
+				toUpdate.number = 'updated number';
+				toUpdate.vatNumber = 'updated vat';
+				toUpdate.address.line1 = 'update line';
+				toUpdate.address.line2 = 'update line';
+				toUpdate.address.postalcode = 'update pc';
+				toUpdate.address.city = 'update city';
+
+
 				expect(scope.company.name).toBe('abc');
-			});
+				expect(scope.company.number).toBe('1');
+				expect(scope.company.vatNumber).toBe('BE1234');
+				expect(scope.company.address.line1).toBe('l1');
+				expect(scope.company.address.line2).toBe('l2');
+				expect(scope.company.address.postalcode).toBe('pc');
+				expect(scope.company.address.city).toBe('c');
+			});					
 		});	
 
 		describe('when the controller is created for a new company', function(){
@@ -80,7 +94,7 @@
 			});
 
 			it('should have a company to edit', function(){
-				expect(scope.company.name).toBe('');
+				expect(scope.company).not.toBeNull();
 			});
 		});	
 

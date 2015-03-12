@@ -10,7 +10,10 @@ var mongoose = require('mongoose'),
 function convert(company){
 	return {
 		id: company.id,
-		name: company.name
+		name: company.name,
+		number: company.number,
+		vatNumber: company.vatNumber,
+		address: company.address
 	};
 }
 

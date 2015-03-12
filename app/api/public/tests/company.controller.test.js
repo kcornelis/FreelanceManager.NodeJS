@@ -35,7 +35,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		var company;
 
 		before(function(done){
-			company = Company.create(testdata.normalAccountId, '1', 'John BVBA');
+			company = Company.create(testdata.normalAccountId, '1', 'John BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
 			
 			async.series([
 				function(done){
@@ -66,7 +66,22 @@ describe('Public API: Company Controller Integration Tests:', function() {
 
 		it('should return a company with the name', function(){
 			body.name.should.eql('John BVBA');
-		});				
+		});	
+
+		it('should return a company with the number', function(){
+			body.number.should.eql('1');
+		});	
+
+		it('should return a company with the vat number', function(){
+			body.vatNumber.should.eql('BE123');
+		});		
+
+		it('should return a company with the address', function(){
+			body.address.line1.should.eql('kerkstraat');
+			body.address.line2.should.eql('tav me');
+			body.address.postalcode.should.eql('1000');
+			body.address.city.should.eql('brussel');
+		});					
 	});
 
 	describe('When a company is requested by id by another tenant', function() {

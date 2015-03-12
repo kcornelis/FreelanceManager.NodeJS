@@ -5,7 +5,17 @@ function($scope, Company, toUpdate) {
 	$scope.originalCompany = toUpdate;
 	$scope.newCompany = toUpdate === undefined;
 	toUpdate = toUpdate || { };
-	$scope.company =  { name: toUpdate.name || '' };
+	$scope.company =  { 
+		name: toUpdate.name,
+		number: toUpdate.number,
+		vatNumber: toUpdate.vatNumber,
+		address: toUpdate.address ? {
+			line1: toUpdate.address.line1,
+			line2: toUpdate.address.line2,
+			postalcode: toUpdate.address.postalcode,
+			city: toUpdate.address.city,
+		} : null
+	};
 	
 	$scope.isBusy = false;
 	$scope.message = '';
