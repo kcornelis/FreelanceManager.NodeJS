@@ -37,10 +37,13 @@ exports.getAll = function(req, res) {
 
 exports.create = function(req, res, next) {
 
-	var company = Company.create(req.user.id, req.body.name);
-	company.save(function(err){
-		if(err) next(err);                     
-		else res.send(convert(company));
+	Company.getNextNumber(req.user.id, function(err, number){
+
+		var company = Company.create(req.user.id, number, req.body.name, req.body.vatNumber, req.body.address);
+		company.save(function(err){
+			if(err) next(err);                     
+			else res.send(convert(company));
+		});
 	});
 };
 
@@ -54,7 +57,7 @@ exports.update = function(req, res, next) {
 	function(err, company) {
 		if(err) next(err);
 		else if(company){
-			company.changeDetails(req.body.name);
+			company.changeDetails(req.body.name, req.body.vatNumber, req.body.address);
 			company.save(function(err){
 				if(err) next(err);
 				else res.send(convert(company));

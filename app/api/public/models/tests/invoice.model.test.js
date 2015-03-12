@@ -561,7 +561,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 		before(function(done) {
 			
-			company = Company.create('account1', 'My Company');
+			company = Company.create('account1', '1', 'My Company');
 			project = Project.create('account1', company.id, 'FM Manager', 'Freelance manager');
 			timeRegistration1 = TimeRegistration.create('account1', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
 			timeRegistration2 = TimeRegistration.create('account1', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);

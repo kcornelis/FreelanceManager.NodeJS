@@ -35,7 +35,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		var company;
 
 		before(function(done){
-			company = Company.create(testdata.normalAccountId, 'John BVBA');
+			company = Company.create(testdata.normalAccountId, '1', 'John BVBA');
 			
 			async.series([
 				function(done){
@@ -76,7 +76,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		var company;
 
 		before(function(done){
-			company = Company.create(uuid.v1(), 'John BVBA');
+			company = Company.create(uuid.v1(), '1', 'John BVBA');
 			
 			async.series([
 				function(done){
@@ -117,9 +117,9 @@ describe('Public API: Company Controller Integration Tests:', function() {
 		var company3;
 
 		before(function(done){
-			company1 = Company.create(testdata.normalAccountId, 'John BVBA');
-			company2 = Company.create(testdata.normalAccountId, 'John BVBA');
-			company3 = Company.create(uuid.v1(), 'John BVBA');
+			company1 = Company.create(testdata.normalAccountId, '1', 'John BVBA');
+			company2 = Company.create(testdata.normalAccountId, '2', 'John BVBA');
+			company3 = Company.create(uuid.v1(), '3', 'John BVBA');
 			
 			async.series([
 				function(done){
@@ -247,7 +247,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			company = Company.create(testdata.normalAccountId, 'John BVBA');
+			company = Company.create(testdata.normalAccountId, '1', 'John BVBA');
 
 			async.series([
 				function(done){
@@ -302,7 +302,7 @@ describe('Public API: Company Controller Integration Tests:', function() {
 
 		before(function(done) {
 
-			company = Company.create(uuid.v1(), 'John BVBA');
+			company = Company.create(uuid.v1(), '1', 'John BVBA');
 
 			async.series([
 				function(done){

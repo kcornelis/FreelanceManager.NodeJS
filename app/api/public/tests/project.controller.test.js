@@ -20,7 +20,7 @@ describe('Public API: Project Controller Integration Tests:', function() {
 	var company;
 
 	before(function(done){
-		company = Company.create(testdata.normalAccountId, 'My Company');
+		company = Company.create(testdata.normalAccountId, '2', 'My Company');
 
 		async.series([
 			function(done){

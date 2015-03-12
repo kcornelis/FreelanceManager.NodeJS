@@ -21,9 +21,9 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	var company, project, company2, project2;
 
 	before(function(done){
-		company = Company.create(testdata.normalAccountId, 'My Company');
+		company = Company.create(testdata.normalAccountId, '3', 'My Company');
 		project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
-		company2 = Company.create(testdata.normalAccountId, 'My Second Company');
+		company2 = Company.create(testdata.normalAccountId, '4', 'My Second Company');
 		project2 = Project.create(testdata.normalAccountId, company2.id, 'FM Manager v2', 'Freelance manager v2');
 
 		async.series([

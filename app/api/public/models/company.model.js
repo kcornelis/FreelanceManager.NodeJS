@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+	_ = require('lodash'),
 	AggregateRootSchema = require('./aggregateroot');
 
 /**
@@ -19,6 +20,20 @@ var CompanySchema = new AggregateRootSchema({
 		type: String,
 		required: true,
 		trim: true
+	},
+	number: {
+		type: String,
+		required: true
+	},
+	vatNumber: {
+		type: String,
+		trim: true
+	},
+	address: {
+		line1: { type: String },
+		line2: { type: String },
+		postalcode: { type: String },
+		city: { type: String }
 	}
 });
 
@@ -26,33 +41,62 @@ var CompanySchema = new AggregateRootSchema({
  *	Write methods
  */
 
-CompanySchema.statics.create = function(tenant, name){
+CompanySchema.statics.create = function(tenant, number, name, vatNumber, address){
 	
 	var company = new this();
 
 	company.name = name;
+	company.vatNumber = vatNumber;
+	company.number = number;
+	company.address = address;
 	company.tenant = tenant;
 
 	company.apply('CompanyCreated', 
 	{
 		tenant: tenant,
-		name: name
+		number: number,
+		name: name,
+		vatNumber: vatNumber,
+		address: address
 	});		
 
 	return company;
 };
 
-CompanySchema.methods.changeDetails = function(name){
+CompanySchema.methods.changeDetails = function(name, vatNumber, address){
 
-	if(this.name !== name){
+	if(this.name !== name ||
+		this.vatNumber !== vatNumber ||
+		_.isNull(this.address) !== _.isNull(address) ||
+		_.isUndefined(this.address) !== _.isUndefined(address) ||
+		(this.address && this.address.line1 !== address.line1) ||
+		(this.address && this.address.line2 !== address.line2) ||
+		(this.address && this.address.postalcode !== address.postalcode) ||
+		(this.address && this.address.city !== address.city)){
 		
 		this.name = name;
+		this.vatNumber = vatNumber;
+		this.address = address;
 		
 		this.apply('CompanyDetailsChanged', 
 		{
-			name: name
+			name: name,
+			vatNumber: vatNumber,
+			address: address
 		});	
 	}
+};
+
+/*
+ *	Read methods
+ */
+
+ CompanySchema.statics.getNextNumber = function(tenant, callback){
+	
+	return this.count({ tenant: tenant }, function(err, count){
+		if(callback)
+			callback(err, count + 1);
+	});
 };
 
 mongoose.model('Company', CompanySchema);

@@ -18,7 +18,7 @@ describe('Company Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function(done) {
-			original = Company.create(tenant, 'John Doe');
+			original = Company.create(tenant, '1', 'John Doe', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
 			done();
 		});
 
@@ -47,9 +47,24 @@ describe('Company Model Unit Tests:', function() {
 			saved.tenant.should.eql(tenant);
 		});
 
+		it('should have a number', function(){
+			saved.number.should.eql('1');
+		});		
+
 		it('should have a name', function(){
 			saved.name.should.eql('John Doe');
 		});
+
+		it('should have a vat number', function(){
+			saved.vatNumber.should.eql('BE123');
+		});		
+
+		it('should have a address', function(){
+			saved.address.line1.should.eql('kerkstraat');
+			saved.address.line2.should.eql('tav me');
+			saved.address.postalcode.should.eql('1000');
+			saved.address.city.should.eql('brussel');
+		});	
 
 		it('should have version 1', function(){
 			saved.version.should.eql(1);
@@ -58,6 +73,12 @@ describe('Company Model Unit Tests:', function() {
 		it('should have a created event', function(){
 			saved.events[0].name.should.eql('John Doe');			
 			saved.events[0].tenant.should.eql(tenant);
+			saved.events[0].number.should.eql('1');
+			saved.events[0].vatNumber.should.eql('BE123');
+			saved.events[0].address.line1.should.eql('kerkstraat');
+			saved.events[0].address.line2.should.eql('tav me');
+			saved.events[0].address.postalcode.should.eql('1000');
+			saved.events[0].address.city.should.eql('brussel');
 
 			saved.events[0].metadata.eventName.should.eql('CompanyCreated');
 		});
@@ -76,7 +97,7 @@ describe('Company Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var company = Company.create(null, 'John Doe');
+			var company = Company.create(null, '1', 'John Doe', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
 			company.save(function(err) {
 				should.exist(err);
 				done();
@@ -88,7 +109,7 @@ describe('Company Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var company = Company.create(tenant, '');
+			var company = Company.create(tenant, '1', '', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
 			company.save(function(err) {
 				should.exist(err);
 				done();
@@ -96,12 +117,24 @@ describe('Company Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When a company details is changed', function() {
+	describe('When a company is created with no number', function() {
+
+		it('should fail', function(done) {
+
+			var company = Company.create(tenant, '', 'John Doe', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+			company.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+	});	
+
+	describe('When company details are changed', function() {
 
 		var original, saved;
 
 		before(function(done) {
-			original = Company.create(tenant, 'John Doe');
+			original = Company.create(tenant, '1', 'John Doe', 'BE123');
 			original.save(done);
 		});
 
@@ -112,7 +145,7 @@ describe('Company Model Unit Tests:', function() {
 
 				should.not.exist(finderr);
 
-				company.changeDetails('Jane Doe');
+				company.changeDetails('Jane Doe', 'BE12345', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel' });
 
 				company.save(function(saveerr){
 					should.not.exist(saveerr);
@@ -139,6 +172,17 @@ describe('Company Model Unit Tests:', function() {
 			saved.name.should.eql('Jane Doe');
 		});
 
+		it('should have an updated name', function(){
+			saved.vatNumber.should.eql('BE12345');
+		});		
+
+		it('should have an updated address', function(){
+			saved.address.line1.should.eql('kerkstraat');
+			saved.address.line2.should.eql('tav me');
+			saved.address.postalcode.should.eql('1000');
+			saved.address.city.should.eql('brussel');
+		});			
+
 		it('should have the same created on date', function(){
 			saved.createdOn.should.eql(original.createdOn);
 		});
@@ -149,6 +193,11 @@ describe('Company Model Unit Tests:', function() {
 
 		it('should have a details changed event', function(){
 			saved.events[1].name.should.eql('Jane Doe');
+			saved.events[1].vatNumber.should.eql('BE12345');
+			saved.events[1].address.line1.should.eql('kerkstraat');
+			saved.events[1].address.line2.should.eql('tav me');
+			saved.events[1].address.postalcode.should.eql('1000');
+			saved.events[1].address.city.should.eql('brussel');
 
 			saved.events[1].metadata.eventName.should.eql('CompanyDetailsChanged');
 		});
@@ -158,13 +207,13 @@ describe('Company Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When a company details is changed with the same values', function() {
+	describe('When company details are changed with the same values', function() {
 
 		var company;
 
 		before(function() {
-			company = Company.create(tenant, 'John Doe BVBA');
-			company.changeDetails('John Doe BVBA');
+			company = Company.create(tenant, '1', 'John Doe BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+			company.changeDetails('John Doe BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
 		});
 
 		it('should not create a new event', function(){
