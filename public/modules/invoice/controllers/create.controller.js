@@ -1,6 +1,6 @@
 // TODO unit test
 angular.module('invoice').controller('CreateController',
-function($scope, $state, $stateParams, Project, TimeRegistration, Template, Invoice) {
+function($scope, $state, $stateParams, $modal, Project, TimeRegistration, Template, Invoice) {
 	'use strict';
 
 	// Wizard helpers
@@ -77,7 +77,7 @@ function($scope, $state, $stateParams, Project, TimeRegistration, Template, Invo
 	// WIZART STEP 2 (invoice lines)
 	// *****************************
 
-	$scope.invoice = {};
+	$scope.invoice = { customer: { address: { } } };
 
 	$scope.canGoto2 = function(){
 		return _.some($scope.timeRegistrations, { included: true });
@@ -150,6 +150,25 @@ function($scope, $state, $stateParams, Project, TimeRegistration, Template, Invo
 			$scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
 		else $scope.invoice.creditTerm = null;
 	});
+
+	$scope.searchCustomer = function(){
+		var searchDialog = $modal.open({
+			templateUrl: '/modules/crm/views/searchcompany.html',
+			controller: 'SearchCompanyDialogController'
+		});
+
+		searchDialog.result.then(function (company) {
+			if(company){
+				$scope.invoice.customer.name = company.name;
+				$scope.invoice.customer.vatNumber = company.vatNumber;
+				$scope.invoice.customer.number = company.number;
+				$scope.invoice.customer.address.line1 = company.address.line1;
+				$scope.invoice.customer.address.line2 = company.address.line2;
+				$scope.invoice.customer.address.postalcode = company.address.postalcode;
+				$scope.invoice.customer.address.city = company.address.city;
+			}
+		});	
+	};
 
 	// WIZART STEP 4 (preview)
 	// ***********************
