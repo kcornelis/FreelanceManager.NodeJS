@@ -72,7 +72,7 @@ angular.module(ApplicationConfiguration.applicationModuleName).config([
 angular.element(document).ready(function () {
   //Then init the app
   angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
-});ApplicationConfiguration.registerModule('account');ApplicationConfiguration.registerModule('core');ApplicationConfiguration.registerModule('crm');ApplicationConfiguration.registerModule('project');ApplicationConfiguration.registerModule('time');angular.module('account', ['angular-jwt']).factory('authInterceptor', [
+});ApplicationConfiguration.registerModule('account');ApplicationConfiguration.registerModule('core');ApplicationConfiguration.registerModule('crm');ApplicationConfiguration.registerModule('invoice');ApplicationConfiguration.registerModule('project');ApplicationConfiguration.registerModule('settings');ApplicationConfiguration.registerModule('time');angular.module('account', ['angular-jwt']).factory('authInterceptor', [
   '$rootScope',
   '$q',
   '$window',
@@ -513,6 +513,22 @@ angular.module('core').directive('fmDatepicker', [
     };
   }
 ]);// TODO unit test
+angular.module('core').directive('fmDynamic', [
+  '$compile',
+  function ($compile) {
+    'use strict';
+    return {
+      restrict: 'A',
+      replace: true,
+      link: function (scope, ele, attrs) {
+        scope.$watch(attrs.fmDynamic, function (html) {
+          ele.html('<div data-fm-with=\'' + attrs.fmDynamicBind + '\'>' + html + '</div>');
+          $compile(ele.contents())(scope);
+        });
+      }
+    };
+  }
+]);// TODO unit test
 // From the angle project
 angular.module('core').directive('href', function () {
   'use strict';
@@ -530,7 +546,22 @@ angular.module('core').directive('href', function () {
       };
     }
   };
-});angular.module('core').directive('fmMatch', [
+});// TODO unit test
+angular.module('core').directive('fmIframe', [
+  '$compile',
+  function ($compile) {
+    'use strict';
+    return {
+      restrict: 'A',
+      link: function (scope, ele, attrs) {
+        scope.$watch(attrs.fmIframe, function (html) {
+          var compiled = $compile(angular.element('<div data-fm-with=\'' + attrs.fmIframeBind + '\'>' + html + '</div>'))(scope);
+          $(ele[0].contentDocument.body).html(compiled);
+        });
+      }
+    };
+  }
+]);angular.module('core').directive('fmMatch', [
   '$parse',
   function match($parse) {
     'use strict';
@@ -798,7 +829,36 @@ angular.module('core').directive('toggleState', [
       }
     };
   }
-]);angular.module('core').factory('Account', [
+]);// TODO unit test
+angular.module('core').directive('fmWith', function () {
+  'use strict';
+  return {
+    restrict: 'A',
+    scope: true,
+    controller: [
+      '$scope',
+      '$attrs',
+      '$parse',
+      function ($scope, $attrs, $parse) {
+        $scope.$parent.$watch($attrs.fmWith, function (oldVal, newVal) {
+          var withObj = $scope.$parent[$attrs.fmWith];
+          (function copyPropertiesToScope(withObj) {
+            for (var prop in withObj) {
+              if (withObj.hasOwnProperty(prop)) {
+                Object.defineProperty($scope, prop, {
+                  enumerable: true,
+                  configurable: true,
+                  get: $parse(prop).bind($scope, withObj, $scope.$parent),
+                  set: $parse(prop).assign.bind($scope, withObj, $scope.$parent)
+                });
+              }
+            }
+          }(withObj));
+        });
+      }
+    ]
+  };
+});angular.module('core').factory('Account', [
   '$resource',
   function ($resource) {
     'use strict';
@@ -820,7 +880,13 @@ angular.module('core').directive('toggleState', [
   '$resource',
   function ($resource) {
     'use strict';
-    return $resource('/api/public/invoices/:id', { id: '@id' });
+    return $resource('/api/public/invoices/:id', { id: '@id' }, {
+      preview: {
+        method: 'POST',
+        url: '/api/public/invoices/preview',
+        isArray: false
+      }
+    });
   }
 ]);angular.module('core').factory('NgTableParams', [
   'ngTableParams',
@@ -855,11 +921,38 @@ angular.module('core').directive('toggleState', [
       }
     });
   }
+]);angular.module('core').factory('Template', [
+  '$resource',
+  function ($resource) {
+    'use strict';
+    return $resource('/api/public/templates/:id', { id: '@id' }, {
+      active: {
+        method: 'GET',
+        url: '/api/public/templates/active',
+        isArray: true
+      },
+      hide: {
+        method: 'POST',
+        url: '/api/public/templates/:id/hide',
+        isArray: false
+      },
+      unhide: {
+        method: 'POST',
+        url: '/api/public/templates/:id/unhide',
+        isArray: false
+      }
+    });
+  }
 ]);angular.module('core').factory('TimeRegistration', [
   '$resource',
   function ($resource) {
     'use strict';
     return $resource('/api/public/timeregistrations/:id', { id: '@id' }, {
+      search: {
+        method: 'GET',
+        url: '/api/public/timeregistrations/search',
+        isArray: true
+      },
       bydate: {
         method: 'GET',
         url: '/api/public/timeregistrations/bydate/:date',
@@ -1281,7 +1374,17 @@ angular.module('core').service('toggleStateService', [
     $scope.originalCompany = toUpdate;
     $scope.newCompany = toUpdate === undefined;
     toUpdate = toUpdate || {};
-    $scope.company = { name: toUpdate.name || '' };
+    $scope.company = {
+      name: toUpdate.name,
+      number: toUpdate.number,
+      vatNumber: toUpdate.vatNumber,
+      address: toUpdate.address ? {
+        line1: toUpdate.address.line1,
+        line2: toUpdate.address.line2,
+        postalcode: toUpdate.address.postalcode,
+        city: toUpdate.address.city
+      } : null
+    };
     $scope.isBusy = false;
     $scope.message = '';
     $scope.ok = function () {
@@ -1305,6 +1408,234 @@ angular.module('core').service('toggleStateService', [
       $scope.isBusy = false;
       $scope.message = '';
     }
+  }
+]);angular.module('crm').controller('SearchCompanyDialogController', [
+  '$scope',
+  'Company',
+  function ($scope, Company) {
+    'use strict';
+    $scope.companies = Company.query();
+    $scope.ok = function () {
+      $scope.$close(_.first(_.where($scope.companies, function (c) {
+        return c.id === $scope.selectedCompany;
+      })));
+    };
+    $scope.cancel = function () {
+      $scope.$dismiss('cancel');
+    };
+  }
+]);angular.module('invoice').config([
+  '$stateProvider',
+  '$urlRouterProvider',
+  function ($stateProvider, $urlRouterProvider) {
+    'use strict';
+    $stateProvider.state('app.invoice_create', {
+      url: '/invoice/create',
+      templateUrl: 'modules/invoice/views/create.html',
+      controller: 'CreateController',
+      access: { requiredLogin: true }
+    }).state('app.invoice_overview', {
+      url: '/invoice/overview/:from/:to',
+      templateUrl: 'modules/invoice/views/overview.html',
+      controller: 'OverviewController',
+      access: { requiredLogin: true },
+      params: {
+        from: function () {
+          return moment().startOf('year').format('YYYYMMDD');
+        },
+        to: function () {
+          return moment().endOf('year').format('YYYYMMDD');
+        }
+      }
+    }).state('invoice_preview', {
+      url: '/app/invoice/preview/:id',
+      templateUrl: 'modules/invoice/views/preview.html',
+      controller: 'PreviewController',
+      access: { requiredLogin: true }
+    });
+  }
+]);// TODO unit test
+angular.module('invoice').controller('CreateController', [
+  '$scope',
+  '$state',
+  '$stateParams',
+  '$modal',
+  '$sce',
+  'Project',
+  'TimeRegistration',
+  'Template',
+  'Invoice',
+  function ($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, Template, Invoice) {
+    'use strict';
+    // Wizard helpers
+    // **************
+    var steps;
+    function createsteps(q) {
+      steps = [];
+      for (var i = 1; i <= q; i++)
+        steps[i] = false;
+    }
+    function activate(step) {
+      for (var i in steps) {
+        steps[i] = false;
+      }
+      steps[step] = true;
+    }
+    $scope.init = function () {
+      createsteps(4);
+      activate(1);
+    };
+    $scope.active = function (step) {
+      return !!steps[step];
+    };
+    // Prefetch data
+    // **************
+    Project.query(function (projects) {
+      $scope.projects = _.sortBy(projects, [
+        'company.name',
+        'name'
+      ]);
+    });
+    $scope.templates = Template.active();
+    // WIZART STEP 1 (time registrations)
+    // **********************************
+    $scope.search = {
+      project: null,
+      from: null,
+      to: null,
+      invoiced: false
+    };
+    $scope.searchTimeRegistrations = function () {
+      $scope.loading = true;
+      $scope.includeAllTimeRegistrations = false;
+      TimeRegistration.search({
+        project: $scope.search.project,
+        from: $scope.search.from ? moment($scope.search.from, 'YYYY-MM-DD').format('YYYYMMDD') : null,
+        to: $scope.search.to ? moment($scope.search.to, 'YYYY-MM-DD').format('YYYYMMDD') : null,
+        invoiced: $scope.search.invoiced
+      }, function (tr) {
+        $scope.loading = false;
+        $scope.searched = true;
+        $scope.timeRegistrations = _.sortBy(tr, [
+          'data.numeric',
+          'from.numeric'
+        ]);
+      });
+    };
+    $scope.$watch('includeAllTimeRegistrations', function (v) {
+      if ($scope.timeRegistrations) {
+        _.forEach($scope.timeRegistrations, function (tr) {
+          tr.included = v;
+        });
+      }
+    });
+    // WIZART STEP 2 (invoice lines)
+    // *****************************
+    $scope.invoice = { customer: { address: {} } };
+    $scope.canGoto2 = function () {
+      return _.some($scope.timeRegistrations, { included: true });
+    };
+    $scope.gobackto2 = function () {
+      activate(2);
+    };
+    $scope.goto2 = function () {
+      $scope.invoice.linkedTimeRegistrationIds = _.map($scope.timeRegistrations, function (tr) {
+        return tr.id;
+      });
+      $scope.invoice.lines = _.map(_.groupBy(_.where($scope.timeRegistrations, { included: true }), function (tr) {
+        return tr.projectId + '-' + tr.task;
+      }), function (tr) {
+        var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function (sum, i) {
+            return sum + i.totalMinutes;
+          });
+        var quantity = Math.round(totalMinutes / 60 * 100) / 100;
+        var project = _.first(_.where($scope.projects, function (p) {
+            return p.id === tr[0].projectId;
+          }));
+        var task = project ? _.first(_.where(project.tasks, function (t) {
+            return t.name === tr[0].task;
+          })) : null;
+        var priceInCents = task ? parseInt(task.defaultRateInCents) : 0;
+        return {
+          description: project.name,
+          quantity: quantity,
+          vatPercentage: 21,
+          price: priceInCents / 100,
+          priceInCents: priceInCents
+        };
+      }, 0);
+      activate(2);
+    };
+    $scope.removeInvoiceLine = function (invoiceLine) {
+      _.remove($scope.invoice.lines, invoiceLine);
+    };
+    $scope.addInvoiceLine = function () {
+      $scope.invoice.lines.push({
+        description: '',
+        quantity: 1,
+        vatPercentage: 21,
+        price: 0,
+        priceInCents: 0
+      });
+    };
+    $scope.$watch('invoice.lines', function (lines) {
+      _.forEach(lines, function (line) {
+        line.priceInCents = Math.round(line.price * 100);
+        line.totalInCents = Math.round(line.quantity * line.priceInCents);
+        line.total = line.totalInCents / 100;
+      });
+    }, true);
+    // WIZART STEP 3 (invoice info)
+    // ****************************
+    $scope.goto3 = function () {
+      activate(3);
+    };
+    $scope.gobackto3 = function () {
+      activate(3);
+    };
+    $scope.$watch('invoice.templateId', function (id) {
+      var template = _.first(_.where($scope.templates, function (t) {
+          return t.id === id;
+        }));
+      $scope.invoice.template = template ? template.content : '';
+    });
+    $scope.$watch('invoice.date', function (date) {
+      if (date)
+        $scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
+      else
+        $scope.invoice.creditTerm = null;
+    });
+    $scope.searchCustomer = function () {
+      var searchDialog = $modal.open({
+          templateUrl: '/modules/crm/views/searchcompany.html',
+          controller: 'SearchCompanyDialogController'
+        });
+      searchDialog.result.then(function (company) {
+        if (company) {
+          $scope.invoice.customer.name = company.name;
+          $scope.invoice.customer.vatNumber = company.vatNumber;
+          $scope.invoice.customer.number = company.number;
+          $scope.invoice.customer.address.line1 = company.address.line1;
+          $scope.invoice.customer.address.line2 = company.address.line2;
+          $scope.invoice.customer.address.postalcode = company.address.postalcode;
+          $scope.invoice.customer.address.city = company.address.city;
+        }
+      });
+    };
+    // WIZART STEP 4 (preview)
+    // ***********************
+    $scope.goto4 = function () {
+      $scope.loading = true;
+      Invoice.preview($scope.invoice, function (invoice) {
+        $scope.invoicePreview = invoice;
+        $scope.loading = false;
+        $scope.previewUrl = $sce.trustAsResourceUrl('/render/#!/invoicepreview?invoice=' + window.encodeURIComponent(JSON.stringify(invoice)));
+      });
+      activate(4);
+    };
+    $scope.create = function () {
+      Invoice.save($scope.invoice);
+    };
   }
 ]);angular.module('project').config([
   '$stateProvider',
@@ -1449,6 +1780,44 @@ angular.module('core').service('toggleStateService', [
       $scope.isBusy = false;
       $scope.message = '';
     }
+  }
+]);angular.module('settings').config([
+  '$stateProvider',
+  function ($stateProvider) {
+    'use strict';
+    $stateProvider.state('app.settings_templates', {
+      url: '/settings/templates',
+      templateUrl: 'modules/settings/views/templates.html',
+      controller: 'TemplatesController',
+      access: { requiredLogin: true }
+    });
+  }
+]);angular.module('settings').controller('TemplatesController', [
+  '$scope',
+  'Template',
+  function ($scope, Template) {
+    'use strict';
+    $scope.getAllTemplates = function () {
+      $scope.templates = Template.query();
+    };
+    $scope.openTemplate = function (template) {
+      $scope.template = template || {};
+      $scope.newTemplate = template === undefined;
+    };
+    $scope.newTemplate = true;
+    $scope.saveTemplate = function () {
+      var id = $scope.newTemplate ? {} : { id: $scope.template.id };
+      Template.save(id, $scope.template, function (data) {
+        if ($scope.newTemplate) {
+          $scope.templates.push(data);
+          $scope.template = data;
+          $scope.newTemplate = false;
+        }
+      }, function (err) {
+        // TODO show toaster
+        alert(err);
+      });
+    };
   }
 ]);angular.module('time').config([
   '$stateProvider',

@@ -85,7 +85,7 @@ function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, 
 
 	$scope.gobackto2 = function(){
 		activate(2);
-	}	
+	};
 
 	$scope.goto2 = function(){
 
@@ -146,7 +146,7 @@ function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, 
 
 	$scope.gobackto3 = function(){
 		activate(3);
-	}
+	};
 
 	$scope.$watch('invoice.templateId', function(id){
 		var template = _.first(_.where($scope.templates, function(t) { return t.id === id; }));
