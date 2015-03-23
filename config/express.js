@@ -45,6 +45,7 @@ module.exports = function(db) {
 	app.locals.description = config.app.description;
 	app.locals.keywords = config.app.keywords;
 	app.locals.jsFiles = config.getJavaScriptAssets();
+	app.locals.renderJsFiles = config.getRenderJavaScriptAssets();
 	app.locals.cssFiles = config.getCSSAssets();
 
 	// Passing the request url to environment locals

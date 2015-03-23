@@ -73,7 +73,8 @@ module.exports = function(grunt) {
 				},
 				files: {
 					'public/dist/lib.min.js': 'public/dist/lib.js',
-					'public/dist/application.min.js': 'public/dist/application.js'
+					'public/dist/application.min.js': 'public/dist/application.js',
+					'public/dist/render.min.js': 'public/dist/render.js'
 				}
 			}
 		},

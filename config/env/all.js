@@ -80,6 +80,17 @@ module.exports = {
 			'public/karma.js',
 			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/**/*.test.js'
-		]
+		],
+		render: {
+			js: [
+				'public/lib/jquery/dist/jquery.js',
+				'public/lib/angular/angular.js',
+				'public/lib/modernizr/modernizr.js',
+				'public/lib/angular-route/angular-route.js',
+				'public/lib/angular-ui-router/release/angular-ui-router.js',
+				'public/lib/angular-jwt/dist/angular-jwt.js',
+				'public/dist/render.js'
+			]
+		}
 	}
 };

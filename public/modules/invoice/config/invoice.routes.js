@@ -20,6 +20,13 @@ angular.module('invoice').config(['$stateProvider', '$urlRouterProvider',
 				from: function(){ return moment().startOf('year').format('YYYYMMDD'); },
 				to: function(){ return moment().endOf('year').format('YYYYMMDD'); }
 			}
+		})
+
+		.state('invoice_preview', {
+			url: '/app/invoice/preview/:id',
+			templateUrl: 'modules/invoice/views/preview.html',
+			controller: 'PreviewController',
+			access: { requiredLogin: true }			
 		});
 	}
 ]);

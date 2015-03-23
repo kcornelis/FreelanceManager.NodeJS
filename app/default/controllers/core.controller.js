@@ -1,10 +1,10 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 exports.index = function(req, res) {
-  res.render('index', {
-      user: req.user || null
-  });
+	res.render('index');
+};
+
+exports.render = function(req, res) {
+	res.header('X-Frame-Options', 'SAMEORIGIN');
+	res.render('render');
 };

@@ -71,6 +71,14 @@ module.exports.getJavaScriptAssets = function(includeTests) {
 	return output;
 };
 
+module.exports.getRenderJavaScriptAssets = function() {
+
+	var javascriptFiles = this.assets.render.js;
+	var output = this.getGlobbedFiles(javascriptFiles, 'public/');
+	return output;
+};
+
+
 /**
  * Get the modules CSS files
  */

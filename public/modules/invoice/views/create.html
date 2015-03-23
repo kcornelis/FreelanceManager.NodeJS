@@ -66,6 +66,7 @@
 								<button type="button" class="pull-left btn btn-default" data-ng-click="searchTimeRegistrations()">Search</button>
 							</div>
 						</div>
+
 					</div>
 
 					<div data-ng-show="loading">
@@ -264,11 +265,14 @@
 						</div>
 					</div>
 
+					<ul class="pager pull-left">
+						<li><button class="btn btn-default" data-ng-click="gobackto2()">Back</button></li>
+					</ul>
 					<ul class="pager pull-right">
 						<li><button class="btn btn-default" data-ng-click="goto4()">Next <span>&rarr;</span></button></li>
 					</ul>				
 
-				</div>						
+				</div>				
 
 				<!-- STEP 4: Summary -->
 				<div data-ng-show="active(4)">
@@ -276,9 +280,14 @@
 					<div data-ng-show="loading">
 						<div class="fm-wait-panel mt-xl center" ></div>
 					</div>
-					<div data-ng-show="!loading">
-						<div class="fm-invoice-preview" data-fm-dynamic="invoice.template" data-fm-dynamic-bind="invoicePreview" />
+					<div data-ng-show="!loading">						
+						<div class="fm-invoice-preview embed-responsive embed-responsive-16by9">
+							<iframe src="{{ previewUrl }}"></iframe>
+						</div>
 					</div>
+					<ul class="pager pull-left">
+						<li><button class="btn btn-default" data-ng-click="gobackto3()">Back</button></li>
+					</ul>
 					<ul class="pager pull-right">
 						<li><button class="btn btn-default" data-ng-click="create()">Create</button></li>
 					</ul>	

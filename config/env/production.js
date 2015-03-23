@@ -21,6 +21,17 @@ module.exports = {
 			js: [ 'public/dist/lib.min.js' ]
 		},
 		css: [ 'public/dist/application.min.css' ],
-		js: [ 'public/dist/application.min.js' ]
+		js: [ 'public/dist/application.min.js' ],
+		render: {
+			js: [
+				'public/lib/jquery/dist/jquery.min.js',
+				'public/lib/angular/angular.min.js',
+				'public/lib/modernizr/modernizr.js',
+				'public/lib/angular-route/angular-route.js',
+				'public/lib/angular-ui-router/release/angular-ui-router.min.js',
+				'public/lib/angular-jwt/dist/angular-jwt.min.js',
+				'public/dist/render.min.js'
+			]
+		}
 	}
 };

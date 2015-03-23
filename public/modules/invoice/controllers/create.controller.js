@@ -1,6 +1,6 @@
 // TODO unit test
 angular.module('invoice').controller('CreateController',
-function($scope, $state, $stateParams, $modal, Project, TimeRegistration, Template, Invoice) {
+function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, Template, Invoice) {
 	'use strict';
 
 	// Wizard helpers
@@ -81,7 +81,11 @@ function($scope, $state, $stateParams, $modal, Project, TimeRegistration, Templa
 
 	$scope.canGoto2 = function(){
 		return _.some($scope.timeRegistrations, { included: true });
-	};		
+	};	
+
+	$scope.gobackto2 = function(){
+		activate(2);
+	}	
 
 	$scope.goto2 = function(){
 
@@ -140,6 +144,10 @@ function($scope, $state, $stateParams, $modal, Project, TimeRegistration, Templa
 		activate(3);
 	};
 
+	$scope.gobackto3 = function(){
+		activate(3);
+	}
+
 	$scope.$watch('invoice.templateId', function(id){
 		var template = _.first(_.where($scope.templates, function(t) { return t.id === id; }));
 		$scope.invoice.template = template ? template.content : '';
@@ -177,9 +185,10 @@ function($scope, $state, $stateParams, $modal, Project, TimeRegistration, Templa
 
 		$scope.loading = true;
 
-		Invoice.save($scope.invoice, function(invoice){
+		Invoice.preview($scope.invoice, function(invoice){
 			$scope.invoicePreview = invoice;
 			$scope.loading = false;
+			$scope.previewUrl = $sce.trustAsResourceUrl('/render/#!/invoicepreview?invoice=' + window.encodeURIComponent(JSON.stringify(invoice)));
 		});
 
 		activate(4);
