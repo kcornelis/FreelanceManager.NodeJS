@@ -7,21 +7,21 @@
 		<div class="modal-body">
 		
 			<div class="row">
-				<div class="col-xs-12 col-md-4" data-ng-show="timeRegistration.company != null">
+				<div class="col-xs-12 col-md-4" data-ng-show="projectEditable">
 					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.company">
 						<label>Company</label>
 						<select class="form-control" name="company" data-ng-model="timeRegistration.company" data-ng-options="c.name for c in companies" required></select>
 					</div>
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="timeRegistration.project != null">
+				<div class="col-xs-12 col-md-4" data-ng-show="projectEditable">
 					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.project">
 						<label>Project</label>
 						<select class="form-control" name="project" data-ng-model="timeRegistration.project" data-ng-options="p.name for p in timeRegistration.company.projects" required></select>
 					</div>	
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="timeRegistration.task != null">					
+				<div class="col-xs-12 col-md-4" data-ng-show="projectEditable">					
 					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.task">
 						<label>Task</label>
 						<select class="form-control" name="task" data-ng-model="timeRegistration.task" data-ng-options="t.name for t in timeRegistration.project.tasks" required></select>
@@ -30,21 +30,21 @@
 			</div>
 
 			<div class="row">
-				<div class="col-xs-12 col-md-4" data-ng-show="timeRegistration.company == null">
+				<div class="col-xs-12 col-md-4" data-ng-show="!projectEditable">
 					<div class="form-group">
 						<label>Company</label>
 						<input type="text" class="form-control" data-ng-model="originalTimeRegistration.company.name" disabled="disabled"></select>
 					</div>
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="timeRegistration.project == null">
+				<div class="col-xs-12 col-md-4" data-ng-show="!projectEditable">
 					<div class="form-group">
 						<label>Project</label>
 						<input type="text" class="form-control" data-ng-model="originalTimeRegistration.project.name" disabled="disabled"></select>
 					</div>	
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="timeRegistration.task == null">					
+				<div class="col-xs-12 col-md-4" data-ng-show="!projectEditable">					
 					<div class="form-group">
 						<label>Task</label>
 						<input type="text" class="form-control" data-ng-model="originalTimeRegistration.task" disabled="disabled"></select>

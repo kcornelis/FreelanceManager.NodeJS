@@ -68,6 +68,7 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 	
 	// load all projects and convert them to companies => projects => tasks
 	$scope.projects = Project.active(function(){
+
 		$scope.companies = _.map(
 			_.groupBy($scope.projects, function(p) { return p.companyId; }),
 			function(g) { 
@@ -86,6 +87,12 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 
 		if(toUpdate.task && $scope.timeRegistration.project)
 			$scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
+
+		if($scope.newTimeRegistration)
+			$scope.projectEditable = true;
+		else if($scope.timeRegistration.task)
+			$scope.projectEditable = true;
+		else $scope.projectEditable = false;
 	});
 
 	// scope actions

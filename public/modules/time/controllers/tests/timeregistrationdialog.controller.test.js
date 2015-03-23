@@ -99,6 +99,10 @@
 			
 			});
 
+			it('should have a property that shows if the project is editable', function(){
+				expect(scope.projectEditable).toBe(true); // project id 1 is returned by the mock
+			});
+
 			it('should have a reference to the time registration to update', function(){
 				toUpdate.description = 'updated';
 				expect(scope.originalTimeRegistration.description).toBe('updated');
@@ -116,6 +120,53 @@
 				expect(scope.timeRegistration.description).toBe('description');
 				expect(scope.timeRegistration.from).toBe('10:00');
 				expect(scope.timeRegistration.to).toBe('11:00');
+			});
+		});	
+
+		describe('when the controller is created for an existing time registration with an inactive project', function(){
+
+			beforeEach(inject(function($controller) {
+				
+				toUpdate = { id: 2, companyId: 1, projectId: 10, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } };
+
+				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+					$scope: scope,
+					Project: mockProjectService,
+					toUpdate: toUpdate,
+					date: 20100102
+				});
+
+				mockProjectService.flush();
+			}));
+
+			it('should have a list of all projects', function() {
+				expect(scope.projects.length).toBe(4);
+				expect(scope.projects[0].name).toBe('project 1');
+				expect(scope.projects[1].name).toBe('project 2');
+				expect(scope.projects[2].name).toBe('project 3');
+				expect(scope.projects[3].name).toBe('project 4');				
+			});
+
+			it('should have a list of all companies with projects and tasks', function() {
+				expect(scope.companies.length).toBe(2);
+				expect(scope.companies[0].name).toBe('company 1');
+				expect(scope.companies[1].name).toBe('company 2');
+
+				expect(scope.companies[0].projects.length).toBe(3);
+				expect(scope.companies[0].projects[0].name).toBe('project 1');
+				expect(scope.companies[0].projects[1].name).toBe('project 2');
+				expect(scope.companies[0].projects[2].name).toBe('project 3');
+
+				expect(scope.companies[1].projects.length).toBe(1);
+				expect(scope.companies[1].projects[0].name).toBe('project 4');
+
+				expect(scope.companies[0].projects.length).toBe(3);
+				expect(scope.companies[0].projects[0].tasks[0].name).toBe('Development');
+			
+			});
+
+			it('should have a property that shows if the project is editable', function(){
+				expect(scope.projectEditable).toBe(false); // project id 10 is not returned by the mock
 			});
 		});	
 
@@ -169,7 +220,11 @@
 				expect(scope.companies[0].projects.length).toBe(3);
 				expect(scope.companies[0].projects[0].tasks[0].name).toBe('Development');
 			
-			});			
+			});		
+
+			it('should have a property that shows if the project is editable', function(){
+				expect(scope.projectEditable).toBe(true); // project of a new tr is always editable
+			});	
 
 			it('should have a project to edit', function(){
 				expect(scope.timeRegistration.description).toBe('');
