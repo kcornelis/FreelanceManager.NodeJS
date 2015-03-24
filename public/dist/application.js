@@ -1447,11 +1447,6 @@ angular.module('core').service('toggleStateService', [
           return moment().endOf('year').format('YYYYMMDD');
         }
       }
-    }).state('invoice_preview', {
-      url: '/app/invoice/preview/:id',
-      templateUrl: 'modules/invoice/views/preview.html',
-      controller: 'PreviewController',
-      access: { requiredLogin: true }
     });
   }
 ]);// TODO unit test
@@ -1754,10 +1749,16 @@ angular.module('invoice').controller('CreateController', [
       tasks: _.map(toUpdate.tasks, function (t) {
         return {
           name: t.name,
-          defaultRateInCents: t.defaultRateInCents
+          defaultRateInCents: t.defaultRateInCents,
+          defaultRate: t.defaultRateInCents ? t.defaultRateInCents / 100 : t.defaultRateInCents
         };
       })
     };
+    $scope.$watch('project.tasks', function (tasks) {
+      _.forEach(tasks, function (task) {
+        task.defaultRateInCents = Math.round(task.defaultRate * 100);
+      });
+    }, true);
     $scope.isBusy = false;
     $scope.message = '';
     $scope.ok = function () {
@@ -2326,6 +2327,12 @@ angular.module('time').controller('ImportController', [
         $scope.timeRegistration.project = _.first(_.where($scope.timeRegistration.company.projects, { id: toUpdate.projectId }));
       if (toUpdate.task && $scope.timeRegistration.project)
         $scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
+      if ($scope.newTimeRegistration)
+        $scope.projectEditable = true;
+      else if ($scope.timeRegistration.task)
+        $scope.projectEditable = true;
+      else
+        $scope.projectEditable = false;
     });
     // scope actions
     // -------------
