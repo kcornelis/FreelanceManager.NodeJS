@@ -1,3 +1,18 @@
+.brand-logo img {
+	height: 30px;
+}
+
 .panel.panel-default {
 	border-top-width: 1px;
+}
+
+.wrapper > footer{
+	z-index: 5;
+}
+
+@media (max-width: 767px) {
+	h1 {
+		margin-top: 10px;
+  		margin-bottom: 10px;
+	}
 }
