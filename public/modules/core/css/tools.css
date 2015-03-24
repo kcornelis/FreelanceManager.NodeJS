@@ -1,7 +1,10 @@
-.hideOverflow
-{
+.hideOverflow {
 	overflow:hidden;
 	white-space:nowrap;
 	text-overflow:ellipsis;
 	display:block;
+}
+
+.fm-action-column{
+	vertical-align: top !important;
 }
