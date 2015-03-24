@@ -8,10 +8,17 @@ function($scope, Project, toUpdate) {
 		tasks: _.map(toUpdate.tasks, function(t){
 			return {
 				name: t.name,
-				defaultRateInCents: t.defaultRateInCents
+				defaultRateInCents: t.defaultRateInCents,
+				defaultRate: t.defaultRateInCents ? (t.defaultRateInCents) / 100 : t.defaultRateInCents
 			};
 		})
 	};
+
+	$scope.$watch('project.tasks', function(tasks){
+		_.forEach(tasks, function(task){
+			task.defaultRateInCents = Math.round(task.defaultRate * 100);
+		});
+	}, true);
 	
 	$scope.isBusy = false;
 	$scope.message = '';

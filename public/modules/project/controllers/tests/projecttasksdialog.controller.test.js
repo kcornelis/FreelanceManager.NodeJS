@@ -58,6 +58,38 @@
 				expect(scope.project.tasks[1].name).toBe('Sleeping');
 				expect(scope.project.tasks[1].defaultRateInCents).toBe(0);
 			});
+
+			it('should have default rate not in cents', function(){
+
+				expect(scope.project.tasks[0].defaultRate).toBe(0.5);
+				expect(scope.project.tasks[1].defaultRate).toBe(0);
+			});
+		});	
+
+		describe('when the default price is changed', function(){
+
+			beforeEach(inject(function($controller) {
+				
+				toUpdate = { id: 2, name: 'name', tasks: [
+					{ name: 'Development', defaultRateInCents: 50 },
+					{ name: 'Sleeping', defaultRateInCents: 0 }
+				] };
+
+				ProjectTasksDialogController = $controller('ProjectTasksDialogController', {
+					$scope: scope,
+					toUpdate: toUpdate
+				});
+
+				scope.project.tasks[0].defaultRate = 0;
+				scope.project.tasks[1].defaultRate = 50.25;
+
+				scope.$apply();
+			}));
+
+			it('should update the default rate in cents', function() {
+				expect(scope.project.tasks[0].defaultRateInCents).toBe(0);
+				expect(scope.project.tasks[1].defaultRateInCents).toBe(5025);				
+			});
 		});	
 
 		describe('when an existing project is saved with success', function(){
