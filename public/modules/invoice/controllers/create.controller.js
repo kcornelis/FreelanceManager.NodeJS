@@ -96,7 +96,7 @@ function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, 
 				return tr.projectId + '-' + tr.task;
 			}),
 			function(tr){
-				var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function(sum, i){ return sum + i.totalMinutes; });
+				var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function(sum, i){ return sum + i; });
 				var quantity = Math.round((totalMinutes / 60) * 100) / 100;
 				var project = _.first(_.where($scope.projects, function (p) { return p.id === tr[0].projectId; }));
 				var task = project ? _.first(_.where(project.tasks, function(t) { return t.name === tr[0].task; })) : null;
