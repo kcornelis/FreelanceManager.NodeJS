@@ -36,7 +36,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 		before(function(done){
 
-			invoice = Invoice.create(testdata.normalAccountId, '20140301', new Date(2014, 3, 31), new Date(2014, 4, 30));
+			invoice = Invoice.create(testdata.normalAccountId, '20140301', 20140331, 20140430);
 
 			invoice.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 
@@ -80,11 +80,17 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});			
 
 		it('should return the date of the invoice', function(){
-			new Date(body.date).should.eql(new Date(2014, 3, 31));
+			body.date.numeric.should.eql(20140331);
+			body.date.year.should.eql(2014);
+			body.date.month.should.eql(3);
+			body.date.day.should.eql(31);
 		});	
 
 		it('should return the credit term of the invoice', function(){
-			new Date(body.creditTerm).should.eql(new Date(2014, 4, 30));
+			body.creditTerm.numeric.should.eql(20140430);
+			body.creditTerm.year.should.eql(2014);
+			body.creditTerm.month.should.eql(4);
+			body.creditTerm.day.should.eql(30);
 		});	
 
 		it('should return the template of the invoice', function(){
@@ -150,7 +156,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 		before(function(done){
 			
-			invoice = Invoice.create(uuid.v1(), '20140301', new Date(2014, 3, 31), new Date(2014, 4, 30));
+			invoice = Invoice.create(uuid.v1(), '20140301', 20140331, 20140430);
 
 			invoice.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 
@@ -202,19 +208,19 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 		before(function(done){
 
-		 	invoice1 = Invoice.create(testdata.normalAccountId, '20140301', new Date(2014, 3, 31), new Date(2014, 4, 30));
+		 	invoice1 = Invoice.create(testdata.normalAccountId, '20140301', 20140331, 20140430);
 			invoice1.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice1.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 
-			invoice2 = Invoice.create(testdata.normalAccountId, '20140302', new Date(2014, 3, 31), new Date(2014, 4, 30));
+			invoice2 = Invoice.create(testdata.normalAccountId, '20140302', 20140331, 20140430);
 			invoice2.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice2.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
 			});	
 
-			invoice3 = Invoice.create(uuid.v1(), '20140303', new Date(2014, 3, 31), new Date(2014, 4, 30));
+			invoice3 = Invoice.create(uuid.v1(), '20140303', 20140331, 20140430);
 			invoice3.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice3.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
@@ -264,6 +270,116 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});
 	});
 
+	/**
+	 * Get all invoices by range
+	 */
+	describe('When invoices are requested by range by an unauthenticated person', function(){
+		it('should return a 401 satus code', function(done){
+			request('http://localhost:' + config.port)
+				.get('/api/public/invoices/byrange/20100202/20100211')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When invoices are requested by range', function() {
+
+		var response;
+		var body;
+
+		var invoice1;
+		var invoice2;
+		var invoice3;
+		var invoice4;
+		var invoice5;
+
+		before(function(done){
+
+		 	invoice1 = Invoice.create(testdata.normalAccountId, '1', 20100201, 20100230);
+			invoice1.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice1.changeCustomer('John BVBA', 'BE12345678', '100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});	
+
+			invoice2 = Invoice.create(testdata.normalAccountId, '2', 20100202, 20100230);
+			invoice2.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice2.changeCustomer('John BVBA', 'BE12345678', '100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});	
+
+			invoice3 = Invoice.create(testdata.normalAccountId, '3', 20100210, 20100230);
+			invoice3.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice3.changeCustomer('John BVBA', 'BE12345678', '100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});	
+
+			invoice4 = Invoice.create(testdata.normalAccountId, '4', 20100211, 20100230);
+			invoice4.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice4.changeCustomer('John BVBA', 'BE12345678', '100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});	
+
+			invoice5 = Invoice.create(uuid.v1(), '5', 20100205, 20100230);
+			invoice5.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice5.changeCustomer('John BVBA', 'BE12345678', '100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});			
+
+			async.series([
+				function(done){
+					invoice1.save(done);
+				},
+				function(done){
+					invoice2.save(done);
+				},
+				function(done){
+					invoice3.save(done);
+				},
+				function(done){
+					invoice4.save(done);
+				},
+				function(done){
+					invoice5.save(done);
+				},
+				function(done){
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/invoices/bydate/20100202/20100210')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return invoices from the provided date (min)', function() {
+			_.where(body, { id: invoice2.id }).length.should.eql(1);
+		});
+
+		it('should return invoices from the provided date (max)', function() {
+			_.where(body, { id: invoice3.id }).length.should.eql(1);
+		});
+
+		it('should not return an invoice outside the range (min)', function() {
+			_.where(body, { id: invoice1.id }).length.should.eql(0);
+		});
+
+		it('should not return an invoice outside the range (max)', function() {
+			_.where(body, { id: invoice4.id }).length.should.eql(0);
+		});
+
+		it('should not return invoices from another tenant', function() {
+			_.where(body, { id: invoice5.id }).length.should.eql(0);
+		});
+	});
 
 	/**
 	 * Create
@@ -291,8 +407,8 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 				.set('Authorization', testdata.normalAccountToken)
 				.send({ 
 					number: '20140101',
-					date: new Date(2014, 1, 1),
-					creditTerm: new Date(2014, 1, 30),
+					date: 20140101,
+					creditTerm: 20140130,
 					template: '<h1>INVOICE</h1><p>{{ invoice.number }}</p>',
 					customer: {
 						name: 'John BVBA',
@@ -339,11 +455,11 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});
 
 		it('should create a invoice with the specified date', function(){
-			new Date(invoice.date).should.eql(new Date(2014, 1, 1));
+			invoice.date.numeric.should.eql(20140101);
 		});	
 
 		it('sshould create a invoice with the specified credit term', function(){
-			new Date(invoice.creditTerm).should.eql(new Date(2014, 1, 30));
+			invoice.creditTerm.numeric.should.eql(20140130);
 		});	
 
 		it('should create a invoice with the specified template', function(){
@@ -390,11 +506,11 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});			
 
 		it('should return the date of the invoice', function(){
-			new Date(body.date).should.eql(new Date(2014, 1, 1));
+			body.date.numeric.should.eql(20140101);
 		});	
 
 		it('should return the credit term of the invoice', function(){
-			new Date(body.creditTerm).should.eql(new Date(2014, 1, 30));
+			body.creditTerm.numeric.should.eql(20140130);
 		});	
 
 		it('should return the template of the invoice', function(){
@@ -484,8 +600,8 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 				.set('Authorization', testdata.normalAccountToken)
 				.send({ 
 					number: '20140101',
-					date: new Date(2014, 1, 1),
-					creditTerm: new Date(2014, 1, 30),
+					date: 20140101,
+					creditTerm: 20140130,
 					template: '<h1>INVOICE</h1><p>{{ invoice.number }}</p>',
 					customer: {
 						name: 'John BVBA',
@@ -532,11 +648,11 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		});			
 
 		it('should return the date of the invoice', function(){
-			new Date(body.date).should.eql(new Date(2014, 1, 1));
+			body.date.numeric.should.eql(20140101);
 		});	
 
 		it('should return the credit term of the invoice', function(){
-			new Date(body.creditTerm).should.eql(new Date(2014, 1, 30));
+			body.creditTerm.numeric.should.eql(20140130);
 		});	
 
 		it('should return the template of the invoice', function(){

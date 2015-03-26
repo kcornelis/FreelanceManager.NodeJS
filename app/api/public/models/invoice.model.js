@@ -6,6 +6,14 @@
 var mongoose = require('mongoose'),
 	AggregateRootSchema = require('./aggregateroot');
 
+
+/**
+ * Validators
+ */	
+var yearValidation = [function(v){ return v >= 1900 && v <= 2200; }, 'Path `{PATH}` ({VALUE}) should be between 1900 and 2200'];
+var monthValidation = [function(v){ return v >= 1 && v <= 12; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 12'];
+var dayValidation = [function(v){ return v >= 1 && v <= 31; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 31'];
+
 /**
  * Client Schema
  */
@@ -21,12 +29,16 @@ var InvoiceSchema = new AggregateRootSchema({
 		trim: true
 	},
 	date: {
-		type: Date,
-		required: true
+		year: { type: Number, required: true, validate: yearValidation },
+		month: { type: Number, required: true, validate: monthValidation },
+		day: { type: Number, required: true, validate: dayValidation },
+		numeric: { type: Number, required: true, index: true }
 	},
 	creditTerm: {
-		type: Date,
-		required: true
+		year: { type: Number, required: true, validate: yearValidation },
+		month: { type: Number, required: true, validate: monthValidation },
+		day: { type: Number, required: true, validate: dayValidation },
+		numeric: { type: Number, required: true, index: true }
 	},
 	template: {
 		type: String,
@@ -142,11 +154,27 @@ InvoiceSchema.post('save', function (doc) {
 	});
 });
 
-/*
- *	Write methods
+ /*
+ *	Private methods
  */
+function createDateObject(date){
 
- function recalculateTotals(invoice){
+	if(!date)
+		return;
+
+	var year = Math.floor(date / 10000);
+	var month = Math.floor((date - (year * 10000)) / 100);
+	var day = Math.floor(date - (year * 10000) - (month * 100));
+
+	return {
+		numeric: date,
+		year: year,
+		month: month,
+		day: day
+	};
+}
+
+function recalculateTotals(invoice){
 
 	var totalInCents = 0;
 	var totalPerPercentage = {};
@@ -192,8 +220,8 @@ InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
 
 	invoice.number = number;
 	invoice.tenant = tenant;
-	invoice.date = date;
-	invoice.creditTerm = creditTerm;
+	invoice.date = createDateObject(date);
+	invoice.creditTerm = createDateObject(creditTerm);
 	invoice.lines = [];
 
 	// set totals to 0

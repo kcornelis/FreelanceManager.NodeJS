@@ -79,6 +79,19 @@ exports.getAll = function(req, res, next) {
 	});
 };
 
+exports.getByDate = function(req, res, next) {
+
+	Invoice.find(
+	{ 
+		tenant: req.user.id,
+		'date.numeric': { $gte: req.params.from, $lte: req.params.to }
+	},
+	function(err, invoices) {
+		if(err) next(err);
+		else res.send(_.map(invoices, convert));
+	});
+};
+
 exports.create = function(req, res, next) {
 
 	var invoice = Invoice.create(req.user.id, req.body.number, req.body.date, req.body.creditTerm);

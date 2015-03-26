@@ -23,7 +23,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 		before(function(done) {
 
-			original = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			original = Invoice.create(tenant, 'number 1', 20140201, 20140301);
 
 			original.changeTemplate('template');
 
@@ -64,15 +64,17 @@ describe('Invoice Model Unit Tests:', function() {
 		});
 
 		it('should have a date', function(){
-			saved.date.getFullYear().should.eql(2014);
-			saved.date.getMonth().should.eql(1); // 0 based
-			saved.date.getDate().should.eql(1);
+			saved.date.year.should.eql(2014);
+			saved.date.month.should.eql(2);
+			saved.date.day.should.eql(1);
+			saved.date.numeric.should.eql(20140201);
 		});
 
 		it('should have a credit term', function(){
-			saved.creditTerm.getFullYear().should.eql(2014);
-			saved.creditTerm.getMonth().should.eql(2); // 0 based
-			saved.creditTerm.getDate().should.eql(1);		
+			saved.creditTerm.year.should.eql(2014);
+			saved.creditTerm.month.should.eql(3);
+			saved.creditTerm.day.should.eql(1);	
+			saved.creditTerm.numeric.should.eql(20140301);	
 		});				
 
 		it('should have version 3', function(){
@@ -100,13 +102,8 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.events[0].number.should.eql('number 1');			
 			saved.events[0].tenant.should.eql(tenant);
 	
-			saved.events[0].date.getFullYear().should.eql(2014);
-			saved.events[0].date.getMonth().should.eql(1); // 0 based
-			saved.events[0].date.getDate().should.eql(1);
-
-			saved.events[0].creditTerm.getFullYear().should.eql(2014);
-			saved.events[0].creditTerm.getMonth().should.eql(2); // 0 based
-			saved.events[0].creditTerm.getDate().should.eql(1);	
+			saved.events[0].date.should.eql(20140201);
+			saved.events[0].creditTerm.should.eql(20140301);
 
 			saved.events[0].metadata.eventName.should.eql('InvoiceCreated');
 		});
@@ -125,7 +122,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var invoice = Invoice.create(null, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			var invoice = Invoice.create(null, 'number 1', 20140101, 20140201);
 
 			invoice.changeTemplate('template');
 
@@ -144,7 +141,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var invoice = Invoice.create(tenant, '', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			var invoice = Invoice.create(tenant, '', 20140101, 20140201);
 
 			invoice.changeTemplate('template');
 
@@ -202,7 +199,7 @@ describe('Invoice Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function() {
-			original = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			original = Invoice.create(tenant, 'number 1', 20140101, 20140201);
 
 			original.changeTemplate('template');
 
@@ -260,7 +257,7 @@ describe('Invoice Model Unit Tests:', function() {
 		var invoice;
 
 		before(function() {
-			invoice = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			invoice = Invoice.create(tenant, 'number 1', 20140101, 20140201);
 
 			invoice.changeTemplate('template');
 			invoice.changeTemplate('template');
@@ -279,7 +276,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var invoice = Invoice.create(tenant, 'number', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			var invoice = Invoice.create(tenant, 'number', 20140101, 20140201);
 
 			invoice.changeCustomer('to', 'tovat', 'tonumber', {
 				line1: 'to line 1', postalcode: 'to postalcode', city: 'to city'
@@ -297,7 +294,7 @@ describe('Invoice Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function() {
-			original = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			original = Invoice.create(tenant, 'number 1', 20140101, 20140201);
 
 			original.changeTemplate('template');
 
@@ -380,7 +377,7 @@ describe('Invoice Model Unit Tests:', function() {
 		var invoice;
 
 		before(function() {
-			invoice = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			invoice = Invoice.create(tenant, 'number 1', 20140101, 20140201);
 
 			invoice.changeTemplate('template');
 
@@ -402,7 +399,7 @@ describe('Invoice Model Unit Tests:', function() {
 
 		it('should fail', function(done) {
 
-			var invoice = Invoice.create(tenant, 'number', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			var invoice = Invoice.create(tenant, 'number', 20140101, 20140201);
 
 			invoice.changeTemplate('template');
 
@@ -418,7 +415,7 @@ describe('Invoice Model Unit Tests:', function() {
 		var original, saved;
 
 		before(function() {
-			original = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			original = Invoice.create(tenant, 'number 1', 20140101, 20140201);
 
 			original.changeTemplate('template');
 
@@ -539,7 +536,7 @@ describe('Invoice Model Unit Tests:', function() {
 		var invoice;
 
 		before(function() {
-			invoice = Invoice.create(tenant, 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			invoice = Invoice.create(tenant, 'number 1', 20140101, 20140201);
 
 			invoice.changeTemplate('template');
 			invoice.changeTemplate('template');
@@ -567,7 +564,7 @@ describe('Invoice Model Unit Tests:', function() {
 			timeRegistration2 = TimeRegistration.create('account1', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
 			timeRegistration3 = TimeRegistration.create('account2', company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
 
-			original = Invoice.create('account1', 'number 1', new Date(2014, 1, 1), new Date(2014, 2, 1));
+			original = Invoice.create('account1', 'number 1', 20140101, 20140201);
 
 			original.changeTemplate('template');
 

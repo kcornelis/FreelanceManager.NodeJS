@@ -407,7 +407,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	});
 
 	/**
-	 * Get all time registrations by range
+	 * Search time registrations
 	 */
 	describe('When time registrations are searched by an unauthenticated person', function(){
 		it('should return a 401 satus code', function(done){
