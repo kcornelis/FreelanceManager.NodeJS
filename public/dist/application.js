@@ -885,6 +885,15 @@ angular.module('core').directive('fmWith', function () {
         method: 'POST',
         url: '/api/public/invoices/preview',
         isArray: false
+      },
+      bydate: {
+        method: 'GET',
+        url: '/api/public/invoices/bydate/:from/:to',
+        params: {
+          from: '@from',
+          to: '@to'
+        },
+        isArray: true
       }
     });
   }
@@ -1437,7 +1446,7 @@ angular.module('core').service('toggleStateService', [
     }).state('app.invoice_overview', {
       url: '/invoice/overview/:from/:to',
       templateUrl: 'modules/invoice/views/overview.html',
-      controller: 'OverviewController',
+      controller: 'InvoiceOverviewController',
       access: { requiredLogin: true },
       params: {
         from: function () {
@@ -1541,7 +1550,7 @@ angular.module('invoice').controller('CreateController', [
         return tr.projectId + '-' + tr.task;
       }), function (tr) {
         var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function (sum, i) {
-            return sum + i.totalMinutes;
+            return sum + i;
           });
         var quantity = Math.round(totalMinutes / 60 * 100) / 100;
         var project = _.first(_.where($scope.projects, function (p) {
@@ -1594,11 +1603,21 @@ angular.module('invoice').controller('CreateController', [
         }));
       $scope.invoice.template = template ? template.content : '';
     });
-    $scope.$watch('invoice.date', function (date) {
-      if (date)
-        $scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
-      else
+    $scope.$watch('invoice.displayDate', function (date) {
+      if (date) {
+        $scope.invoice.displayCreditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
+        $scope.invoice.date = moment(date, 'YYYY-MM-DD').format('YYYYMMDD');
+      } else {
+        $scope.invoice.displayCreditTerm = null;
+        $scope.invoice.date = null;
+      }
+    });
+    $scope.$watch('invoice.displayCreditTerm', function (date) {
+      if (date) {
+        $scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').format('YYYYMMDD');
+      } else {
         $scope.invoice.creditTerm = null;
+      }
     });
     $scope.searchCustomer = function () {
       var searchDialog = $modal.open({
@@ -1629,7 +1648,36 @@ angular.module('invoice').controller('CreateController', [
       activate(4);
     };
     $scope.create = function () {
-      Invoice.save($scope.invoice);
+      Invoice.save($scope.invoice, function () {
+        $state.go('app.invoice_overview');
+      });
+    };
+  }
+]);angular.module('invoice').controller('InvoiceOverviewController', [
+  '$scope',
+  'Invoice',
+  '$state',
+  '$stateParams',
+  function ($scope, Invoice, $state, $stateParams) {
+    'use strict';
+    $scope.year = moment($stateParams.from, 'YYYYMMDD').year();
+    $scope.getAllInvoices = function () {
+      $scope.invoices = Invoice.bydate({
+        from: $stateParams.from,
+        to: $stateParams.to
+      });
+    };
+    $scope.previous = function () {
+      $state.go('app.invoice_overview', {
+        from: $scope.year - 1 + '0101',
+        to: $scope.year - 1 + '1231'
+      }, { location: 'replace' });
+    };
+    $scope.next = function () {
+      $state.go('app.invoice_overview', {
+        from: $scope.year + 1 + '0101',
+        to: $scope.year + 1 + '1231'
+      }, { location: 'replace' });
     };
   }
 ]);angular.module('project').config([
