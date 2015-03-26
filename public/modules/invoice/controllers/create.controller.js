@@ -153,10 +153,24 @@ function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, 
 		$scope.invoice.template = template ? template.content : '';
 	});
 
-	$scope.$watch('invoice.date', function(date) {
-		if(date)
-			$scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
-		else $scope.invoice.creditTerm = null;
+	$scope.$watch('invoice.displayDate', function(date) {
+		if(date){
+			$scope.invoice.displayCreditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
+			$scope.invoice.date = moment(date, 'YYYY-MM-DD').format('YYYYMMDD');
+		}
+		else { 
+			$scope.invoice.displayCreditTerm = null; 
+			$scope.invoice.date = null;
+		}
+	});
+
+	$scope.$watch('invoice.displayCreditTerm', function(date) {
+		if(date){
+			$scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').format('YYYYMMDD');
+		}
+		else{ 
+			$scope.invoice.creditTerm = null;
+		}
 	});
 
 	$scope.searchCustomer = function(){
@@ -196,6 +210,8 @@ function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, 
 
 	$scope.create = function(){
 
-		Invoice.save($scope.invoice);
+		Invoice.save($scope.invoice, function(){
+			$state.go('app.invoice_overview');
+		});
 	};
 });

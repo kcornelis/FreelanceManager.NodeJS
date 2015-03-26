@@ -54,6 +54,30 @@
 			});	
 		});	
 
+		describe('Get by date', function(){
+			
+			var Invoice,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+				Invoice = _Invoice_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/invoices/bydate/20140101/20140110')
+					.respond(200, [{ description: 'invoice 1'}, { description: 'invoice 2'}]);
+
+				response = Invoice.bydate({ from: 20140101, to: 20140110 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should return all invoices for the given date', function(){
+				expect(response[0].description).toBe('invoice 1');
+				expect(response[1].description).toBe('invoice 2');
+			});	
+		});		
+
 		describe('Update', function(){
 			
 			var Invoice,

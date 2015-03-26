@@ -14,7 +14,7 @@ angular.module('invoice').config(['$stateProvider', '$urlRouterProvider',
 		.state('app.invoice_overview', {
 			url: '/invoice/overview/:from/:to',
 			templateUrl: 'modules/invoice/views/overview.html',
-			controller: 'OverviewController',
+			controller: 'InvoiceOverviewController',
 			access: { requiredLogin: true },
 			params: {
 				from: function(){ return moment().startOf('year').format('YYYYMMDD'); },

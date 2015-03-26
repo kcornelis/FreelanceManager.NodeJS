@@ -64,8 +64,6 @@ App.config(['$locationProvider',
 	function ($rootScope, $scope, $http, $stateParams) {
 		'use strict';
 
-	console.log('qsdf' + $stateParams);
-
 		if($stateParams.invoice){
 			$scope.invoice = JSON.parse($stateParams.invoice);
 		}

@@ -1,0 +1,45 @@
+<h3>
+	<a class="btn btn-primary pull-right" data-ui-sref="app.invoice_create">
+		<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Invoice
+	</a>
+	Invoices
+	<small>View your invoices</small>
+</h3>
+
+<button class="btn btn-default pull-left" data-ng-click="previous()"><span class="fa fa-chevron-left"></span></button>
+<button class="btn btn-default pull-right" data-ng-click="next()"><span class="fa fa-chevron-right"></span></button>
+<h1 class="text-center">{{ year }}</h1>
+<div class="clearfix">&nbsp;</div>
+
+<div class="panel panel-default panel-margin" data-ng-show="invoices.length == 0">
+	<div class="panel-body text-center">
+		No invoices for this period
+	</div>
+</div>
+
+<div class="panel panel-default" data-ng-init="getAllInvoices()" data-ng-show="invoices.length > 0">
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Number</th>
+					<th>Customer</th>
+					<th style="width:5%;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="invoice in invoices">
+					<td>{{ invoice.date.year }}-{{ invoice.date.month }}-{{ invoice.date.day }}</td>
+					<td>{{ invoice.number }}</td>
+					<td>{{ invoice.customer.name }}</td>
+					<td class="fm-action-column">
+						<div class="btn-group pull-right">
+							<a target="_blank" href="/render/#!/invoice/{{ invoice.id }}"><span class="fa fa-download"></span></a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
