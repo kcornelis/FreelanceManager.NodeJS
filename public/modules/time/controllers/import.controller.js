@@ -38,12 +38,12 @@ function($scope, $state, XLSXReader, NgTableParams, $filter, Project, TimeRegist
 				tasks.push({
 					project: p,
 					task: t,
-					display: p.name + ' - ' + t.name,
+					display: p.company.name + ' - ' + p.name + ' - ' + t.name,
 					id: id++
 				});
 			});
 		});
-		$scope.tasks = tasks;
+		$scope.tasks = _.sortBy(tasks, 'display');
 	});
 
 	// step 1 (file selection)

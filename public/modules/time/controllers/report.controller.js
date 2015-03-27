@@ -83,7 +83,7 @@ function($scope, $location, $state, $stateParams, TimeRegistration) {
 					});
 				});
 
-				$scope.infoPerProject = _.map(grouped, function (g) {
+				$scope.infoPerProject = _.sortBy(_.map(grouped, function (g) {
 					return {
 						companyId: g[0].companyId,
 						company: g[0].company,
@@ -91,7 +91,7 @@ function($scope, $location, $state, $stateParams, TimeRegistration) {
 						project: g[0].project,
 						tasks: g
 					};
-				});
+				}), ['company.name', 'project.name']);
 			});
 	};
 });

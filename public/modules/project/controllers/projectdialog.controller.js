@@ -13,7 +13,9 @@ function($scope, Project, Company, toUpdate) {
 	
 	$scope.isBusy = false;
 	$scope.message = '';
-	$scope.companies = Company.query();
+	Company.query(function(companies){
+		$scope.companies = _.sortBy(companies, 'name');
+	});
 
 	$scope.ok = function () {
 		showMessage('Saving project...');

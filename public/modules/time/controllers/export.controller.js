@@ -50,7 +50,7 @@ function($scope, $state, $stateParams, TimeRegistration) {
 			 $scope.timeRegistrations = _.sortBy(_.map(grouped, function (g) {
 					return {
 						date: _.first(g).date,
-						items: g
+						items: _.sortBy(g, function(i){ return i.from.numeric; })
 					};
 				}),
 			 function(i){

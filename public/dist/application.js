@@ -1353,7 +1353,9 @@ angular.module('core').service('toggleStateService', [
   function ($scope, $modal, Company) {
     'use strict';
     $scope.getAllCompanies = function () {
-      $scope.companies = Company.query();
+      Company.query(function (companies) {
+        $scope.companies = _.sortBy(companies, 'name');
+      });
     };
     $scope.openCompany = function (company) {
       var createDialog = $modal.open({
@@ -1662,9 +1664,13 @@ angular.module('invoice').controller('CreateController', [
     'use strict';
     $scope.year = moment($stateParams.from, 'YYYYMMDD').year();
     $scope.getAllInvoices = function () {
-      $scope.invoices = Invoice.bydate({
+      Invoice.bydate({
         from: $stateParams.from,
         to: $stateParams.to
+      }, function (invoices) {
+        $scope.invoices = _.sortBy(invoices, function (i) {
+          return i.date.numeric;
+        });
       });
     };
     $scope.previous = function () {
@@ -1708,7 +1714,9 @@ angular.module('invoice').controller('CreateController', [
     };
     $scope.isBusy = false;
     $scope.message = '';
-    $scope.companies = Company.query();
+    Company.query(function (companies) {
+      $scope.companies = _.sortBy(companies, 'name');
+    });
     $scope.ok = function () {
       showMessage('Saving project...');
       var id = $scope.newProject ? {} : { id: $scope.originalProject.id };
@@ -1738,7 +1746,12 @@ angular.module('invoice').controller('CreateController', [
   function ($scope, $modal, Project) {
     'use strict';
     $scope.getAllProjects = function () {
-      $scope.projects = Project.query();
+      Project.query(function (projects) {
+        $scope.projects = _.sortBy(projects, [
+          'company.name',
+          'name'
+        ]);
+      });
     };
     $scope.openProject = function (project) {
       var createDialog = $modal.open({
@@ -1966,7 +1979,9 @@ angular.module('invoice').controller('CreateController', [
         $scope.timeRegistrations = _.sortBy(_.map(grouped, function (g) {
           return {
             date: _.first(g).date,
-            items: g
+            items: _.sortBy(g, function (i) {
+              return i.from.numeric;
+            })
           };
         }), function (i) {
           return i.date.numeric;
@@ -2018,12 +2033,12 @@ angular.module('time').controller('ImportController', [
           tasks.push({
             project: p,
             task: t,
-            display: p.name + ' - ' + t.name,
+            display: p.company.name + ' - ' + p.name + ' - ' + t.name,
             id: id++
           });
         });
       });
-      $scope.tasks = tasks;
+      $scope.tasks = _.sortBy(tasks, 'display');
     });
     // step 1 (file selection)
     // ***********************
@@ -2286,7 +2301,7 @@ angular.module('time').controller('ImportController', [
               p: i.projectId
             });
           });
-        $scope.infoPerProject = _.map(grouped, function (g) {
+        $scope.infoPerProject = _.sortBy(_.map(grouped, function (g) {
           return {
             companyId: g[0].companyId,
             company: g[0].company,
@@ -2294,7 +2309,10 @@ angular.module('time').controller('ImportController', [
             project: g[0].project,
             tasks: g
           };
-        });
+        }), [
+          'company.name',
+          'project.name'
+        ]);
       });
     };
   }
@@ -2360,15 +2378,15 @@ angular.module('time').controller('ImportController', [
     };
     // load all projects and convert them to companies => projects => tasks
     $scope.projects = Project.active(function () {
-      $scope.companies = _.map(_.groupBy($scope.projects, function (p) {
+      $scope.companies = _.sortBy(_.map(_.groupBy($scope.projects, function (p) {
         return p.companyId;
       }), function (g) {
         return {
           id: g[0].companyId,
           name: g[0].company.name,
-          projects: g
+          projects: _.sortBy(g, 'name')
         };
-      });
+      }), 'name');
       if (toUpdate.companyId)
         $scope.timeRegistration.company = _.first(_.where($scope.companies, { id: toUpdate.companyId }));
       if (toUpdate.projectId && $scope.timeRegistration.company)

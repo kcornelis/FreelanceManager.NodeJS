@@ -69,15 +69,15 @@ function($scope, Project, TimeRegistration, toUpdate, date) {
 	// load all projects and convert them to companies => projects => tasks
 	$scope.projects = Project.active(function(){
 
-		$scope.companies = _.map(
+		$scope.companies = _.sortBy(_.map(
 			_.groupBy($scope.projects, function(p) { return p.companyId; }),
 			function(g) { 
 				return { 
 					id: g[0].companyId, 
 					name: g[0].company.name,
-					projects: g
+					projects: _.sortBy(g, 'name')
 				}; 
-			});	
+			}), 'name');	
 
 		if(toUpdate.companyId)
 			$scope.timeRegistration.company = _.first(_.where($scope.companies, { id: toUpdate.companyId }));

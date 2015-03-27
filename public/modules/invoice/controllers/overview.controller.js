@@ -5,7 +5,9 @@ function($scope, Invoice, $state, $stateParams) {
 	$scope.year = moment($stateParams.from, 'YYYYMMDD').year();
 
 	$scope.getAllInvoices = function() {
-		$scope.invoices = Invoice.bydate({ from: $stateParams.from, to:  $stateParams.to });
+		Invoice.bydate({ from: $stateParams.from, to:  $stateParams.to }, function(invoices){
+			$scope.invoices = _.sortBy(invoices, function(i) { return i.date.numeric; });
+		});
 	};
 
 	$scope.previous = function(){

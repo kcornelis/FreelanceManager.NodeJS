@@ -19,7 +19,7 @@
 				<tr data-ng-repeat="project in projects">
 					<td>
 					<dl data-ng-class="{ 'fm-hidden-project': project.hidden }">
-						<dt>{{ project.name }}</dt>
+						<dt>{{ project.company.name }} - {{ project.name }}</dt>
 						<dd>{{ project.description }}</dd>
 					</dl>
 					</td>

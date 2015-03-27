@@ -3,7 +3,9 @@ function($scope, $modal, Project) {
 	'use strict';
 
 	$scope.getAllProjects = function() {
-		$scope.projects = Project.query();
+		Project.query(function(projects){
+			$scope.projects = _.sortBy(projects, [ 'company.name', 'name']);
+		});
 	};
 
 	$scope.openProject = function(project){

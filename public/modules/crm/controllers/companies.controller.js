@@ -3,7 +3,9 @@ function($scope, $modal, Company) {
 	'use strict';
 
 	$scope.getAllCompanies = function() {
-		$scope.companies = Company.query();
+		Company.query(function(companies){
+			$scope.companies = _.sortBy(companies, 'name');
+		});
 	};
 
 	$scope.openCompany = function(company){
