@@ -91,7 +91,7 @@ function($scope, $location, $state, $stateParams, TimeRegistration) {
 						project: g[0].project,
 						tasks: g
 					};
-				}), ['company.name', 'project.name']);
+				}), function (i) { return i.company.name + i.project.name; });
 			});
 	};
 });

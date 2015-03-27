@@ -32,7 +32,7 @@ function($scope, $state, $stateParams, $modal, $sce, Project, TimeRegistration, 
 	// **************
 
 	Project.query(function(projects){
-		$scope.projects = _.sortBy(projects, ['company.name', 'name']);
+		$scope.projects = _.sortBy(projects, function(p) { return p.company.name + p.name; });
 	});
 
 	$scope.templates = Template.active();	

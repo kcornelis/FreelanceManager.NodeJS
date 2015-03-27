@@ -1497,10 +1497,9 @@ angular.module('invoice').controller('CreateController', [
     // Prefetch data
     // **************
     Project.query(function (projects) {
-      $scope.projects = _.sortBy(projects, [
-        'company.name',
-        'name'
-      ]);
+      $scope.projects = _.sortBy(projects, function (p) {
+        return p.company.name + p.name;
+      });
     });
     $scope.templates = Template.active();
     // WIZART STEP 1 (time registrations)
@@ -1747,10 +1746,9 @@ angular.module('invoice').controller('CreateController', [
     'use strict';
     $scope.getAllProjects = function () {
       Project.query(function (projects) {
-        $scope.projects = _.sortBy(projects, [
-          'company.name',
-          'name'
-        ]);
+        $scope.projects = _.sortBy(projects, function (p) {
+          return p.company.name + p.name;
+        });
       });
     };
     $scope.openProject = function (project) {
@@ -2309,10 +2307,9 @@ angular.module('time').controller('ImportController', [
             project: g[0].project,
             tasks: g
           };
-        }), [
-          'company.name',
-          'project.name'
-        ]);
+        }), function (i) {
+          return i.company.name + i.project.name;
+        });
       });
     };
   }

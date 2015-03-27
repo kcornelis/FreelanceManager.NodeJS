@@ -4,7 +4,7 @@ function($scope, $modal, Project) {
 
 	$scope.getAllProjects = function() {
 		Project.query(function(projects){
-			$scope.projects = _.sortBy(projects, [ 'company.name', 'name']);
+			$scope.projects = _.sortBy(projects, function(p){ return p.company.name + p.name; });
 		});
 	};
 
