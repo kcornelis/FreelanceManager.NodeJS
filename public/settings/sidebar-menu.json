@@ -43,5 +43,14 @@
 			{ "text": "Create", "sref": "app.invoice_create" },
 			{ "text": "Overview", "sref": "app.invoice_overview" }
 		]
+	},
+	{
+		"text": "Settings",
+		"heading": "true"
+	},	
+	{
+		"text": "Templates",
+		"sref": "app.settings_templates",
+		"icon": "icon-docs"
 	}	
 ]
