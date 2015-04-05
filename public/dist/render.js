@@ -8,7 +8,7 @@ App.config(['$locationProvider',
 	}
 ])
 
-.factory('authInterceptor', function ($rootScope, $q, $window) {
+.factory('authInterceptor', ['$rootScope', '$q', '$window', function ($rootScope, $q, $window) {
 	'use strict';
 
 	return {
@@ -23,15 +23,15 @@ App.config(['$locationProvider',
 			return response || $q.when(response);
 		}
 	};
-})
+}])
 
-.config(function ($httpProvider) {
+.config(['$httpProvider', function ($httpProvider) {
 	'use strict';
 
 	$httpProvider.interceptors.push('authInterceptor');
-})
+}])
 
-.run(function($rootScope, $location, $window, jwtHelper) {
+.run(['$rootScope', '$location', '$window', 'jwtHelper', function($rootScope, $location, $window, jwtHelper) {
 	'use strict';
 
 	$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
@@ -40,7 +40,7 @@ App.config(['$locationProvider',
 					$location.path('/login');
 			}
 	});
-})
+}])
 
 .config(['$stateProvider',
 	function($stateProvider) {
@@ -105,7 +105,7 @@ App.config(['$locationProvider',
 	}
 )
 
-.directive('fmDynamic', 
+.directive('fmDynamic', ['$compile', 
 	function ($compile) {
 		'use strict';
 		
@@ -119,7 +119,7 @@ App.config(['$locationProvider',
 				});
 			}
 		};
-	}
+	}]
 )
 
 .filter('price',
@@ -151,7 +151,18 @@ App.config(['$locationProvider',
 			return s + decSeperator + dig;
 		}
 	}
-);
+)
+
+.filter('leadingZeros', function () {
+	return function (n, len) {
+		var num = parseInt(n, 10);
+		len = parseInt(len, 10);
+		if (isNaN(num) || isNaN(len)) { return n; }
+		num = ''+num;
+		while (num.length < len) { num = '0'+num; }
+		return num;
+	};
+});
 
 angular.element(document).ready(function() {
 	angular.bootstrap(document, ['freelancemanager renderer']);
