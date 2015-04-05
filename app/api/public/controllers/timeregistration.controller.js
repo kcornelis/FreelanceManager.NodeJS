@@ -156,6 +156,8 @@ exports.search = function(req, res, next) {
 	if(!_.isUndefined(req.query.invoiced))
 		searchOptions.invoiced = req.query.invoiced;
 
+	if(!_.isUndefined(req.query.billable))
+		searchOptions.billable = req.query.billable;
 
 	TimeRegistration.find(searchOptions, function(err, timeRegistrations) 
 	{
