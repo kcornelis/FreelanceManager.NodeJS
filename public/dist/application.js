@@ -1508,7 +1508,8 @@ angular.module('invoice').controller('CreateController', [
       project: null,
       from: null,
       to: null,
-      invoiced: false
+      invoiced: false,
+      billable: true
     };
     $scope.searchTimeRegistrations = function () {
       $scope.loading = true;
@@ -1517,7 +1518,8 @@ angular.module('invoice').controller('CreateController', [
         project: $scope.search.project,
         from: $scope.search.from ? moment($scope.search.from, 'YYYY-MM-DD').format('YYYYMMDD') : null,
         to: $scope.search.to ? moment($scope.search.to, 'YYYY-MM-DD').format('YYYYMMDD') : null,
-        invoiced: $scope.search.invoiced
+        invoiced: $scope.search.invoiced,
+        billable: $scope.search.billable
       }, function (tr) {
         $scope.loading = false;
         $scope.searched = true;
