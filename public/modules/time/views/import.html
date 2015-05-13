@@ -65,9 +65,9 @@
 						<div class="col-sm-12">
 							<div class="form-group">
 								<!-- <label for="selectedSheetName">Sheet Name</label> -->
-								<select id="selectedSheetName" class="form-control" 
+								<select id="selectedSheetName" class="form-control chosen-select"  chosen=""
 										ng-model="selectedSheetName" data-ng-options="sheetName as sheetName for (sheetName, sheetData) in excelSheets"
-										required="true" data-ng-required="true">
+										required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 									<option value=""></option>
 								</select>
 								<!-- <table class="table table-bordered">
@@ -92,49 +92,49 @@
 					<legend>Column selection</legend>
 					<div class="form-group">
 						<label for="projectColumn">Project column</label>
-						<select id="projectColumn" name="projectColumn" class="form-control"
+						<select id="projectColumn" name="projectColumn" class="form-control chosen-select"  chosen=""
 							 	ng-model="selectedProjectColumn" data-ng-options="c.key as c.value for c in selectedSheetHeader"
-							 	required="true" data-ng-required="true">
+							 	required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 						</select>
 					</div>
 
 					<div class="form-group">
 						<label for="taskColumn">Task column</label>
-						<select id="taskColumn" name="taskColumn" class="form-control"
+						<select id="taskColumn" name="taskColumn" class="form-control chosen-select"  chosen=""
 								ng-model="selectedTaskColumn" data-ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" data-ng-required="true">
+								required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 						</select>
 					</div>
 
 					<div class="form-group">
 						<label for="dateColumn">Date column (YYYY-MM-DD)</label>
-						<select id="dateColumn" name="dateColumn" class="form-control"
+						<select id="dateColumn" name="dateColumn" class="form-control chosen-select"  chosen=""
 								ng-model="selectedDateColumn" data-ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" data-ng-required="true">
+								required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 						</select>
 					</div>
 
 					<div class="form-group">
 						<label for="fromColumn">From column (hh:mm)</label>
-						<select id="fromColumn" name="fromColumn" class="form-control"
+						<select id="fromColumn" name="fromColumn" class="form-control chosen-select"  chosen=""
 								ng-model="selectedFromColumn" data-ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" data-ng-required="true">
+								required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 						</select>
 					</div>
 
 					<div class="form-group">
 						<label for="toColumn">To column (hh:mm)</label>
-						<select id="toColumn" name="toColumn" class="form-control"
+						<select id="toColumn" name="toColumn" class="form-control chosen-select"  chosen=""
 								ng-model="selectedToColumn" data-ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" data-ng-required="true">
+								required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 						</select>
 					</div>
 
 					<div class="form-group">
 						<label for="descriptionColumn">Description column</label>
-						<select id="descriptionColumn" name="descriptionColumn" class="form-control"
+						<select id="descriptionColumn" name="descriptionColumn" class="form-control chosen-select"  chosen=""
 								ng-model="selectedDescriptionColumn" data-ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" data-ng-required="true">
+								required="true" data-ng-required="true" data-width="'100%'" data-disable-search="true">
 						</select>
 					</div>
 				</fieldset>
@@ -151,9 +151,10 @@
 					<div data-ng-repeat="p in projectsInExcelSheet">
 						<div class="form-group">
 							<label>{{ p.display }}</label>
-							<select class="form-control"
+							<select class="form-control chosen-select"  chosen=""
 									ng-model="p.mappedProjectAndTask" data-ng-options="p.id as p.display for p in tasks"
-									required="true" data-ng-required="true">
+									required="true" data-ng-required="true"  data-width="'100%'" data-disable-search="true">
+									<option value=""></option>
 							</select>
 						</div>
 					</div>

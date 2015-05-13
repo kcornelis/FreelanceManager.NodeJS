@@ -6,6 +6,7 @@ var ApplicationConfiguration = function () {
     var applicationModuleVendorDependencies = [
         'ngRoute',
         'ngAnimate',
+        'localytics.directives',
         'ngStorage',
         'ngCookies',
         'ui.bootstrap',
@@ -2016,6 +2017,9 @@ angular.module('time').controller('ImportController', [
       }
       steps[step] = true;
     }
+    function isvalid(value) {
+      return value !== undefined && value !== null;
+    }
     $scope.init = function () {
       createsteps(4);
       activate(1);
@@ -2067,7 +2071,7 @@ angular.module('time').controller('ImportController', [
       activate(3);
     };
     $scope.canGoto3 = function () {
-      return $scope.selectedSheetName !== null;
+      return isvalid($scope.selectedSheetName);
     };
     // step 3 (column selection)
     // ***********************	
@@ -2085,7 +2089,7 @@ angular.module('time').controller('ImportController', [
       activate(4);
     };
     $scope.canGoto4 = function () {
-      return $scope.selectedProjectColumn !== null && $scope.selectedTaskColumn !== null && $scope.selectedDateColumn !== null && $scope.selectedFromColumn !== null && $scope.selectedToColumn !== null && $scope.selectedDescriptionColumn !== null;
+      return isvalid($scope.selectedProjectColumn) && isvalid($scope.selectedTaskColumn) && isvalid($scope.selectedDateColumn) && isvalid($scope.selectedFromColumn) && isvalid($scope.selectedToColumn) && isvalid($scope.selectedDescriptionColumn);
     };
     // step 4 (project mapping)
     // ***********************	
@@ -2094,7 +2098,7 @@ angular.module('time').controller('ImportController', [
     };
     $scope.canGoto5 = function () {
       return _.every($scope.projectsInExcelSheet, function (p) {
-        return p.mappedProjectAndTask !== null;
+        return isvalid(p.mappedProjectAndTask);
       });
     };
     // step 5 (saving)
@@ -2107,8 +2111,8 @@ angular.module('time').controller('ImportController', [
         var selectedProjectTask = _.first(_.where($scope.projectsInExcelSheet, function (p) {
             return p.project === groupedRow[0][$scope.selectedProjectColumn] && p.task === groupedRow[0][$scope.selectedTaskColumn];
           })).mappedProjectAndTask;
-        var project = $scope.tasks[selectedProjectTask].project;
-        var task = $scope.tasks[selectedProjectTask].task;
+        var project = _.find($scope.tasks, { id: selectedProjectTask }).project;
+        var task = _.find($scope.tasks, { id: selectedProjectTask }).task;
         _.forEach(groupedRow, function (row) {
           registrations.push({
             companyId: project.companyId,

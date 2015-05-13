@@ -29,6 +29,7 @@ module.exports = {
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/bootstrap-datepicker/css/datepicker3.css',
 				'public/lib/ng-table/ng-table.min.css',
+				'public/lib/chosen_v1.2.0/chosen.css',
 
 				'public/dist/angle.css'
 			],
@@ -64,7 +65,9 @@ module.exports = {
 				'public/lib/Flot/jquery.flot.pie.js',
 				'public/lib/Flot/jquery.flot.time.js',
 				'public/lib/Flot/jquery.flot.categories.js',
-				'public/lib/flot-spline/js/jquery.flot.spline.min.js'
+				'public/lib/flot-spline/js/jquery.flot.spline.min.js',
+				'public/lib/chosen_v1.2.0/chosen.jquery.js',
+				'public/lib/angular-chosen-localytics/chosen.js'
 			]
 		},
 		css: [
