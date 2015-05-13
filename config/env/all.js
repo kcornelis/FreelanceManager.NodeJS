@@ -47,7 +47,7 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angular-loading-bar/build/loading-bar.js',
 				'public/lib/bootstrap/dist/js/bootstrap.js',
-				'public/lib/lodash/dist/lodash.js',
+				'public/lib/lodash/lodash.js',
 				'public/lib/moment/moment.js',
 
 				'public/lib/fastclick/lib/fastclick.js',

@@ -14,8 +14,7 @@ var init = require('./config/init')(),
 var app;
 var initialized = false;
 var options = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
-				replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } };       
-
+				replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } };   
 
 function initialize(db){
 	
