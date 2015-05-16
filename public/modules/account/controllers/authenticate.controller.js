@@ -1,5 +1,5 @@
-angular.module('account').controller('AuthenticateController', ['$rootScope', '$scope', '$http', '$window', '$location', 'jwtHelper',
-function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
+angular.module('account').controller('AuthenticateController', ['$rootScope', '$scope', '$http', '$window', '$stateParams', '$location', 'jwtHelper',
+function ($rootScope, $scope, $http, $window, $stateParams, $location, jwtHelper) {
 	'use strict';
 
 	delete $window.localStorage.token;
@@ -16,7 +16,7 @@ function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
 				$window.localStorage.user = decrypted.fullName;
 
 				$window.localStorage.token = data.token;
-				$location.path('/');
+				$location.path($stateParams.r ? $stateParams.r : '/').search({ }); // TODO unit test
 			})
 			.error(function (data, status, headers, config) {
 				

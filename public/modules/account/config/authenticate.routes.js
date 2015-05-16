@@ -6,7 +6,7 @@ angular.module('account').config(['$stateProvider',
 
 		// the login page does not require loggin
 		state('login', {
-			url: '/login',
+			url: '/login?r',
 			templateUrl: 'modules/account/views/login.html'
 		}).	
 

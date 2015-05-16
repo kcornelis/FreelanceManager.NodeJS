@@ -26,7 +26,7 @@ angular.module('account', ['angular-jwt'])
 	$httpProvider.interceptors.push('authInterceptor');
 })
 
-.run(function($rootScope, $location, $window, jwtHelper) {
+.run(function($rootScope, $state, $window, $location, jwtHelper) {
 	'use strict';
 
 	$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
@@ -34,7 +34,8 @@ angular.module('account', ['angular-jwt'])
 			if (nextRoute.access && 
 				nextRoute.access.requiredLogin && 
 				!loggedIn) {
-					$location.path('/login');
+					event.preventDefault();
+					$state.go('login', { r: $location.url() });
 			}
 	});
 });
