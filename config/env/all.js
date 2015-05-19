@@ -30,8 +30,6 @@ module.exports = {
 				'public/lib/bootstrap-datepicker/css/datepicker3.css',
 				'public/lib/ng-table/ng-table.min.css',
 				'public/lib/chosen_v1.2.0/chosen.css',
-
-				'public/dist/angle.css'
 			],
 			js: [
 				'public/lib/angular-route/angular-route.js',
