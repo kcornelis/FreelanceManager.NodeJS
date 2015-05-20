@@ -4,6 +4,6 @@
 	font-weight: bold;
 }
 
-.fm-login .form-control-feedback{
-	top: 0;
+.fm-login .form-control-feedback {
+	top: 16px !important;
 }
