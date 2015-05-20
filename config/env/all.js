@@ -26,10 +26,13 @@ module.exports = {
 		},
 		lib: {
 			css: [
+				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/bootstrap-datepicker/css/datepicker3.css',
 				'public/lib/ng-table/ng-table.min.css',
 				'public/lib/chosen_v1.2.0/chosen.css',
+
+				'public/lib/flat-theme/dist/flat-theme.css'
 			],
 			js: [
 				'public/lib/angular-route/angular-route.js',
@@ -40,6 +43,8 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
+
+				'public/lib/flat-theme/dist/flat-theme.js',
 
 				'public/lib/ngstorage/ngStorage.js',
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
