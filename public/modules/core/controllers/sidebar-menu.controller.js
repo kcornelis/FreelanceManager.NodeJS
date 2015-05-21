@@ -1,33 +1,29 @@
 // TODO unit test
-// From the angle project
 angular.module('core').controller('SidebarController', ['$rootScope', '$scope', '$state', '$location', '$http', '$timeout', 'const_mediaquery',
 function($rootScope, $scope, $state, $location, $http, $timeout, mq){
 	'use strict';
 	
-	var currentState = $rootScope.$state.current.name;
 	var $win = $(window);
 	var $html = $('html');
 	var $body = $('body');
 
-	// Adjustment on route changes
-	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-		currentState = toState.name;
-		// Hide sidebar automatically on mobile
-		$('body.aside-toggled').removeClass('aside-toggled');
+	function isMobile() {
+		return $win.width() < mq.tablet;
+	}
 
-		$rootScope.$broadcast('closeSidebarMenu');
-	});
+	function isTouch() {
+		return $html.hasClass('touch');
+	}
 
-	// Normalize state on resize to avoid multiple checks
-	$win.on('resize', function() {
-		if( isMobile() )
-			$body.removeClass('aside-collapsed');
-		else
-			$body.removeClass('aside-toggled');
-	});
+	function isSidebarCollapsed() {
+		return $body.hasClass('aside-collapsed');
+	}
 
-	// Check item and children active state
-	var isActive = function(item) {
+	function isSidebarToggled() {
+		return $body.hasClass('aside-toggled');
+	}
+
+	function isActive(item) {
 
 		if(!item) return;
 
@@ -38,19 +34,10 @@ function($rootScope, $scope, $state, $location, $http, $timeout, mq){
 			});
 			return foundActive;
 		}
-		else
-			return $state.is(item.sref) || $state.includes(item.sref);
+		else return $state.is(item.sref) || $state.includes(item.sref);
 	};
 
-	// Load menu from json file
-	// ----------------------------------- 
-	
-	$scope.getMenuItemPropClasses = function(item) {
-		return (item.heading ? 'nav-heading' : '') +
-			(isActive(item) ? ' active' : '') ;
-	};
-
-	$scope.loadSidebarMenu = function() {
+	function loadSidebarMenu() {
 
 		var menuJson = 'settings/sidebar-menu.json',
 			menuURL  = menuJson + '?v=' + (new Date().getTime()); // jumps cache
@@ -61,60 +48,18 @@ function($rootScope, $scope, $state, $location, $http, $timeout, mq){
 			.error(function(data, status, headers, config) {
 				alert('Failure loading menu');
 			});
-	 };
-
-	 $scope.loadSidebarMenu();
-
-	// Handle sidebar collapse items
-	// ----------------------------------- 
-	var collapseList = [];
-
-	$scope.addCollapse = function($index, item) {
-		collapseList[$index] = !isActive(item);
 	};
 
-	$scope.isCollapse = function($index) {
-		return (collapseList[$index]);
+	loadSidebarMenu();
+
+	$scope.getMenuItemPropClasses = function(item) {
+		return (item.heading ? 'header' : '') +
+			(isActive(item) ? ' active' : '') + 
+			(item.open ? ' open' : '') + 
+			((item.submenu && item.submenu.length > 0) ? ' has-sub-menu' : '');
 	};
 
-	$scope.toggleCollapse = function($index, isParentItem) {
-
-		// collapsed sidebar doesn't toggle drodopwn
-		if( isSidebarCollapsed() && !isMobile() ) return true;
-
-		// make sure the item index exists
-		if( angular.isDefined( collapseList[$index] ) ) {
-			collapseList[$index] = !collapseList[$index];
-			closeAllBut($index);
-		}
-		else if ( isParentItem ) {
-			closeAllBut(-1);
-		}
-	
-		return true;
+	$scope.onMenuItemClick = function(item) {
+		item.open = item.open ? false : true;
 	};
-
-	function closeAllBut(index) {
-		index += '';
-		for(var i in collapseList) {
-			if(index < 0 || index.indexOf(i) < 0)
-				collapseList[i] = true;
-		}
-	}
-
-	// Helper checks
-	// ----------------------------------- 
-
-	function isMobile() {
-		return $win.width() < mq.tablet;
-	}
-	function isTouch() {
-		return $html.hasClass('touch');
-	}
-	function isSidebarCollapsed() {
-		return $body.hasClass('aside-collapsed');
-	}
-	function isSidebarToggled() {
-		return $body.hasClass('aside-toggled');
-	}
 }]);
