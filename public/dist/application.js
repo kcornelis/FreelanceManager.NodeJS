@@ -389,7 +389,7 @@ angular.module('core').controller('SidebarController', [
     // Load menu from json file
     // ----------------------------------- 
     $scope.getMenuItemPropClasses = function (item) {
-      return (item.heading ? 'nav-heading' : '') + (isActive(item) ? ' active' : '');
+      return (item.heading ? 'header' : '') + (isActive(item) ? ' active' : '') + ((item.submen&& item.submenu.length > 0) ? ' has-sub-menu' : '');
     };
     $scope.loadSidebarMenu = function () {
       var menuJson = 'settings/sidebar-menu.json', menuURL = menuJson + '?v=' + new Date().getTime();

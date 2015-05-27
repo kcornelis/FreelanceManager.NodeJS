@@ -1,19 +1,4 @@
-<script type="text/ng-template" id="sidebar-renderer.html">
-	<a ng-if="item.heading" translate="{{item.translate}}">{{item.text}}</a>
-	<a ng-if="!item.heading" ng-href="{{$state.href(item.sref)}}" title="{{item.text}}">
-		<i ng-hide="inSubmenu" class="{{item.icon}}"></i>
-		<div ng-if="item.alert" class="label label-success pull-right">{{item.alert}}</div>
-		<span translate="{{item.translate}}">{{item.text}}</span>
-	</a>
-	<ul ng-if="item.submenu" ng-click="$event.stopPropagation();" class="nav sidebar-subnav">
-		<li ng-repeat="item in item.submenu" ng-include="'sidebar-renderer.html'" ng-class="getMenuItemPropClasses(item)" ng-click="onMenuItemClick(item)"></li>
-	</ul>
-</script>
-<div class="sidebar-menu">
-	<ul>
-		<li ng-class="getMenuItemPropClasses(item)" ng-repeat="item in menuItems" ng-include="'sidebar-renderer.html'" ng-click="onMenuItemClick(item)"></li>
-	</ul>
-</div>
+
 
 <style>
 	#sidebar .sidebar-menu li.open > ul {

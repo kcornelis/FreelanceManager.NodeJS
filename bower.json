@@ -71,7 +71,8 @@
     "angular-jwt": "~0.0.4",
     "js-xlsx": "~0.7.11",
     "lodash": "~3.8.0",
-    "Flat-Theme": "git://github.com/kcornelis/Flat-Theme.git"
+    "flat-theme": "git://github.com/kcornelis/flat-theme.git",
+    "angular-local-storage": "~0.2.1"
   },
   "resolutions": {
     "jquery": "2.1.1",

@@ -1,11 +1,12 @@
-<!-- top navbar-->
 <header id="header" ng-include="'/modules/core/views/top-navbar.html'"></header>
-<!-- sidebar-->
-<aside id="sidebar" ng-include="'/modules/core/views/sidebar.html'" ng-controller="SidebarController"></aside>
-<!-- Main section-->
+
+<ft-sidebar>
+	<ft-sidebar-menu ft-load="settings/sidebar-menu.json">
+	</ft-sidebar-menu>
+</ft-sidebar>
+
 <section id="content">
-	<!-- Page content-->
-	<div ui-view="" autoscroll="false" class="content-wrapper"></div>
+	<div ui-view="" autoscroll="false" id="content-wrapper"></div>
 </section>
-<!-- Page footer-->
+
 <footer id="footer" ng-include="'/modules/core/views/footer.html'"></footer>

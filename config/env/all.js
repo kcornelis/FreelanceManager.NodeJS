@@ -43,8 +43,9 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-jwt/dist/angular-jwt.js',
+				'public/lib/angular-local-storage/dist/angular-local-storage.js',
 
-				'public/lib/flat-theme/dist/flat-theme.js',
+				'public/lib/flat-theme/dist/flat-theme.angular.js',
 
 				'public/lib/ngstorage/ngStorage.js',
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
