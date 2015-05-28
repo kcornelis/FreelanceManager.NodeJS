@@ -1,14 +1,16 @@
-<h3>
-	<button class="btn btn-primary pull-right" data-ng-click="export()">
-		<em class="fa fa-download fa-fw mr-sm"></em>Export
-	</button>
-	Export
-	<small>Export time registrations</small>
-</h3>
+<div class="content-header">
+	<div class="toolbar">
+		<button class="btn btn-primary pull-right" data-ng-click="export()">
+			<em class="fa fa-plus-circle fa-fw mr-sm"></em>Export
+		</button>
+	</div>
+	<h1>Time registration export</h1>
+</div>
+
 
 <div class="fm-time-export" data-ng-init="refresh()">
 
-	<div class="btn-group pull-right">
+	<div class="btn-group pull-right btn-group-accentuate">
 		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 			<span class="fa fa-cog"></span>
 		</button>
@@ -22,7 +24,7 @@
 		</ul>	
 	</div>
 
-	<div class="btn-group">
+	<div class="btn-group btn-group-accentuate">
 		<input type="text" class="form-control date-selector" style="width: 120px;" data-ng-model="displayFrom" 
 			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeFrom(date, 'YYYY-MM-DD')"
 			   data-fm-datepicker-h-position="left" />
