@@ -14,14 +14,14 @@
 					<input type="email" name="email" class="form-control" 
 							data-ng-model="user.email" required  />
 					<span class="fa fa-envelope form-control-feedback"></span>
-				</ft-form-group ft-floating-label>
+				</ft-form-group>
 
 				<ft-form-group ft-floating-label class="has-feedback" data-fm-add-error-for="loginForm.password">
 					<label>Password</label>
 					<input type="password" name="password" class="form-control" 
 							data-ng-model="user.password" required  />
 					<span class="fa fa-lock form-control-feedback"></span>
-				</ft-form-group ft-floating-label>
+				</ft-form-group>
 
 				<button type="submit" class="btn btn-block btn-blue mt-xl"
 						ng-disabled="loginForm.$invalid">Login</button>
