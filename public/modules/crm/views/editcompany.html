@@ -5,39 +5,42 @@
 			<h4 class="modal-title">Company</h4>
 		</div>
 		<div class="modal-body">
-			<div class="form-group" data-fm-add-error-for="companyForm.name">
+			<h5 class="text-center">Info</h5>
+			<ft-form-group ft-floating-label data-fm-add-error-for="companyForm.name">
 				<label>Name</label>
-				<input type="text" name="name" class="form-control" placeholder="Name" data-ng-model="company.name" required autofocus>
-			</div>
-			<div class="form-group">
+				<input type="text" name="name" class="form-control" data-ng-model="company.name" required autofocus>
+			</ft-form-group>
+			<ft-form-group ft-floating-label>
 				<label>Number</label>
-				<input type="text" name="number" class="form-control" placeholder="Number" data-ng-model="company.number" disabled>
-			</div>
-			<div class="form-group">
+				<input type="text" name="number" class="form-control" data-ng-model="company.number" disabled>
+			</ft-form-group>
+			<ft-form-group ft-floating-label>
 				<label>VAT Number</label>
-				<input type="text" name="vatNumber" class="form-control" placeholder="VAT Number" data-ng-model="company.vatNumber">
+				<input type="text" name="vatNumber" class="form-control" data-ng-model="company.vatNumber">
+			</ft-form-group>
+			<h5 class="text-center mt-xl">Invoice Address</h5>
+			<ft-form-group ft-floating-label>
+				<label>Line 1</label>
+				<input type="text" class="form-control" data-ng-model="company.address.line1">
+			</ft-form-group>
+			<ft-form-group ft-floating-label>
+				<label>Line 2</label>
+				<input type="text" class="form-control" data-ng-model="company.address.line2">
+			</ft-form-group>
+			<div class="row">
+				<div class="col-xs-6">
+					<ft-form-group ft-floating-label>
+						<label>Postal code</label>
+						<input type="text" class="form-control" data-ng-model="company.address.postalcode">
+					</ft-form-group>
+				</div>
+				<div class="col-xs-6">
+					<ft-form-group ft-floating-label>
+						<label>City</label>
+						<input type="text" class="form-control" data-ng-model="company.address.city">
+					</ft-form-group>
+				</div>
 			</div>
-			<div class="form-group">
-				<label>Address</label>
-				<div class="row">
-					<div class="col-xs-12">
-						<input type="text" class="form-control mb-lg" placeholder="Line 1" data-ng-model="company.address.line1">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<input type="text" class="form-control mb-lg" placeholder="Line 2" data-ng-model="company.address.line2">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-6">
-						<input type="text" class="form-control" placeholder="Postal code" data-ng-model="company.address.postalcode">
-					</div>
-					<div class="col-xs-6">
-						<input type="text" class="form-control" placeholder="City" data-ng-model="company.address.city">
-					</div>
-				</div>			
-			</div>				
 		</div>
 		<div class="modal-footer">
 			<div class="pull-left" data-ng-show="isBusy">
