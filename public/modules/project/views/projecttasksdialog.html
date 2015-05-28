@@ -2,13 +2,13 @@
 	<div class="modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-ng-click="cancel()" aria-hidden="true">&times;</button>
-			<h4 class="modal-title">Project Tasks</h4>
+			<h4 class="modal-title">Project tasks</h4>
 		</div>
 		<div class="modal-body">
-			<div class="form-group" data-ng-repeat="task in project.tasks">
+			<ft-form-group ft-floating-label data-ng-repeat="task in project.tasks">
 				<label>{{ task.name }}</label>
-				<input type="text" data-ng-model="task.defaultRate" class="form-control" placeholder="Rate">
-			</div>
+				<input type="text" data-ng-model="task.defaultRate" class="form-control">
+			</ft-form-group>
 		</div>
 		<div class="modal-footer">
 			<div class="pull-left" data-ng-show="isBusy">
