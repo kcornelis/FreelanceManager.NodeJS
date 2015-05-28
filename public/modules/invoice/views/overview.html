@@ -1,13 +1,14 @@
-<h3>
-	<a class="btn btn-primary pull-right" data-ui-sref="app.invoice_create">
-		<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Invoice
-	</a>
-	Invoices
-	<small>View your invoices</small>
-</h3>
+<div class="content-header">
+	<div class="toolbar">
+		<button class="btn btn-primary pull-right" data-ui-sref="app.invoice_create">
+			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Invoice
+		</button>
+	</div>
+	<h1>Invoice overview</h1>
+</div>
 
-<button class="btn btn-default pull-left" data-ng-click="previous()"><span class="fa fa-chevron-left"></span></button>
-<button class="btn btn-default pull-right" data-ng-click="next()"><span class="fa fa-chevron-right"></span></button>
+<button class="btn btn-default pull-left btn-accentuate" data-ng-click="previous()"><span class="fa fa-chevron-left"></span></button>
+<button class="btn btn-default pull-right btn-accentuate" data-ng-click="next()"><span class="fa fa-chevron-right"></span></button>
 <h1 class="text-center">{{ year }}</h1>
 <div class="clearfix">&nbsp;</div>
 
