@@ -4,7 +4,7 @@ var ApplicationConfiguration = (function() {
 
 	// Init module configuration options
 	var applicationModuleName = 'freelancemanager';
-	var applicationModuleVendorDependencies = ['ngRoute', 'LocalStorageModule', 'ngAnimate', 'localytics.directives', 'ngStorage', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ui.utils', 'oc.lazyLoad', 'cfp.loadingBar', 'ngSanitize', 'ngResource', 'ngTable', 'ft'];
+	var applicationModuleVendorDependencies = [ 'LocalStorageModule', 'ui.bootstrap', 'ui.router', 'ui.utils', 'ngResource', 'ft'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName) {
