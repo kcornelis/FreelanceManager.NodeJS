@@ -103,15 +103,17 @@ angular.element(document).ready(function () {
   }
 ]).run([
   '$rootScope',
-  '$location',
+  '$state',
   '$window',
+  '$location',
   'jwtHelper',
-  function ($rootScope, $location, $window, jwtHelper) {
+  function ($rootScope, $state, $window, $location, jwtHelper) {
     'use strict';
     $rootScope.$on('$stateChangeStart', function (event, nextRoute, currentRoute) {
       var loggedIn = $window.localStorage.token && !jwtHelper.isTokenExpired($window.localStorage.token);
       if (nextRoute.access && nextRoute.access.requiredLogin && !loggedIn) {
-        $location.path('/login');
+        event.preventDefault();
+        $state.go('login', { r: $location.url() });
       }
     });
   }
@@ -120,7 +122,7 @@ angular.element(document).ready(function () {
   function ($stateProvider) {
     'use strict';
     $stateProvider.state('login', {
-      url: '/login',
+      url: '/login?r',
       templateUrl: 'modules/account/views/login.html'
     }).state('app.account', {
       url: '/account',
@@ -175,9 +177,10 @@ angular.element(document).ready(function () {
   '$scope',
   '$http',
   '$window',
+  '$stateParams',
   '$location',
   'jwtHelper',
-  function ($rootScope, $scope, $http, $window, $location, jwtHelper) {
+  function ($rootScope, $scope, $http, $window, $stateParams, $location, jwtHelper) {
     'use strict';
     delete $window.localStorage.token;
     delete $window.localStorage.user;
@@ -191,7 +194,7 @@ angular.element(document).ready(function () {
         var decrypted = jwtHelper.decodeToken(data.token);
         $window.localStorage.user = decrypted.fullName;
         $window.localStorage.token = data.token;
-        $location.path('/');
+        $location.path($stateParams.r ? $stateParams.r : '/').search({});  // TODO unit test
       }).error(function (data, status, headers, config) {
         // Erase the token if the user fails to log in
         delete $window.localStorage.token;
