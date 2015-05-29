@@ -55,7 +55,6 @@ module.exports = {
 				'public/lib/screenfull/dist/screenfull.min.js',
 				'public/lib/animo.js/animo.js',
 				'public/lib/slimScroll/jquery.slimscroll.min.js',
-				'public/lib/jquery-classyloader/js/jquery.classyloader.min.js',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
 				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'public/lib/ng-table/ng-table.min.js',
