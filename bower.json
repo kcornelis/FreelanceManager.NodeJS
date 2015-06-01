@@ -12,7 +12,6 @@
     "angular-bootstrap": "0.12.0",
     "angular-ui-utils": "0.1.1",
     "moment": "2.8.3",
-    "chosen_v1.2.0": "https://github.com/harvesthq/chosen/releases/download/v1.2.0/chosen_v1.2.0.zip",
     "flot-spline": "*",
     "flot.tooltip": "0.8.4",
     "jquery-ui": "1.11.1",
@@ -25,7 +24,8 @@
     "lodash": "~3.8.0",
     "flat-theme": "git://github.com/kcornelis/flat-theme.git",
     "angular-local-storage": "~0.2.1",
-    "angular-resource": "~1.4.0"
+    "angular-resource": "~1.4.0",
+    "chosen": "~1.4.2"
   },
   "resolutions": {
     "jquery": "2.1.1",
