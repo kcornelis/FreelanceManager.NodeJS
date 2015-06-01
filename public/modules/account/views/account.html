@@ -1,5 +1,5 @@
 <div class="content-header">
-	<h1>Account</h1>
+	<h1><i class="icon-user"></i>Account</h1>
 </div>
 
 <div class="row">
@@ -12,29 +12,29 @@
 					</div>
 					<div class="panel-body">
 
-						<div class="form-group" data-floating="accountInfoForm.name" data-fm-add-error-for="accountInfoForm.name">
+						<ft-form-group ft-floating-label data-floating="accountInfoForm.name" data-fm-add-error-for="accountInfoForm.name">
 							<label>Name</label>
 							<input type="text" name="name" class="form-control" 
 									data-ng-model="account.name" required autofocus>
-						</div>
+						</ft-form-group>
 
-						<div class="form-group floating" data-fm-add-error-for="accountInfoForm.firstName">
+						<ft-form-group ft-floating-label data-fm-add-error-for="accountInfoForm.firstName">
 							<label>First name</label>
 							<input type="text" name="firstName" class="form-control" 
 									data-ng-model="account.firstName" required>
-						</div>
+						</ft-form-group>
 
-						<div class="form-group floating" data-fm-add-error-for="accountInfoForm.lastName">
+						<ft-form-group ft-floating-label data-fm-add-error-for="accountInfoForm.lastName">
 							<label>Last name</label>
 							<input type="text" name="lastName" class="form-control" 
 									data-ng-model="account.lastName" required>
-						</div>
+						</ft-form-group>
 
-						<div class="form-group floating" data-fm-add-error-for="accountInfoForm.email">
+						<ft-form-group ft-floating-label data-fm-add-error-for="accountInfoForm.email">
 							<label>Email</label>
 							<input type="email" name="email" class="form-control" 
 									data-ng-model="account.email" required data-parsley-type="email">
-						</div>
+						</ft-form-group>
 					</div>
 					<div class="panel-footer">
 						<div class="clearfix">
@@ -59,23 +59,23 @@
 
 						<div class="alert alert-danger" data-ng-show="hasError">An error occurred while saving the password.</div>
 
-						<div class="form-group floating" data-fm-add-error-for="accountPasswordForm.oldPassword">
+						<ft-form-group ft-floating-label data-fm-add-error-for="accountPasswordForm.oldPassword">
 							<label>Old password</label>
 							<input type="password" name="oldPassword" class="form-control" 
 									data-ng-model="oldPassword" required>
-						</div>
+						</ft-form-group>
 
-						<div class="form-group floating" data-fm-add-error-for="accountPasswordForm.newPassword">
+						<ft-form-group ft-floating-label data-fm-add-error-for="accountPasswordForm.newPassword">
 							<label>New password</label>
 							<input type="password" name="newPassword" class="form-control" 
 									data-ng-model="newPassword" required>
-						</div>
+						</ft-form-group>
 
-						<div class="form-group floating" data-fm-add-error-for="accountPasswordForm.newPasswordConfirm">
+						<ft-form-group ft-floating-label data-fm-add-error-for="accountPasswordForm.newPasswordConfirm">
 							<label>Password confirm</label>
 							<input type="password" name="newPasswordConfirm" class="form-control" 
 									data-ng-model="newPasswordConfirm" required fm-match="newPassword">
-						</div>
+						</ft-form-group>
 					</div>
 					<div class="panel-footer">
 						<div class="clearfix">
