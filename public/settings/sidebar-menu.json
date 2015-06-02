@@ -10,7 +10,6 @@
 	},
 	{
 		"text": "CRM",
-		"sref": "#",
 		"icon": "icon-users",
 		"submenu": [
 			{ "text": "Companies", "sref": "app.companies" }
@@ -18,7 +17,6 @@
 	},
 	{
 		"text": "Projects",
-		"sref": "#",
 		"icon": "icon-rocket",
 		"submenu": [
 			{ "text": "Overview", "sref": "app.projects" }
@@ -26,7 +24,6 @@
 	},	
 	{
 		"text": "Time",
-		"sref": "#",
 		"icon": "icon-clock",
 		"submenu": [
 			{ "text": "Overview", "sref": "app.time_overview" },
@@ -37,7 +34,6 @@
 	},
 	{
 		"text": "Invoices",
-		"sref": "#",
 		"icon": "icon-envelope",
 		"submenu": [
 			{ "text": "Create", "sref": "app.invoice_create" },
