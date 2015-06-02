@@ -19,13 +19,13 @@
 	<div class="clearfix visible-xs">&nbsp;</div>
 	<h1 class="text-center">{{ date | moment: 'DD MMMM YYYY' }}</h1>
 
-	<div class="panel panel-default panel-margin" data-ng-hide="hasTimeRegistrations">
+	<div class="panel panel-default mt-xl" data-ng-hide="hasTimeRegistrations">
 		<div class="panel-body text-center">
 			No items
 		</div>
 	</div>
 
-	<div class="list-group">
+	<div class="list-group mt-xl">
 		<div class="list-group-item" data-ng-click="openTimeRegistration(timeRegistration)"
 			 data-ng-repeat="timeRegistration in timeRegistrations">
 			<div class="row">
