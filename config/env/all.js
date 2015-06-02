@@ -39,6 +39,7 @@ module.exports = {
 				'public/lib/angular-jwt/dist/angular-jwt.js',
 				'public/lib/angular-local-storage/dist/angular-local-storage.js',
 				'public/lib/angular-resource/angular-resource.js',
+				'public/lib/angular-animate/angular-animate.js',
 
 
 				'public/lib/flat-theme/dist/flat-theme.angular.js',
