@@ -1,20 +1,38 @@
 'use strict';
 
 module.exports = function(grunt) {
-	// Unified Watch Object
+	
 	var watchFiles = {
 		serverViews: ['app/**/views/**/*.*'],
 		serverJS: ['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js'],
 		clientViews: ['public/modules/**/views/*.html'],
-		clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
+		clientJS: ['public/modules/**/*.js'],
 		clientCSS: ['public/modules/**/*.css'],
-		mochaTests: ['app/infrastructure/testdata.server.js', 'app/**/tests/**/*.js', 'domain/**/tests/**/*.js']
+		mochaTests: ['app/infrastructure/testdata.server.js', 'app/**/tests/**/*.js']
 	};
 
 	// Project Configuration
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		'file-creator': {
+			restart: {
+				'.restart': function(fs, fd, done) {
+					fs.writeSync(fd, 'update to restart');
+					done();
+				}
+			},
+			reload: {
+				'.reload': function(fs, fd, done) {
+					fs.writeSync(fd, 'update to reload');
+					done();
+				}
+			}
+		},
 		watch: {
+			reload: {
+				files: ['.reload'],
+				options: { livereload: true }
+			},
 			serverViews: {
 				files: watchFiles.serverViews,
 				options: {
@@ -23,11 +41,11 @@ module.exports = function(grunt) {
 			},
 			serverJS: {
 				files: watchFiles.serverJS,
-				tasks: ['jshint'],
+				tasks: ['lint'],
 				options: {
 					livereload: true
 				}
-			},
+			},			
 			clientViews: {
 				files: watchFiles.clientViews,
 				options: {
@@ -36,17 +54,13 @@ module.exports = function(grunt) {
 			},
 			clientJS: {
 				files: watchFiles.clientJS,
-				tasks: ['jshint'],
-				options: {
-					livereload: true
-				}
+				tasks: ['fmbuild', 'file-creator:restart', 'lint'],
+				options: { reload: true }
 			},
 			clientCSS: {
 				files: watchFiles.clientCSS,
-				tasks: ['csslint'],
-				options: {
-					livereload: true
-				}
+				tasks: ['fmbuild', 'file-creator:restart', 'lint'],
+				options: { reload: true }
 			}
 		},
 		jshint: {
@@ -65,24 +79,53 @@ module.exports = function(grunt) {
 				src: watchFiles.clientCSS
 			}
 		},
-		uglify: {
-			production: {
-				options: {
-					preserveComments: false,
-					compressor: true
-				},
-				files: {
-					'public/dist/lib.min.js': 'public/dist/lib.js',
-					'public/dist/application.min.js': 'public/dist/application.js',
-					'public/dist/render.min.js': 'public/dist/render.js'
-				}
+		concat: {
+			options: {
+				sourceMap: true,
+			},
+			lib: {
+				src: '<%= libJavaScriptFiles %>',
+				dest: 'public/dist/lib.js'
+			},
+			fm: {
+				src: '<%= applicationJavaScriptFiles %>',
+				dest: 'public/dist/application.js'
 			}
 		},
 		cssmin: {
-			combine: {
+			options: {
+				keepSpecialComments: 0,
+				shorthandCompacting: false,
+				roundingPrecision: -1,
+				advanced: false,
+				sourceMap: true
+			},
+			lib: {
 				files: {
 					'public/dist/lib.min.css': '<%= libCSSFiles %>',
+				}
+			},
+			fm: {
+				files: {
 					'public/dist/application.min.css': '<%= applicationCSSFiles %>'
+				}
+			}
+		},
+		uglify: {
+			options: {
+				preserveComments: false,
+				compressor: true,
+				sourceMap: true
+			},
+			lib: {
+				files: {
+					'public/dist/lib.min.js': 'public/dist/lib.js',
+				}
+			},
+			fm: {
+				files: {
+					'public/dist/application.min.js': 'public/dist/application.js',
+					'public/dist/render.min.js': 'public/dist/render.js'
 				}
 			}
 		},
@@ -91,8 +134,15 @@ module.exports = function(grunt) {
 				script: 'server.js',
 				options: {
 					nodeArgs: ['--debug'],
-					ext: 'js,html',
-					watch: watchFiles.serverViews.concat(watchFiles.serverJS)
+					watch: ['.restart'],
+					callback: function (nodemon) {
+						nodemon.on('restart', function () {
+							setTimeout(function() {
+								// when nodemon is restarted reload the webpage
+								require('fs').writeFileSync('.reload', 'update to reload');
+							}, 1000);
+						});
+					}
 				}
 			}
 		},
@@ -106,14 +156,6 @@ module.exports = function(grunt) {
 					'no-preload': true,
 					'stack-trace-limit': 50,
 					'hidden': []
-				}
-			}
-		},
-		ngmin: {
-			production: {
-				files: {
-					'public/dist/lib.js': '<%= libJavaScriptFiles %>',
-					'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
 				}
 			}
 		},
@@ -146,38 +188,45 @@ module.exports = function(grunt) {
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
 
-	// Making grunt default to force in order not to break the project.
+	// Force by default to not break the project.
 	grunt.option('force', true);
 
-	// A Task for loading the configuration object
+	// A task for loading the configuration object
 	grunt.task.registerTask('loadConfig', 'Task that loads the config into a grunt option.', function() {
 		var init = require('./config/init')();
 		var config = require('./config/config');
 
-		grunt.config.set('libJavaScriptFiles', config.assets.lib.js);
-		grunt.config.set('libCSSFiles', config.assets.lib.css);
-		grunt.config.set('applicationJavaScriptFiles', config.assets.js);
-		grunt.config.set('applicationCSSFiles', config.assets.css);
+		grunt.config.set('libJavaScriptFiles', config.minification.lib.js);
+		grunt.config.set('libCSSFiles', config.minification.lib.css);
+		grunt.config.set('applicationJavaScriptFiles', config.minification.fm.js);
+		grunt.config.set('applicationCSSFiles', config.minification.fm.css);
 	});
 
-	// Default task(s).
-	grunt.registerTask('default', ['lint', 'concurrent:default']);
-
-	// Debug task.
-	grunt.registerTask('debug', ['lint', 'concurrent:debug']);
 
 	// Lint task(s).
 	grunt.registerTask('lint', ['jshint', 'csslint']);
 
 	// Build task(s).
-	grunt.registerTask('build', ['lint', 'loadConfig', 'ngmin', 'uglify', 'cssmin']);
+	grunt.registerTask('fmbuild', ['loadConfig', 'concat:fm', 'cssmin:fm', 'uglify:fm']);
+	grunt.registerTask('libbuild', ['loadConfig', 'concat:lib', 'cssmin:lib', 'uglify:lib']);
+	grunt.registerTask('build', ['loadConfig', 'concat', 'cssmin', 'uglify']);
+
+
+
+	// Default task(s).
+	grunt.registerTask('default', ['lint', 'build', 'concurrent:default']);
+
+	// Debug task.
+	grunt.registerTask('debug', ['lint', 'build', 'concurrent:debug']);
+
+
 
 	// Test task.
-	grunt.registerTask('testserver', ['env:test', 'mochaTest']);
-
-		// Test task.
-	grunt.registerTask('testclient', ['env:test', 'karma:unit']);
+	grunt.registerTask('testserver', ['lint', 'build', 'env:test', 'mochaTest']);
 
 	// Test task.
-	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+	grunt.registerTask('testclient', ['lint', 'build', 'env:test', 'karma:unit']);
+
+	// Test task.
+	grunt.registerTask('test', ['lint', 'build', 'env:test', 'mochaTest', 'karma:unit']);
 };

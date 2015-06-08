@@ -8,3 +8,5 @@ app/tests/coverage/
 .bower-*/
 .idea/
 coverage/
+.reload
+.restart
