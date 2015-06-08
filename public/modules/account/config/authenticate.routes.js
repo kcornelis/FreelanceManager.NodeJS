@@ -1,7 +1,7 @@
-angular.module('account').config(['$stateProvider',
-	function($stateProvider) {
-		'use strict';
+(function() {
+	'use strict';
 
+	function routeRegistration($stateProvider) {
 		$stateProvider.
 
 		// the login page does not require loggin
@@ -16,4 +16,9 @@ angular.module('account').config(['$stateProvider',
 			access: { requiredLogin: true }
 		});
 	}
-]);
+
+	routeRegistration.$inject = ['$stateProvider'];
+
+	angular.module('account').config(routeRegistration);
+
+})();

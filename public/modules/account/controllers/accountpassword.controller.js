@@ -1,30 +1,37 @@
-angular.module('account').controller('AccountPasswordController', ['$scope', '$window', 'jwtHelper', 'Account',
-function($scope, $window, jwtHelper, Account) {
+(function() {
 	'use strict';
 
-	var token = jwtHelper.decodeToken($window.localStorage.token);
+	function accountPasswordController($scope, $window, jwtHelper, Account) {
 
-	$scope.oldPassword = '';
-	$scope.newPassword = '';
-	$scope.newPasswordConfirm = '';
+		var token = jwtHelper.decodeToken($window.localStorage.token);
 
-	$scope.save = function () {
-		$scope.isSaving = true;
-		$scope.hasError = false;
+		$scope.oldPassword = '';
+		$scope.newPassword = '';
+		$scope.newPasswordConfirm = '';
 
-		Account.changePassword({ id: token.id }, { oldPassword: $scope.oldPassword, newPassword: $scope.newPassword },
-			function(){
-				$scope.isSaving = false;
+		$scope.save = function () {
+			$scope.isSaving = true;
+			$scope.hasError = false;
 
-				$scope.oldPassword = '';
-				$scope.newPassword = '';
-				$scope.newPasswordConfirm = '';
+			Account.changePassword({ id: token.id }, { oldPassword: $scope.oldPassword, newPassword: $scope.newPassword },
+				function(){
+					$scope.isSaving = false;
 
-				$scope.accountPasswordForm.$setPristine();
-			},
-			function(err){
-				$scope.isSaving = false;
-				$scope.hasError = true;
-			});
-	};
-}]);
+					$scope.oldPassword = '';
+					$scope.newPassword = '';
+					$scope.newPasswordConfirm = '';
+
+					$scope.accountPasswordForm.$setPristine();
+				},
+				function(err){
+					$scope.isSaving = false;
+					$scope.hasError = true;
+				});
+		};
+	}
+
+	accountPasswordController.$inject = ['$scope', '$window', 'jwtHelper', 'Account'];
+
+	angular.module('account').controller('AccountPasswordController', accountPasswordController);
+
+})();

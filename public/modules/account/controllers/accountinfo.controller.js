@@ -1,13 +1,19 @@
-angular.module('account').controller('AccountInfoController', ['$scope', '$window', 'jwtHelper', 'Account',
-function($scope, $window, jwtHelper, Account) {
+(function() {
 	'use strict';
 
-	var token = jwtHelper.decodeToken($window.localStorage.token);
+	function accountInfoController($scope, $window, jwtHelper, Account) {
 
-	$scope.account = Account.get({ id: token.id });
+		var token = jwtHelper.decodeToken($window.localStorage.token);
 
-	$scope.save = function () {
-		Account.save(token.id, $scope.account);
-	};
+		$scope.account = Account.get({ id: token.id });
 
-}]);
+		$scope.save = function () {
+			Account.save(token.id, $scope.account);
+		};
+	}
+
+	accountInfoController.$inject = ['$scope', '$window', 'jwtHelper', 'Account'];
+
+	angular.module('account').controller('AccountInfoController', accountInfoController);
+
+})();
