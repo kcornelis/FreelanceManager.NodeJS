@@ -1,50 +1,40 @@
 // TODO unit test
-var App = angular.module('freelancemanager renderer', ['ngRoute', 'ui.router', 'angular-jwt']);
+(function() {
+	'use strict';
 
-App.config(['$locationProvider',
-
-	function($locationProvider) {
+	function config($locationProvider) {
 		$locationProvider.hashPrefix('!');
 	}
-])
 
-.factory('authInterceptor', ['$rootScope', '$q', '$window', function ($rootScope, $q, $window) {
-	'use strict';
-
-	return {
-		request: function (config) {
-			config.headers = config.headers || {};
-			if ($window.localStorage.token) {
-				config.headers.Authorization = 'Bearer ' + $window.localStorage.token;
+	function authInterceptor($rootScope, $q, $window) {
+		return {
+			request: function (config) {
+				config.headers = config.headers || {};
+				if ($window.localStorage.token) {
+					config.headers.Authorization = 'Bearer ' + $window.localStorage.token;
+				}
+				return config;
+			},
+			response: function (response) {
+				return response || $q.when(response);
 			}
-			return config;
-		},
-		response: function (response) {
-			return response || $q.when(response);
-		}
-	};
-}])
+		};
+	}
 
-.config(['$httpProvider', function ($httpProvider) {
-	'use strict';
+	function authInterceptorConfig($httpProvider) {
+		$httpProvider.interceptors.push('authInterceptor');
+	}
 
-	$httpProvider.interceptors.push('authInterceptor');
-}])
+	function authentication($rootScope, $location, $window, jwtHelper) {
+		$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
+				var loggedIn = $window.localStorage.token && !jwtHelper.isTokenExpired($window.localStorage.token);
+				if (!loggedIn) {
+						$location.path('/login');
+				}
+		});
+	}
 
-.run(['$rootScope', '$location', '$window', 'jwtHelper', function($rootScope, $location, $window, jwtHelper) {
-	'use strict';
-
-	$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
-			var loggedIn = $window.localStorage.token && !jwtHelper.isTokenExpired($window.localStorage.token);
-			if (!loggedIn) {
-					$location.path('/login');
-			}
-	});
-}])
-
-.config(['$stateProvider',
-	function($stateProvider) {
-		'use strict';
+	function routeRegistration($stateProvider) {
 
 		$stateProvider.state('invoice', {
 			url: '/invoice/:id',
@@ -58,12 +48,8 @@ App.config(['$locationProvider',
 			templateUrl: '/modules/invoice/views/render.html'
 		});
 	}
-])
 
-.controller('RenderInvoiceController', ['$rootScope', '$scope', '$http', '$stateParams',
-	function ($rootScope, $scope, $http, $stateParams) {
-		'use strict';
-
+	function renderInvoiceController($rootScope, $scope, $http, $stateParams) {
 		if($stateParams.invoice){
 			$scope.invoice = JSON.parse($stateParams.invoice);
 		}
@@ -74,41 +60,38 @@ App.config(['$locationProvider',
 				});
 		}
 	}
-])
 
-.directive('fmWith', 
-	function () {
-		'use strict';
+	function withDirective() {
+
+		function withController($scope, $attrs, $parse) {
+			$scope.$parent.$watch($attrs.fmWith, function (oldVal, newVal) {
+				var withObj = $scope.$parent[$attrs.fmWith];
+				(function copyPropertiesToScope(withObj) {
+					for (var prop in withObj) {
+
+						if (withObj.hasOwnProperty(prop)) {
+							Object.defineProperty($scope, prop, {
+								enumerable: true,
+								configurable: true,
+								get: $parse(prop).bind($scope, withObj, $scope.$parent),
+								set: $parse(prop).assign.bind($scope, withObj, $scope.$parent),
+							});
+						}
+					}
+				})(withObj);
+			});
+		}
+
+		withController.$inject = ['$scope', '$attrs', '$parse'];
 
 		return {
 			restrict: 'A',
 			scope: true,
-			controller: function ($scope, $attrs, $parse) {
-				$scope.$parent.$watch($attrs.fmWith, function (oldVal, newVal) {
-					var withObj = $scope.$parent[$attrs.fmWith];
-					(function copyPropertiesToScope(withObj) {
-						for (var prop in withObj) {
-
-							if (withObj.hasOwnProperty(prop)) {
-								Object.defineProperty($scope, prop, {
-									enumerable: true,
-									configurable: true,
-									get: $parse(prop).bind($scope, withObj, $scope.$parent),
-									set: $parse(prop).assign.bind($scope, withObj, $scope.$parent),
-								});
-							}
-						}
-					})(withObj);
-				});
-			}
+			controller: withController
 		};
 	}
-)
 
-.directive('fmDynamic', ['$compile', 
-	function ($compile) {
-		'use strict';
-		
+	function dynamicDirective($compile) {
 		return {
 			restrict: 'A',
 			replace: true,
@@ -119,51 +102,76 @@ App.config(['$locationProvider',
 				});
 			}
 		};
-	}]
-)
+	}
 
-.filter('price',
-	function(){
-		'use strict';
-
-		return function(price, digits, thoSeperator, decSeperator) {
+	function numberFilter(){
+		return function(number, digits, thoSeperator, decSeperator) {
 			
-			digits = (typeof digits === "undefined") ? 2 : digits;
-			thoSeperator = (typeof thoSeperator === "undefined") ? "." : thoSeperator;
-			decSeperator = (typeof decSeperator === "undefined") ? "," : decSeperator;
-			price = price.toString();
-			var _temp = price.split(".");
-			var dig = (typeof _temp[1] === "undefined") ? "00" : _temp[1];
+			digits = (typeof digits === 'undefined') ? 2 : digits;
+			thoSeperator = (typeof thoSeperator === 'undefined') ? '' : thoSeperator;
+			decSeperator = (typeof decSeperator === 'undefined') ? ',' : decSeperator;
 
-			dig = dig.toString();
-			if (dig.length > digits) {
-				dig = (Math.round(parseFloat("0." + dig) * Math.pow(10, digits))).toString();
-			}
-			for (var i = dig.length; i < digits; i++) {
-				dig += "0";
+			var splittedNumber = number.toString().split('.');
+			var numberDecimals = ((typeof splittedNumber[1] === 'undefined') ? '' : splittedNumber[1]).toString();
+			var numberWhole = splittedNumber[0];
+
+			// if digits < 0 then leave the decimal part like it was
+			if(digits >= 0) {
+				// digits to long, strip them
+				if (numberDecimals.length > digits) {
+					numberDecimals = (Math.round(parseFloat('0.' + numberDecimals) * Math.pow(10, digits))).toString();
+				}
+				for (var i = numberDecimals.length; i < digits; i++) {
+					numberDecimals += '0';
+				}
 			}
 
-			var num = _temp[0];
-			var s = "", ii = 0;
-			for (var i = num.length - 1; i > -1; i--) {
-				s = ((ii++ % 3 === 2) ? ((i > 0) ? thoSeperator : "") : "") + num.substr(i, 1) + s;
+			var formattedWholeNumber = '', thoCounter = 0;
+			for (var i = numberWhole.length - 1; i > -1; i--) {
+				formattedWholeNumber = ((thoCounter++ % 3 === 2) ? ((i > 0) ? thoSeperator : '') : '') + numberWhole.substr(i, 1) + formattedWholeNumber;
 			}
-			return s + decSeperator + dig;
+
+			return (numberDecimals !== '') ? (formattedWholeNumber + decSeperator + numberDecimals) : formattedWholeNumber;
 		}
 	}
-)
 
-.filter('leadingZeros', function () {
-	return function (n, len) {
-		var num = parseInt(n, 10);
-		len = parseInt(len, 10);
-		if (isNaN(num) || isNaN(len)) { return n; }
-		num = ''+num;
-		while (num.length < len) { num = '0'+num; }
-		return num;
-	};
-});
+	function leadingZerosFilter() {
+		return function (n, len) {
+			var num = parseInt(n, 10);
+			len = parseInt(len, 10);
+			if (isNaN(num) || isNaN(len)) { return n; }
+			num = ''+num;
+			while (num.length < len) { num = '0'+num; }
+			return num;
+		};
+	}
 
-angular.element(document).ready(function() {
-	angular.bootstrap(document, ['freelancemanager renderer']);
-});
+	config.$inject = ['$locationProvider'];
+	authInterceptor.$inject = ['$rootScope', '$q', '$window'];
+	authInterceptorConfig.$inject = ['$httpProvider'];
+	authentication.$inject = ['$rootScope', '$location', '$window', 'jwtHelper'];
+	routeRegistration.$inject = ['$stateProvider'];
+	renderInvoiceController.$inject = ['$rootScope', '$scope', '$http', '$stateParams'];
+	withDirective.$inject = [];
+	dynamicDirective.$inject = ['$compile'];
+	numberFilter.$inject = [];
+	leadingZerosFilter.$inject = [];
+
+	angular.module('freelancemanager renderer', ['ui.router', 'angular-jwt'])
+		.config(config)
+		.factory('authInterceptor', authInterceptor)
+		.config(authInterceptorConfig)
+		.run(authentication)
+		.config(routeRegistration)
+		.controller('RenderInvoiceController', renderInvoiceController)
+		.directive('fmWith', withDirective)
+		.directive('fmDynamic', dynamicDirective)
+		.filter('price', numberFilter)
+		.filter('fmPrice', numberFilter)
+		.filter('fmNumber', numberFilter)
+		.filter('leadingZeros', leadingZerosFilter);
+
+	angular.element(document).ready(function() {
+		angular.bootstrap(document, ['freelancemanager renderer']);
+	});
+})();
