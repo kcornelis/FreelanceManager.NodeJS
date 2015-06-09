@@ -1,1 +1,5 @@
-ApplicationConfiguration.registerModule('project');
+(function() {
+	'use strict';
+
+	ApplicationConfiguration.registerModule('project');
+})();
