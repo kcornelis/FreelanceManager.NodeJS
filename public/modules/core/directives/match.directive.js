@@ -1,35 +1,40 @@
-angular.module('core').directive('fmMatch',
-function match ($parse) {
+(function() {
 	'use strict';
 
-	return {
-		require: '?ngModel',
-		restrict: 'A',
-		link: function(scope, elem, attrs, ctrl) {
-			if(!ctrl) {
-				if(console && console.warn){
-					console.warn('Match validation requires ngModel to be on the element');
+	function matchDirective ($parse) {
+		return {
+			require: '?ngModel',
+			restrict: 'A',
+			link: function(scope, elem, attrs, ctrl) {
+				if(!ctrl) {
+					if(console && console.warn){
+						console.warn('Match validation requires ngModel to be on the element');
+					}
+					return;
 				}
-				return;
-			}
 
-			var matchGetter = $parse(attrs.fmMatch);
+				var matchGetter = $parse(attrs.fmMatch);
 
-			function getMatchValue(){
-				var match = matchGetter(scope);
-				if(angular.isObject(match) && match.hasOwnProperty('$viewValue')){
-					match = match.$viewValue;
+				function getMatchValue(){
+					var match = matchGetter(scope);
+					if(angular.isObject(match) && match.hasOwnProperty('$viewValue')){
+						match = match.$viewValue;
+					}
+					return match;
 				}
-				return match;
+
+				scope.$watch(getMatchValue, function(){
+					ctrl.$validate();
+				});
+
+				ctrl.$validators.match = function(){
+					return ctrl.$viewValue === getMatchValue();
+				};
 			}
+		};
+	}
+	
+	matchDirective.$inject = ['$parse'];
 
-			scope.$watch(getMatchValue, function(){
-				ctrl.$validate();
-			});
-
-			ctrl.$validators.match = function(){
-				return ctrl.$viewValue === getMatchValue();
-			};
-		}
-	};
-});
+	angular.module('core').directive('fmMatch', matchDirective);
+})();

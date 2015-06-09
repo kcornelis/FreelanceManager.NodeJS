@@ -1,7 +1,11 @@
-angular.module('core')
-
-.factory('NgTableParams', function (ngTableParams) {
+(function() {
 	'use strict';
-	
-    return ngTableParams;
-});
+
+	function factory(ngTableParams) {
+		return ngTableParams;
+	}
+
+	factory.$inject = ['ngTableParams'];
+
+	angular.module('core').factory('NgTableParams', factory);
+})();

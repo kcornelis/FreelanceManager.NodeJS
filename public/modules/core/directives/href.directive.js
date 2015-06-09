@@ -1,10 +1,11 @@
 // TODO unit test
-angular.module('core').directive('href', function() {
+(function() {
 	'use strict';
-	
-	return {
-		restrict: 'A',
-		compile: function(element, attr) {
+
+	function hrefDirective() {
+		return {
+			restrict: 'A',
+			compile: function(element, attr) {
 				return function(scope, element) {
 					if(attr.ngClick || attr.href === '' || attr.href === '#'){
 						if( !element.hasClass('dropdown-toggle') )
@@ -15,5 +16,10 @@ angular.module('core').directive('href', function() {
 					}
 				};
 			}
-	 };
-});
+		 };
+	}
+	
+	hrefDirective.$inject = [];
+
+	angular.module('core').directive('href', hrefDirective);
+})();

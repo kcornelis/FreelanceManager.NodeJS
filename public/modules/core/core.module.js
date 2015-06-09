@@ -1,1 +1,6 @@
-ApplicationConfiguration.registerModule('core');
+(function() {
+	'use strict';
+
+	ApplicationConfiguration.registerModule('core');
+})();
+
