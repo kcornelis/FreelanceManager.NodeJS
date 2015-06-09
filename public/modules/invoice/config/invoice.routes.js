@@ -1,7 +1,7 @@
-angular.module('invoice').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
-		'use strict';
-
+(function() {
+	'use strict';
+	
+	function routeRegistration($stateProvider) {
 		$stateProvider
 
 		.state('app.invoice_create', {
@@ -22,4 +22,8 @@ angular.module('invoice').config(['$stateProvider', '$urlRouterProvider',
 			}
 		});
 	}
-]);
+
+	routeRegistration.$inect = ['$stateProvider'];
+
+	angular.module('invoice').config(routeRegistration);
+})();
