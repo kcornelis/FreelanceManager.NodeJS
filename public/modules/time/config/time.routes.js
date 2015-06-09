@@ -1,7 +1,7 @@
-angular.module('time').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
-		'use strict';
-
+(function() {
+	'use strict';
+	
+	function routeRegistration($stateProvider) {
 		$stateProvider
 
 		.state('app.time_overview', {
@@ -44,4 +44,8 @@ angular.module('time').config(['$stateProvider', '$urlRouterProvider',
 			}
 		});
 	}
-]);
+
+	routeRegistration.$inect = ['$stateProvider'];
+
+	angular.module('time').config(routeRegistration);
+})();

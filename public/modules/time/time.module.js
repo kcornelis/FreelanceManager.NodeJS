@@ -1,1 +1,5 @@
-ApplicationConfiguration.registerModule('time');
+(function() {
+	'use strict';
+
+	ApplicationConfiguration.registerModule('time');
+})();
