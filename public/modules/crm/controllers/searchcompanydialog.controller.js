@@ -1,14 +1,20 @@
-angular.module('crm').controller('SearchCompanyDialogController',
-function($scope, Company) {
+(function() {
 	'use strict';
 
-	$scope.companies = Company.query();
+	function controller($scope, Company) {
 
-	$scope.ok = function () {
-		$scope.$close(_.first(_.where($scope.companies, function(c) { return c.id === $scope.selectedCompany; })));
-	};
+		$scope.companies = Company.query();
 
-	$scope.cancel = function () {
-		$scope.$dismiss('cancel');
-	};
-});
+		$scope.ok = function () {
+			$scope.$close(_.first(_.where($scope.companies, function(c) { return c.id === $scope.selectedCompany; })));
+		};
+
+		$scope.cancel = function () {
+			$scope.$dismiss('cancel');
+		};
+	}
+
+	controller.$inject = ['$scope', 'Company'];
+
+	angular.module('crm').controller('SearchCompanyDialogController', controller);
+})();
