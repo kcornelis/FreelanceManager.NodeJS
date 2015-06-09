@@ -81,13 +81,13 @@
 				}), 'name');	
 
 			if(toUpdate.companyId)
-				$scope.timeRegistration.company = _.first(_.where($scope.companies, { id: toUpdate.companyId }));
+				$scope.timeRegistration.company = _.find($scope.companies, { id: toUpdate.companyId });
 			
 			if(toUpdate.projectId && $scope.timeRegistration.company)
-				$scope.timeRegistration.project = _.first(_.where($scope.timeRegistration.company.projects, { id: toUpdate.projectId }));
+				$scope.timeRegistration.project = _.find($scope.timeRegistration.company.projects, { id: toUpdate.projectId });
 
 			if(toUpdate.task && $scope.timeRegistration.project)
-				$scope.timeRegistration.task = _.first(_.where($scope.timeRegistration.project.tasks, { name: toUpdate.task }));
+				$scope.timeRegistration.task = _.find($scope.timeRegistration.project.tasks, { name: toUpdate.task });
 
 			if($scope.newTimeRegistration)
 				$scope.projectEditable = true;

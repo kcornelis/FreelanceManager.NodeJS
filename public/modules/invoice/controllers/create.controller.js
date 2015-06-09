@@ -101,8 +101,8 @@
 				function(tr){
 					var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function(sum, i){ return sum + i; });
 					var quantity = Math.round((totalMinutes / 60) * 100) / 100;
-					var project = _.first(_.where($scope.projects, function (p) { return p.id === tr[0].projectId; }));
-					var task = project ? _.first(_.where(project.tasks, function(t) { return t.name === tr[0].task; })) : null;
+					var project = _.find($scope.projects, function (p) { return p.id === tr[0].projectId; });
+					var task = project ? _.find(project.tasks, function(t) { return t.name === tr[0].task; }) : null;
 					var priceInCents = task ? parseInt(task.defaultRateInCents) : 0;
 
 					return { 
@@ -152,7 +152,7 @@
 		};
 
 		$scope.$watch('invoice.templateId', function(id){
-			var template = _.first(_.where($scope.templates, function(t) { return t.id === id; }));
+			var template = _.find($scope.templates, function(t) { return t.id === id; });
 			$scope.invoice.template = template ? template.content : '';
 		});
 

@@ -47,7 +47,7 @@ function convertMultiple(projects, done) {
 	Company.find().in('_id', companyIds).exec(function(err, companies) 
 	{ 
 		var converted = _.map(projects, function(p) {
-			return convert(p, _.first(_.where(companies, { id: p.companyId })));
+			return convert(p, _.find(companies, { id: p.companyId }));
 		});
 
 		done(converted);

@@ -142,9 +142,9 @@
 
 			_.forEach($scope.groupedRows, function(groupedRow){
 
-				var selectedProjectTask = _.first(_.where($scope.projectsInExcelSheet, function(p){
+				var selectedProjectTask = _.find($scope.projectsInExcelSheet, function(p){
 					return p.project === groupedRow[0][$scope.selectedProjectColumn] && p.task === groupedRow[0][$scope.selectedTaskColumn];
-				})).mappedProjectAndTask;
+				}).mappedProjectAndTask;
 
 				var project = _.find($scope.tasks, { id: selectedProjectTask }).project;
 				var task = _.find($scope.tasks, { id: selectedProjectTask }).task;

@@ -73,8 +73,8 @@ function convertMultiple(timeRegistrations, done) {
 	function(){
 		var converted = _.map(timeRegistrations, function(tr) {
 			return convert(tr,
-				_.first(_.where(companies, { id: tr.companyId })),
-				_.first(_.where(projects, { id: tr.projectId })));
+				_.find(companies, { id: tr.companyId }),
+				_.find(projects, { id: tr.projectId }));
 		});
 
 		done(converted);
