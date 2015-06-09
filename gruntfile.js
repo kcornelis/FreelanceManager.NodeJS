@@ -41,9 +41,9 @@ module.exports = function(grunt) {
 			},
 			serverJS: {
 				files: watchFiles.serverJS,
-				tasks: ['lint'],
+				tasks: ['file-creator:restart', 'lint'],
 				options: {
-					livereload: true
+					livereload: false
 				}
 			},			
 			clientViews: {
@@ -54,13 +54,13 @@ module.exports = function(grunt) {
 			},
 			clientJS: {
 				files: watchFiles.clientJS,
-				tasks: ['fmbuild', 'file-creator:restart', 'lint'],
-				options: { reload: true }
+				tasks: ['fmbuild', 'file-creator:reload', 'lint'],
+				options: { reload: false }
 			},
 			clientCSS: {
 				files: watchFiles.clientCSS,
-				tasks: ['fmbuild', 'file-creator:restart', 'lint'],
-				options: { reload: true }
+				tasks: ['fmbuild', 'file-creator:reload', 'lint'],
+				options: { reload: false }
 			}
 		},
 		jshint: {
