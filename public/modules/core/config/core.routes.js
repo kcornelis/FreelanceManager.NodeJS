@@ -24,7 +24,7 @@
 		});
 	}
 
-	routeRegistration.$inect = ['$stateProvider', '$urlRouterProvider'];
+	routeRegistration.$inject = ['$stateProvider', '$urlRouterProvider'];
 
 	angular.module('core').config(routeRegistration);
 })();

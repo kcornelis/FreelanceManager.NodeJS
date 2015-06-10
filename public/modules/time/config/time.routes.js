@@ -45,7 +45,7 @@
 		});
 	}
 
-	routeRegistration.$inect = ['$stateProvider'];
+	routeRegistration.$inject = ['$stateProvider'];
 
 	angular.module('time').config(routeRegistration);
 })();

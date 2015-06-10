@@ -23,7 +23,7 @@
 		});
 	}
 
-	routeRegistration.$inect = ['$stateProvider'];
+	routeRegistration.$inject = ['$stateProvider'];
 
 	angular.module('invoice').config(routeRegistration);
 })();
