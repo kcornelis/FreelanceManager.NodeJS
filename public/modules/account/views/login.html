@@ -1,29 +1,29 @@
-<div class="fm-login width-xl mh-a mt-xl" data-ng-controller="AuthenticateController">
+<div class="fm-login width-xl mh-a mt-xl" ng-controller="AuthenticateController">
 
-	<div class="panel panel-blue panel-flat">
+	<div class="panel panel-primary panel-flat">
 		<div class="panel-heading text-center">
 			<h3 class="mv-none"><i>Freelance Manager</i></h3>
 		</div>
 		<div class="panel-body">
 			<h4 class="text-center mb-lg">SIGN IN TO CONTINUE</h4>
-			<div data-ng-show="error" class="alert alert-danger text-center mt-lg">{{ error }}</div>
-			<form role="form" data-ng-submit="submit()" name="loginForm" novalidate="" class="mb-lg">
+			<div ng-show="error" class="alert alert-danger text-center mt-lg">{{ error }}</div>
+			<form role="form" ng-submit="submit()" name="loginForm" novalidate="" class="mb-lg">
 
-				<ft-form-group ft-floating-label class="has-feedback" data-fm-add-error-for="loginForm.email">
+				<ft-form-group ft-floating-label class="has-feedback" fm-add-error-for="loginForm.email">
 					<label>Email address</label>
 					<input type="email" name="email" class="form-control" 
-							data-ng-model="user.email" required  />
+							ng-model="user.email" required />
 					<span class="fa fa-envelope form-control-feedback"></span>
 				</ft-form-group>
 
-				<ft-form-group ft-floating-label class="has-feedback" data-fm-add-error-for="loginForm.password">
+				<ft-form-group ft-floating-label class="has-feedback" fm-add-error-for="loginForm.password">
 					<label>Password</label>
 					<input type="password" name="password" class="form-control" 
-							data-ng-model="user.password" required  />
+							ng-model="user.password" required />
 					<span class="fa fa-lock form-control-feedback"></span>
 				</ft-form-group>
 
-				<button type="submit" class="btn btn-block btn-blue mt-xl"
+				<button type="submit" class="btn btn-block btn-primary mt-xl"
 						ng-disabled="loginForm.$invalid">Login</button>
 			</form>
 			
@@ -32,10 +32,10 @@
 
 	<div class="pb text-center">
 		<span>&copy;</span>
-		<span data-ng-bind="app.year"></span>
+		<span ng-bind="app.year"></span>
 		<span>-</span>
-		<span data-ng-bind="app.author"></span>
+		<span ng-bind="app.author"></span>
 		<br/>
-		<span data-ng-bind="app.name"></span>
+		<span ng-bind="app.name"></span>
 	</div>	
 </div>
