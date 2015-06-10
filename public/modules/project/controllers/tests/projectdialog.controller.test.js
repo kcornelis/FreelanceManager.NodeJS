@@ -8,8 +8,8 @@
 			toUpdate;
 
 		var mockCompanyService = {
-			query: function(){
-				return [{ id: 1, name: 'company 1' }, { id: 2, name: 'company 2' }];
+			query: function(callback){
+				callback([{ id: 1, name: 'company 1' }, { id: 2, name: 'company 2' }]);
 			}
 		};
 
