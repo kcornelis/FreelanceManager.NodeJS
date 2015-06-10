@@ -79,6 +79,10 @@
 			it('should show an error', inject(function() {
 				expect(scope.error).toBe('Invalid email or password');
 			}));
+
+			it('should clear the password', inject(function() {
+				expect(scope.user.password).toBe('');
+			}));
 		});		
 	});
 })();

@@ -27,6 +27,7 @@
 
 					// Handle login errors here
 					$scope.error = 'Invalid email or password';
+					$scope.user.password = '';
 				});
 		};
 	}
