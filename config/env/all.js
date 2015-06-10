@@ -15,7 +15,7 @@ module.exports = {
 	minification: {
 		lib: {
 			css: [
-				'public/lib/bootstrap/dist/css/bootstrap.css',
+				'public/lib/flat-theme/dist/bootstrap.css',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/bootstrap-datepicker/css/datepicker3.css',
 				'public/lib/chosen/chosen.css',
@@ -30,14 +30,14 @@ module.exports = {
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-animate/angular-animate.js',
 
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/bootstrap/dist/js/bootstrap.js',
-				'public/lib/lodash/lodash.js',
-				'public/lib/moment/moment.js',
-
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
 				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'public/lib/chosen/chosen.jquery.js',
+				
+				'public/lib/lodash/lodash.js',
+				'public/lib/moment/moment.js',
 
 				'public/lib/flat-theme/dist/flat-theme.angular.js'
 			]
@@ -64,10 +64,10 @@ module.exports = {
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.min.js',
-				'public/lib/angular/angular.min.js',
+				'public/lib/angular/angular.js',
 				'public/lib/modernizr/modernizr.min.js',
-				'public/dist/lib.js',
-				'public/dist/application.js'
+				'public/dist/lib.min.js',
+				'public/dist/application.min.js'
 			]
 		},
 		fmRender: {

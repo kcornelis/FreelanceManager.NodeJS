@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 			},
 			lib: {
 				files: {
-					'public/dist/lib.min.css': '<%= libCSSFiles %>',
+					'public/dist/lib.min.css': '<%= libCSSFiles %>'
 				}
 			},
 			fm: {
@@ -119,7 +119,7 @@ module.exports = function(grunt) {
 			},
 			lib: {
 				files: {
-					'public/dist/lib.min.js': 'public/dist/lib.js',
+					'public/dist/lib.min.js': 'public/dist/lib.js'
 				}
 			},
 			fm: {
