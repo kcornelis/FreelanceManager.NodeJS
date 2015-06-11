@@ -123,6 +123,7 @@ module.exports = function(grunt) {
 				}
 			},
 			fm: {
+				options: { sourceMapIn: 'public/dist/application.js.map' },
 				files: {
 					'public/dist/application.min.js': 'public/dist/application.js',
 					'public/dist/render.min.js': 'public/dist/render.js'
@@ -214,19 +215,19 @@ module.exports = function(grunt) {
 
 
 	// Default task(s).
-	grunt.registerTask('default', ['lint', 'build', 'concurrent:default']);
+	grunt.registerTask('default', ['lint', 'fmbuild', 'concurrent:default']);
 
 	// Debug task.
-	grunt.registerTask('debug', ['lint', 'build', 'concurrent:debug']);
+	grunt.registerTask('debug', ['lint', 'fmbuild', 'concurrent:debug']);
 
 
 
 	// Test task.
-	grunt.registerTask('testserver', ['lint', 'build', 'env:test', 'mochaTest']);
+	grunt.registerTask('testserver', ['lint', 'env:test','fmbuild', 'mochaTest']);
 
 	// Test task.
-	grunt.registerTask('testclient', ['lint', 'build', 'env:test', 'karma:unit']);
+	grunt.registerTask('testclient', ['lint', 'env:test','fmbuild', 'karma:unit']);
 
 	// Test task.
-	grunt.registerTask('test', ['lint', 'build', 'env:test', 'mochaTest', 'karma:unit']);
+	grunt.registerTask('test', ['lint', 'env:test','fmbuild', 'mochaTest', 'karma:unit']);
 };
