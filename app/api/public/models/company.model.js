@@ -41,7 +41,8 @@ var CompanySchema = new AggregateRootSchema({
  *	Write methods
  */
 
-CompanySchema.statics.create = function(tenant, number, name, vatNumber, address){
+CompanySchema.statics.create = function(tenant, number, name, vatNumber, address) {
+
 	
 	var company = new this();
 
@@ -63,7 +64,8 @@ CompanySchema.statics.create = function(tenant, number, name, vatNumber, address
 	return company;
 };
 
-CompanySchema.methods.changeDetails = function(name, vatNumber, address){
+CompanySchema.methods.changeDetails = function(name, vatNumber, address) {
+
 
 	if(this.name !== name ||
 		this.vatNumber !== vatNumber ||
@@ -72,7 +74,8 @@ CompanySchema.methods.changeDetails = function(name, vatNumber, address){
 		(this.address && this.address.line1 !== address.line1) ||
 		(this.address && this.address.line2 !== address.line2) ||
 		(this.address && this.address.postalcode !== address.postalcode) ||
-		(this.address && this.address.city !== address.city)){
+		(this.address && this.address.city !== address.city)) {
+
 		
 		this.name = name;
 		this.vatNumber = vatNumber;
@@ -91,9 +94,11 @@ CompanySchema.methods.changeDetails = function(name, vatNumber, address){
  *	Read methods
  */
 
- CompanySchema.statics.getNextNumber = function(tenant, callback){
+ CompanySchema.statics.getNextNumber = function(tenant, callback) {
+
 	
-	return this.count({ tenant: tenant }, function(err, count){
+	return this.count({ tenant: tenant }, function(err, count) {
+
 		if(callback)
 			callback(err, count + 1);
 	});

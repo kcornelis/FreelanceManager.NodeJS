@@ -43,27 +43,33 @@ describe('Project Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a tenant', function(){
+		it('should have a tenant', function() {
+
 			saved.tenant.should.eql(tenant);
 		});
 
-		it('should have a client id', function(){
+		it('should have a client id', function() {
+
 			saved.companyId.should.eql('companyId');
 		});
 
-		it('should have a name', function(){
+		it('should have a name', function() {
+
 			saved.name.should.eql('FM Manager');
 		});
 
-		it('should have a description', function(){
+		it('should have a description', function() {
+
 			saved.description.should.eql('Freelance management');
 		});	
 
-		it('should not be hidden', function(){
+		it('should not be hidden', function() {
+
 			saved.hidden.should.eql(false);
 		});	
 
-		it('should have some default tasks', function(){
+		it('should have some default tasks', function() {
+
 			saved.tasks[0].name.should.eql('Development');
 			saved.tasks[0].defaultRateInCents.should.eql(0);
 
@@ -74,11 +80,13 @@ describe('Project Model Unit Tests:', function() {
 			saved.tasks[2].defaultRateInCents.should.eql(0);			
 		});	
 
-		it('should have version 2', function(){
+		it('should have version 2', function() {
+
 			saved.version.should.eql(2);
 		});
 
-		it('should have a created event', function(){
+		it('should have a created event', function() {
+
 			saved.events[0].companyId.should.eql('companyId');
 			saved.events[0].name.should.eql('FM Manager');
 			saved.events[0].description.should.eql('Freelance management');
@@ -87,7 +95,8 @@ describe('Project Model Unit Tests:', function() {
 			saved.events[0].metadata.eventName.should.eql('ProjectCreated');
 		});
 
-		it('should have a tasks changed event', function(){
+		it('should have a tasks changed event', function() {
+
 			saved.events[1].tasks[0].name.should.eql('Development');
 			saved.events[1].tasks[0].defaultRateInCents.should.eql(0);
 
@@ -100,7 +109,8 @@ describe('Project Model Unit Tests:', function() {
 			saved.events[1].metadata.eventName.should.eql('ProjectTasksChanged');
 		});
 
-		it('should have created on date', function(){
+		it('should have created on date', function() {
+
 			new Date(saved.createdOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(saved.createdOn).should.lessThan(new Date(Date.now() + 10000));
 		});
@@ -162,7 +172,8 @@ describe('Project Model Unit Tests:', function() {
 
 				project.changeDetails('Freelance Manager', 'Test project');
 
-				project.save(function(saveerr){
+				project.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -181,27 +192,33 @@ describe('Project Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have no updated client id', function(){
+		it('should have no updated client id', function() {
+
 			saved.companyId.should.eql('companyId');
 		});
 
-		it('should have an updated name', function(){
+		it('should have an updated name', function() {
+
 			saved.name.should.eql('Freelance Manager');
 		});
 
-		it('should have an updated description', function(){
+		it('should have an updated description', function() {
+
 			saved.description.should.eql('Test project');
 		});
 
-		it('should have the same created on date', function(){
+		it('should have the same created on date', function() {
+
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(3);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 			saved.events[2].name.should.eql('Freelance Manager');
 			saved.events[2].description.should.eql('Test project');
 
@@ -222,7 +239,8 @@ describe('Project Model Unit Tests:', function() {
 			project.changeDetails('FM Manager', 'Freelance management');
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			project.events.should.have.length(2);
 		});
 
@@ -250,7 +268,8 @@ describe('Project Model Unit Tests:', function() {
 					{ name: 'Meeting', defaultRateInCents: 4000 },
 					{ name: 'Thinking', defaultRateInCents: 6000 }]);
 
-				project.save(function(saveerr){
+				project.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -269,7 +288,8 @@ describe('Project Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated task list', function(){
+		it('should have an updated task list', function() {
+
 			saved.tasks[0].name.should.eql('Development');
 			saved.tasks[0].defaultRateInCents.should.eql(5000);
 
@@ -280,11 +300,13 @@ describe('Project Model Unit Tests:', function() {
 			saved.tasks[2].defaultRateInCents.should.eql(6000);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(3);
 		});
 
-		it('should have a tasks changed event', function(){
+		it('should have a tasks changed event', function() {
+
 			saved.events[2].tasks[0].name.should.eql('Development');
 			saved.events[2].tasks[0].defaultRateInCents.should.eql(5000);
 
@@ -314,7 +336,8 @@ describe('Project Model Unit Tests:', function() {
 					{ name: 'Meeting', defaultRateInCents: 0 }]);
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			project.events.should.have.length(2);
 		});
 
@@ -339,7 +362,8 @@ describe('Project Model Unit Tests:', function() {
 
 				project.hide();
 
-				project.save(function(saveerr){
+				project.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -358,15 +382,18 @@ describe('Project Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated hidden field', function(){
+		it('should have an updated hidden field', function() {
+
 			saved.hidden.should.eql(true);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(3);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 
 			saved.events[2].metadata.eventName.should.eql('ProjectHidden');
 		});
@@ -386,7 +413,8 @@ describe('Project Model Unit Tests:', function() {
 			project.hide();
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			project.events.should.have.length(3); // create, tasks, hide
 		});
 
@@ -412,7 +440,8 @@ describe('Project Model Unit Tests:', function() {
 				project.hide();
 				project.unhide();
 
-				project.save(function(saveerr){
+				project.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -431,15 +460,18 @@ describe('Project Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated hidden field', function(){
+		it('should have an updated hidden field', function() {
+
 			saved.hidden.should.eql(false);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(4);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 
 			saved.events[3].metadata.eventName.should.eql('ProjectUnhidden');
 		});
@@ -459,7 +491,8 @@ describe('Project Model Unit Tests:', function() {
 			project.unhide();
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			project.events.should.have.length(2); // create, tasks
 		});
 

@@ -4,10 +4,12 @@
 * Global declarations
 *   => require_config();
 */
-global.require_config = function(){
+global.require_config = function() {
+
    return require(__dirname + '/config.js');
 };
-global.require_infrastructure = function(item){
+global.require_infrastructure = function(item) {
+
    return require(__dirname + '/../app/infrastructure/' + item);
 };
 

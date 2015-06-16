@@ -6,7 +6,8 @@ var mongoose = require('mongoose'),
 
 exports.getSetup = function(req, res) {
 
-	Account.findOne(function(err, hasAccount){
+	Account.findOne(function(err, hasAccount) {
+
 
 		if(hasAccount) {
 			res.status(404).render('404', {
@@ -22,9 +23,11 @@ exports.getSetup = function(req, res) {
 
 exports.postSetup = function(req, res) {
 
-	Account.findOne(function(err, hasAccount){
+	Account.findOne(function(err, hasAccount) {
 
-		if(hasAccount){
+
+		if(hasAccount) {
+
 			res.status(404).render('404', {
 				url: req.originalUrl,
 				error: 'Not Found'
@@ -36,7 +39,8 @@ exports.postSetup = function(req, res) {
 			account.changePassword(req.body.password);
 			account.makeAdmin();
 
-			account.save(function(err){
+			account.save(function(err) {
+
 				if(!err) {
 					res.redirect('/');
 				}

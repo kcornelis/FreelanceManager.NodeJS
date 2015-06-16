@@ -43,27 +43,33 @@ describe('Template Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a tenant', function(){
+		it('should have a tenant', function() {
+
 			saved.tenant.should.eql(tenant);
 		});
 
-		it('should have a name', function(){
+		it('should have a name', function() {
+
 			saved.name.should.eql('template name');
 		});
 
-		it('should have a content', function(){
+		it('should have a content', function() {
+
 			saved.content.should.eql('template content');
 		});	
 
-		it('should not be hidden', function(){
+		it('should not be hidden', function() {
+
 			saved.hidden.should.eql(false);
 		});	
 
-		it('should have version 1', function(){
+		it('should have version 1', function() {
+
 			saved.version.should.eql(1);
 		});
 
-		it('should have a created event', function(){
+		it('should have a created event', function() {
+
 			saved.events[0].name.should.eql('template name');
 			saved.events[0].content.should.eql('template content');
 			saved.events[0].tenant.should.eql(tenant);
@@ -71,7 +77,8 @@ describe('Template Model Unit Tests:', function() {
 			saved.events[0].metadata.eventName.should.eql('TemplateCreated');
 		});
 
-		it('should have created on date', function(){
+		it('should have created on date', function() {
+
 			new Date(saved.createdOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(saved.createdOn).should.lessThan(new Date(Date.now() + 10000));
 		});
@@ -121,7 +128,8 @@ describe('Template Model Unit Tests:', function() {
 
 				template.changeDetails('hello', 'there');
 
-				template.save(function(saveerr){
+				template.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -140,23 +148,28 @@ describe('Template Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated name', function(){
+		it('should have an updated name', function() {
+
 			saved.name.should.eql('hello');
 		});
 
-		it('should have an updated content', function(){
+		it('should have an updated content', function() {
+
 			saved.content.should.eql('there');
 		});
 
-		it('should have the same created on date', function(){
+		it('should have the same created on date', function() {
+
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(2);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 			saved.events[1].name.should.eql('hello');
 			saved.events[1].content.should.eql('there');
 
@@ -177,7 +190,8 @@ describe('Template Model Unit Tests:', function() {
 			template.changeDetails('template name', 'template content');
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			template.events.should.have.length(1);
 		});
 
@@ -202,7 +216,8 @@ describe('Template Model Unit Tests:', function() {
 
 				template.hide();
 
-				template.save(function(saveerr){
+				template.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -221,15 +236,18 @@ describe('Template Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated hidden field', function(){
+		it('should have an updated hidden field', function() {
+
 			saved.hidden.should.eql(true);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(2);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 
 			saved.events[1].metadata.eventName.should.eql('TemplateHidden');
 		});
@@ -249,7 +267,8 @@ describe('Template Model Unit Tests:', function() {
 			template.hide();
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			template.events.should.have.length(2);
 		});
 
@@ -275,7 +294,8 @@ describe('Template Model Unit Tests:', function() {
 				template.hide();
 				template.unhide();
 
-				template.save(function(saveerr){
+				template.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -294,15 +314,18 @@ describe('Template Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated hidden field', function(){
+		it('should have an updated hidden field', function() {
+
 			saved.hidden.should.eql(false);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(3);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 
 			saved.events[2].metadata.eventName.should.eql('TemplateUnhidden');
 		});
@@ -322,7 +345,8 @@ describe('Template Model Unit Tests:', function() {
 			template.unhide();
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			template.events.should.have.length(1);
 		});
 

@@ -24,7 +24,8 @@ var ApplicationConfiguration = (function() {
 			deps: ['$ocLazyLoad','$q', function ($ocLL, $q) {
 				// Creates a promise chain for each argument
 				var promise = $q.when(1); // empty promise
-				for(var i=0, len=_args.length; i < len; i ++){
+				for(var i=0, len=_args.length; i < len; i ++) {
+
 					promise = andThen(_args[i]);
 				}
 				return promise;

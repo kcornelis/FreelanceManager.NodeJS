@@ -55,50 +55,60 @@ describe('Invoice Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a tenant', function(){
+		it('should have a tenant', function() {
+
 			saved.tenant.should.eql(tenant);
 		});
 
-		it('should have a number', function(){
+		it('should have a number', function() {
+
 			saved.number.should.eql('number 1');
 		});
 
-		it('should have a date', function(){
+		it('should have a date', function() {
+
 			saved.date.year.should.eql(2014);
 			saved.date.month.should.eql(2);
 			saved.date.day.should.eql(1);
 			saved.date.numeric.should.eql(20140201);
 		});
 
-		it('should have a credit term', function(){
+		it('should have a credit term', function() {
+
 			saved.creditTerm.year.should.eql(2014);
 			saved.creditTerm.month.should.eql(3);
 			saved.creditTerm.day.should.eql(1);	
 			saved.creditTerm.numeric.should.eql(20140301);	
 		});				
 
-		it('should have version 3', function(){
+		it('should have version 3', function() {
+
 			// invoice has 3 events in order to be valid
 			saved.version.should.eql(3);
 		});
 
-		it('should have no sub totalInCents', function(){
+		it('should have no sub totalInCents', function() {
+
 			saved.subTotalInCents.should.eql(0);
 		});
 
-		it('should have no per vat totals', function(){
+		it('should have no per vat totals', function() {
+
 			saved.vatPerPercentages.length.should.eql(0);
 		});
 
-		it('should have no totalInCents vat', function(){
+		it('should have no totalInCents vat', function() {
+
 			saved.totalVatInCents.should.eql(0);
 		});
 
-		it('should have no totalInCents', function(){
+		it('should have no totalInCents', function() {
+
 			saved.totalInCents.should.eql(0);
 		});
 
-		it('should have a created event', function(){
+		it('should have a created event', function() {
+
 			saved.events[0].number.should.eql('number 1');			
 			saved.events[0].tenant.should.eql(tenant);
 	
@@ -108,7 +118,8 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.events[0].metadata.eventName.should.eql('InvoiceCreated');
 		});
 
-		it('should have created on date', function(){
+		it('should have created on date', function() {
+
 			new Date(saved.createdOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(saved.createdOn).should.lessThan(new Date(Date.now() + 10000));
 		});
@@ -229,19 +240,23 @@ describe('Invoice Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated template', function(){
+		it('should have an updated template', function() {
+
 			saved.template.should.eql('template');
 		});
 
-		it('should have the same created on date', function(){
+		it('should have the same created on date', function() {
+
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(3);
 		});
 
-		it('should have a template changed event', function(){
+		it('should have a template changed event', function() {
+
 			saved.events[1].template.should.eql('template');
 
 			saved.events[1].metadata.eventName.should.eql('InvoiceTemplateChanged');
@@ -267,7 +282,8 @@ describe('Invoice Model Unit Tests:', function() {
 			});	
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			invoice.events.should.have.length(3);
 		});
 	});
@@ -324,39 +340,48 @@ describe('Invoice Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated customer name', function(){
+		it('should have an updated customer name', function() {
+
 			saved.customer.name.should.eql('to');
 		});
 
-		it('should have an updated customer vat number', function(){
+		it('should have an updated customer vat number', function() {
+
 			saved.customer.vatNumber.should.eql('tovat');
 		});
 
-		it('should have an updated customer customer number', function(){
+		it('should have an updated customer customer number', function() {
+
 			saved.customer.number.should.eql('tonumber');
 		});
 
-		it('should have an updated customer address line1', function(){
+		it('should have an updated customer address line1', function() {
+
 			saved.customer.address.line1.should.eql('to line 1');
 		});
 
-		it('should have an updated customer address postalcode', function(){
+		it('should have an updated customer address postalcode', function() {
+
 			saved.customer.address.postalcode.should.eql('to postalcode');
 		});
 
-		it('should have an updated customer address city', function(){
+		it('should have an updated customer address city', function() {
+
 			saved.customer.address.city.should.eql('to city');
 		});															
 
-		it('should have the same created on date', function(){
+		it('should have the same created on date', function() {
+
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(3);
 		});
 
-		it('should have a customer changed event', function(){
+		it('should have a customer changed event', function() {
+
 			saved.events[2].name.should.eql('to');
 			saved.events[2].vatNumber.should.eql('tovat');
 			saved.events[2].number.should.eql('tonumber');
@@ -390,7 +415,8 @@ describe('Invoice Model Unit Tests:', function() {
 			});			
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			invoice.events.should.have.length(3);
 		});
 	});	
@@ -453,7 +479,8 @@ describe('Invoice Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have updated lines', function(){
+		it('should have updated lines', function() {
+
 			saved.lines[0].description.should.eql('item 1');
 			saved.lines[0].quantity.should.eql(2);
 			saved.lines[0].priceInCents.should.eql(100);
@@ -467,19 +494,23 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.lines[1].totalInCents.should.eql(100);			
 		});
 
-		it('should have the same created on date', function(){
+		it('should have the same created on date', function() {
+
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(4);
 		});
 
-		it('should update the subtotal', function(){
+		it('should update the subtotal', function() {
+
 			saved.subTotalInCents.should.eql(800);
 		});
 
-		it('should update the per vat totals', function(){
+		it('should update the per vat totals', function() {
+
 			saved.vatPerPercentages[0].vatPercentage.should.eql(20);
 			saved.vatPerPercentages[0].totalVatInCents.should.eql(120);
 
@@ -487,15 +518,18 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.vatPerPercentages[1].totalVatInCents.should.eql(42);
 		});
 
-		it('should update the totalInCents vat', function(){
+		it('should update the totalInCents vat', function() {
+
 			saved.totalVatInCents.should.eql(162);
 		});
 
-		it('should update the totalInCents', function(){
+		it('should update the totalInCents', function() {
+
 			saved.totalInCents.should.eql(962);
 		});
 
-		it('should have a template changed event', function(){
+		it('should have a template changed event', function() {
+
 
 			// invoice lines
 			saved.events[3].lines[0].description.should.eql('item 1');
@@ -546,7 +580,8 @@ describe('Invoice Model Unit Tests:', function() {
 			});	
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			invoice.events.should.have.length(3);
 		});
 	});
@@ -575,22 +610,28 @@ describe('Invoice Model Unit Tests:', function() {
 			original.linkTimeRegistrations([ timeRegistration1.id, timeRegistration2.id, timeRegistration3.id ]);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					company.save(done);
 				},
-				function(done){
+				function(done) {
+
 					project.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeRegistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeRegistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeRegistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					original.save(done);
 				}
 			], done);
@@ -610,16 +651,19 @@ describe('Invoice Model Unit Tests:', function() {
 			});
 		});
 
-		it('should contain the time registration ids', function(){
+		it('should contain the time registration ids', function() {
+
 			saved.linkedTimeRegistrations[0].should.eql(timeRegistration1.id);
 			saved.linkedTimeRegistrations[1].should.eql(timeRegistration2.id);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(4);
 		});
 
-		it('should have a time registrations linked changed event', function(){
+		it('should have a time registrations linked changed event', function() {
+
 
 			saved.events[3].timeRegistrationIds[0].should.eql(timeRegistration1.id);
 			saved.events[3].timeRegistrationIds[1].should.eql(timeRegistration2.id);
@@ -627,18 +671,22 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.events[3].metadata.eventName.should.eql('InvoiceTimeRegistrationsLinked');
 		});
 
-		it('should mark the time registrations as invoiced', function(done){
+		it('should mark the time registrations as invoiced', function(done) {
+
 
 			var tr1, tr2;
 
 			async.series([
-				function(done){
+				function(done) {
+
 					TimeRegistration.findOne({ _id: timeRegistration1.id }, function(err, tr) { tr1 = tr; done(); });
 				},
-				function(done){
+				function(done) {
+
 					TimeRegistration.findOne({ _id: timeRegistration2.id }, function(err, tr) { tr2 = tr; done(); });
 				},
-				function(done){
+				function(done) {
+
 					tr1.invoiced.should.be.true;
 					tr2.invoiced.should.be.true;
 					done();
@@ -646,15 +694,18 @@ describe('Invoice Model Unit Tests:', function() {
 			], done);
 		});
 
-		it('should not mark time registrations from another tenant as invoiced', function(done){
+		it('should not mark time registrations from another tenant as invoiced', function(done) {
+
 
 			var tr1;
 
 			async.series([
-				function(done){
+				function(done) {
+
 					TimeRegistration.findOne({ _id: timeRegistration3.id }, function(err, tr) { tr1 = tr; done(); });
 				},
-				function(done){
+				function(done) {
+
 					tr1.invoiced.should.be.false;
 					done();
 				}

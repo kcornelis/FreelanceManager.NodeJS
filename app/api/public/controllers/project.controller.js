@@ -21,7 +21,8 @@ function convert(project, company) {
 		},
 		name: project.name,
 		description: project.description,
-		tasks: _.map(project.tasks, function(t){
+		tasks: _.map(project.tasks, function(t) {
+
 			return {
 				name: t.name,
 				defaultRateInCents: t.defaultRateInCents,
@@ -32,7 +33,8 @@ function convert(project, company) {
 	};
 }
 
-function convertSingle(project, done){
+function convertSingle(project, done) {
+
 
 	Company.findById(project.companyId, function(err, company) 
 	{ 
@@ -65,7 +67,8 @@ exports.getById = function(req, res, next) {
 	{
 		if(project)
 		{
-			convertSingle(project, function(converted){
+			convertSingle(project, function(converted) {
+
 				res.send(converted);
 			});
 		}
@@ -76,16 +79,19 @@ exports.getById = function(req, res, next) {
 exports.getAll = function(req, res) {
 
 	Project.find({ tenant: req.user.id },function(err, projects) {
-		convertMultiple(projects, function(converted){
+		convertMultiple(projects, function(converted) {
+
 			res.send(converted);
 		});
 	});
 };
 
-exports.getActive = function(req, res){
+exports.getActive = function(req, res) {
+
 
 	Project.find({ tenant: req.user.id, hidden: false },function(err, projects) {
-		convertMultiple(projects, function(converted){
+		convertMultiple(projects, function(converted) {
+
 			res.send(converted);
 		});
 	});
@@ -94,9 +100,11 @@ exports.getActive = function(req, res){
 exports.create = function(req, res, next) {
 
 	var project = Project.create(req.user.id, req.body.companyId, req.body.name, req.body.description);
-	project.save(function(err){
+	project.save(function(err) {
+
 		if(err) next(err);    
-		else convertSingle(project, function(converted){
+		else convertSingle(project, function(converted) {
+
 			res.send(converted);
 		});
 	});
@@ -111,11 +119,14 @@ exports.update = function(req, res, next) {
 	}, 
 	function(err, project) {
 		if(err) next(err);
-		else if(project){
+		else if(project) {
+
 			project.changeDetails(req.body.name, req.body.description);
-			project.save(function(err){
+			project.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(project, function(converted){
+				else convertSingle(project, function(converted) {
+
 					res.send(converted);
 				});
 			});
@@ -133,11 +144,14 @@ exports.hide = function(req, res, next) {
 	}, 
 	function(err, project) {
 		if(err) next(err);
-		else if(project){
+		else if(project) {
+
 			project.hide();
-			project.save(function(err){
+			project.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(project, function(converted){
+				else convertSingle(project, function(converted) {
+
 					res.send(converted);
 				});
 			});
@@ -155,11 +169,14 @@ exports.unhide = function(req, res, next) {
 	}, 
 	function(err, project) {
 		if(err) next(err);
-		else if(project){
+		else if(project) {
+
 			project.unhide();
-			project.save(function(err){
+			project.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(project, function(converted){
+				else convertSingle(project, function(converted) {
+
 					res.send(converted);
 				});
 			});
@@ -177,11 +194,14 @@ exports.changeTasks = function(req, res, next) {
 	}, 
 	function(err, project) {
 		if(err) next(err);
-		else if(project){
+		else if(project) {
+
 			project.changeTasks(req.body);
-			project.save(function(err){
+			project.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(project, function(converted){
+				else convertSingle(project, function(converted) {
+
 					res.send(converted);
 				});
 			});
