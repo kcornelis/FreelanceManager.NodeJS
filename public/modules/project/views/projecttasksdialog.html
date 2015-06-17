@@ -1,21 +1,21 @@
 <form role="form" name="projectForm" novalidate>
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" data-ng-click="cancel()" aria-hidden="true">&times;</button>
+			<button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
 			<h4 class="modal-title">Project tasks</h4>
 		</div>
 		<div class="modal-body">
-			<ft-form-group ft-floating-label data-ng-repeat="task in project.tasks">
+			<ft-form-group ft-floating-label ng-repeat="task in project.tasks">
 				<label>{{ task.name }}</label>
-				<input type="text" data-ng-model="task.defaultRate" class="form-control">
+				<input type="text" ng-model="task.defaultRate" class="form-control">
 			</ft-form-group>
 		</div>
 		<div class="modal-footer">
-			<div class="pull-left" data-ng-show="isBusy">
+			<div class="pull-left" ng-show="isBusy">
 				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
-			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
-			<button type="submit" class="btn btn-primary" ng-disabled="projectForm.$invalid" data-ng-click="ok()">Save</button>
+			<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+			<button type="submit" class="btn btn-primary" ng-disabled="projectForm.$invalid" ng-click="ok()">Save</button>
 		</div>
 	</div>
 </form>

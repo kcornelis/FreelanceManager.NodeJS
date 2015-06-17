@@ -1,13 +1,13 @@
 <div class="content-header">
 	<div class="toolbar">
-		<button class="btn btn-primary pull-right" data-ng-click="openProject()">
+		<button class="btn btn-primary pull-right" ng-click="openProject()">
 			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Project
 		</button>
 	</div>
 	<h1><i class="icon-rocket"></i>Project overview</h1>
 </div>
 
-<div class="panel panel-default" data-ng-init="getAllProjects()">
+<div class="panel panel-default" ng-init="getAllProjects()">
 	<div class="table-responsive fm-projects">
 		<table class="table">
 			<thead>
@@ -17,19 +17,19 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="project in projects">
+				<tr ng-repeat="project in projects">
 					<td>
-					<dl data-ng-class="{ 'fm-hidden-project': project.hidden }">
+					<dl ng-class="{ 'fm-hidden-project': project.hidden }">
 						<dt>{{ project.company.name }} - {{ project.name }}</dt>
 						<dd>{{ project.description }}</dd>
 					</dl>
 					</td>
 					<td class="fm-action-column">
 						<div class="btn-group pull-right">
-							<span data-ng-click="hideProject(project)" data-ng-show="!project.hidden" title="Hide" class="fa fa-close fa-hover ml-sm"></span>
-							<span data-ng-click="unhideProject(project)" data-ng-show="project.hidden" title="Unhide" class="fa fa-check fa-hover ml-sm"></span>
-							<span data-ng-click="openProjectTasks(project)" class="fa fa-tasks fa-hover ml-sm"></span>
-							<span data-ng-click="openProject(project)" class="fa fa-pencil fa-hover ml-sm"></span>
+							<span ng-click="hideProject(project)" ng-show="!project.hidden" title="Hide" class="fa fa-close fa-hover ml-sm"></span>
+							<span ng-click="unhideProject(project)" ng-show="project.hidden" title="Unhide" class="fa fa-check fa-hover ml-sm"></span>
+							<span ng-click="openProjectTasks(project)" class="fa fa-tasks fa-hover ml-sm"></span>
+							<span ng-click="openProject(project)" class="fa fa-pencil fa-hover ml-sm"></span>
 						</div>
 					</td>
 				</tr>

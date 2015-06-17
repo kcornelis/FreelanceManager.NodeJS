@@ -1,53 +1,53 @@
 <form role="form" name="companyForm" novalidate>
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" data-ng-click="cancel()" aria-hidden="true">&times;</button>
+			<button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
 			<h4 class="modal-title">{{ newCompany ? 'Create a new company' : 'Update a company' }}</h4>
 		</div>
 		<div class="modal-body">
 			<h5 class="text-center">Info</h5>
-			<ft-form-group ft-floating-label data-fm-add-error-for="companyForm.name">
+			<ft-form-group ft-floating-label fm-add-error-for="companyForm.name">
 				<label>Name</label>
-				<input type="text" name="name" class="form-control" data-ng-model="company.name" required autofocus>
+				<input type="text" name="name" class="form-control" ng-model="company.name" required autofocus>
 			</ft-form-group>
 			<ft-form-group ft-floating-label>
 				<label>Number</label>
-				<input type="text" name="number" class="form-control" data-ng-model="company.number" disabled>
+				<input type="text" name="number" class="form-control" ng-model="company.number" disabled>
 			</ft-form-group>
 			<ft-form-group ft-floating-label>
 				<label>VAT Number</label>
-				<input type="text" name="vatNumber" class="form-control" data-ng-model="company.vatNumber">
+				<input type="text" name="vatNumber" class="form-control" ng-model="company.vatNumber">
 			</ft-form-group>
 			<h5 class="text-center mt-xl">Invoice Address</h5>
 			<ft-form-group ft-floating-label>
 				<label>Line 1</label>
-				<input type="text" class="form-control" data-ng-model="company.address.line1">
+				<input type="text" class="form-control" ng-model="company.address.line1">
 			</ft-form-group>
 			<ft-form-group ft-floating-label>
 				<label>Line 2</label>
-				<input type="text" class="form-control" data-ng-model="company.address.line2">
+				<input type="text" class="form-control" ng-model="company.address.line2">
 			</ft-form-group>
 			<div class="row">
 				<div class="col-xs-6">
 					<ft-form-group ft-floating-label>
 						<label>Postal code</label>
-						<input type="text" class="form-control" data-ng-model="company.address.postalcode">
+						<input type="text" class="form-control" ng-model="company.address.postalcode">
 					</ft-form-group>
 				</div>
 				<div class="col-xs-6">
 					<ft-form-group ft-floating-label>
 						<label>City</label>
-						<input type="text" class="form-control" data-ng-model="company.address.city">
+						<input type="text" class="form-control" ng-model="company.address.city">
 					</ft-form-group>
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
-			<div class="pull-left" data-ng-show="isBusy">
+			<div class="pull-left" ng-show="isBusy">
 				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
-			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
-			<button type="submit" class="btn btn-primary" ng-disabled="companyForm.$invalid" data-ng-click="ok()">{{ newCompany ? 'Create' : 'Update' }}</button>
+			<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+			<button type="submit" class="btn btn-primary" ng-disabled="companyForm.$invalid" ng-click="ok()">{{ newCompany ? 'Create' : 'Update' }}</button>
 		</div>
 	</div>
 </form>

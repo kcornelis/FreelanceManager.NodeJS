@@ -2,24 +2,24 @@
 	<h1><i class="icon-envelope"></i>Create a new invoice</h1>
 </div>
 
-<div class="fm-create-invoice" data-ng-init="init()">
+<div class="fm-create-invoice" ng-init="init()">
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<div class="wizard wizard-horizontal">
 				<ol class="row">
-					<li data-ng-class="{'active':active(1)}" class="col-md-3">
+					<li ng-class="{'active':active(1)}" class="col-md-3">
 						<h4>Time</h4>
 						<small class="text-muted hideOverflow">Select time registrations</small>
 					</li>
-					<li data-ng-class="{'active':active(2)}" class="col-md-3">
+					<li ng-class="{'active':active(2)}" class="col-md-3">
 						<h4>Lines</h4>
 						<small class="text-muted hideOverflow">Edit the invoice lines</small>
 					</li>										
-					<li data-ng-class="{'active':active(3)}" class="col-md-3">
+					<li ng-class="{'active':active(3)}" class="col-md-3">
 						<h4>Info</h4>
 						<small class="text-muted hideOverflow">Add invoice info</small>
 					</li>
-					<li data-ng-class="{'active':active(4)}" class="col-md-3">
+					<li ng-class="{'active':active(4)}" class="col-md-3">
 						<h4>Summary</h4>
 						<small class="text-muted hideOverflow">Invoice preview</small>
 					</li>					
@@ -29,13 +29,13 @@
 			<div class="ml-xl mr-xl">
 
 				<!-- STEP 1: Time registration selection -->
-				<div data-ng-show="active(1)">
+				<div ng-show="active(1)">
 
 					<div class="mt-xl">
 						<div class="row">
 							<div class="col-sm-12 mb">
 								<label>Project</label>
-								<select class="form-control" data-ng-model="search.project" data-ng-options="p.id as (p.company.name + ' - ' + p.name) for p in projects">
+								<select class="form-control" ng-model="search.project" ng-options="p.id as (p.company.name + ' - ' + p.name) for p in projects">
 									<option></option>
 								</select>
 							</div>
@@ -43,25 +43,25 @@
 						<div class="row">
 							<div class="col-sm-3 mb-lg">
 								<label>From</label>
-								<input type="text" data-ng-model="search.from" class="form-control"
-									data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-h-position="left" />
+								<input type="text" ng-model="search.from" class="form-control"
+									fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
 							</div>
 							<div class="col-sm-3 mb-lg">
 								<label>To</label>
-								<input type="text" data-ng-model="search.to" class="form-control"
-									data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-h-position="left" />
+								<input type="text" ng-model="search.to" class="form-control"
+									fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-3 mb-lg">
 								<label class="checkbox-inline c-checkbox">
-									<input type="checkbox" data-ng-model="search.invoiced" />
+									<input type="checkbox" ng-model="search.invoiced" />
 									<span class="fa fa-check"></span> Invoiced
 								</label>							
 							</div>
 							<div class="col-sm-3 mb-lg">
 								<label class="checkbox-inline c-checkbox">
-									<input type="checkbox" data-ng-model="search.billable" />
+									<input type="checkbox" ng-model="search.billable" />
 									<span class="fa fa-check"></span> Billable
 								</label>							
 							</div>
@@ -69,28 +69,28 @@
 
 						<div class="row">
 							<div class="col-sm-12">
-								<button type="button" class="pull-left btn btn-default" data-ng-click="searchTimeRegistrations()">Search</button>
+								<button type="button" class="pull-left btn btn-default" ng-click="searchTimeRegistrations()">Search</button>
 							</div>
 						</div>
 
 					</div>
 
-					<div data-ng-show="loading">
+					<div ng-show="loading">
 						<div class="fm-wait-panel mt-xl center" ></div>
 					</div>
-					<div data-ng-show="searched && !loading">
+					<div ng-show="searched && !loading">
 						<h3 class="text-center">Select time registrations</h3>
-						<div class="alert alert-warning mt-xl" data-ng-show="timeRegistrations.length == 0">
+						<div class="alert alert-warning mt-xl" ng-show="timeRegistrations.length == 0">
 								Search returned no time registrations
 						</div>
-						<div class="table-responsive table-bordered mt-xl" data-ng-show="timeRegistrations.length > 0">
+						<div class="table-responsive table-bordered mt-xl" ng-show="timeRegistrations.length > 0">
 							<table class="table table-hover">
 								<thead>
 									<tr>
 										<th check-all="check-all">
-											<div data-toggle="tooltip" data-title="Check All" class="checkbox c-checkbox">
+											<div toggle="tooltip" title="Check All" class="checkbox c-checkbox">
 												<label>
-													<input type="checkbox" data-ng-model="includeAllTimeRegistrations" />
+													<input type="checkbox" ng-model="includeAllTimeRegistrations" />
 													<span class="fa fa-check"></span>
 												</label>
 											</div>
@@ -99,11 +99,11 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr data-ng-repeat="item in timeRegistrations">
+									<tr ng-repeat="item in timeRegistrations">
 										<td>
 											<div class="checkbox c-checkbox">
 												<label>
-													<input type="checkbox" data-ng-model="item.included" />
+													<input type="checkbox" ng-model="item.included" />
 													<span class="fa fa-check"></span>
 												</label>
 											</div>
@@ -132,14 +132,14 @@
 					</div>
 
 					<ul class="pager pull-right mt-xl">
-						<li><button class="btn btn-default" data-ng-disabled="!canGoto2()" data-ng-click="goto2()">Next <span>&rarr;</span></button></li>
+						<li><button class="btn btn-default" ng-disabled="!canGoto2()" ng-click="goto2()">Next <span>&rarr;</span></button></li>
 					</ul>				
 
 				</div>
 
 
 				<!-- STEP 2: Invoice lines -->
-				<div data-ng-show="active(2)">
+				<div ng-show="active(2)">
 
 					<div class="row mt-xl visible-lg">
 						<div class="col-xs-3">
@@ -159,30 +159,30 @@
 						</div>
 						<div class="col-xs-1"></div>
 					</div>
-					<div class="row" data-ng-repeat="item in invoice.lines">
+					<div class="row" ng-repeat="item in invoice.lines">
 						<div class="col-md-3">
 							<label class="hidden-lg">Description</label>
-							<textarea type="text" class="form-control fm-edit-invoice-line mb-lg" data-ng-model="item.description" rows="3" />
+							<textarea type="text" class="form-control fm-edit-invoice-line mb-lg" ng-model="item.description" rows="3" />
 						</div>
 						<div class="col-md-2">
 							<label class="hidden-lg">Quantity</label>
-							<input type="text" class="form-control mb-lg" data-ng-model="item.quantity" />
+							<input type="text" class="form-control mb-lg" ng-model="item.quantity" />
 						</div>
 						<div class="col-md-2">
 							<label class="hidden-lg">Price</label>
-							<input type="text" class="form-control mb-lg" data-ng-model="item.price" />
+							<input type="text" class="form-control mb-lg" ng-model="item.price" />
 						</div>
 						<div class="col-md-2">
 							<label class="hidden-lg">VAT</label>
-							<input type="text" class="form-control mb-lg" data-ng-model="item.vatPercentage" />
+							<input type="text" class="form-control mb-lg" ng-model="item.vatPercentage" />
 						</div>
 						<div class="col-md-2">
 							<label class="hidden-lg">Total (exl)</label>
-							<input type="text" class="form-control mb-lg" disabled data-ng-model="item.total" />
+							<input type="text" class="form-control mb-lg" disabled ng-model="item.total" />
 						</div>
 						<div class="col-md-1">
 							<div class="pull-right mb-lg">
-								<span data-ng-click="removeInvoiceLine(item)" data-ng-show="invoice.lines.length > 1"
+								<span ng-click="removeInvoiceLine(item)" ng-show="invoice.lines.length > 1"
 									class="fa fa-remove fa-hover"></span>
 							</div>
 						</div>
@@ -192,110 +192,110 @@
 					</div>
 
 					<ul class="pager pull-left">
-						<li><button class="btn btn-default" data-ng-click="addInvoiceLine()">Add Line</button></li>
+						<li><button class="btn btn-default" ng-click="addInvoiceLine()">Add Line</button></li>
 					</ul>
 
 					<ul class="pager pull-right">
-						<li><button class="btn btn-default" data-ng-click="goto3()">Next <span>&rarr;</span></button></li>
+						<li><button class="btn btn-default" ng-click="goto3()">Next <span>&rarr;</span></button></li>
 					</ul>				
 
 				</div>
 
 				<!-- STEP 3: Invoice info -->
-				<div data-ng-show="active(3)">
+				<div ng-show="active(3)">
 
 					<legend class="mt-xl">Invoice details</legend>
 					<div class="row">
 						<div class="col-sm-12 mb">
 							<label>Number</label>
-							<input type="text" data-ng-model="invoice.number" class="form-control" required />
+							<input type="text" ng-model="invoice.number" class="form-control" required />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-6 mb">
 							<label>Date</label>
-							<input type="text" data-ng-model="invoice.displayDate" class="form-control" required
-								data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-h-position="left" />
+							<input type="text" ng-model="invoice.displayDate" class="form-control" required
+								fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
 						</div>
 						<div class="col-sm-6 mb">
 							<label>Credit Term</label>
-							<input type="text" data-ng-model="invoice.displayCreditTerm" class="form-control" required 
-								data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-h-position="left" />
+							<input type="text" ng-model="invoice.displayCreditTerm" class="form-control" required 
+								fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
 						</div>
 					</div>	
 					<div class="row">
 						<div class="col-sm-12 mb">
 							<label>Template</label>
-							<select class="form-control" data-ng-model="invoice.templateId" data-ng-options="t.id as t.name for t in templates" required>
+							<select class="form-control" ng-model="invoice.templateId" ng-options="t.id as t.name for t in templates" required>
 							</select>
 						</div>
 					</div>						
 
-					<legend class="mt-xl">Customer details <span class="fa fa-search fa-hover pull-right mt-sm" data-ng-click="searchCustomer()"></span></legend>
+					<legend class="mt-xl">Customer details <span class="fa fa-search fa-hover pull-right mt-sm" ng-click="searchCustomer()"></span></legend>
 					<div class="row">
 						<div class="col-sm-6 mb">
 							<label>Name</label>
-							<input type="text" data-ng-model="invoice.customer.name" class="form-control" required />
+							<input type="text" ng-model="invoice.customer.name" class="form-control" required />
 						</div>
 						<div class="col-sm-6 mb">
 							<label>Customer Number</label>
-							<input type="text" data-ng-model="invoice.customer.number" class="form-control" required />
+							<input type="text" ng-model="invoice.customer.number" class="form-control" required />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12 mb">
 							<label>VAT Number</label>
-							<input type="text" data-ng-model="invoice.customer.vatNumber" class="form-control" />
+							<input type="text" ng-model="invoice.customer.vatNumber" class="form-control" />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12 mb">
 							<label>Address Line 1</label>
-							<input type="text" data-ng-model="invoice.customer.address.line1" class="form-control" required />
+							<input type="text" ng-model="invoice.customer.address.line1" class="form-control" required />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12 mb">
 							<label>Address Line 2</label>
-							<input type="text" data-ng-model="invoice.customer.address.line2" class="form-control" />
+							<input type="text" ng-model="invoice.customer.address.line2" class="form-control" />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-4 mb">
 							<label>Postalcode</label>
-							<input type="text" data-ng-model="invoice.customer.address.postalcode" class="form-control" required />
+							<input type="text" ng-model="invoice.customer.address.postalcode" class="form-control" required />
 						</div>
 						<div class="col-sm-8 mb">
 							<label>City</label>
-							<input type="text" data-ng-model="invoice.customer.address.city" class="form-control" required />
+							<input type="text" ng-model="invoice.customer.address.city" class="form-control" required />
 						</div>
 					</div>
 
 					<ul class="pager pull-left">
-						<li><button class="btn btn-default" data-ng-click="gobackto2()">Back</button></li>
+						<li><button class="btn btn-default" ng-click="gobackto2()">Back</button></li>
 					</ul>
 					<ul class="pager pull-right">
-						<li><button class="btn btn-default" data-ng-click="goto4()">Next <span>&rarr;</span></button></li>
+						<li><button class="btn btn-default" ng-click="goto4()">Next <span>&rarr;</span></button></li>
 					</ul>				
 
 				</div>				
 
 				<!-- STEP 4: Summary -->
-				<div data-ng-show="active(4)">
+				<div ng-show="active(4)">
 					<h3 class="text-center">Invoice Preview</h3>
-					<div data-ng-show="loading">
+					<div ng-show="loading">
 						<div class="fm-wait-panel mt-xl center" ></div>
 					</div>
-					<div data-ng-show="!loading">						
+					<div ng-show="!loading">						
 						<div class="fm-invoice-preview embed-responsive embed-responsive-16by9">
 							<iframe src="{{ previewUrl }}"></iframe>
 						</div>
 					</div>
 					<ul class="pager pull-left">
-						<li><button class="btn btn-default" data-ng-click="gobackto3()">Back</button></li>
+						<li><button class="btn btn-default" ng-click="gobackto3()">Back</button></li>
 					</ul>
 					<ul class="pager pull-right">
-						<li><button class="btn btn-default" data-ng-click="create()">Create</button></li>
+						<li><button class="btn btn-default" ng-click="create()">Create</button></li>
 					</ul>	
 				</div>
 			</div>

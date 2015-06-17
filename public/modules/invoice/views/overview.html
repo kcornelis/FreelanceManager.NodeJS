@@ -1,24 +1,24 @@
 <div class="content-header">
 	<div class="toolbar">
-		<button class="btn btn-primary pull-right" data-ui-sref="app.invoice_create">
+		<button class="btn btn-primary pull-right" ui-sref="app.invoice_create">
 			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Invoice
 		</button>
 	</div>
 	<h1><i class="icon-envelope"></i>Invoice overview</h1>
 </div>
 
-<button class="btn btn-default pull-left btn-accentuate" data-ng-click="previous()"><span class="fa fa-chevron-left"></span></button>
-<button class="btn btn-default pull-right btn-accentuate" data-ng-click="next()"><span class="fa fa-chevron-right"></span></button>
+<button class="btn btn-default pull-left btn-accentuate" ng-click="previous()"><span class="fa fa-chevron-left"></span></button>
+<button class="btn btn-default pull-right btn-accentuate" ng-click="next()"><span class="fa fa-chevron-right"></span></button>
 <h1 class="text-center">{{ year }}</h1>
 <div class="clearfix">&nbsp;</div>
 
-<div class="panel panel-default panel-margin" data-ng-show="invoices.length == 0">
+<div class="panel panel-default panel-margin" ng-show="invoices.length == 0">
 	<div class="panel-body text-center">
 		No invoices for this period
 	</div>
 </div>
 
-<div class="panel panel-default" data-ng-init="getAllInvoices()" data-ng-show="invoices.length > 0">
+<div class="panel panel-default" ng-init="getAllInvoices()" ng-show="invoices.length > 0">
 	<div class="table-responsive">
 		<table class="table">
 			<thead>
@@ -30,7 +30,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="invoice in invoices">
+				<tr ng-repeat="invoice in invoices">
 					<td>{{ invoice.date.year }}-{{ invoice.date.month }}-{{ invoice.date.day }}</td>
 					<td>{{ invoice.number }}</td>
 					<td>{{ invoice.customer.name }}</td>

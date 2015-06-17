@@ -1,29 +1,29 @@
 <div class="content-header">
 	<div class="toolbar">
-		<button class="btn btn-primary pull-right" data-ng-click="openTemplate()">
+		<button class="btn btn-primary pull-right" ng-click="openTemplate()">
 			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Template
 		</button>
 	</div>
 	<h1><i class="icon-docs"></i>Template overview</h1>
 </div>
 
-<div class="row" data-ng-init="getAllTemplates()">
+<div class="row" ng-init="getAllTemplates()">
 	<div class="col-md-3">
 		<ul class="list-group">
-			<li class="list-group-item" data-ng-repeat="t in templates" data-ng-class="{'active': t.id === template.id }">{{ t.name }}
-				<span class="pull-right fa fa-pencil" data-ng-click="openTemplate(t)"></span>
+			<li class="list-group-item" ng-repeat="t in templates" ng-class="{'active': t.id === template.id }">{{ t.name }}
+				<span class="pull-right fa fa-pencil" ng-click="openTemplate(t)"></span>
 			</li>
 		</ul>
 	</div>
 	<div class="col-md-9" >
 		<form role="form" name="templateForm" novalidate >
-			<div class="form-group ft-accentuate" data-fm-add-error-for="templateForm.name">
-			   <input type="text" name="name" data-ng-model="template.name" placeholder="Name" required class="form-control">
+			<div class="form-group ft-accentuate" fm-add-error-for="templateForm.name">
+			   <input type="text" name="name" ng-model="template.name" placeholder="Name" required class="form-control">
 			</div>
 			<div class="form-group ft-accentuate">
-			   <textarea name="content" data-ng-model="template.content" placeholder="Content" rows="12" class="form-control"></textarea>
+			   <textarea name="content" ng-model="template.content" placeholder="Content" rows="12" class="form-control"></textarea>
 			</div>
-			<button type="submit" ng-disabled="templateForm.$invalid" data-ng-click="saveTemplate()" class="btn btn-primary btn-block">Save</button>
+			<button type="submit" ng-disabled="templateForm.$invalid" ng-click="saveTemplate()" class="btn btn-primary btn-block">Save</button>
 		</form>
 	</div>
 </div>

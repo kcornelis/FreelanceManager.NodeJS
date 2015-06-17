@@ -1,6 +1,6 @@
 <div class="content-header">
 	<div class="toolbar">
-		<button class="btn btn-primary pull-right" data-ng-click="export()">
+		<button class="btn btn-primary pull-right" ng-click="export()">
 			<em class="fa fa-plus-circle fa-fw mr-sm"></em>Export
 		</button>
 	</div>
@@ -8,10 +8,10 @@
 </div>
 
 
-<div class="fm-time-export" data-ng-init="refresh()">
+<div class="fm-time-export" ng-init="refresh()">
 
 	<div class="btn-group pull-right btn-group-accentuate">
-		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		<button type="button" class="btn btn-default dropdown-toggle" toggle="dropdown">
 			<span class="fa fa-cog"></span>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu">
@@ -25,18 +25,18 @@
 	</div>
 
 	<div class="input-group input-group-accentuate">
-		<input type="text" class="form-control date-selector" style="width: 120px;" data-ng-model="displayFrom" 
-			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeFrom(date, 'YYYY-MM-DD')"
-			   data-fm-datepicker-h-position="left" />
-		<input type="text" class="form-control date-selector" style="width: 120px;" data-ng-model="displayTo" 
-			   data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeTo(date, 'YYYY-MM-DD')"
-			   data-fm-datepicker-h-position="left" />
-		<button type="button" class="btn btn-default" data-ng-click="applyDate()"><span class="fa fa-search"></span></button>
+		<input type="text" class="form-control date-selector" style="width: 120px;" ng-model="displayFrom" 
+			   fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-datechanged="changeFrom(date, 'YYYY-MM-DD')"
+			   fm-datepicker-h-position="left" />
+		<input type="text" class="form-control date-selector" style="width: 120px;" ng-model="displayTo" 
+			   fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-datechanged="changeTo(date, 'YYYY-MM-DD')"
+			   fm-datepicker-h-position="left" />
+		<button type="button" class="btn btn-default" ng-click="applyDate()"><span class="fa fa-search"></span></button>
 	</div>
 
 	<div class="mb-xl"></div>
 
-	<div class="panel panel-default" data-ng-show="loading">
+	<div class="panel panel-default" ng-show="loading">
 		<div class="panel-body text-center">
 			<div class="fm-wait-panel"></div>
 			<div class="clearfix"></div>
@@ -44,20 +44,20 @@
 		</div>
 	</div>
 
-	<div class="panel panel-default" data-ng-hide="hasTimeRegistrations || loading">
+	<div class="panel panel-default" ng-hide="hasTimeRegistrations || loading">
 		<div class="panel-body text-center">
 			No hours registered for this period
 		</div>
 	</div>
 
 	<div class="result">
-		<div class="panel panel-default" data-ng-repeat="timeRegistration in timeRegistrations">
+		<div class="panel panel-default" ng-repeat="timeRegistration in timeRegistrations">
 			<!-- Default panel contents -->
 			<div class="panel-heading">{{ timeRegistration.date | formatdate }}</div>
 
 			<!-- List group -->
 			<ul class="list-group">
-				<li class="list-group-item" data-ng-repeat="item in timeRegistration.items">
+				<li class="list-group-item" ng-repeat="item in timeRegistration.items">
 					<div class="row">
 						<div class="col-xs-8">
 							<strong class="hideOverflow">{{ item.company.name }} - {{ item.project.name }}</strong>
