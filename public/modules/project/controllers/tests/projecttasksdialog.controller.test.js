@@ -1,36 +1,27 @@
 (function() {
 	'use strict';
 
-	describe('ProjectTasksDialogController Unit Tests:', function() {
-
-		var scope, 
-			ProjectTasksDialogController,
-			toUpdate;
+	describe('Project Tasks Dialog Controller Unit Tests:', function() {
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($rootScope) {
-			scope = $rootScope.$new();
+		describe('when the controller is created', function() {
 
-			// mock the close and dismiss methods from the dialog
-			scope.$close = function(){};
-			scope.$dismiss = function(){};
-			spyOn(scope, '$close');
-			spyOn(scope, '$dismiss');
-		}));
+			var scope, 
+				controller,
+				toUpdate;
 
-		describe('when the controller is created', function(){
+			beforeEach(inject(function($controller, $rootScope) {
 
-			beforeEach(inject(function($controller) {
-				
-				toUpdate = { id: 2, name: 'name', tasks: [
+				toUpdate = toUpdate = { id: 2, name: 'name', tasks: [
 					{ name: 'Development', defaultRateInCents: 50 },
 					{ name: 'Sleeping', defaultRateInCents: 0 }
-				] };
+				]};
 
-				ProjectTasksDialogController = $controller('ProjectTasksDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectTasksDialogController', {
 					$scope: scope,
 					toUpdate: toUpdate
 				});
@@ -44,13 +35,12 @@
 				expect(scope.message).toBe('');
 			});
 
-			it('should have a reference to the project to update', function(){
+			it('should have a reference to the project to update', function() {
 				toUpdate.name = 'updatedName';
 				expect(scope.originalProject.name).toBe('updatedName');
 			});
 
-			it('should have a copy of the project to update', function(){
-
+			it('should have a copy of the project to update', function() {
 				toUpdate.tasks[0].name = 'hello';
 
 				expect(scope.project.tasks[0].name).toBe('Development');
@@ -59,25 +49,26 @@
 				expect(scope.project.tasks[1].defaultRateInCents).toBe(0);
 			});
 
-			it('should have default rate not in cents', function(){
-
+			it('should have default rate not in cents', function() {
 				expect(scope.project.tasks[0].defaultRate).toBe(0.5);
 				expect(scope.project.tasks[1].defaultRate).toBe(0);
 			});
 		});	
 
-		describe('when the default price is changed', function(){
+		describe('when the default price is changed', function() {
 
-			beforeEach(inject(function($controller) {
-				
-				toUpdate = { id: 2, name: 'name', tasks: [
-					{ name: 'Development', defaultRateInCents: 50 },
-					{ name: 'Sleeping', defaultRateInCents: 0 }
-				] };
+			var scope, 
+				controller;
 
-				ProjectTasksDialogController = $controller('ProjectTasksDialogController', {
+			beforeEach(inject(function($controller, $rootScope) {
+
+				scope = $rootScope.$new();
+				controller = $controller('ProjectTasksDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate
+					toUpdate: { id: 2, name: 'name', tasks: [
+						{ name: 'Development', defaultRateInCents: 50 },
+						{ name: 'Sleeping', defaultRateInCents: 0 }
+					] }
 				});
 
 				scope.project.tasks[0].defaultRate = 0;
@@ -92,38 +83,38 @@
 			});
 		});	
 
-		describe('when an existing project is saved with success', function(){
+		describe('when an existing project is saved with success', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				toUpdate = { id: 2, name: 'name', tasks: [
-					{ name: 'Development', defaultRateInCents: 50 },
-					{ name: 'Sleeping', defaultRateInCents: 0 }
-				] };
-
-				// create a mock for the project server
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					changetasks: function(id, data, success, error){
+					changetasks: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
 						this.flush = success;
 					}
 				};
 
-				ProjectTasksDialogController = $controller('ProjectTasksDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectTasksDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, name: 'name', tasks: [
+						{ name: 'Development', defaultRateInCents: 50 },
+						{ name: 'Sleeping', defaultRateInCents: 0 }
+					] },
 					Project: mockService
 				});
+				scope.$close = function() { };
 			}));
 
-			it('should show a message in the ui', function(){
-				
+			it('should show a message in the ui', function() {
 				scope.ok();
 
 				expect(scope.message).toBe('Saving project...');
@@ -135,8 +126,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the project to the backend with te correct data', function(){
-
+			it('should send the project to the backend with te correct data', function() {
 				scope.project.tasks[0].defaultRateInCents = 40;
 
 				scope.ok();
@@ -150,9 +140,12 @@
 			});
 		});		
 
-		describe('when a project is saved with an error', function(){
+		describe('when a project is saved with an error', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService,
+				toUpdate;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
@@ -163,20 +156,21 @@
 
 				// create a mock for the project service
 				mockService = {
-					changetasks: function(id, data, success, error){
+					changetasks: function(id, data, success, error) {
 						this.flush = error;
 					}
 				};
 
-				ProjectTasksDialogController = $controller('ProjectTasksDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectTasksDialogController', {
 					$scope: scope,
 					toUpdate: toUpdate,
 					Project: mockService
 				});
+				scope.$close = function() { };
 			}));
 
-			it('should show a message in the ui', function(){
-				
+			it('should show a message in the ui', function() {
 				scope.ok();
 
 				expect(scope.message).toBe('Saving project...');
@@ -189,40 +183,39 @@
 			});
 		});		
 
-		describe('when the dialog is cancelled', function(){
+		describe('when the dialog is cancelled', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				// create a mock for the project service
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					changetasks: function(){}
+					changetasks: function() { }
 				};
 
-				spyOn(mockService, 'changetasks');
-
-				ProjectTasksDialogController = $controller('ProjectTasksDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectTasksDialogController', {
 					$scope: scope,
 					toUpdate: undefined
 				});
+
+				scope.$dismiss = function() { };
+				spyOn(scope, '$dismiss');
+				spyOn(mockService, 'changetasks');
 			}));
 
-			it('should not save the project', function(){
-				
+			it('should not save the project', function() {
 				scope.cancel();
-
 				expect(mockService.changetasks).not.toHaveBeenCalled();
 			});
 
-
-			it('should close the dialog', function(){
-				
+			it('should close the dialog', function() {
 				scope.cancel();
-
 				expect(scope.$dismiss).toHaveBeenCalled();
 			});
 		});				

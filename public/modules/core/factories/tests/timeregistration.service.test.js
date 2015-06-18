@@ -7,13 +7,13 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		describe('Get all', function(){
+		describe('Get all', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -25,19 +25,19 @@
 
 			}));
 
-			it('should return all timeregistrations', function(){
+			it('should return all timeregistrations', function() {
 				expect(response[0].description).toBe('time registration 1');
 				expect(response[1].description).toBe('time registration 2');
 			});	
 		});
 
-		describe('Search', function(){
+		describe('Search', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -49,19 +49,19 @@
 
 			}));
 
-			it('should return all timeregistrations', function(){
+			it('should return all timeregistrations', function() {
 				expect(response[0].description).toBe('time registration 1');
 				expect(response[1].description).toBe('time registration 2');
 			});	
 		});		
 
-		describe('Get by date', function(){
+		describe('Get by date', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -73,19 +73,19 @@
 
 			}));
 
-			it('should return all timeregistrations for the given date', function(){
+			it('should return all timeregistrations for the given date', function() {
 				expect(response[0].description).toBe('time registration 1');
 				expect(response[1].description).toBe('time registration 2');
 			});	
 		});		
 
-		describe('Get by range', function(){
+		describe('Get by range', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -97,19 +97,19 @@
 
 			}));
 
-			it('should return all timeregistrations for the given date', function(){
+			it('should return all timeregistrations for the given date', function() {
 				expect(response[0].description).toBe('time registration 1');
 				expect(response[1].description).toBe('time registration 2');
 			});	
 		});		
 
-		describe('Get uninvoiced', function(){
+		describe('Get uninvoiced', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -121,19 +121,19 @@
 
 			}));
 
-			it('should return all uninvoiced time registrations', function(){
+			it('should return all uninvoiced time registrations', function() {
 				expect(response[0].description).toBe('time registration 1');
 				expect(response[1].description).toBe('time registration 2');
 			});	
 		});			
 
-		describe('Get info for period', function(){
+		describe('Get info for period', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -145,18 +145,18 @@
 
 			}));
 
-			it('should return info about the time registrations for the given date range', function(){
+			it('should return info about the time registrations for the given date range', function() {
 				expect(response.total).toBe(10);
 			});	
 		});
 
-		describe('Get info for period per task', function(){
+		describe('Get info for period per task', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -168,18 +168,18 @@
 
 			}));
 
-			it('should return all timeregistrations for the given date', function(){
+			it('should return all timeregistrations for the given date', function() {
 				expect(response[0].total).toBe(20);
 			});	
 		});						
 
-		describe('Get by id', function(){
+		describe('Get by id', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -191,18 +191,18 @@
 
 			}));
 
-			it('should return the time registration', function(){
+			it('should return the time registration', function() {
 				expect(response.description).toBe('time registration 1');
 			});	
 		});	
 
-		describe('Update', function(){
+		describe('Update', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -214,19 +214,19 @@
 
 			}));
 
-			it('should update the time registration', function(){
+			it('should update the time registration', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Create', function(){
+		describe('Create', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -238,20 +238,20 @@
 
 			}));
 
-			it('should create the time registration', function(){
+			it('should create the time registration', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});	
 
 
-		describe('Create Multiple', function(){
+		describe('Create Multiple', function() {
 			
 			var TimeRegistration,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_){
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
 				TimeRegistration = _TimeRegistration_;
 				$httpBackend = _$httpBackend_;
 
@@ -263,7 +263,7 @@
 
 			}));
 
-			it('should create the time registration', function(){
+			it('should create the time registration', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	

@@ -1,37 +1,29 @@
 (function() {
 	'use strict';
 	
-	describe('CompaniesController Unit Tests:', function() {
-
-		var scope, 
-			CompaniesController,
-			$httpBackend,
-			$modal;
+	describe('Companies Controller Unit Tests:', function() {
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($controller, $rootScope, _$httpBackend_, _$modal_) {
-			scope = $rootScope.$new();
+		describe('$scope.getAlCompanies', function() {
 
-			$httpBackend = _$httpBackend_;
-			$modal = _$modal_;
+			var scope, 
+				controller;
 
-			CompaniesController = $controller('CompaniesController', {
-				$scope: scope
-			});
-		}));
+			beforeEach(inject(function($controller, $rootScope, $httpBackend) {
 
-		describe('$scope.getAlCompanies', function(){
-
-			beforeEach(function(){
+				scope = $rootScope.$new();
+				controller = $controller('CompaniesController', {
+					$scope: scope
+				});
 
 				$httpBackend.expectGET('/api/public/companies').respond([{ name: 'company1'}, { name: 'company2'}]);
 
 				scope.getAllCompanies();
 				$httpBackend.flush();
-			});
+			}));
 
 			it('should store all companies in $scope.companies', inject(function() {
 				expect(scope.companies[0].name).toBe('company1');
@@ -39,18 +31,42 @@
 			}));
 		});	
 
-		describe('$scope.openComany', function(){
+		describe('$scope.openComany', function() {
 
-			beforeEach(function(){
+			var scope, 
+				controller,
+				dialog;
+
+			beforeEach(inject(function($controller, $rootScope, $httpBackend, $modal) {
+
+				dialog = {
+					result: {
+						then: function(confirmCallback, cancelCallback) {
+							this.confirmCallBack = confirmCallback;
+							this.cancelCallback = cancelCallback;
+						}
+					},
+					close: function(item) {
+						this.result.confirmCallBack(item);
+					},
+					dismiss: function(type) {
+						this.result.cancelCallback(type);
+					}
+				};
+
+				scope = $rootScope.$new();
+				controller = $controller('CompaniesController', {
+					$scope: scope
+				});
 
 				sinon.stub($modal, 'open', function() { return dialog; });
 
 				$httpBackend.expectGET('/api/public/companies').respond([{ id: 1, name: 'company1'}, { id: 2, name: 'company2'}]);
 				scope.getAllCompanies();
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should update the ui if a company is updated', function(){
+			it('should update the ui if a company is updated', function() {
 				scope.openCompany();
 
 				dialog.close({ id: 2, name: 'abc' });
@@ -59,7 +75,7 @@
 				expect(scope.companies[1].name).toBe('abc');
 			});
 
-			it('should update the ui if a company is created', function(){
+			it('should update the ui if a company is created', function() {
 				scope.openCompany();
 
 				dialog.close({ id: 3, name: 'new' });
@@ -68,20 +84,5 @@
 				expect(scope.companies[2].name).toBe('new');
 			});
 		});
-
-		var dialog = {
-		    result: {
-		        then: function(confirmCallback, cancelCallback) {
-		            this.confirmCallBack = confirmCallback;
-		            this.cancelCallback = cancelCallback;
-		        }
-		    },
-		    close: function( item ) {
-		        this.result.confirmCallBack(item);
-		    },
-		    dismiss: function( type ) {
-		        this.result.cancelCallback(type);
-		    }
-		};
 	});
 })();

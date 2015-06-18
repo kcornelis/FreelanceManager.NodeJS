@@ -1,92 +1,83 @@
 (function() {
 	'use strict';
 	
-	describe('OverviewController Unit Tests:', function() {
+	describe('Time Registration Overview Controller Unit Tests:', function() {
 
 		var scope, 
-			OverviewController,
-			$httpBackend,
-			$modal,
-			$stateParams,
-			$state;
+			controller;
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($controller, $rootScope, _$state_, _$stateParams_, _$httpBackend_, _$modal_) {
+		beforeEach(inject(function($controller, $rootScope, $stateParams) {
 			
 			scope = $rootScope.$new();
-			$stateParams = _$stateParams_;
-			$httpBackend = _$httpBackend_;
-			$modal = _$modal_;
-			$state = _$state_;
-
 			$stateParams.date = '20100120';
 
-			OverviewController = $controller('OverviewController', {
+			controller = $controller('TimeRegistrationOverviewController', {
 				$scope: scope
 			});
 
 			scope.$apply();
 		}));
 
-		describe('initial state', function(){
+		describe('initial state', function() {
 
-			it('should have no time registrations', function(){
+			it('should have no time registrations', function() {
 				expect(scope.hasTimeRegistrations).toBe(false);
 			});
 
-			it('should have a display date', function(){
+			it('should have a display date', function() {
 				expect(scope.displayDate).toBe('2010-01-20');
 			});
 		});
 
-		describe('$scope.nextDate', function(){
+		describe('$scope.nextDate', function() {
 
-			beforeEach(function(){
+			beforeEach(inject(function($state) {
 				$state.expectTransitionTo('app.time_overview', { date: '20100121' });
 
 				scope.nextDate();
 				scope.$apply();
-			});
+			}));
 
-			it('should navigate to the time overview state with the new params', function(){
+			it('should navigate to the time overview state with the new params', inject(function($state) {
 				$state.ensureAllTransitionsHappened();
-			});
+			}));
 		});
 
-		describe('$scope.changeDate', function(){
+		describe('$scope.changeDate', function() {
 
-			beforeEach(function(){
+			beforeEach(inject(function($state) {
 				$state.expectTransitionTo('app.time_overview', { date: '20101201' });
 
 				scope.changeDate('2010-12-01', 'YYYY-MM-DD');
 				scope.$apply();
-			});
+			}));
 
-			it('should navigate to the time overview state with the new params', function(){
+			it('should navigate to the time overview state with the new params', inject(function($state) {
 				$state.ensureAllTransitionsHappened();
-			});
+			}));
 		});		
 
-		describe('$scope.previousDate', function(){
+		describe('$scope.previousDate', function() {
 
-			beforeEach(function(){
+			beforeEach(inject(function($state) {
 				$state.expectTransitionTo('app.time_overview', { date: '20100119' });
 
 				scope.previousDate();
 				scope.$apply();
-			});
+			}));
 
-			it('should navigate to the time overview state with the new params', function(){
+			it('should navigate to the time overview state with the new params', inject(function($state) {
 				$state.ensureAllTransitionsHappened();
-			});
+			}));
 		});
 
-		describe('$scope.refresh', function(){
+		describe('$scope.refresh', function() {
 
-			beforeEach(function(){
+			beforeEach(inject(function($httpBackend) {
 
 				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20100120').respond([
 					{ from: { numeric: 2010 }, description: 'description 2'},
@@ -94,21 +85,21 @@
 
 				scope.refresh();
 				$httpBackend.flush();
-			});
+			}));
 
 			it('should store all timeregistrations in $scope.timeregistrations', function() {
 				expect(scope.timeRegistrations[0].description).toBe('description 1');
 				expect(scope.timeRegistrations[1].description).toBe('description 2');
 			});
 
-			if('should refresh $scope.hasTimeRegistrations', function(){
+			if('should refresh $scope.hasTimeRegistrations', function() {
 				expect(scope.hasTimeRegistrations).toBe(true);
 			});
 		});	
 
-		describe('$scope.openTimeRegistration', function(){
+		describe('$scope.openTimeRegistration', function() {
 
-			beforeEach(function(){
+			beforeEach(inject(function($httpBackend, $modal) {
 
 				sinon.stub($modal, 'open', function() { return dialog; });
 
@@ -118,9 +109,9 @@
 
 				scope.refresh();
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should update the ui if a time registration is updated', function(){
+			it('should update the ui if a time registration is updated', function() {
 				scope.openTimeRegistration();
 
 				dialog.close({ id: 2, description: 'def' });
@@ -129,7 +120,7 @@
 				expect(scope.timeRegistrations[1].description).toBe('def');
 			});
 
-			it('should update the ui if a time registration is created', function(){
+			it('should update the ui if a time registration is created', function() {
 				scope.openTimeRegistration();
 
 				dialog.close({ id: 3, description: 'def' });
@@ -138,7 +129,7 @@
 				expect(scope.timeRegistrations[2].description).toBe('def');
 			});
 
-			it('should update the ui if a time registration is deleted', function(){
+			it('should update the ui if a time registration is deleted', function() {
 				scope.openTimeRegistration();
 
 				dialog.close({ deleted: 2 });
@@ -149,9 +140,9 @@
 			});			
 		});
 
-		describe('$scope.openTimeRegistration when adding the first time registration', function(){
+		describe('$scope.openTimeRegistration when adding the first time registration', function() {
 
-			beforeEach(function(){
+			beforeEach(inject(function($httpBackend, $modal) {
 
 				sinon.stub($modal, 'open', function() { return dialog; });
 
@@ -159,9 +150,9 @@
 
 				scope.refresh();
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should refresh $scope.hasTimeRegistrations', function(){
+			it('should refresh $scope.hasTimeRegistrations', function() {
 
 				expect(scope.hasTimeRegistrations).toBe(false);
 

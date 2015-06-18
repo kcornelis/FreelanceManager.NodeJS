@@ -12,5 +12,5 @@
 	
 	clockpickerDirective.$inject = [];
 
-	angular.module('core').directive('fmClockpicker', clockpickerDirective);
+	angular.module('fmCore').directive('fmClockpicker', clockpickerDirective);
 })();

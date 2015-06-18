@@ -7,5 +7,5 @@
 
 	factory.$inject = ['ngTableParams'];
 
-	angular.module('core').factory('NgTableParams', factory);
+	angular.module('fmCore').factory('NgTableParams', factory);
 })();

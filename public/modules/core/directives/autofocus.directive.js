@@ -13,5 +13,5 @@
 	
 	autofocusDirective.$inject = ['$timeout'];
 
-	angular.module('core').directive('autofocus', autofocusDirective);
+	angular.module('fmCore').directive('autofocus', autofocusDirective);
 })();

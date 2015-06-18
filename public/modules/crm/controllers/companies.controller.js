@@ -4,12 +4,14 @@
 	function controller($scope, $modal, Company) {
 
 		$scope.getAllCompanies = function() {
-			Company.query(function(companies){
+			Company.query(function(companies) {
+
 				$scope.companies = _.sortBy(companies, 'name');
 			});
 		};
 
-		$scope.openCompany = function(company){
+		$scope.openCompany = function(company) {
+
 
 			var createDialog = $modal.open({
 				templateUrl: '/modules/crm/views/editcompany.html',
@@ -31,5 +33,5 @@
 
 	controller.$inject = ['$scope', '$modal', 'Company'];
 
-	angular.module('crm').controller('CompaniesController', controller);
+	angular.module('fmCrm').controller('CompaniesController', controller);
 })();

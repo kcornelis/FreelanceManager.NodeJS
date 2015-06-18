@@ -7,28 +7,28 @@
 		.state('app.time_overview', {
 			url: '/time/overview/:date',
 			templateUrl: 'modules/time/views/overview.html',
-			controller: 'OverviewController',
+			controller: 'TimeRegistrationOverviewController',
 			access: { requiredLogin: true },
 			params: {
-				date: function(){ return moment().format('YYYYMMDD'); }
+				date: function() { return moment().format('YYYYMMDD'); }
 			}
 		})
 
 		.state('app.time_report', {
 			url: '/time/report/:from/:to',
 			templateUrl: 'modules/time/views/report.html',
-			controller: 'ReportController',
+			controller: 'TimeRegistrationReportController',
 			access: { requiredLogin: true },
 			params: {
-				from: function(){ return moment().startOf('month').format('YYYYMMDD'); },
-				to: function(){ return moment().endOf('month').format('YYYYMMDD'); }
+				from: function() { return moment().startOf('month').format('YYYYMMDD'); },
+				to: function() { return moment().endOf('month').format('YYYYMMDD'); }
 			}
 		})
 
 		.state('app.time_import', {
 			url: '/time/import',
 			templateUrl: 'modules/time/views/import.html',
-			controller: 'ImportController',
+			controller: 'TimeRegistrationImportController',
 			resolve: ApplicationConfiguration.resolve('lib/js-xlsx/dist/xlsx.core.min.js'),
 			access: { requiredLogin: true }
 		})
@@ -36,16 +36,16 @@
 		.state('app.time_export', {
 			url: '/time/export/:from/:to',
 			templateUrl: 'modules/time/views/export.html',
-			controller: 'ExportController',
+			controller: 'TimeRegistrationExportController',
 			access: { requiredLogin: true },
 			params: {
-				from: function(){ return moment().startOf('month').format('YYYYMMDD'); },
-				to: function(){ return moment().endOf('month').format('YYYYMMDD'); }
+				from: function() { return moment().startOf('month').format('YYYYMMDD'); },
+				to: function() { return moment().endOf('month').format('YYYYMMDD'); }
 			}
 		});
 	}
 
 	routeRegistration.$inject = ['$stateProvider'];
 
-	angular.module('time').config(routeRegistration);
+	angular.module('fmTime').config(routeRegistration);
 })();

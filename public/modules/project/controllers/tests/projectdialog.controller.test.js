@@ -1,14 +1,10 @@
 (function() {
 	'use strict';
 	
-	describe('ProjectDialogController Unit Tests:', function() {
-
-		var scope, 
-			ProjectDialogController,
-			toUpdate;
+	describe('Project Dialog Controller Unit Tests:', function() {
 
 		var mockCompanyService = {
-			query: function(callback){
+			query: function(callback) {
 				callback([{ id: 1, name: 'company 1' }, { id: 2, name: 'company 2' }]);
 			}
 		};
@@ -17,23 +13,18 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($rootScope) {
-			scope = $rootScope.$new();
+		describe('when the controller is created for an existing project', function() {
 
-			// mock the close and dismiss methods from the dialog
-			scope.$close = function(){};
-			scope.$dismiss = function(){};
-			spyOn(scope, '$close');
-			spyOn(scope, '$dismiss');
-		}));
+			var scope, 
+				controller,
+				toUpdate;
 
-		describe('when the controller is created for an existing project', function(){
+			beforeEach(inject(function($controller, $rootScope) {
 
-			beforeEach(inject(function($controller) {
-				
 				toUpdate = { id: 2, companyId: 'companyId', name: 'abc', description: 'description' };
 
-				ProjectDialogController = $controller('ProjectDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectDialogController', {
 					$scope: scope,
 					Company: mockCompanyService,
 					toUpdate: toUpdate
@@ -58,12 +49,12 @@
 				expect(scope.companies[1].name).toBe('company 2');
 			});
 
-			it('should have a reference to the project to update', function(){
+			it('should have a reference to the project to update', function() {
 				toUpdate.name = 'updatedName';
 				expect(scope.originalProject.name).toBe('updatedName');
 			});
 
-			it('should have a copy of the project to update', function(){
+			it('should have a copy of the project to update', function() {
 				toUpdate.companyId = 'myCompanyId';
 				toUpdate.name = 'updatedName';
 				toUpdate.description = 'updatedDescription';
@@ -74,11 +65,15 @@
 			});
 		});	
 
-		describe('when the controller is created for a new project', function(){
+		describe('when the controller is created for a new project', function() {
+
+			var scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				ProjectDialogController = $controller('ProjectDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectDialogController', {
 					$scope: scope,
 					Company: mockCompanyService,
 					toUpdate: undefined
@@ -103,41 +98,42 @@
 				expect(scope.companies[1].name).toBe('company 2');
 			});
 
-			it('should have a project to edit', function(){
+			it('should have a project to edit', function() {
 				expect(scope.project.name).toBe('');
 				expect(scope.project.description).toBe('');
 				expect(scope.project.companyId).toBe('');
 			});
 		});	
 
-		describe('when an existing project is saved with success', function(){
+		describe('when an existing project is saved with success', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				toUpdate = { id: 2, name: 'abc', description: 'description' };
-
-				// create a mock for the project server
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
 						this.flush = success;
 					}
 				};
 
-				ProjectDialogController = $controller('ProjectDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, name: 'abc', description: 'description' },
 					Project: mockService
 				});
+				scope.$close = function() { };
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -150,7 +146,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the project to the backend with te correct data', function(){
+			it('should send the project to the backend with te correct data', function() {
 
 				scope.project.name = 'updated';
 				scope.project.description = 'updated description';
@@ -164,29 +160,29 @@
 			});
 		});		
 
-		describe('when a project is saved with an error', function(){
+		describe('when a project is saved with an error', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				toUpdate = { id: 2, name: 'abc', description: 'description' };
-
-				// create a mock for the project service
 				mockService = {
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.flush = error;
 					}
 				};
 
-				ProjectDialogController = $controller('ProjectDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, name: 'abc', description: 'description' },
 					Project: mockService
 				});
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -200,32 +196,37 @@
 			});
 		});		
 
-		describe('when a new project is saved with success', function(){
+		describe('when a new project is saved with success', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				// create a mock for the project service
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
-						this.flush = function(){ success(data); };
+						this.flush = function() { success(data); };
 					}
 				};
 
-				ProjectDialogController = $controller('ProjectDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectDialogController', {
 					$scope: scope,
 					toUpdate: undefined,
 					Project: mockService
 				});
+
+				scope.$close = function() { };
+				spyOn(scope, '$close');
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -238,7 +239,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the project to the backend with te correct data', function(){
+			it('should send the project to the backend with te correct data', function() {
 
 				scope.project.name = 'new';				
 				scope.project.description = 'new description';
@@ -253,7 +254,7 @@
 				expect(mockService.dataParam.companyId).toBe('companyid');
 			});
 
-			it('should close the dialog', function(){
+			it('should close the dialog', function() {
 
 				scope.ok();
 				mockService.flush();
@@ -262,40 +263,39 @@
 			});
 		});
 
-		describe('when the dialog is cancelled', function(){
+		describe('when the dialog is cancelled', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				// create a mock for the project service
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(){}
+					save: function() { }
 				};
 
-				spyOn(mockService, 'save');
-
-				ProjectDialogController = $controller('ProjectDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('ProjectDialogController', {
 					$scope: scope,
 					toUpdate: undefined
 				});
+
+				scope.$dismiss = function() { };
+				spyOn(scope, '$dismiss');
+				spyOn(mockService, 'save');
 			}));
 
-			it('should not save the project', function(){
-				
+			it('should not save the project', function() {
 				scope.cancel();
-
 				expect(mockService.save).not.toHaveBeenCalled();
 			});
 
-
-			it('should close the dialog', function(){
-				
+			it('should close the dialog', function() {
 				scope.cancel();
-
 				expect(scope.$dismiss).toHaveBeenCalled();
 			});
 		});				

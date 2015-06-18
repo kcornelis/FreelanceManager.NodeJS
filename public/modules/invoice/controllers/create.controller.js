@@ -13,8 +13,8 @@
 			for(var i = 1; i <= q; i++) steps[i] = false;
 		}
 
-		function activate(step){
-			for(var i in steps){
+		function activate(step) {
+			for(var i in steps) {
 				steps[i] = false;
 			}
 			steps[step] = true;
@@ -32,7 +32,7 @@
 		// Prefetch data
 		// **************
 
-		Project.query(function(projects){
+		Project.query(function(projects) {
 			$scope.projects = _.sortBy(projects, function(p) { return p.company.name + p.name; });
 		});
 
@@ -49,7 +49,7 @@
 			billable: true
 		};
 
-		$scope.searchTimeRegistrations = function(){
+		$scope.searchTimeRegistrations = function() {
 			$scope.loading = true;
 			$scope.includeAllTimeRegistrations = false;
 
@@ -61,7 +61,7 @@
 				invoiced: $scope.search.invoiced,
 				billable: $scope.search.billable
 			}, 
-			function(tr){
+			function(tr) {
 
 				$scope.loading = false;
 				$scope.searched = true;
@@ -69,9 +69,9 @@
 			});
 		};
 
-		$scope.$watch('includeAllTimeRegistrations', function(v){
-			if($scope.timeRegistrations){
-				_.forEach($scope.timeRegistrations, function(tr){
+		$scope.$watch('includeAllTimeRegistrations', function(v) {
+			if($scope.timeRegistrations) {
+				_.forEach($scope.timeRegistrations, function(tr) {
 					tr.included = v;
 				});
 			}
@@ -82,24 +82,24 @@
 
 		$scope.invoice = { customer: { address: { } } };
 
-		$scope.canGoto2 = function(){
+		$scope.canGoto2 = function() {
 			return _.some($scope.timeRegistrations, { included: true });
 		};	
 
-		$scope.gobackto2 = function(){
+		$scope.gobackto2 = function() {
 			activate(2);
 		};
 
-		$scope.goto2 = function(){
+		$scope.goto2 = function() {
 
-			$scope.invoice.linkedTimeRegistrationIds = _.map($scope.timeRegistrations, function(tr){ return tr.id; });
+			$scope.invoice.linkedTimeRegistrationIds = _.map($scope.timeRegistrations, function(tr) { return tr.id; });
 			
 			$scope.invoice.lines = _.map(_.groupBy(_.where($scope.timeRegistrations, { included: true }), 
-				function(tr){
+				function(tr) {
 					return tr.projectId + '-' + tr.task;
 				}),
-				function(tr){
-					var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function(sum, i){ return sum + i; });
+				function(tr) {
+					var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function(sum, i) { return sum + i; });
 					var quantity = Math.round((totalMinutes / 60) * 100) / 100;
 					var project = _.find($scope.projects, function (p) { return p.id === tr[0].projectId; });
 					var task = project ? _.find(project.tasks, function(t) { return t.name === tr[0].task; }) : null;
@@ -117,11 +117,11 @@
 			activate(2);
 		};
 
-		$scope.removeInvoiceLine = function(invoiceLine){
+		$scope.removeInvoiceLine = function(invoiceLine) {
 			_.remove($scope.invoice.lines, invoiceLine);
 		};
 
-		$scope.addInvoiceLine = function(){
+		$scope.addInvoiceLine = function() {
 			$scope.invoice.lines.push({
 				description: '',
 				quantity: 1,
@@ -132,7 +132,7 @@
 		};	
 
 		$scope.$watch('invoice.lines', function(lines) {
-			_.forEach(lines, function(line){
+			_.forEach(lines, function(line) {
 				line.priceInCents = Math.round(line.price * 100);
 				line.totalInCents = Math.round(line.quantity * line.priceInCents);
 				line.total = line.totalInCents / 100;
@@ -142,22 +142,22 @@
 		// WIZART STEP 3 (invoice info)
 		// ****************************
 
-		$scope.goto3 = function(){
+		$scope.goto3 = function() {
 
 			activate(3);
 		};
 
-		$scope.gobackto3 = function(){
+		$scope.gobackto3 = function() {
 			activate(3);
 		};
 
-		$scope.$watch('invoice.templateId', function(id){
+		$scope.$watch('invoice.templateId', function(id) {
 			var template = _.find($scope.templates, function(t) { return t.id === id; });
 			$scope.invoice.template = template ? template.content : '';
 		});
 
 		$scope.$watch('invoice.displayDate', function(date) {
-			if(date){
+			if(date) {
 				$scope.invoice.displayCreditTerm = moment(date, 'YYYY-MM-DD').add(30, 'day').format('YYYY-MM-DD');
 				$scope.invoice.date = moment(date, 'YYYY-MM-DD').format('YYYYMMDD');
 			}
@@ -168,7 +168,7 @@
 		});
 
 		$scope.$watch('invoice.displayCreditTerm', function(date) {
-			if(date){
+			if(date) {
 				$scope.invoice.creditTerm = moment(date, 'YYYY-MM-DD').format('YYYYMMDD');
 			}
 			else{ 
@@ -176,14 +176,14 @@
 			}
 		});
 
-		$scope.searchCustomer = function(){
+		$scope.searchCustomer = function() {
 			var searchDialog = $modal.open({
 				templateUrl: '/modules/crm/views/searchcompany.html',
 				controller: 'SearchCompanyDialogController'
 			});
 
 			searchDialog.result.then(function (company) {
-				if(company){
+				if(company) {
 					$scope.invoice.customer.name = company.name;
 					$scope.invoice.customer.vatNumber = company.vatNumber;
 					$scope.invoice.customer.number = company.number;
@@ -198,11 +198,11 @@
 		// WIZART STEP 4 (preview)
 		// ***********************
 
-		$scope.goto4 = function(){
+		$scope.goto4 = function() {
 
 			$scope.loading = true;
 
-			Invoice.preview($scope.invoice, function(invoice){
+			Invoice.preview($scope.invoice, function(invoice) {
 				$scope.invoicePreview = invoice;
 				$scope.loading = false;
 				$scope.previewUrl = $sce.trustAsResourceUrl('/render/#!/invoicepreview?invoice=' + window.encodeURIComponent(JSON.stringify(invoice)));
@@ -211,9 +211,9 @@
 			activate(4);
 		};
 
-		$scope.create = function(){
+		$scope.create = function() {
 
-			Invoice.save($scope.invoice, function(){
+			Invoice.save($scope.invoice, function() {
 				$state.go('app.invoice_overview');
 			});
 		};
@@ -221,5 +221,5 @@
 
 	controller.$inject = ['$scope', '$state', '$stateParams', '$modal', '$sce', 'Project', 'TimeRegistration', 'Template', 'Invoice'];
 
-	angular.module('invoice').controller('CreateController', controller);
+	angular.module('fmInvoice').controller('CreateInvoiceController', controller);
 })();

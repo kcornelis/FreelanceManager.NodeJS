@@ -67,5 +67,5 @@
 
 	factory.$inject = ['$q', '$rootScope'];
 
-	angular.module('core').factory('XLSXReader', factory);
+	angular.module('fmCore').factory('XLSXReader', factory);
 })();

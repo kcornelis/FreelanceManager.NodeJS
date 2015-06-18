@@ -13,5 +13,5 @@
 
 	factory.$inject = ['$resource'];
 
-	angular.module('core').factory('Project', factory);
+	angular.module('fmCore').factory('Project', factory);
 })();

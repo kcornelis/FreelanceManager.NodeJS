@@ -53,5 +53,5 @@
 
 	controller.$inject = ['$scope', 'Company', 'toUpdate'];
 
-	angular.module('crm').controller('CompanyDialogController', controller);
+	angular.module('fmCrm').controller('CompanyDialogController', controller);
 })();

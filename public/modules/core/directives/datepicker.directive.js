@@ -35,5 +35,5 @@
 
 	datepickerDirective.$inject = ['$timeout'];
 
-	angular.module('core').directive('fmDatepicker', datepickerDirective);
+	angular.module('fmCore').directive('fmDatepicker', datepickerDirective);
 })();

@@ -7,7 +7,7 @@
 		.state('app.invoice_create', {
 			url: '/invoice/create',
 			templateUrl: 'modules/invoice/views/create.html',
-			controller: 'CreateController',
+			controller: 'CreateInvoiceController',
 			access: { requiredLogin: true }
 		})
 
@@ -17,13 +17,15 @@
 			controller: 'InvoiceOverviewController',
 			access: { requiredLogin: true },
 			params: {
-				from: function(){ return moment().startOf('year').format('YYYYMMDD'); },
-				to: function(){ return moment().endOf('year').format('YYYYMMDD'); }
+				from: function() {
+ return moment().startOf('year').format('YYYYMMDD'); },
+				to: function() {
+ return moment().endOf('year').format('YYYYMMDD'); }
 			}
 		});
 	}
 
 	routeRegistration.$inject = ['$stateProvider'];
 
-	angular.module('invoice').config(routeRegistration);
+	angular.module('fmInvoice').config(routeRegistration);
 })();

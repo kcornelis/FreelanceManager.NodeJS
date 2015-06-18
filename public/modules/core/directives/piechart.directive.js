@@ -3,10 +3,12 @@
 (function() {
 	'use strict';
 
-	function piechartDirective(){
+	function piechartDirective() {
+
 		return{
 			restrict: 'E',
-			link: function(scope, elem, attrs){
+			link: function(scope, elem, attrs) {
+
 				
 				var chart = null,
 					options = {
@@ -29,8 +31,10 @@
 					}
 				};
 
-				scope.$watch(attrs.ngModel, function(v){
-					if(!chart){
+				scope.$watch(attrs.ngModel, function(v) {
+
+					if(!chart) {
+
 						if(v) {
 							chart = $.plot(elem, v , options);
 							elem.show();
@@ -47,5 +51,5 @@
 	
 	piechartDirective.$inject = [];
 
-	angular.module('core').directive('piechart', piechartDirective);
+	angular.module('fmCore').directive('piechart', piechartDirective);
 })();

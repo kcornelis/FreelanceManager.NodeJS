@@ -7,13 +7,13 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		describe('Get all', function(){
+		describe('Get all', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -25,19 +25,19 @@
 
 			}));
 
-			it('should return all projects', function(){
+			it('should return all projects', function() {
 				expect(response[0].name).toBe('project1');
 				expect(response[1].name).toBe('project2');
 			});	
 		});
 
-		describe('Get active', function(){
+		describe('Get active', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -49,19 +49,19 @@
 
 			}));
 
-			it('should return all active projects', function(){
+			it('should return all active projects', function() {
 				expect(response[0].name).toBe('project1');
 				expect(response[1].name).toBe('project2');
 			});	
 		});		
 
-		describe('Get by id', function(){
+		describe('Get by id', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -73,18 +73,18 @@
 
 			}));
 
-			it('should return the project', function(){
+			it('should return the project', function() {
 				expect(response.name).toBe('project1');
 			});	
 		});	
 
-		describe('Update', function(){
+		describe('Update', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -96,19 +96,19 @@
 
 			}));
 
-			it('should update the project', function(){
+			it('should update the project', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Create', function(){
+		describe('Create', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -120,20 +120,20 @@
 
 			}));
 
-			it('should create the project', function(){
+			it('should create the project', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});	
 
 
-		describe('Hide', function(){
+		describe('Hide', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -145,19 +145,19 @@
 
 			}));
 
-			it('should hide the project', function(){
+			it('should hide the project', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Unhide', function(){
+		describe('Unhide', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -169,19 +169,19 @@
 
 			}));
 
-			it('should hide the project', function(){
+			it('should hide the project', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});	
 
-		describe('Change tasks', function(){
+		describe('Change tasks', function() {
 			
 			var Project,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Project_, _$httpBackend_){
+			beforeEach(inject(function(_Project_, _$httpBackend_) {
 				Project = _Project_;
 				$httpBackend = _$httpBackend_;
 
@@ -193,7 +193,7 @@
 
 			}));
 
-			it('should update the project tasks', function(){
+			it('should update the project tasks', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	

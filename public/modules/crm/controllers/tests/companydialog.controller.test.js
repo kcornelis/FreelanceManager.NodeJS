@@ -1,34 +1,24 @@
 (function() {
 	'use strict';
 
-	describe('CompanyDialogController Unit Tests:', function() {
-		
-		//Initialize global variables
-		var scope, 
-			CompanyDialogController,
-			toUpdate;
+	describe('Company Dialog Controller Unit Tests:', function() {
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($rootScope) {
-			scope = $rootScope.$new();
+		describe('when the controller is created for an existing company', function() {
 
-			// mock the close and dismiss methods from the dialog
-			scope.$close = function(){};
-			scope.$dismiss = function(){};
-			spyOn(scope, '$close');
-			spyOn(scope, '$dismiss');
-		}));
+			var scope, 
+				controller,
+				toUpdate;
 
-		describe('when the controller is created for an existing company', function(){
+			beforeEach(inject(function($controller, $rootScope) {
 
-			beforeEach(inject(function($controller) {
-				
 				toUpdate = { id: 2, name: 'abc', number: '1', vatNumber: 'BE1234', address: { line1: 'l1', line2: 'l2', postalcode: 'pc', city: 'c'} };
-
-				CompanyDialogController = $controller('CompanyDialogController', {
+				
+				scope = $rootScope.$new();
+				controller = $controller('CompanyDialogController', {
 					$scope: scope,
 					toUpdate: toUpdate
 				});
@@ -46,12 +36,12 @@
 				expect(scope.message).toBe('');
 			});
 
-			it('should have a reference to the company to update', function(){
+			it('should have a reference to the company to update', function() {
 				toUpdate.name = 'updatedName';
 				expect(scope.originalCompany.name).toBe('updatedName');
 			});
 
-			it('should have a copy of the company to update', function(){
+			it('should have a copy of the company to update', function() {
 				toUpdate.name = 'updated name';
 				toUpdate.number = 'updated number';
 				toUpdate.vatNumber = 'updated vat';
@@ -71,11 +61,15 @@
 			});					
 		});	
 
-		describe('when the controller is created for a new company', function(){
+		describe('when the controller is created for a new company', function() {
+
+			var scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				CompanyDialogController = $controller('CompanyDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('CompanyDialogController', {
 					$scope: scope,
 					toUpdate: undefined
 				});
@@ -93,39 +87,40 @@
 				expect(scope.message).toBe('');
 			});
 
-			it('should have a company to edit', function(){
+			it('should have a company to edit', function() {
 				expect(scope.company).not.toBeNull();
 			});
 		});	
 
-		describe('when an existing company is saved with success', function(){
+		describe('when an existing company is saved with success', function() {
 
-			var mockService;
+			var mockService,
+				scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				toUpdate = { id: 2, name: 'abc' };
-
-				// create a mock for the company server
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
 						this.flush = success;
 					}
 				};
 
-				CompanyDialogController = $controller('CompanyDialogController', {
+				scope = $rootScope.$new();
+				scope.$close = function() { };
+				controller = $controller('CompanyDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate,
+					toUpdate:  { id: 2, name: 'abc' },
 					Company: mockService
 				});
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -138,7 +133,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the company to the backend with te correct data', function(){
+			it('should send the company to the backend with te correct data', function() {
 
 				scope.company.name = 'updated';
 
@@ -150,29 +145,31 @@
 			});
 		});		
 
-		describe('when a company is saved with an error', function(){
+		describe('when a company is saved with an error', function() {
 
-			var mockService;
+			var mockService,
+				scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				toUpdate = { id: 2, name: 'abc' };
-
 				// create a mock for the company service
 				mockService = {
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.flush = error;
 					}
 				};
 
-				CompanyDialogController = $controller('CompanyDialogController', {
+				scope = $rootScope.$new();
+				scope.$close = function() { };
+				controller = $controller('CompanyDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, name: 'abc' },
 					Company: mockService
 				});
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -186,9 +183,11 @@
 			});
 		});		
 
-		describe('when a new company is saved with success', function(){
+		describe('when a new company is saved with success', function() {
 
-			var mockService;
+			var mockService,
+				scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
@@ -197,21 +196,25 @@
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
-						this.flush = function(){ success(data); };
+						this.flush = function() { success(data); };
 					}
 				};
 
-				CompanyDialogController = $controller('CompanyDialogController', {
+				scope = $rootScope.$new();
+				scope.$close = function() { };
+				controller = $controller('CompanyDialogController', {
 					$scope: scope,
 					toUpdate: undefined,
 					Company: mockService
 				});
+
+				spyOn(scope, '$close');
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -224,7 +227,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the company to the backend with te correct data', function(){
+			it('should send the company to the backend with te correct data', function() {
 
 				scope.company.name = 'new';
 
@@ -235,7 +238,7 @@
 				expect(mockService.dataParam.name).toBe('new');
 			});
 
-			it('should close the dialog', function(){
+			it('should close the dialog', function() {
 
 				scope.ok();
 				mockService.flush();
@@ -244,9 +247,11 @@
 			});
 		});	
 
-		describe('when the dialog is cancelled', function(){
+		describe('when the dialog is cancelled', function() {
 
-			var mockService;
+			var mockService,
+				scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
@@ -255,29 +260,28 @@
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(){}
+					save: function() { }
 				};
 
-				spyOn(mockService, 'save');
-
-				CompanyDialogController = $controller('CompanyDialogController', {
+				scope = $rootScope.$new();
+				scope.$dismiss = function() { };
+				controller = $controller('CompanyDialogController', {
 					$scope: scope,
 					toUpdate: undefined
 				});
+
+				spyOn(scope, '$dismiss');
+				spyOn(mockService, 'save');
 			}));
 
-			it('should not save the company', function(){
-				
+			it('should not save the company', function() {
 				scope.cancel();
-
 				expect(mockService.save).not.toHaveBeenCalled();
 			});
 
 
-			it('should close the dialog', function(){
-				
+			it('should close the dialog', function() {
 				scope.cancel();
-
 				expect(scope.$dismiss).toHaveBeenCalled();
 			});
 		});				

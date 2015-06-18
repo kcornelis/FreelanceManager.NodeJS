@@ -13,8 +13,8 @@
 			for(var i = 1; i <= q; i++) steps[i] = false;
 		}
 
-		function activate(step){
-			for(var i in steps){
+		function activate(step) {
+			for(var i in steps) {
 				steps[i] = false;
 			}
 			steps[step] = true;
@@ -35,11 +35,11 @@
 
 		// Preload data
 		// ************
-		Project.active(function(projects){
+		Project.active(function(projects) {
 			var tasks = [];
 			var id = 0;
-			_.forEach(projects, function(p){
-				_.forEach(p.tasks, function(t){
+			_.forEach(projects, function(p) {
+				_.forEach(p.tasks, function(t) {
 					tasks.push({
 						project: p,
 						task: t,
@@ -71,12 +71,12 @@
 		$scope.selectedSheetName = undefined;
 		$scope.selectedSheet = undefined;
 
-		$scope.goto3 = function(){
+		$scope.goto3 = function() {
 			
 			$scope.selectedSheet = $scope.excelSheets[$scope.selectedSheetName];
 
 			var selectedSheetHeader = [];
-			for(var i = 0; i < $scope.selectedSheet.header.length; i++){
+			for(var i = 0; i < $scope.selectedSheet.header.length; i++) {
 				selectedSheetHeader.push({ key: i, value: $scope.selectedSheet.header[i] });
 			}
 			$scope.selectedSheetHeader = selectedSheetHeader;
@@ -84,20 +84,20 @@
 			activate(3);
 		};
 
-		$scope.canGoto3 = function(){
+		$scope.canGoto3 = function() {
 			return isvalid($scope.selectedSheetName);
 		};
 
 		// step 3 (column selection)
 		// ***********************	
 
-		$scope.goto4 = function(){
+		$scope.goto4 = function() {
 
-			$scope.groupedRows = _.groupBy($scope.selectedSheet.data, function(r){
+			$scope.groupedRows = _.groupBy($scope.selectedSheet.data, function(r) {
 				return r[$scope.selectedProjectColumn] + ' - ' + r[$scope.selectedTaskColumn];
 			});
 
-			$scope.projectsInExcelSheet = _.map($scope.groupedRows, function(g){
+			$scope.projectsInExcelSheet = _.map($scope.groupedRows, function(g) {
 				return {
 					project: g[0][$scope.selectedProjectColumn],
 					task: g[0][$scope.selectedTaskColumn],
@@ -108,7 +108,7 @@
 			activate(4);
 		};
 
-		$scope.canGoto4 = function(){
+		$scope.canGoto4 = function() {
 			return isvalid($scope.selectedProjectColumn) &&
 				isvalid($scope.selectedTaskColumn) && 
 				isvalid($scope.selectedDateColumn) &&
@@ -120,11 +120,11 @@
 		// step 4 (project mapping)
 		// ***********************	
 
-		$scope.goto5 = function(){
+		$scope.goto5 = function() {
 			activate(5);
 		};
 
-		$scope.canGoto5 = function(){
+		$scope.canGoto5 = function() {
 			return _.every($scope.projectsInExcelSheet, function(p) {
 				return isvalid(p.mappedProjectAndTask);
 			});
@@ -135,21 +135,21 @@
 
 		$scope.importing = false;
 
-		$scope.import = function(){
+		$scope.import = function() {
 
 			var registrations = [];
 			$scope.importing = true;
 
-			_.forEach($scope.groupedRows, function(groupedRow){
+			_.forEach($scope.groupedRows, function(groupedRow) {
 
-				var selectedProjectTask = _.find($scope.projectsInExcelSheet, function(p){
+				var selectedProjectTask = _.find($scope.projectsInExcelSheet, function(p) {
 					return p.project === groupedRow[0][$scope.selectedProjectColumn] && p.task === groupedRow[0][$scope.selectedTaskColumn];
 				}).mappedProjectAndTask;
 
 				var project = _.find($scope.tasks, { id: selectedProjectTask }).project;
 				var task = _.find($scope.tasks, { id: selectedProjectTask }).task;
 
-				_.forEach(groupedRow, function(row){
+				_.forEach(groupedRow, function(row) {
 
 					registrations.push({
 						companyId: project.companyId,
@@ -164,21 +164,21 @@
 				});
 			});
 
-			TimeRegistration.saveMultiple(registrations, function(data){
+			TimeRegistration.saveMultiple(registrations, function(data) {
 				$scope.importing = false;
 				$scope.timeRegistrationsImported = data;
 				$scope.summaryTableParams.count(10);
 				activate(6);
-			}, function(err){
+			}, function(err) {
 				$scope.importing = false;
 			});
 		};
 		
-		function convertDisplayDateToNumeric(date){
+		function convertDisplayDateToNumeric(date) {
 			return parseInt(date.replace(/-/g, ''), 10);
 		}
 
-		function convertDisplayTimeToNumeric(time){
+		function convertDisplayTimeToNumeric(time) {
 			return parseInt(time.replace(':', ''), 10);
 		}
 
@@ -208,5 +208,5 @@
 
 	controller.$inject = ['$scope', '$state', 'XLSXReader', 'NgTableParams', '$filter', 'Project', 'TimeRegistration'];
 
-	angular.module('time').controller('ImportController', controller);
+	angular.module('fmTime').controller('TimeRegistrationImportController', controller);
 })();

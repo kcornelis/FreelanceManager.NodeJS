@@ -6,7 +6,7 @@
 		$scope.originalProject = toUpdate;
 		toUpdate = toUpdate || { };
 		$scope.project =  { 
-			tasks: _.map(toUpdate.tasks, function(t){
+			tasks: _.map(toUpdate.tasks, function(t) {
 				return {
 					name: t.name,
 					defaultRateInCents: t.defaultRateInCents,
@@ -15,8 +15,8 @@
 			})
 		};
 
-		$scope.$watch('project.tasks', function(tasks){
-			_.forEach(tasks, function(task){
+		$scope.$watch('project.tasks', function(tasks) {
+			_.forEach(tasks, function(task) {
 				task.defaultRateInCents = Math.round(task.defaultRate * 100);
 			});
 		}, true);
@@ -54,5 +54,5 @@
 
 	controller.$inject = ['$scope', 'Project', 'toUpdate'];
 
-	angular.module('project').controller('ProjectTasksDialogController', controller);
+	angular.module('fmProject').controller('ProjectTasksDialogController', controller);
 })();

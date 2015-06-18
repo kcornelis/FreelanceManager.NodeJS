@@ -9,7 +9,7 @@
 			});
 		};
 
-		$scope.openProject = function(project){
+		$scope.openProject = function(project) {
 
 			var createDialog = $modal.open({
 				templateUrl: '/modules/project/views/editproject.html',
@@ -28,7 +28,7 @@
 			});		
 		};
 
-		$scope.openProjectTasks = function(project){
+		$scope.openProjectTasks = function(project) {
 			var createDialog = $modal.open({
 				templateUrl: '/modules/project/views/projecttasksdialog.html',
 				controller: 'ProjectTasksDialogController',
@@ -46,14 +46,14 @@
 			});				
 		};
 
-		$scope.hideProject = function(project){
-			Project.hide({ id: project.id }, function(){
+		$scope.hideProject = function(project) {
+			Project.hide({ id: project.id }, function() {
 				project.hidden = true;
 			});
 		};
 
-		$scope.unhideProject = function(project){
-			Project.unhide({ id: project.id }, function(){
+		$scope.unhideProject = function(project) {
+			Project.unhide({ id: project.id }, function() {
 				project.hidden = false;
 			});
 		};
@@ -61,5 +61,5 @@
 
 	controller.$inject = ['$scope', '$modal', 'Project'];
 
-	angular.module('project').controller('ProjectsController', controller);
+	angular.module('fmProject').controller('ProjectsController', controller);
 })();

@@ -20,5 +20,5 @@
 
 	config.$inject = ['$rootScope', '$state', '$stateParams',  '$window'];
 
-	angular.module('core').run(config);
+	angular.module('fmCore').run(config);
 })();

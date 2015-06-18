@@ -11,10 +11,12 @@
 			name: toUpdate.name || '',
 			description: toUpdate.description || '' 
 		};
-		
+
 		$scope.isBusy = false;
 		$scope.message = '';
-		Company.query(function(companies){
+		
+		Company.query(function(companies) {
+
 			$scope.companies = _.sortBy(companies, 'name');
 		});
 
@@ -50,5 +52,5 @@
 
 	controller.$inject = ['$scope', 'Project', 'Company', 'toUpdate'];
 
-	angular.module('project').controller('ProjectDialogController', controller);
+	angular.module('fmProject').controller('ProjectDialogController', controller);
 })();

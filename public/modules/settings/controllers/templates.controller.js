@@ -7,20 +7,20 @@
 			$scope.templates = Template.query();
 		};
 
-		$scope.openTemplate = function(template){
+		$scope.openTemplate = function(template) {
 			$scope.template = template || {};
 			$scope.newTemplate = template === undefined;
 		};
 
 		$scope.newTemplate = true;
 
-		$scope.saveTemplate = function(){
+		$scope.saveTemplate = function() {
 			
 			var id = $scope.newTemplate ? {} : { id: $scope.template.id };
 
 			Template.save(id, $scope.template,
 				function(data) { 
-					if($scope.newTemplate){
+					if($scope.newTemplate) {
 						$scope.templates.push(data);
 						$scope.template = data;
 						$scope.newTemplate = false;
@@ -35,5 +35,5 @@
 
 	controller.$inject = ['$scope', 'Template'];
 
-	angular.module('settings').controller('TemplatesController', controller);
+	angular.module('fmSettings').controller('TemplatesController', controller);
 })();

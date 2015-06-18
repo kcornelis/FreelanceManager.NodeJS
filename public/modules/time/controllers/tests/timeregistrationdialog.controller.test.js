@@ -1,14 +1,10 @@
 (function() {
 	'use strict';
 
-	describe('TimeRegistrationDialogController Unit Tests:', function() {
-
-		var scope, 
-			TimeRegistrationDialogController,
-			toUpdate;
+	describe('Time Registration Dialog Controller Unit Tests:', function() {
 
 		var mockProjectService = {
-			active: function(callback){
+			active: function(callback) {
 				mockProjectService.flush = callback;
 				return [
 					{ id: 1, name: 'project 1', companyId: 1,
@@ -28,30 +24,25 @@
 					  company: { id: 2, name: 'company 2' } 
 					}];
 			},
-			flush: function(){}
+			flush: function() {}
 		};
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($rootScope) {
-			scope = $rootScope.$new();
+		describe('when the controller is created for an existing time registration', function() {
 
-			// mock the close and dismiss methods from the dialog
-			scope.$close = function(){};
-			scope.$dismiss = function(){};
-			spyOn(scope, '$close');
-			spyOn(scope, '$dismiss');
-		}));
+			var scope, 
+				controller,
+				toUpdate;
 
-		describe('when the controller is created for an existing time registration', function(){
-
-			beforeEach(inject(function($controller) {
+			beforeEach(inject(function($controller, $rootScope) {
 				
 				toUpdate = { id: 2, companyId: 1, projectId: 1, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } };
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: toUpdate,
@@ -99,16 +90,16 @@
 			
 			});
 
-			it('should have a property that shows if the project is editable', function(){
+			it('should have a property that shows if the project is editable', function() {
 				expect(scope.projectEditable).toBe(true); // project id 1 is returned by the mock
 			});
 
-			it('should have a reference to the time registration to update', function(){
+			it('should have a reference to the time registration to update', function() {
 				toUpdate.description = 'updated';
 				expect(scope.originalTimeRegistration.description).toBe('updated');
 			});
 
-			it('should have a copy of the time registration to update', function(){
+			it('should have a copy of the time registration to update', function() {
 			
 				toUpdate.description = 'updatedDescription';
 				toUpdate.from = 1200;
@@ -123,16 +114,18 @@
 			});
 		});	
 
-		describe('when the controller is created for an existing time registration with an inactive project', function(){
+		describe('when the controller is created for an existing time registration with an inactive project', function() {
 
-			beforeEach(inject(function($controller) {
+			var scope, 
+				controller;
+
+			beforeEach(inject(function($controller, $rootScope) {
 				
-				toUpdate = { id: 2, companyId: 1, projectId: 10, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } };
-
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, companyId: 1, projectId: 10, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } },
 					date: 20100102
 				});
 
@@ -165,16 +158,20 @@
 			
 			});
 
-			it('should have a property that shows if the project is editable', function(){
+			it('should have a property that shows if the project is editable', function() {
 				expect(scope.projectEditable).toBe(false); // project id 10 is not returned by the mock
 			});
 		});	
 
-		describe('when the controller is created for a new project', function(){
+		describe('when the controller is created for a new project', function() {
+
+			var scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
@@ -222,11 +219,11 @@
 			
 			});		
 
-			it('should have a property that shows if the project is editable', function(){
+			it('should have a property that shows if the project is editable', function() {
 				expect(scope.projectEditable).toBe(true); // project of a new tr is always editable
 			});	
 
-			it('should have a project to edit', function(){
+			it('should have a project to edit', function() {
 				expect(scope.timeRegistration.description).toBe('');
 				expect(scope.timeRegistration.company).toBe(null);
 				expect(scope.timeRegistration.project).toBe(null);
@@ -236,38 +233,39 @@
 			});
 		});	
 
-		describe('when an existing time registration is saved with success', function(){
+		describe('when an existing time registration is saved with success', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				toUpdate = { id: 2, companyId: 1, projectId: 1, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } };
-
-				// create a mock for the project server
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
 						this.flush = success;
 					}
 				};
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, companyId: 1, projectId: 1, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } },
 					Project: mockProjectService,
 					TimeRegistration: mockService,
 					date: 20100102
 				});
+				scope.$close = function() { };
 
 				mockProjectService.flush();
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -280,7 +278,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the time registration to the backend with te correct data', function(){
+			it('should send the time registration to the backend with te correct data', function() {
 
 				scope.timeRegistration.description = 'updated description';
 
@@ -292,9 +290,12 @@
 			});
 		});		
 
-		describe('when a project is saved with an error', function(){
+		describe('when a project is saved with an error', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService,
+				toUpdate;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
@@ -302,23 +303,25 @@
 
 				// create a mock for the project service
 				mockService = {
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.flush = error;
 					}
 				};
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					toUpdate: toUpdate,
 					Project: mockProjectService,
 					TimeRegistration: mockService,
 					date: 20100102
 				});
+				scope.$close = function() { };
 
 				mockProjectService.flush();
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -332,9 +335,11 @@
 			});
 		});		
 
-		describe('when a new project is saved with success', function(){
+		describe('when a new project is saved with success', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
@@ -343,14 +348,15 @@
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(id, data, success, error){
+					save: function(id, data, success, error) {
 						this.dataParam = data;
 						this.idParam = id;
-						this.flush = function(){ success(data); };
+						this.flush = function() { success(data); };
 					}
 				};
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					toUpdate: undefined,
 					Project: mockProjectService,
@@ -363,9 +369,12 @@
 				scope.timeRegistration.company = scope.companies[0];
 				scope.timeRegistration.project = scope.companies[0].projects[0];
 				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
+
+				scope.$close = function() {};
+				spyOn(scope, '$close');
 			}));
 
-			it('should show a message in the ui', function(){
+			it('should show a message in the ui', function() {
 				
 				scope.ok();
 
@@ -378,7 +387,7 @@
 				expect(scope.isBusy).toBe(false);
 			});
 
-			it('should send the time registration to the backend with te correct data', function(){
+			it('should send the time registration to the backend with te correct data', function() {
 
 				scope.timeRegistration.description = 'new description';
 				scope.timeRegistration.from = '08:00';
@@ -397,8 +406,7 @@
 				expect(mockService.dataParam.to).toBe(1000);
 			});
 
-			it('should close the dialog', function(){
-
+			it('should close the dialog', function() {
 				scope.ok();
 				mockService.flush();
 
@@ -406,23 +414,23 @@
 			});
 		});
 
-		describe('when the dialog is cancelled', function(){
+		describe('when the dialog is cancelled', function() {
 
-			var mockService;
+			var scope, 
+				controller,
+				mockService;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				// create a mock for the project service
 				mockService = {
 					dataParam: null,
 					idParam: null,
 					flush: null,
-					save: function(){}
+					save: function() {}
 				};
 
-				spyOn(mockService, 'save');
-
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
@@ -430,28 +438,32 @@
 				});
 
 				mockProjectService.flush();
+
+				scope.$dismiss = function() { };
+				spyOn(scope, '$dismiss');
+				spyOn(mockService, 'save');
 			}));
 
-			it('should not save the time registration', function(){
-				
+			it('should not save the time registration', function() {
 				scope.cancel();
-
 				expect(mockService.save).not.toHaveBeenCalled();
 			});
 
-			it('should close the dialog', function(){
-				
+			it('should close the dialog', function() {
 				scope.cancel();
-
 				expect(scope.$dismiss).toHaveBeenCalled();
 			});
 		});	
 
-		describe('when the company is changed for a new time registration', function(){
+		describe('when the company is changed for a new time registration', function() {
+			
+			var scope, 
+				controller;
 
 			beforeEach(inject(function($controller, $rootScope) {
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
@@ -471,20 +483,24 @@
 				scope.$apply();
 			}));
 
-			it('should clear the project', function(){
+			it('should clear the project', function() {
 				expect(scope.timeRegistration.project).toBe(null);
 			});
 
-			it('should clear the task', function(){
+			it('should clear the task', function() {
 				expect(scope.timeRegistration.task).toBe(null);
 			});
 		});
 
-		describe('when the project is changed for a new time registration', function(){
+		describe('when the project is changed for a new time registration', function() {
 			
+			var scope, 
+				controller;
+
 			beforeEach(inject(function($controller, $rootScope) {
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
@@ -504,16 +520,20 @@
 				scope.$apply();
 			}));
 
-			it('should clear the task', function(){
+			it('should clear the task', function() {
 				expect(scope.timeRegistration.task).toBe(null);
 			});
 		});
 
-		describe('when the task is changed for a new time registration', function(){
-			
+		describe('when the task is changed for a new time registration', function() {
+
+			var scope, 
+				controller;
+
 			beforeEach(inject(function($controller, $rootScope) {
 
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
@@ -529,32 +549,32 @@
 				scope.$apply();
 			}));			
 
-			it('should update billable if its a new time registration', function(){
+			it('should update billable if its a new time registration', function() {
 				expect(scope.timeRegistration.billable).toBe(true);
 			});
 
 
-			it('should update billable if its a new time registration and the task is changed again', function(){
-
+			it('should update billable if its a new time registration and the task is changed again', function() {
 				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
-
 				scope.$apply();
-
 				expect(scope.timeRegistration.billable).toBe(false);
 			});
 		});		
 
-		describe('when the task is changed for an existing registration', function(){
+		describe('when the task is changed for an existing registration', function() {
 			
+			var scope, 
+				controller,
+				mockService;			
+
 			beforeEach(inject(function($controller, $rootScope) {
 
 				// pick a task that is billable
-				toUpdate = { id: 2, billable: true, companyId: 1, projectId: 1, description: 'description', task: 'Meeting', from: { numeric: 1000 }, to: { numeric: 1100 } };
-
-				TimeRegistrationDialogController = $controller('TimeRegistrationDialogController', {
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
 					$scope: scope,
 					Project: mockProjectService,
-					toUpdate: toUpdate,
+					toUpdate: { id: 2, billable: true, companyId: 1, projectId: 1, description: 'description', task: 'Meeting', from: { numeric: 1000 }, to: { numeric: 1100 } },
 					date: 20100102
 				});
 
@@ -562,17 +582,13 @@
 				scope.$apply();
 			}));			
 
-			it('should initially set billable', function(){
+			it('should initially set billable', function() {
 				expect(scope.timeRegistration.billable).toBe(true);
 			});
 
-
-			it('should not update billable if its an existing time registration and the task is changed again', function(){
-
+			it('should not update billable if its an existing time registration and the task is changed again', function() {
 				scope.timeRegistration.task = scope.companies[0].projects[0].tasks[0];
-
 				scope.$apply();
-
 				expect(scope.timeRegistration.billable).toBe(true);
 			});
 		});	

@@ -16,5 +16,5 @@
 	
 	iframeDirective.$inject = ['$compile'];
 
-	angular.module('core').directive('fmIframe', iframeDirective);
+	angular.module('fmCore').directive('fmIframe', iframeDirective);
 })();

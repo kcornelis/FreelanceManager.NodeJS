@@ -33,5 +33,5 @@
 	
 	withDirective.$inject = [];
 
-	angular.module('core').directive('fmWith', withDirective);
+	angular.module('fmCore').directive('fmWith', withDirective);
 })();

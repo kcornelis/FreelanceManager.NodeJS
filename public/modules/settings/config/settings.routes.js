@@ -14,5 +14,5 @@
 
 	routeRegistration.$inject = ['$stateProvider'];
 
-	angular.module('settings').config(routeRegistration);
+	angular.module('fmSettings').config(routeRegistration);
 })();

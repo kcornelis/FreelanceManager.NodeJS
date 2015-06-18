@@ -16,5 +16,5 @@
 
 	factory.$inject = ['$resource'];
 
-	angular.module('core').factory('TimeRegistration', factory);
+	angular.module('fmCore').factory('TimeRegistration', factory);
 })();

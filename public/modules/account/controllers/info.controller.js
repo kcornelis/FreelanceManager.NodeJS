@@ -14,6 +14,6 @@
 
 	accountInfoController.$inject = ['$scope', '$window', 'jwtHelper', 'Account'];
 
-	angular.module('account').controller('AccountInfoController', accountInfoController);
+	angular.module('fmAccount').controller('AccountInfoController', accountInfoController);
 
 })();

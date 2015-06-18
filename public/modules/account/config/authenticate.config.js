@@ -20,7 +20,7 @@
 	}
 
 	function authInterceptorConfig($httpProvider) {
-		$httpProvider.interceptors.push('authInterceptor');
+		$httpProvider.interceptors.push('fmAccountAuthInterceptor');
 	}
 
 	function authentication($rootScope, $state, $window, $location, jwtHelper) {
@@ -39,10 +39,10 @@
 	authInterceptorConfig.$inject = ['$httpProvider'];
 	authentication.$inject = ['$rootScope', '$state', '$window', '$location', 'jwtHelper'];
 
-	angular.module('account', ['angular-jwt']);
+	angular.module('fmAccount', ['angular-jwt']);
 
-	angular.module('account').factory('authInterceptor', authInterceptor);
-	angular.module('account').config(authInterceptorConfig);
-	angular.module('account').run(authentication);
+	angular.module('fmAccount').factory('fmAccountAuthInterceptor', authInterceptor);
+	angular.module('fmAccount').config(authInterceptorConfig);
+	angular.module('fmAccount').run(authentication);
 
 })();

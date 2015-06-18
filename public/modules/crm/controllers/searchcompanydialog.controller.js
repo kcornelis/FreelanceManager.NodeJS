@@ -16,5 +16,5 @@
 
 	controller.$inject = ['$scope', 'Company'];
 
-	angular.module('crm').controller('SearchCompanyDialogController', controller);
+	angular.module('fmCrm').controller('SearchCompanyDialogController', controller);
 })();

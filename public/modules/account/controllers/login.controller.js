@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	function authenticateController($rootScope, $scope, $http, $window, $stateParams, $location, jwtHelper) {
+	function loginController($rootScope, $scope, $http, $window, $stateParams, $location, jwtHelper) {
 
 		delete $window.localStorage.token;
 		delete $window.localStorage.user;
@@ -32,7 +32,7 @@
 		};
 	}
 
-	authenticateController.$inject = ['$rootScope', '$scope', '$http', '$window', '$stateParams', '$location', 'jwtHelper'];
+	loginController.$inject = ['$rootScope', '$scope', '$http', '$window', '$stateParams', '$location', 'jwtHelper'];
 
-	angular.module('account').controller('AuthenticateController', authenticateController);
+	angular.module('fmAccount').controller('AccountLoginController', loginController);
 })();

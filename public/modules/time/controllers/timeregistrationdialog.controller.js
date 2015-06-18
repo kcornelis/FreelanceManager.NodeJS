@@ -6,7 +6,7 @@
 		// private methods
 		// ---------------
 
-		function convertNumericTimeToDisplay(time){
+		function convertNumericTimeToDisplay(time) {
 			var hour = Math.floor(time / 100);
 			var minutes = Math.floor(time - (hour * 100));
 			return ('00' + hour).slice(-2) + ':' + ('00' + minutes).slice(-2);
@@ -22,7 +22,7 @@
 			$scope.message = '';
 		}
 
-		function convertDisplayTimeToNumeric(time){
+		function convertDisplayTimeToNumeric(time) {
 			return parseInt(time.replace(':', ''), 10);
 		}
 
@@ -30,20 +30,20 @@
 		// -------------
 
 		$scope.$watch('timeRegistration.company', function (newv, oldv) {
-			if(oldv && newv && oldv.id !== newv.id){
+			if(oldv && newv && oldv.id !== newv.id) {
 				$scope.timeRegistration.project = null;
 				$scope.timeRegistration.task = null;
 			}
 		});
 
 		$scope.$watch('timeRegistration.project', function (newv, oldv) {
-			if(oldv && newv && oldv.id !== newv.id){
+			if(oldv && newv && oldv.id !== newv.id) {
 				$scope.timeRegistration.task = null;	
 			}
 		});
 
 		$scope.$watch('timeRegistration.task', function () {
-			if($scope.newTimeRegistration && $scope.timeRegistration.task){
+			if($scope.newTimeRegistration && $scope.timeRegistration.task) {
 				$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
 			}
 		});	
@@ -68,7 +68,7 @@
 		};	
 		
 		// load all projects and convert them to companies => projects => tasks
-		$scope.projects = Project.active(function(){
+		$scope.projects = Project.active(function() {
 
 			$scope.companies = _.sortBy(_.map(
 				_.groupBy($scope.projects, function(p) { return p.companyId; }),
@@ -124,7 +124,7 @@
 			});
 		};
 
-		$scope.delete = function(){
+		$scope.delete = function() {
 			showMessage('Deleting time registration...');
 
 			var id = $scope.newTimeRegistration ? {} : { id: $scope.originalTimeRegistration.id };
@@ -146,5 +146,5 @@
 
 	controller.$inject = ['$scope', 'Project', 'TimeRegistration', 'toUpdate', 'date'];
 
-	angular.module('time').controller('TimeRegistrationDialogController', controller);
+	angular.module('fmTime').controller('TimeRegistrationDialogController', controller);
 })();

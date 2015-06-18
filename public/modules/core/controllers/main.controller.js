@@ -10,5 +10,5 @@
 
 	controller.$inject = ['$rootScope', '$scope', '$state'];
 
-	angular.module('core').controller('AppController', controller);
+	angular.module('fmCore').controller('AppController', controller);
 })();

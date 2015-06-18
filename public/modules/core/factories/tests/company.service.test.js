@@ -7,13 +7,13 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		describe('Get all', function(){
+		describe('Get all', function() {
 			
 			var Company,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Company_, _$httpBackend_){
+			beforeEach(inject(function(_Company_, _$httpBackend_) {
 				Company = _Company_;
 				$httpBackend = _$httpBackend_;
 
@@ -25,19 +25,19 @@
 
 			}));
 
-			it('should return all companies', function(){
+			it('should return all companies', function() {
 				expect(response[0].name).toBe('company1');
 				expect(response[1].name).toBe('company2');
 			});	
 		});
 
-		describe('Get by id', function(){
+		describe('Get by id', function() {
 			
 			var Company,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Company_, _$httpBackend_){
+			beforeEach(inject(function(_Company_, _$httpBackend_) {
 				Company = _Company_;
 				$httpBackend = _$httpBackend_;
 
@@ -49,18 +49,18 @@
 
 			}));
 
-			it('should return the company', function(){
+			it('should return the company', function() {
 				expect(response.name).toBe('company1');
 			});	
 		});	
 
-		describe('Update', function(){
+		describe('Update', function() {
 			
 			var Company,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Company_, _$httpBackend_){
+			beforeEach(inject(function(_Company_, _$httpBackend_) {
 				Company = _Company_;
 				$httpBackend = _$httpBackend_;
 
@@ -72,19 +72,19 @@
 
 			}));
 
-			it('should update the company', function(){
+			it('should update the company', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Create', function(){
+		describe('Create', function() {
 			
 			var Company,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Company_, _$httpBackend_){
+			beforeEach(inject(function(_Company_, _$httpBackend_) {
 				Company = _Company_;
 				$httpBackend = _$httpBackend_;
 
@@ -96,7 +96,7 @@
 
 			}));
 
-			it('should create the company', function(){
+			it('should create the company', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	

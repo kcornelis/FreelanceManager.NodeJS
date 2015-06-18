@@ -26,5 +26,5 @@
 
 	routeRegistration.$inject = ['$stateProvider', '$urlRouterProvider'];
 
-	angular.module('core').config(routeRegistration);
+	angular.module('fmCore').config(routeRegistration);
 })();

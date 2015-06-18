@@ -7,13 +7,13 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		describe('Get all', function(){
+		describe('Get all', function() {
 			
 			var Invoice,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
 				Invoice = _Invoice_;
 				$httpBackend = _$httpBackend_;
 
@@ -25,19 +25,19 @@
 
 			}));
 
-			it('should return all invoices', function(){
+			it('should return all invoices', function() {
 				expect(response[0].name).toBe('invoice1');
 				expect(response[1].name).toBe('invoice2');
 			});	
 		});
 
-		describe('Get by id', function(){
+		describe('Get by id', function() {
 			
 			var Invoice,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
 				Invoice = _Invoice_;
 				$httpBackend = _$httpBackend_;
 
@@ -49,18 +49,18 @@
 
 			}));
 
-			it('should return the invoice', function(){
+			it('should return the invoice', function() {
 				expect(response.name).toBe('invoice1');
 			});	
 		});	
 
-		describe('Get by date', function(){
+		describe('Get by date', function() {
 			
 			var Invoice,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
 				Invoice = _Invoice_;
 				$httpBackend = _$httpBackend_;
 
@@ -72,19 +72,19 @@
 
 			}));
 
-			it('should return all invoices for the given date', function(){
+			it('should return all invoices for the given date', function() {
 				expect(response[0].description).toBe('invoice 1');
 				expect(response[1].description).toBe('invoice 2');
 			});	
 		});		
 
-		describe('Update', function(){
+		describe('Update', function() {
 			
 			var Invoice,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
 				Invoice = _Invoice_;
 				$httpBackend = _$httpBackend_;
 
@@ -96,19 +96,19 @@
 
 			}));
 
-			it('should update the invoice', function(){
+			it('should update the invoice', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Create', function(){
+		describe('Create', function() {
 			
 			var Invoice,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
 				Invoice = _Invoice_;
 				$httpBackend = _$httpBackend_;
 
@@ -120,19 +120,19 @@
 
 			}));
 
-			it('should create the invoice', function(){
+			it('should create the invoice', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});	
 
-		describe('Preview', function(){
+		describe('Preview', function() {
 			
 			var Invoice,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Invoice_, _$httpBackend_){
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
 				Invoice = _Invoice_;
 				$httpBackend = _$httpBackend_;
 
@@ -144,7 +144,7 @@
 
 			}));
 
-			it('should return a preview of the invoice', function(){
+			it('should return a preview of the invoice', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	

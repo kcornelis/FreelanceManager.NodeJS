@@ -47,11 +47,11 @@
 		$scope.yearStart = moment().startOf('year').format('YYYYMMDD');
 		$scope.yearEnd = moment().endOf('year').format('YYYYMMDD');
 
-		$scope.previous = function(){
+		$scope.previous = function() {
 			$state.go('app.time_report', { from: $scope.previousFrom.format('YYYYMMDD'), to: $scope.previousTo.format('YYYYMMDD')}, { location: 'replace' });
 		};
 
-		$scope.next = function(){
+		$scope.next = function() {
 			$state.go('app.time_report', { from: $scope.nextFrom.format('YYYYMMDD'), to: $scope.nextTo.format('YYYYMMDD')}, { location: 'replace' });
 		};
 
@@ -60,7 +60,7 @@
 			$scope.loading = true;
 
 			TimeRegistration.getinfoforperiod({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') },
-				function(result){
+				function(result) {
 					$scope.summary = result;
 									
 					$scope.billableUnbillableGraph = [
@@ -76,7 +76,7 @@
 				});
 
 			TimeRegistration.getinfoforperiodpertask({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') },
-				function(result){
+				function(result) {
 					var grouped = _.groupBy(result, function(i) { 
 						return JSON.stringify({ 
 							c: i.companyId,
@@ -99,5 +99,5 @@
 
 	controller.$inject = ['$scope', '$location', '$state', '$stateParams', 'TimeRegistration'];
 
-	angular.module('time').controller('ReportController', controller);
+	angular.module('fmTime').controller('TimeRegistrationReportController', controller);
 })();

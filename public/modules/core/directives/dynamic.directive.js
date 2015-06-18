@@ -17,5 +17,5 @@
 	
 	dynamicDirective.$inject = ['$compile'];
 
-	angular.module('core').directive('fmDynamic', dynamicDirective);
+	angular.module('fmCore').directive('fmDynamic', dynamicDirective);
 })();

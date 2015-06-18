@@ -21,23 +21,23 @@
 		$scope.thisYear = moment().set('month', 0).set('date', 1).format('YYYYMMDD') + '/' + moment().set('month', 11).set('date', 31).format('YYYYMMDD');
 		$scope.lastYear = moment().set('month', 0).set('date', 1).subtract(1, 'years').format('YYYYMMDD') + '/' + moment().set('month', 11).set('date', 31).subtract(1, 'years').format('YYYYMMDD');
 		
-		$scope.$watch('from', function(){
+		$scope.$watch('from', function() {
 			$scope.displayFrom = $scope.from.format('YYYY-MM-DD');
 		});
 
-		$scope.$watch('to', function(){
+		$scope.$watch('to', function() {
 			$scope.displayTo = $scope.to.format('YYYY-MM-DD');
 		});	
 
-		$scope.changeFrom = function(date, format){
+		$scope.changeFrom = function(date, format) {
 			$scope.from = moment(date, format);
 		};
 
-		$scope.changeTo = function(date, format){
+		$scope.changeTo = function(date, format) {
 			$scope.to = moment(date, format);
 		};
 
-		$scope.applyDate = function(){
+		$scope.applyDate = function() {
 			$state.go('app.time_export', { from: $scope.from.format('YYYYMMDD'), to: $scope.to.format('YYYYMMDD') }, { location: 'replace' });
 		};
 
@@ -45,16 +45,16 @@
 
 			$scope.loading = true;
 
-			TimeRegistration.byrange({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') }, function(tr){
+			TimeRegistration.byrange({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') }, function(tr) {
 
 				 var grouped = _.groupBy(tr, function (i) { return i.date.numeric; });
 				 $scope.timeRegistrations = _.sortBy(_.map(grouped, function (g) {
 						return {
 							date: _.first(g).date,
-							items: _.sortBy(g, function(i){ return i.from.numeric; })
+							items: _.sortBy(g, function(i) { return i.from.numeric; })
 						};
 					}),
-				 function(i){
+				 function(i) {
 				 	return i.date.numeric;
 				 });
 
@@ -66,5 +66,5 @@
 
 	controller.$inject = ['$scope', '$state', '$stateParams', 'TimeRegistration'];
 
-	angular.module('time').controller('ExportController', controller);
+	angular.module('fmTime').controller('TimeRegistrationExportController', controller);
 })();

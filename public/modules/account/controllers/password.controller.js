@@ -14,7 +14,8 @@
 			$scope.hasError = false;
 
 			Account.changePassword({ id: token.id }, { oldPassword: $scope.oldPassword, newPassword: $scope.newPassword },
-				function(){
+				function() {
+
 					$scope.isSaving = false;
 
 					$scope.oldPassword = '';
@@ -23,7 +24,8 @@
 
 					$scope.accountPasswordForm.$setPristine();
 				},
-				function(err){
+				function(err) {
+
 					$scope.isSaving = false;
 					$scope.hasError = true;
 				});
@@ -32,6 +34,6 @@
 
 	accountPasswordController.$inject = ['$scope', '$window', 'jwtHelper', 'Account'];
 
-	angular.module('account').controller('AccountPasswordController', accountPasswordController);
+	angular.module('fmAccount').controller('AccountPasswordController', accountPasswordController);
 
 })();

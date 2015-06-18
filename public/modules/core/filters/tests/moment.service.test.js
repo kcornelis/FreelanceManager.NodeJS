@@ -9,12 +9,12 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function(_$filter_){
+		beforeEach(inject(function(_$filter_) {
 
 			$filter = _$filter_;
 		}));
 
-		it('should format a moment date', function(){
+		it('should format a moment date', function() {
 			$filter('moment')(moment('2014-01-02 12:30'), 'YYYYMMDD').should.eql('20140102');
 		});		
 	});
