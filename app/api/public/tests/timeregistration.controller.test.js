@@ -1052,7 +1052,7 @@ describe('When time registrations are searched (billable filter)', function() {
 		});
 
 		it('should return info per task', function() {
-			var perTask = _.first(_.where(body, { companyId: company.id, task: 'Dev' }));
+			var perTask = _.find(body, { companyId: company.id, task: 'Dev' });
 
 			perTask.companyId.should.eql(company.id);
 			perTask.company.name.should.eql('My Company');
@@ -1065,7 +1065,7 @@ describe('When time registrations are searched (billable filter)', function() {
 		});
 
 		it('should return info per task (other task)', function() {
-			var perTask = _.first(_.where(body, { companyId: company.id, task: 'Meeting' }));
+			var perTask = _.find(body, { companyId: company.id, task: 'Meeting' });
 
 			perTask.companyId.should.eql(company.id);
 			perTask.company.name.should.eql('My Company');
@@ -1079,7 +1079,7 @@ describe('When time registrations are searched (billable filter)', function() {
 
 		it('should return info per task (other company)', function() {
 
-			var perTask = _.first(_.where(body, { companyId: company2.id, task: 'Dev' }));
+			var perTask = _.find(body, { companyId: company2.id, task: 'Dev' });
 
 			perTask.companyId.should.eql(company2.id);
 			perTask.company.name.should.eql('My Second Company');

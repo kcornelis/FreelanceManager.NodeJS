@@ -63,16 +63,14 @@ function convertMultiple(timeRegistrations, done) {
 	var projects;
 	var companies;
 
-	var companyIds = _.map(timeRegistrations, function(tr) { return tr.companyId; });
-	var projectIds = _.map(timeRegistrations, function(tr) { return tr.projectId; });
+	var companyIds = _.map(timeRegistrations, 'companyId');
+	var projectIds = _.map(timeRegistrations, 'projectId');
 
 	async.parallel([
 		function(done) {
-
 			Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
 		},
 		function(done) {
-
 			Project.find().in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
 		}
 	], 
@@ -80,8 +78,8 @@ function convertMultiple(timeRegistrations, done) {
 
 		var converted = _.map(timeRegistrations, function(tr) {
 			return convert(tr,
-				_.find(companies, { id: tr.companyId }),
-				_.find(projects, { id: tr.projectId }));
+				_.find(companies, 'id', tr.companyId),
+				_.find(projects, 'id', tr.projectId));
 		});
 
 		done(converted);
@@ -104,7 +102,6 @@ exports.getById = function(req, res, next) {
 		else if(timeRegistration)
 		{
 			convertSingle(timeRegistration, function(converted) {
-
 				res.send(converted);
 			});
 		}
@@ -123,7 +120,6 @@ exports.getAll = function(req, res, next) {
 	{
 		if(err) next(err);
 		else convertMultiple(timeRegistrations, function(converted) {
-
 			res.send(converted);
 		});
 	});
@@ -141,7 +137,6 @@ exports.getForDate = function(req, res, next) {
 	{
 		if(err) next(err);
 		else convertMultiple(timeRegistrations, function(converted) {
-
 			res.send(converted);
 		});
 	});
@@ -173,7 +168,6 @@ exports.search = function(req, res, next) {
 	{
 		if(err) next(err);
 		else convertMultiple(timeRegistrations, function(converted) {
-
 			res.send(converted);
 		});
 	});
@@ -191,7 +185,6 @@ exports.getForRange = function(req, res, next) {
 	{
 		if(err) next(err);
 		else convertMultiple(timeRegistrations, function(converted) {
-
 			res.send(converted);
 		});
 	});
@@ -211,7 +204,6 @@ exports.getUninvoiced = function(req, res, next) {
 	{
 		if(err) next(err);
 		else convertMultiple(timeRegistrations, function(converted) {
-
 			res.send(converted);
 		});
 	});
@@ -237,7 +229,6 @@ exports.getInfoForPeriod = function(req, res, next) {
 		}
 	}], 
 	function (err, result) {
-
 		if(err) next(err);
 		else res.send({
 			count: (result[0] ? result[0].count : 0),
@@ -294,9 +285,9 @@ exports.getInfoForPeriodPerTask = function(req, res, next) {
 
 					return {
 						companyId: r._id.companyId,
-						company: _.first(_.where(companies, { id: r._id.companyId })),
+						company: _.find(companies, { 'id': r._id.companyId }),
 						projectId: r._id.projectId,
-						project: _.first(_.where(projects, { id: r._id.projectId })),
+						project: _.find(projects, { 'id': r._id.projectId }),
 						task: r._id.task,
 						count: r.count,
 						billableMinutes: r.billable,
@@ -324,24 +315,20 @@ exports.create = function(req, res, next) {
 			timeRegistration.companyId, timeRegistration.projectId, timeRegistration.task, 
 			timeRegistration.billable, timeRegistration.description, 
 			timeRegistration.date, timeRegistration.from, timeRegistration.to);
+
 		domainTimeRegistrations.push(domainTimeRegistration);
 		domainTimeRegistration.save(function(err) {
-
-			if(err) 
-				next(err);		
+			if(err) next(err);		
 		});
 	});
 
 	if(domainTimeRegistrations.length === 1) {
-
 		convertSingle(domainTimeRegistrations[0], function(converted) {
-
 			res.send(converted);
 		});
 	}
 	else{
 		convertMultiple(domainTimeRegistrations, function(converted) {
-
 			res.send(converted);
 		});
 	}
@@ -362,11 +349,10 @@ exports.update = function(req, res, next) {
 			timeRegistration.changeDetails(req.body.companyId, req.body.projectId, req.body.task, 
 				req.body.billable, req.body.description, 
 				req.body.date, req.body.from, req.body.to);
-			timeRegistration.save(function(err) {
 
+			timeRegistration.save(function(err) {
 				if(err) next(err);
 				else convertSingle(timeRegistration, function(converted) {
-
 					res.send(converted);
 				});
 			});
@@ -387,7 +373,6 @@ exports.delete = function(req, res, next) {
 	function(err, timeRegistration) {
 		if(err) next(err);
 		else if(timeRegistration) {
-
 			timeRegistration.delete();
 			timeRegistration.save(function(err) {
 
