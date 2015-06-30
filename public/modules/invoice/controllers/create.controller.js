@@ -1,4 +1,3 @@
-// TODO unit test
 (function() {
 	'use strict';
 
@@ -33,7 +32,7 @@
 		// **************
 
 		Project.query(function(projects) {
-			$scope.projects = _.sortBy(projects, function(p) { return p.company.name + p.name; });
+			$scope.projects = _.sortByAll(projects, ['company.name', 'name']);
 		});
 
 		$scope.templates = Template.active();	
@@ -65,7 +64,7 @@
 
 				$scope.loading = false;
 				$scope.searched = true;
-				$scope.timeRegistrations = _.sortBy(tr, ['data.numeric', 'from.numeric']);
+				$scope.timeRegistrations = _.sortByAll(tr, ['date.numeric', 'from.numeric']);
 			});
 		};
 
@@ -92,7 +91,7 @@
 
 		$scope.goto2 = function() {
 
-			$scope.invoice.linkedTimeRegistrationIds = _.map($scope.timeRegistrations, function(tr) { return tr.id; });
+			$scope.invoice.linkedTimeRegistrationIds = _.map(_.where($scope.timeRegistrations, { included: true }), function(tr) { return tr.id; });
 			
 			$scope.invoice.lines = _.map(_.groupBy(_.where($scope.timeRegistrations, { included: true }), 
 				function(tr) {
@@ -101,12 +100,12 @@
 				function(tr) {
 					var totalMinutes = _.reduce(_.map(tr, 'totalMinutes'), function(sum, i) { return sum + i; });
 					var quantity = Math.round((totalMinutes / 60) * 100) / 100;
-					var project = _.find($scope.projects, function (p) { return p.id === tr[0].projectId; });
-					var task = project ? _.find(project.tasks, function(t) { return t.name === tr[0].task; }) : null;
+					var project = _.find($scope.projects, 'id',  tr[0].projectId);
+					var task = project ? _.find(project.tasks, 'name', tr[0].task) : null;
 					var priceInCents = task ? parseInt(task.defaultRateInCents) : 0;
 
-					return { 
-						description: project.name,
+					return {
+						description: project.name + ' - ' + task.name,
 						quantity: quantity,
 						vatPercentage: 21,
 						price: priceInCents / 100,
@@ -152,7 +151,7 @@
 		};
 
 		$scope.$watch('invoice.templateId', function(id) {
-			var template = _.find($scope.templates, function(t) { return t.id === id; });
+			var template = _.find($scope.templates, 'id', id);
 			$scope.invoice.template = template ? template.content : '';
 		});
 
