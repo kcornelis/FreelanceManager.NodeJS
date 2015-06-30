@@ -101,9 +101,9 @@
 			beforeEach(inject(function($httpBackend) {
 
 				$httpBackend.expectGET('/api/public/timeregistrations/byrange/20100120/20100130').respond([
-					{ date: { numeric: 20100111 } ,description: 'description 3'},
-					{ date: { numeric: 20100110 }, description: 'description 1'}, 
-					{ date: { numeric: 20100110 }, description: 'description 2'}]);
+					{ date: { numeric: 20100111 }, from: { numberic: 1000 }, description: 'description 3'},
+					{ date: { numeric: 20100110 }, from: { numberic: 1000 }, description: 'description 1'}, 
+					{ date: { numeric: 20100110 }, from: { numberic: 1000 }, description: 'description 2'}]);
 
 				scope.refresh();
 				$httpBackend.flush();
@@ -118,7 +118,7 @@
 				expect(scope.timeRegistrations[1].items[0].description).toBe('description 3');
 			});
 
-			if('should refresh $scope.hasTimeRegistrations', function() {
+			it('should refresh $scope.hasTimeRegistrations', function() {
 				expect(scope.hasTimeRegistrations).toBe(true);
 			});
 		});				
