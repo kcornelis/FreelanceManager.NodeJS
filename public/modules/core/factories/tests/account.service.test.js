@@ -7,13 +7,13 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		describe('Get all', function(){
+		describe('Get all', function() {
 			
 			var Account,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Account_, _$httpBackend_){
+			beforeEach(inject(function(_Account_, _$httpBackend_) {
 				Account = _Account_;
 				$httpBackend = _$httpBackend_;
 
@@ -24,19 +24,19 @@
 				$httpBackend.flush();
 			}));
 
-			it('should return all accounts', function(){
+			it('should return all accounts', function() {
 				expect(response[0].name).toBe('account1');
 				expect(response[1].name).toBe('account2');
 			});	
 		});
 
-		describe('Get by id', function(){
+		describe('Get by id', function() {
 			
 			var Account,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Account_, _$httpBackend_){
+			beforeEach(inject(function(_Account_, _$httpBackend_) {
 				Account = _Account_;
 				$httpBackend = _$httpBackend_;
 
@@ -47,18 +47,18 @@
 				$httpBackend.flush();
 			}));
 
-			it('should return the account', function(){
+			it('should return the account', function() {
 				expect(response.name).toBe('account1');
 			});	
 		});	
 
-		describe('Update', function(){
+		describe('Update', function() {
 			
 			var Account,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Account_, _$httpBackend_){
+			beforeEach(inject(function(_Account_, _$httpBackend_) {
 				Account = _Account_;
 				$httpBackend = _$httpBackend_;
 
@@ -70,19 +70,19 @@
 
 			}));
 
-			it('should update the account', function(){
+			it('should update the account', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
 				$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Create', function(){
+		describe('Create', function() {
 			
 			var Account,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Account_, _$httpBackend_){
+			beforeEach(inject(function(_Account_, _$httpBackend_) {
 				Account = _Account_;
 				$httpBackend = _$httpBackend_;
 
@@ -94,19 +94,19 @@
 
 			}));
 
-			it('should create the account', function(){
+			it('should create the account', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
 				$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});	
 
-		describe('Change password', function(){
+		describe('Change password', function() {
 			
 			var Account,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Account_, _$httpBackend_){
+			beforeEach(inject(function(_Account_, _$httpBackend_) {
 				Account = _Account_;
 				$httpBackend = _$httpBackend_;
 
@@ -115,10 +115,9 @@
 
 				response = Account.changePassword({ id: 1 }, { oldPassword: '1234', newPassword: '4567'});
 				$httpBackend.flush();
-
 			}));
 
-			it('should update the account', function(){
+			it('should update the account', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
 				$httpBackend.verifyNoOutstandingRequest();
 			});	

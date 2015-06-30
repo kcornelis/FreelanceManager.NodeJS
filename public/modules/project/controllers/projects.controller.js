@@ -1,59 +1,65 @@
-angular.module('project').controller('ProjectsController',
-function($scope, $modal, Project) {
+(function() {
 	'use strict';
 
-	$scope.getAllProjects = function() {
-		Project.query(function(projects){
-			$scope.projects = _.sortBy(projects, function(p){ return p.company.name + p.name; });
-		});
-	};
+	function controller($scope, $modal, Project) {
 
-	$scope.openProject = function(project){
+		$scope.getAllProjects = function() {
+			Project.query(function(projects) {
+					$scope.projects = _.sortByAll(projects, ['company.name', 'name']);
+			});
+		};
 
-		var createDialog = $modal.open({
-			templateUrl: '/modules/project/views/editproject.html',
-			controller: 'ProjectDialogController',
-			resolve: {
-				toUpdate: function () {
-					return project;
+		$scope.openProject = function(project) {
+
+			var createDialog = $modal.open({
+				templateUrl: '/modules/project/views/editproject.html',
+				controller: 'ProjectDialogController',
+				resolve: {
+					toUpdate: function () {
+						return project;
+					}
 				}
-			}
-		});
+			});
 
-		createDialog.result.then(function (project) {
-			var p = _.find($scope.projects, { 'id': project.id });
-			if(p) angular.copy(project, p);
-			else $scope.projects.push(project);
-		});		
-	};
+			createDialog.result.then(function (project) {
+				var p = _.find($scope.projects, { 'id': project.id });
+				if(p) angular.copy(project, p);
+				else $scope.projects.push(project);
+			});		
+		};
 
-	$scope.openProjectTasks = function(project){
-		var createDialog = $modal.open({
-			templateUrl: '/modules/project/views/projecttasksdialog.html',
-			controller: 'ProjectTasksDialogController',
-			resolve: {
-				toUpdate: function () {
-					return project;
+		$scope.openProjectTasks = function(project) {
+			var createDialog = $modal.open({
+				templateUrl: '/modules/project/views/projecttasksdialog.html',
+				controller: 'ProjectTasksDialogController',
+				resolve: {
+					toUpdate: function () {
+						return project;
+					}
 				}
-			}
-		});	
+			});	
 
-		createDialog.result.then(function (project) {
-			var p = _.find($scope.projects, { 'id': project.id });
-			if(p) 
-				angular.copy(project, p);
-		});				
-	};
+			createDialog.result.then(function (project) {
+				var p = _.find($scope.projects, { 'id': project.id });
+				if(p) 
+					angular.copy(project, p);
+			});				
+		};
 
-	$scope.hideProject = function(project){
-		Project.hide({ id: project.id }, function(){
-			project.hidden = true;
-		});
-	};
+		$scope.hideProject = function(project) {
+			Project.hide({ id: project.id }, function() {
+				project.hidden = true;
+			});
+		};
 
-	$scope.unhideProject = function(project){
-		Project.unhide({ id: project.id }, function(){
-			project.hidden = false;
-		});
-	};
-});
+		$scope.unhideProject = function(project) {
+			Project.unhide({ id: project.id }, function() {
+				project.hidden = false;
+			});
+		};
+	}
+
+	controller.$inject = ['$scope', '$modal', 'Project'];
+
+	angular.module('fmProject').controller('ProjectsController', controller);
+})();

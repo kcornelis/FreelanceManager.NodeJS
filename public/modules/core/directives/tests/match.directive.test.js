@@ -4,8 +4,9 @@
 	describe('Match Directive Unit Tests:', function() {
 
 		var $scope,
-		$compile,
-		compiled;
+			$compile;
+
+		var compiled;
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
@@ -20,7 +21,7 @@
 
 			var validTemplate = '<input ng-model="confirmation" fm-match="original"></input>';
 
-			describe('configuration:', function() {
+			describe('configuration', function() {
 
 				it('does not throw when no ngModel controller is found', function() {
 					var naTemplate = '<div fm-match="original"></div>';
@@ -45,8 +46,7 @@
 
 			});
 
-
-			describe('behavior:', function() {
+			describe('behavior', function() {
 
 				it('returns true if no model value has been defined', function() {
 					compiled = $compile(validTemplate)($scope);
@@ -54,7 +54,6 @@
 					$scope.$digest();
 					expect(compiled.hasClass('ng-valid')).toBe(true);
 				});
-
 
 				it('returns true if $modelValue are identical', function() {
 					$scope.confirmation = 'value';
@@ -64,7 +63,6 @@
 					expect(compiled.hasClass('ng-valid')).toBe(true);
 				});
 
-
 				it('returns false if $modelValue are not identical', function() {
 					$scope.confirmation = false;
 					$scope.original = undefined;
@@ -72,9 +70,7 @@
 					$scope.$digest();
 					expect(compiled.hasClass('ng-valid')).toBe(false);
 				});
-
 			});
-
 		});
 
 		describe('Form level validation', function() {
@@ -113,7 +109,6 @@
 				$scope.$digest();
 				expect(form.testConfirm.$modelValue === undefined).toBe(true);
 			});
-			
 		});
 	});
 })();

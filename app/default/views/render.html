@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>{{title}}</title>
+	<title>{{ title }}</title>
 
 	<!-- General META -->
 	<meta charset="utf-8">
@@ -20,7 +20,7 @@
 </head>
 
 <body class="fill">
-	<div data-ui-view="" class="fill"></div>
+	<div ui-view="" class="fill"></div>
 
 	<!--Application JavaScript Files-->
 	{% for jsFile in renderJsFiles %}<script type="text/javascript" src="/{{jsFile}}"></script>

@@ -1,29 +1,37 @@
-angular.module('crm').controller('CompaniesController',
-function($scope, $modal, Company) {
+(function() {
 	'use strict';
 
-	$scope.getAllCompanies = function() {
-		Company.query(function(companies){
-			$scope.companies = _.sortBy(companies, 'name');
-		});
-	};
+	function controller($scope, $modal, Company) {
 
-	$scope.openCompany = function(company){
+		$scope.getAllCompanies = function() {
+			Company.query(function(companies) {
 
-		var createDialog = $modal.open({
-			templateUrl: '/modules/crm/views/editcompany.html',
-			controller: 'CompanyDialogController',
-			resolve: {
-				toUpdate: function () {
-					return company;
+				$scope.companies = _.sortBy(companies, 'name');
+			});
+		};
+
+		$scope.openCompany = function(company) {
+
+
+			var createDialog = $modal.open({
+				templateUrl: '/modules/crm/views/editcompany.html',
+				controller: 'CompanyDialogController',
+				resolve: {
+					toUpdate: function () {
+						return company;
+					}
 				}
-			}
-		});
+			});
 
-		createDialog.result.then(function (company) {
-			var c = _.find($scope.companies, { 'id': company.id });
-			if(c) angular.copy(company, c);
-			else $scope.companies.push(company);
-		});		
-	};
-});
+			createDialog.result.then(function (company) {
+				var c = _.find($scope.companies, { 'id': company.id });
+				if(c) angular.copy(company, c);
+				else $scope.companies.push(company);
+			});		
+		};
+	}
+
+	controller.$inject = ['$scope', '$modal', 'Company'];
+
+	angular.module('fmCrm').controller('CompaniesController', controller);
+})();

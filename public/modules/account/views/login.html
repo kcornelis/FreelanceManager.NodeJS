@@ -1,41 +1,41 @@
-<div class="fm-login block-center mt-xl wd-xl" data-ng-controller="AuthenticateController">
-	<!-- START panel-->
-	<div class="panel panel-dark panel-flat">
+<div class="fm-login width-xl mh-a mt-xl" ng-controller="AccountLoginController">
+
+	<div class="panel panel-primary panel-flat">
 		<div class="panel-heading text-center">
-			<a href="#" class="fm-logo-text">
-				<i>Freelance Manager</i>
-			</a>
+			<h3 class="mv-none"><i>Freelance Manager</i></h3>
 		</div>
 		<div class="panel-body">
-			<p class="text-center pv">SIGN IN TO CONTINUE</p>
-			<div data-ng-show="error" class="alert alert-danger text-center">{{ error }}</div>
-			<form role="form" data-ng-submit="submit()" name="loginForm" novalidate="" class="mb-lg">
+			<h4 class="text-center mb-lg">SIGN IN TO CONTINUE</h4>
+			<div ng-show="error" class="alert alert-danger text-center mt-lg">{{ error }}</div>
+			<form role="form" ng-submit="submit()" name="loginForm" novalidate="" class="mb-lg">
 
-				<div class="form-group has-feedback" data-fm-add-error-for="loginForm.email">
-					<input type="email" placeholder="Enter email" name="email" class="form-control" 
-							data-ng-model="user.email" required  />
-					<span class="fa fa-envelope form-control-feedback text-muted"></span>
-				</div>
+				<ft-form-group ft-floating-label class="has-feedback" fm-add-error-for="loginForm.email">
+					<label>Email address</label>
+					<input type="email" name="email" class="form-control" 
+							ng-model="user.email" required />
+					<span class="fa fa-envelope form-control-feedback"></span>
+				</ft-form-group>
 
-				<div class="form-group has-feedback" data-fm-add-error-for="loginForm.password">
-					<input type="password" placeholder="Password" name="password" class="form-control" 
-							data-ng-model="user.password" required  />
-					<span class="fa fa-lock form-control-feedback text-muted"></span>
-				</div>
+				<ft-form-group ft-floating-label class="has-feedback" fm-add-error-for="loginForm.password">
+					<label>Password</label>
+					<input type="password" name="password" class="form-control" 
+							ng-model="user.password" required />
+					<span class="fa fa-lock form-control-feedback"></span>
+				</ft-form-group>
 
-				<button type="submit" class="btn btn-block btn-primary mt-lg"
+				<button type="submit" class="btn btn-block btn-primary mt-xl"
 						ng-disabled="loginForm.$invalid">Login</button>
 			</form>
 			
 		</div>
 	</div>
-	<!-- END panel-->
-	<div class="p-lg text-center">
+
+	<div class="pb text-center">
 		<span>&copy;</span>
-		<span data-ng-bind="app.year"></span>
+		<span ng-bind="app.year"></span>
 		<span>-</span>
-		<span data-ng-bind="app.author"></span>
+		<span ng-bind="app.author"></span>
 		<br/>
-		<span data-ng-bind="app.name"></span>
+		<span ng-bind="app.name"></span>
 	</div>	
 </div>

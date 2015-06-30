@@ -1,13 +1,14 @@
-<h3>
-	<button class="btn btn-primary pull-right" data-ng-click="openCompany()">
-		<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Company
-	</button>
-	Companies
-	<small>Manage your companies</small>
-</h3>
+<div class="content-header">
+	<div class="toolbar">
+		<button class="btn btn-primary pull-right" ng-click="openCompany()">
+			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Company
+		</button>
+	</div>
+	<h1><i class="icon-users"></i>Company overview</h1>
+</div>
 
 
-<div class="panel panel-default" data-ng-init="getAllCompanies()">
+<div class="panel panel-default" ng-init="getAllCompanies()">
 	<div class="table-responsive">
 		<table class="table">
 			<thead>
@@ -17,11 +18,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="company in companies">
+				<tr ng-repeat="company in companies">
 					<td>{{ company.name }}</td>
 					<td class="fm-action-column">
 						<div class="btn-group pull-right">
-							<span data-ng-click="openCompany(company)" class="fa fa-pencil fa-hover ml-sm"></span>
+							<span ng-click="openCompany(company)" class="fa fa-pencil fa-hover ml-sm"></span>
 						</div>
 					</td>
 				</tr>

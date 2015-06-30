@@ -1,7 +1,7 @@
-angular.module('project').config(['$stateProvider',
-	function($stateProvider) {
-		'use strict';
-
+(function() {
+	'use strict';
+	
+	function routeRegistration($stateProvider) {
 		$stateProvider
 
 		.state('app.projects', {
@@ -11,4 +11,8 @@ angular.module('project').config(['$stateProvider',
             access: { requiredLogin: true }
 		});
 	}
-]);
+
+	routeRegistration.$inject = ['$stateProvider'];
+
+	angular.module('fmProject').config(routeRegistration);
+})();

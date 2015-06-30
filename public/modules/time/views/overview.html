@@ -1,32 +1,33 @@
-<h3>
-	<button class="btn btn-primary pull-right" data-ng-click="openTimeRegistration()">
-		<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Registration
-	</button>
-	Time
-	<small>Manage your time</small>
-</h3>
+<div class="content-header">
+	<div class="toolbar">
+		<button class="btn btn-primary pull-right" ng-click="openTimeRegistration()">
+			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Registration
+		</button>
+	</div>
+	<h1><i class="icon-clock"></i>Manage your time</h1>
+</div>
 
-<div class="fm-time-overview" data-ng-init="refresh()">
+<div class="fm-time-overview" ng-init="refresh()">
 
-	<button class="btn btn-default pull-left" data-ng-click="previousDate()"><span class="fa fa-chevron-left"></span></button>
-	<div class="btn-group pull-right">
-		<button class="btn btn-default" data-fm-datepicker data-fm-datepicker-format="yyyy-mm-dd" data-fm-datepicker-datechanged="changeDate(date, 'YYYY-MM-DD')">
+	<button class="btn btn-default pull-left  btn-accentuate" ng-click="previousDate()"><span class="fa fa-chevron-left"></span></button>
+	<div class="btn-group pull-right btn-group-accentuate">
+		<button class="btn btn-default" fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-datechanged="changeDate(date, 'YYYY-MM-DD')">
 			<span class="fa fa-calendar-o"></span>
 		</button>
-		<button class="btn btn-default" data-ng-click="nextDate()"><span class="fa fa-chevron-right"></span></button>
+		<button class="btn btn-default" ng-click="nextDate()"><span class="fa fa-chevron-right"></span></button>
 	</div>
 	<div class="clearfix visible-xs">&nbsp;</div>
 	<h1 class="text-center">{{ date | moment: 'DD MMMM YYYY' }}</h1>
 
-	<div class="panel panel-default panel-margin" data-ng-hide="hasTimeRegistrations">
+	<div class="panel panel-default mt-xl" ng-hide="hasTimeRegistrations">
 		<div class="panel-body text-center">
 			No items
 		</div>
 	</div>
 
-	<div class="list-group">
-		<div class="list-group-item" data-ng-click="openTimeRegistration(timeRegistration)"
-			 data-ng-repeat="timeRegistration in timeRegistrations">
+	<div class="list-group mt-xl">
+		<div class="list-group-item" ng-click="openTimeRegistration(timeRegistration)"
+			 ng-repeat="timeRegistration in timeRegistrations">
 			<div class="row">
 				<div class="col-xs-2">
 					<strong>{{ timeRegistration.from | formattime }}</strong><br />

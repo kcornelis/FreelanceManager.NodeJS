@@ -1,33 +1,39 @@
-// TODO unit test this directive
-angular.module('core').directive('fmDatepicker', 
-function ($timeout) {
+// TODO unit test
+// TODO use open source directive
+(function() {
 	'use strict';
 	
-	return {
-		restrict: 'A',
-		require: '?ngModel',
-		scope: {
-			fmDatepickerDatechanged: '&'
-		},
-		link: function(scope, element, attrs, ngModel, timeout) {
+	function datepickerDirective($timeout) {
+		return {
+			restrict: 'A',
+			require: '?ngModel',
+			scope: {
+				fmDatepickerDatechanged: '&'
+			},
+			link: function(scope, element, attrs, ngModel, timeout) {
 
-			var position = attrs.fmDatepickerHPosition || 'right';
-			element.datepicker({
-				format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
-				autoclose: true,
-				orientation: 'auto ' + position,
-				todayBtn: 'linked'
-			})
-			.on('changeDate', function(date) { 
+				var position = attrs.fmDatepickerHPosition || 'right';
+				element.datepicker({
+					format: attrs.fmDatepickerFormat || 'yyyy-mm-dd',
+					autoclose: true,
+					orientation: 'auto ' + position,
+					todayBtn: 'linked'
+				})
+				.on('changeDate', function(date) { 
 
-				var dateTxt = date.format(attrs.fmDatepickerFormat || 'yyyy-mm-dd');
-				if (scope.fmDatepickerDatechanged) {
-					
-					scope.$apply(function() { 
-						scope.fmDatepickerDatechanged({date: dateTxt});
-					}); 
-				}
-			});
-		  }
-	};
-});
+					var dateTxt = date.format(attrs.fmDatepickerFormat || 'yyyy-mm-dd');
+					if (scope.fmDatepickerDatechanged) {
+						
+						scope.$apply(function() { 
+							scope.fmDatepickerDatechanged({date: dateTxt});
+						}); 
+					}
+				});
+			}
+		};
+	}
+
+	datepickerDirective.$inject = ['$timeout'];
+
+	angular.module('fmCore').directive('fmDatepicker', datepickerDirective);
+})();

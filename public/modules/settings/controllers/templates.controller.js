@@ -1,33 +1,39 @@
-angular.module('settings').controller('TemplatesController',
-function($scope, Template) {
+(function() {
 	'use strict';
 
-	$scope.getAllTemplates = function() {
-		$scope.templates = Template.query();
-	};
+	function controller($scope, Template) {
 
-	$scope.openTemplate = function(template){
-		$scope.template = template || {};
-		$scope.newTemplate = template === undefined;
-	};
+		$scope.getAllTemplates = function() {
+			$scope.templates = Template.query();
+		};
 
-	$scope.newTemplate = true;
+		$scope.openTemplate = function(template) {
+			$scope.template = template || {};
+			$scope.newTemplate = template === undefined;
+		};
 
-	$scope.saveTemplate = function(){
-		
-		var id = $scope.newTemplate ? {} : { id: $scope.template.id };
+		$scope.newTemplate = true;
 
-		Template.save(id, $scope.template,
-			function(data) { 
-				if($scope.newTemplate){
-					$scope.templates.push(data);
-					$scope.template = data;
-					$scope.newTemplate = false;
-				}
-			},
-			function(err) { 
-				// TODO show toaster
-				alert(err);
-			});
-	};
-});
+		$scope.saveTemplate = function() {
+			
+			var id = $scope.newTemplate ? {} : { id: $scope.template.id };
+
+			Template.save(id, $scope.template,
+				function(data) { 
+					if($scope.newTemplate) {
+						$scope.templates.push(data);
+						$scope.template = data;
+						$scope.newTemplate = false;
+					}
+				},
+				function(err) { 
+					// TODO show toaster
+					alert(err);
+				});
+		};
+	}
+
+	controller.$inject = ['$scope', 'Template'];
+
+	angular.module('fmSettings').controller('TemplatesController', controller);
+})();

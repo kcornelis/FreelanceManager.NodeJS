@@ -1,8 +1,10 @@
-angular.module('core')
+(function() {
+	'use strict';
 
-.constant('const_mediaquery', {
-	'desktopLG': 1200,
-	'desktop': 992,
-	'tablet': 768,
-	'mobile': 480
-});
+	angular.module('fmCore').constant('const_mediaquery', {
+		'desktopLG': 1200,
+		'desktop': 992,
+		'tablet': 768,
+		'mobile': 480
+	});
+})();

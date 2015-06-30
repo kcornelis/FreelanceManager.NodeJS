@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
 	_ = require('lodash'),
 	Company = mongoose.model('Company');
 
-function convert(company){
+function convert(company) {
+
 	return {
 		id: company.id,
 		name: company.name,
@@ -40,10 +41,12 @@ exports.getAll = function(req, res) {
 
 exports.create = function(req, res, next) {
 
-	Company.getNextNumber(req.user.id, function(err, number){
+	Company.getNextNumber(req.user.id, function(err, number) {
+
 
 		var company = Company.create(req.user.id, number, req.body.name, req.body.vatNumber, req.body.address);
-		company.save(function(err){
+		company.save(function(err) {
+
 			if(err) next(err);                     
 			else res.send(convert(company));
 		});
@@ -59,9 +62,11 @@ exports.update = function(req, res, next) {
 	}, 
 	function(err, company) {
 		if(err) next(err);
-		else if(company){
+		else if(company) {
+
 			company.changeDetails(req.body.name, req.body.vatNumber, req.body.address);
-			company.save(function(err){
+			company.save(function(err) {
+
 				if(err) next(err);
 				else res.send(convert(company));
 			});

@@ -7,13 +7,13 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		describe('Get all', function(){
+		describe('Get all', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -25,19 +25,19 @@
 
 			}));
 
-			it('should return all templates', function(){
+			it('should return all templates', function() {
 				expect(response[0].name).toBe('template1');
 				expect(response[1].name).toBe('template2');
 			});	
 		});
 
-		describe('Get active', function(){
+		describe('Get active', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -49,19 +49,19 @@
 
 			}));
 
-			it('should return all active templates', function(){
+			it('should return all active templates', function() {
 				expect(response[0].name).toBe('template1');
 				expect(response[1].name).toBe('template2');
 			});	
 		});		
 
-		describe('Get by id', function(){
+		describe('Get by id', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -73,18 +73,18 @@
 
 			}));
 
-			it('should return the template', function(){
+			it('should return the template', function() {
 				expect(response.name).toBe('template1');
 			});	
 		});	
 
-		describe('Update', function(){
+		describe('Update', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -96,19 +96,19 @@
 
 			}));
 
-			it('should update the template', function(){
+			it('should update the template', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Create', function(){
+		describe('Create', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -120,20 +120,20 @@
 
 			}));
 
-			it('should create the template', function(){
+			it('should create the template', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});	
 
 
-		describe('Hide', function(){
+		describe('Hide', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -145,19 +145,19 @@
 
 			}));
 
-			it('should hide the template', function(){
+			it('should hide the template', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
 		});		
 
-		describe('Unhide', function(){
+		describe('Unhide', function() {
 			
 			var Template,
 				$httpBackend,
 				response;
 
-			beforeEach(inject(function(_Template_, _$httpBackend_){
+			beforeEach(inject(function(_Template_, _$httpBackend_) {
 				Template = _Template_;
 				$httpBackend = _$httpBackend_;
 
@@ -169,7 +169,7 @@
 
 			}));
 
-			it('should hide the template', function(){
+			it('should hide the template', function() {
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	

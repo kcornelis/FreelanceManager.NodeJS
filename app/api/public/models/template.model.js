@@ -34,7 +34,8 @@ var TemplateSchema = new AggregateRootSchema({
 /*
  *	Write methods
  */
-TemplateSchema.statics.create = function(tenant, name, content){
+TemplateSchema.statics.create = function(tenant, name, content) {
+
 	
 	var template = new this();
 
@@ -52,10 +53,12 @@ TemplateSchema.statics.create = function(tenant, name, content){
 	return template;
 };
 
-TemplateSchema.methods.changeDetails = function(name, content){
+TemplateSchema.methods.changeDetails = function(name, content) {
+
 
 	if( this.name !== name ||
-		this.content !== content){
+		this.content !== content) {
+
 		
 		this.name = name;
 		this.content = content;
@@ -68,17 +71,21 @@ TemplateSchema.methods.changeDetails = function(name, content){
 	}
 };
 
-TemplateSchema.methods.hide = function(){
+TemplateSchema.methods.hide = function() {
 
-	if(!this.hidden){
+
+	if(!this.hidden) {
+
 		this.hidden = true;
 		this.apply('TemplateHidden', {});	
 	}
 };
 
-TemplateSchema.methods.unhide = function(){
+TemplateSchema.methods.unhide = function() {
 
-	if(this.hidden){
+
+	if(this.hidden) {
+
 		this.hidden = false;	
 		this.apply('TemplateUnhidden', {});	
 	}

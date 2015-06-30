@@ -4,7 +4,7 @@ var ApplicationConfiguration = (function() {
 
 	// Init module configuration options
 	var applicationModuleName = 'freelancemanager';
-	var applicationModuleVendorDependencies = ['ngRoute', 'ngAnimate', 'localytics.directives', 'ngStorage', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ui.utils', 'oc.lazyLoad', 'cfp.loadingBar', 'ngSanitize', 'ngResource', 'ngTable'];
+	var applicationModuleVendorDependencies = [ 'LocalStorageModule', 'ngAnimate', 'ui.bootstrap', 'ui.router', 'ui.utils', 'ngResource', 'ft', 'ngTable'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName) {
@@ -24,7 +24,8 @@ var ApplicationConfiguration = (function() {
 			deps: ['$ocLazyLoad','$q', function ($ocLL, $q) {
 				// Creates a promise chain for each argument
 				var promise = $q.when(1); // empty promise
-				for(var i=0, len=_args.length; i < len; i ++){
+				for(var i=0, len=_args.length; i < len; i ++) {
+
 					promise = andThen(_args[i]);
 				}
 				return promise;

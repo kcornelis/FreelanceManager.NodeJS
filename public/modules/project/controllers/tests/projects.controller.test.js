@@ -1,31 +1,23 @@
 (function() {
 	'use strict';
 	
-	describe('ProjectsController Unit Tests:', function() {
-
-		var scope, 
-			ProjectsController,
-			$httpBackend,
-			$modal;
+	describe('Projects Controller Unit Tests:', function() {
 
 		// Load the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($controller, $rootScope, _$httpBackend_, _$modal_) {
-			scope = $rootScope.$new();
+		describe('$scope.getAllProjects', function() {
 
-			$httpBackend = _$httpBackend_;
-			$modal = _$modal_;
+			var scope, 
+				controller;
 
-			ProjectsController = $controller('ProjectsController', {
-				$scope: scope
-			});
-		}));
+			beforeEach(inject(function($controller, $rootScope, $httpBackend) {
 
-		describe('$scope.getAllProjects', function(){
-
-			beforeEach(function(){
+				scope = $rootScope.$new();
+				controller = $controller('ProjectsController', {
+					$scope: scope
+				});
 
 				$httpBackend.expectGET('/api/public/projects').respond([
 					{ name: 'project 1', description: 'description 1'}, 
@@ -33,20 +25,28 @@
 
 				scope.getAllProjects();
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should store all projects in $scope.projects', inject(function() {
+			it('should store all projects in $scope.projects', function() {
 				expect(scope.projects[0].name).toBe('project 1');
 				expect(scope.projects[1].name).toBe('project 2');
 
 				expect(scope.projects[0].description).toBe('description 1');
 				expect(scope.projects[1].description).toBe('description 2');
-			}));
+			});
 		});	
 
-		describe('$scope.openProject', function(){
+		describe('$scope.openProject', function() {
+			
+			var scope, 
+				controller;
 
-			beforeEach(function(){
+			beforeEach(inject(function($controller, $rootScope, $httpBackend, $modal) {
+
+				scope = $rootScope.$new();
+				controller = $controller('ProjectsController', {
+					$scope: scope
+				});
 
 				sinon.stub($modal, 'open', function() { return dialog; });
 
@@ -56,9 +56,9 @@
 
 				scope.getAllProjects();
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should update the ui if a project is updated', function(){
+			it('should update the ui if a project is updated', function() {
 				scope.openProject();
 
 				dialog.close({ id: 2, name: 'abc', description: 'def' });
@@ -68,7 +68,7 @@
 				expect(scope.projects[1].description).toBe('def');
 			});
 
-			it('should update the ui if a project is created', function(){
+			it('should update the ui if a project is created', function() {
 				scope.openProject();
 
 				dialog.close({ id: 3, name: 'abc', description: 'def' });
@@ -79,9 +79,17 @@
 			});
 		});
 
-		describe('$scope.hideProject', function(){
+		describe('$scope.hideProject', function() {
 
-			beforeEach(function(){
+			var scope, 
+				controller;
+
+			beforeEach(inject(function($controller, $rootScope, $httpBackend, $modal) {
+
+				scope = $rootScope.$new();
+				controller = $controller('ProjectsController', {
+					$scope: scope
+				});
 
 				$httpBackend.expectGET('/api/public/projects').respond([
 					{ id: 1, name: 'project 1', description: 'description 1', hidden: false }, 
@@ -90,27 +98,34 @@
 				scope.getAllProjects();
 				$httpBackend.flush();
 
-
 				$httpBackend.expectPOST('/api/public/projects/1/hide').respond(
 					{ id: 1, name: 'project 1', description: 'description 1', hidden: true });
 
 				scope.hideProject(scope.projects[0]);
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should send the request to the backend', function(){
+			it('should send the request to the backend', inject(function($httpBackend) {
 				$httpBackend.verifyNoOutstandingExpectation();
 				$httpBackend.verifyNoOutstandingRequest();
-			});
-
-			it('should mark the selected project as hidden', inject(function() {
-				expect(scope.projects[0].hidden).toBe(true);
 			}));
+
+			it('should mark the selected project as hidden', function() {
+				expect(scope.projects[0].hidden).toBe(true);
+			});
 		});	
 
-		describe('$scope.unhideProject', function(){
+		describe('$scope.unhideProject', function() {
 
-			beforeEach(function(){
+			var scope, 
+				controller;
+
+			beforeEach(inject(function($controller, $rootScope, $httpBackend, $modal) {
+
+				scope = $rootScope.$new();
+				controller = $controller('ProjectsController', {
+					$scope: scope
+				});
 
 				$httpBackend.expectGET('/api/public/projects').respond([
 					{ id: 1, name: 'project 1', description: 'description 1', hidden: true }, 
@@ -125,21 +140,29 @@
 
 				scope.unhideProject(scope.projects[0]);
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should send the request to the backend', function(){
+			it('should send the request to the backend', inject(function($httpBackend) {
 				$httpBackend.verifyNoOutstandingExpectation();
 				$httpBackend.verifyNoOutstandingRequest();
-			});
-
-			it('should mark the selected project as unhidden', inject(function() {
-				expect(scope.projects[0].hidden).toBe(false);
 			}));
+
+			it('should mark the selected project as unhidden', function() {
+				expect(scope.projects[0].hidden).toBe(false);
+			});
 		});	
 
-		describe('$scope.openProjectTasks', function(){
+		describe('$scope.openProjectTasks', function() {
 
-			beforeEach(function(){
+			var scope, 
+				controller;
+
+			beforeEach(inject(function($controller, $rootScope, $httpBackend, $modal) {
+
+				scope = $rootScope.$new();
+				controller = $controller('ProjectsController', {
+					$scope: scope
+				});
 
 				sinon.stub($modal, 'open', function() { return dialog; });
 
@@ -155,9 +178,9 @@
 
 				scope.getAllProjects();
 				$httpBackend.flush();
-			});
+			}));
 
-			it('should update the project if its updated', function(){
+			it('should update the project if its updated', function() {
 				scope.openProjectTasks();
 
 				dialog.close({ id: 1, name: 'project 1', description: 'description 1', tasks: [
@@ -170,18 +193,18 @@
 		});				
 
 		var dialog = {
-		    result: {
-		        then: function(confirmCallback, cancelCallback) {
-		            this.confirmCallBack = confirmCallback;
-		            this.cancelCallback = cancelCallback;
-		        }
-		    },
-		    close: function( item ) {
-		        this.result.confirmCallBack(item);
-		    },
-		    dismiss: function( type ) {
-		        this.result.cancelCallback(type);
-		    }
+			result: {
+				then: function(confirmCallback, cancelCallback) {
+					this.confirmCallBack = confirmCallback;
+					this.cancelCallback = cancelCallback;
+				}
+			},
+			close: function( item ) {
+				this.result.confirmCallBack(item);
+			},
+			dismiss: function( type ) {
+				this.result.cancelCallback(type);
+			}
 		};
 	});
 })();

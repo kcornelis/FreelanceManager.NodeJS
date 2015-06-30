@@ -1,20 +1,27 @@
 // TODO unit test
-// From the angle project
-angular.module('core').directive('href', function() {
+(function() {
 	'use strict';
-	
-	return {
-		restrict: 'A',
-		compile: function(element, attr) {
+
+	function hrefDirective() {
+		return {
+			restrict: 'A',
+			compile: function(element, attr) {
 				return function(scope, element) {
-					if(attr.ngClick || attr.href === '' || attr.href === '#'){
+					if(attr.ngClick || attr.href === '' || attr.href === '#') {
+
 						if( !element.hasClass('dropdown-toggle') )
-							element.on('click', function(e){
+							element.on('click', function(e) {
+
 								e.preventDefault();
 								e.stopPropagation();
 							});
 					}
 				};
 			}
-	 };
-});
+		 };
+	}
+	
+	hrefDirective.$inject = [];
+
+	angular.module('fmCore').directive('href', hrefDirective);
+})();

@@ -20,23 +20,28 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 	var company, project, company2, project2;
 
-	before(function(done){
+	before(function(done) {
+
 		company = Company.create(testdata.normalAccountId, '3', 'My Company');
 		project = Project.create(testdata.normalAccountId, company.id, 'FM Manager', 'Freelance manager');
 		company2 = Company.create(testdata.normalAccountId, '4', 'My Second Company');
 		project2 = Project.create(testdata.normalAccountId, company2.id, 'FM Manager v2', 'Freelance manager v2');
 
 		async.series([
-			function(done){
+			function(done) {
+
 				company.save(done);
 			},
-			function(done){
+			function(done) {
+
 				project.save(done);
 			},
-			function(done){
+			function(done) {
+
 				company2.save(done);
 			},
-			function(done){
+			function(done) {
+
 				project2.save(done);
 			}			
 		], done);
@@ -45,8 +50,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	/**
 	 * Get by id
 	 */
-	describe('When a time registration is requested by id by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a time registration is requested by id by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/' + uuid.v1())
 				.expect(401)
@@ -60,14 +67,17 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var body;
 		var timeRegistration;
 
-		before(function(done){
+		before(function(done) {
+
 			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeRegistration.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/' + timeRegistration.id)
@@ -90,58 +100,70 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			body.id.should.eql(timeRegistration.id);
 		});
 
-		it('should return a time registration with the companyId', function(){
+		it('should return a time registration with the companyId', function() {
+
 			body.companyId.should.eql(company.id);
 		});	
 
-		it('should return a time registration with the company name', function(){
+		it('should return a time registration with the company name', function() {
+
 			body.company.name.should.eql('My Company');
 		});	
 
-		it('should return a time registration with the projectId', function(){
+		it('should return a time registration with the projectId', function() {
+
 			body.projectId.should.eql(project.id);
 		});
 
-		it('should return a time registration with the project name', function(){
+		it('should return a time registration with the project name', function() {
+
 			body.project.name.should.eql('FM Manager');
 		});
 
-		it('should return a time registration with the project description', function(){
+		it('should return a time registration with the project description', function() {
+
 			body.project.description.should.eql('Freelance manager');
 		});				
 
-		it('should return a time registration with the task', function(){
+		it('should return a time registration with the task', function() {
+
 			body.task.should.eql('Dev');
 		});
 
-		it('should return a time registration with the description', function(){
+		it('should return a time registration with the description', function() {
+
 			body.description.should.eql('Doing some work');
 		});
 
-		it('should return if the time registration is billable', function(){
+		it('should return if the time registration is billable', function() {
+
 			body.billable.should.eql(true);
 		});
 
-		it('should return a time registration with the date', function(){
+		it('should return a time registration with the date', function() {
+
 			body.date.year.should.eql(2000);
 			body.date.month.should.eql(12);
 			body.date.day.should.eql(31);
 			body.date.numeric.should.eql(20001231);
 		});
 
-		it('should return a time registration with the from time', function(){
+		it('should return a time registration with the from time', function() {
+
 			body.from.hour.should.eql(14);
 			body.from.minutes.should.eql(0);
 			body.from.numeric.should.eql(1400);
 		});
 
-		it('should return a time registration with the to time', function(){
+		it('should return a time registration with the to time', function() {
+
 			body.to.hour.should.eql(13);
 			body.to.minutes.should.eql(59);
 			body.to.numeric.should.eql(1359);
 		});		
 
-		it('should return a time registration with the total minutes', function(){
+		it('should return a time registration with the total minutes', function() {
+
 			body.totalMinutes.should.eql(1439);
 		});		
 	});
@@ -152,11 +174,13 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var body;
 		var timeRegistration;
 
-		before(function(done){
+		before(function(done) {
+
 			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1500);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeRegistration.save(done);
 				}
 			], done);
@@ -175,8 +199,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	/**
 	 * Get all time registrations
 	 */
-	describe('When all time registrations are requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When all time registrations are requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations')
 				.expect(401)
@@ -193,22 +219,27 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1500, 1600);
 			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations')
@@ -227,15 +258,18 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			], done);
 		});
 
-		it('should return time registrations with the company name', function(){
+		it('should return time registrations with the company name', function() {
+
 			_.where(body, { id: timeregistration1.id })[0].company.name.should.eql('My Company');
 		});	
 
-		it('should return time registrations with the project name', function(){
+		it('should return time registrations with the project name', function() {
+
 			_.where(body, { id: timeregistration1.id })[0].project.name.should.eql('FM Manager');
 		});	
 
-		it('should return time registrations with the project description', function(){
+		it('should return time registrations with the project description', function() {
+
 			_.where(body, { id: timeregistration1.id })[0].project.description.should.eql('Freelance manager');
 		});	
 
@@ -255,8 +289,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	/**
 	 * Get all time registrations by date
 	 */
-	describe('When all time registrations are requested by date by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When all time registrations are requested by date by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/bydate/20141010')
 				.expect(401)
@@ -273,22 +309,27 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001230, 1500, 1600);
 			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/bydate/20001231')
@@ -323,8 +364,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	/**
 	 * Get all time registrations by range
 	 */
-	describe('When time registrations are requested by range by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When time registrations are requested by range by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/byrange/20100202/20100211')
 				.expect(401)
@@ -343,7 +386,8 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration4;
 		var timeregistration5;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
 			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100210, 1400, 1500);
@@ -351,22 +395,28 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration4.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration5.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/byrange/20100202/20100210')
@@ -409,8 +459,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	/**
 	 * Search time registrations
 	 */
-	describe('When time registrations are searched by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When time registrations are searched by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/search')
 				.expect(401)
@@ -427,22 +479,27 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
 			timeregistration3 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/search')
@@ -485,7 +542,8 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration4;
 		var timeregistration5;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
 			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100210, 1400, 1500);
@@ -493,22 +551,28 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20100205, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration4.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration5.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/search?from=20100202&to=20100210')
@@ -557,18 +621,22 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project2.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/search?project=' + project.id)
@@ -605,19 +673,23 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project2.id, 'Dev', false, 'Doing some work', 20100202, 1500, 1600);
 			timeregistration2.markInvoiced();
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/search?invoiced=true')
@@ -654,18 +726,22 @@ describe('When time registrations are searched (billable filter)', function() {
 		var timeregistration2;
 		var timeregistration3;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project2.id, 'Dev', true, 'Doing some work', 20100202, 1500, 1600);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/search?billable=true')
@@ -696,8 +772,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Get all uninvoiced time registrations
 	 */
-	describe('When uninvoiced time registrations are requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When uninvoiced time registrations are requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/uninvoiced')
 				.expect(401)
@@ -716,7 +794,8 @@ describe('When time registrations are searched (billable filter)', function() {
 		var timeregistration4;
 		var timeregistration5;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20100201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20100202, 1500, 1600);
 			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20100210, 1400, 1500);
@@ -726,23 +805,29 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeregistration3.markInvoiced('invoiceId');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration4.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration5.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/uninvoiced')
@@ -782,8 +867,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Get time registration info
 	 */
-	describe('When time registrations info is requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When time registrations info is requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/getinfoforperiod/20100202/20100210')
 				.expect(401)
@@ -804,7 +891,8 @@ describe('When time registrations are searched (billable filter)', function() {
 		var timeregistration6;
 		var timeregistration7;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110202, 1500, 1505);
 			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20110210, 1400, 1410);
@@ -814,28 +902,36 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeregistration7 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', true, 'Doing some work', 20110205, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration4.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration5.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration6.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration7.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/getinfoforperiod/20110202/20110210')
@@ -871,8 +967,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Get time registration info per task
 	 */
-	describe('When time registrations info per task is requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When time registrations info per task is requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/timeregistrations/getinfoforperiodpertask/20100202/20100210')
 				.expect(401)
@@ -893,7 +991,8 @@ describe('When time registrations are searched (billable filter)', function() {
 		var timeregistration6;
 		var timeregistration7;
 
-		before(function(done){
+		before(function(done) {
+
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150201, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150202, 1500, 1505);
 			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20150210, 1400, 1410);
@@ -903,28 +1002,36 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeregistration7 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', true, 'Doing some work', 20150205, 1400, 1359);
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					timeregistration1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration4.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration5.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration6.save(done);
 				},
-				function(done){
+				function(done) {
+
 					timeregistration7.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/timeregistrations/getinfoforperiodpertask/20150202/20150210')
@@ -945,7 +1052,7 @@ describe('When time registrations are searched (billable filter)', function() {
 		});
 
 		it('should return info per task', function() {
-			var perTask = _.first(_.where(body, { companyId: company.id, task: 'Dev' }));
+			var perTask = _.find(body, { companyId: company.id, task: 'Dev' });
 
 			perTask.companyId.should.eql(company.id);
 			perTask.company.name.should.eql('My Company');
@@ -958,7 +1065,7 @@ describe('When time registrations are searched (billable filter)', function() {
 		});
 
 		it('should return info per task (other task)', function() {
-			var perTask = _.first(_.where(body, { companyId: company.id, task: 'Meeting' }));
+			var perTask = _.find(body, { companyId: company.id, task: 'Meeting' });
 
 			perTask.companyId.should.eql(company.id);
 			perTask.company.name.should.eql('My Company');
@@ -972,7 +1079,7 @@ describe('When time registrations are searched (billable filter)', function() {
 
 		it('should return info per task (other company)', function() {
 
-			var perTask = _.first(_.where(body, { companyId: company2.id, task: 'Dev' }));
+			var perTask = _.find(body, { companyId: company2.id, task: 'Dev' });
 
 			perTask.companyId.should.eql(company2.id);
 			perTask.company.name.should.eql('My Second Company');
@@ -988,8 +1095,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Create
 	 */
-	describe('When a time registration is created by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a time registration is created by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/timeregistrations')
 				.send({ companyId: 'company', projectId: 'project', task: 'dev',
@@ -1021,7 +1130,8 @@ describe('When time registrations are searched (billable filter)', function() {
 					response = res;
 					body = res.body;
 
-					TimeRegistration.findById(body.id, function(err, c){
+					TimeRegistration.findById(body.id, function(err, c) {
+
 						timeRegistration = c;
 						done();
 					});
@@ -1032,39 +1142,48 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration.should.exist;
 		});
 
-		it('should create a time registration with the specified company id', function(){
+		it('should create a time registration with the specified company id', function() {
+
 			timeRegistration.companyId.should.eql(company.id);
 		});
 
-		it('should create a time registration with the specified project id', function(){
+		it('should create a time registration with the specified project id', function() {
+
 			timeRegistration.projectId.should.eql(project.id);
 		});
 
-		it('should create a time registration with the specified task', function(){
+		it('should create a time registration with the specified task', function() {
+
 			timeRegistration.task.should.eql('dev');
 		});
 
-		it('should create a time registration with the specified billable property', function(){
+		it('should create a time registration with the specified billable property', function() {
+
 			timeRegistration.billable.should.eql(false);
 		});
 
-		it('should create a time registration with the specified description', function(){
+		it('should create a time registration with the specified description', function() {
+
 			timeRegistration.description.should.eql('doing some work');
 		});
 
-		it('should create a time registration with the specified date', function(){
+		it('should create a time registration with the specified date', function() {
+
 			timeRegistration.date.numeric.should.eql(20100304);
 		});
 
-		it('should create a time registration with the specified from time', function(){
+		it('should create a time registration with the specified from time', function() {
+
 			timeRegistration.from.numeric.should.eql(1015);
 		});
 
-		it('should create a time registration with the specified to time', function(){
+		it('should create a time registration with the specified to time', function() {
+
 			timeRegistration.to.numeric.should.eql(1215);
 		});
 
-		it('should create a time registration for the logged in user', function(){
+		it('should create a time registration for the logged in user', function() {
+
 			timeRegistration.tenant.should.eql(testdata.normalAccountId);
 		});
 		
@@ -1072,47 +1191,58 @@ describe('When time registrations are searched (billable filter)', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 
-		it('should return the company id', function(){
+		it('should return the company id', function() {
+
 			body.companyId.should.eql(company.id);
 		});
 
-		it('should return the company name', function(){
+		it('should return the company name', function() {
+
 			body.company.name.should.eql('My Company');
 		});
 
-		it('should return the project id', function(){
+		it('should return the project id', function() {
+
 			body.projectId.should.eql(project.id);
 		});
 
-		it('should return the project name', function(){
+		it('should return the project name', function() {
+
 			body.project.name.should.eql('FM Manager');
 		});
 
-		it('should return the project description', function(){
+		it('should return the project description', function() {
+
 			body.project.description.should.eql('Freelance manager');
 		});
 
-		it('should return the task', function(){
+		it('should return the task', function() {
+
 			body.task.should.eql('dev');
 		});
 
-		it('should return the billable property', function(){
+		it('should return the billable property', function() {
+
 			body.billable.should.eql(false);
 		});		
 
-		it('should return the description', function(){
+		it('should return the description', function() {
+
 			body.description.should.eql('doing some work');
 		});
 
-		it('should return the date', function(){
+		it('should return the date', function() {
+
 			body.date.numeric.should.eql(20100304);
 		});
 
-		it('should return the from time', function(){
+		it('should return the from time', function() {
+
 			body.from.numeric.should.eql(1015);
 		});
 
-		it('should return the to time', function(){
+		it('should return the to time', function() {
+
 			body.to.numeric.should.eql(1215);
 		});
 	});	
@@ -1120,8 +1250,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Create Multiple
 	 */
-	describe('When multiple time registrations are created by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When multiple time registrations are created by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/timeregistrations/multiple')
 				.send([{ companyId: company.id, projectId: project.id, task: 'dev', billable: true, description: 'doing some work', date: 20100304, from: 1015, to: 1215 },
@@ -1154,14 +1286,18 @@ describe('When time registrations are searched (billable filter)', function() {
 					body = res.body;
 
 					async.series([
-						function(done){
-							TimeRegistration.findById(body[0].id, function(err, c){
+						function(done) {
+
+							TimeRegistration.findById(body[0].id, function(err, c) {
+
 								timeRegistration1 = c;
 								done();
 							});
 						},
-						function(done){
-							TimeRegistration.findById(body[1].id, function(err, c){
+						function(done) {
+
+							TimeRegistration.findById(body[1].id, function(err, c) {
+
 								timeRegistration2 = c;
 								done();
 							});
@@ -1179,51 +1315,63 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration2.should.exist;
 		});
 
-		it('should create a time registration (1) with the specified task', function(){
+		it('should create a time registration (1) with the specified task', function() {
+
 			timeRegistration1.task.should.eql('dev');
 		});
 
-		it('should create a time registration (2) with the specified task', function(){
+		it('should create a time registration (2) with the specified task', function() {
+
 			timeRegistration2.task.should.eql('meeting');
 		});
 
-		it('should create a time registration (1) with the specified description', function(){
+		it('should create a time registration (1) with the specified description', function() {
+
 			timeRegistration1.description.should.eql('doing some work');
 		});
 
-		it('should create a time registration (2) with the specified description', function(){
+		it('should create a time registration (2) with the specified description', function() {
+
 			timeRegistration2.description.should.eql('doing some more work');
 		});
 
-		it('should create a time registration (1) with the specified billable property', function(){
+		it('should create a time registration (1) with the specified billable property', function() {
+
 			timeRegistration1.billable.should.eql(true);
 		});
 
-		it('should create a time registration (2) with the specified billable property', function(){
+		it('should create a time registration (2) with the specified billable property', function() {
+
 			timeRegistration2.billable.should.eql(false);
 		});
 
-		it('should return the company id (1)', function(){
+		it('should return the company id (1)', function() {
+
 			body[0].companyId.should.eql(company.id);
 		});
 
-		it('should return the company id (2)', function(){
+		it('should return the company id (2)', function() {
+
 			body[1].companyId.should.eql(company.id);
 		});
 
-		it('should return the company name (1)', function(){
+		it('should return the company name (1)', function() {
+
 			body[0].company.name.should.eql('My Company');
 		});
 
-		it('should return the company name (2)', function(){
+		it('should return the company name (2)', function() {
+
 			body[1].company.name.should.eql('My Company');
 		});
 
-		it('should return the to time (1)', function(){
+		it('should return the to time (1)', function() {
+
 			body[0].to.numeric.should.eql(1215);
 		});
 
-		it('should return the to time (2)', function(){
+		it('should return the to time (2)', function() {
+
 			body[1].to.numeric.should.eql(1315);
 		});		
 	});	 
@@ -1232,8 +1380,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Update
 	 */
-	describe('When a time registration is updated by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a time registration is updated by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/timeregistrations/' + uuid.v1())
 				.send({ companyId: 'company', projectId: 'project', task: 'dev',
@@ -1254,10 +1404,12 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeRegistration.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/timeregistrations/' + timeRegistration.id)
@@ -1273,7 +1425,8 @@ describe('When time registrations are searched (billable filter)', function() {
 							response = res;
 							body = res.body;
 
-							TimeRegistration.findById(body.id, function(err, c){
+							TimeRegistration.findById(body.id, function(err, c) {
+
 								timeRegistration = c;
 								done();
 							});
@@ -1286,35 +1439,43 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration.should.exist;
 		});
 
-		it('should update the time registration with the new company id', function(){
+		it('should update the time registration with the new company id', function() {
+
 			timeRegistration.companyId.should.eql(company2.id);
 		});
 
-		it('should update the time registration with the new project id', function(){
+		it('should update the time registration with the new project id', function() {
+
 			timeRegistration.projectId.should.eql(project2.id);
 		});
 
-		it('should update the time registration with the updated task', function(){
+		it('should update the time registration with the updated task', function() {
+
 			timeRegistration.task.should.eql('dev');
 		});
 
-		it('should update the time registration with the updated billable property', function(){
+		it('should update the time registration with the updated billable property', function() {
+
 			timeRegistration.billable.should.eql(true);
 		});
 
-		it('should update the time registration with the updated description', function(){
+		it('should update the time registration with the updated description', function() {
+
 			timeRegistration.description.should.eql('doing some work');
 		});
 
-		it('should update the time registration with the updated date', function(){
+		it('should update the time registration with the updated date', function() {
+
 			timeRegistration.date.numeric.should.eql(20100304);
 		});
 
-		it('should update the time registration with the updated from time', function(){
+		it('should update the time registration with the updated from time', function() {
+
 			timeRegistration.from.numeric.should.eql(1015);
 		});
 
-		it('should update the time registration with the updated to time', function(){
+		it('should update the time registration with the updated to time', function() {
+
 			timeRegistration.to.numeric.should.eql(1215);
 		});
 		
@@ -1322,47 +1483,58 @@ describe('When time registrations are searched (billable filter)', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 
-		it('should return the company id', function(){
+		it('should return the company id', function() {
+
 			body.companyId.should.eql(company2.id);
 		});
 
-		it('should return the company name', function(){
+		it('should return the company name', function() {
+
 			body.company.name.should.eql('My Second Company');
 		});
 
-		it('should return the project id', function(){
+		it('should return the project id', function() {
+
 			body.projectId.should.eql(project2.id);
 		});
 
-		it('should return the project name', function(){
+		it('should return the project name', function() {
+
 			body.project.name.should.eql('FM Manager v2');
 		});
 
-		it('should return the project billable property', function(){
+		it('should return the project billable property', function() {
+
 			body.billable.should.eql(true);
 		});
 
-		it('should return the project description', function(){
+		it('should return the project description', function() {
+
 			body.project.description.should.eql('Freelance manager v2');
 		});
 
-		it('should return the task', function(){
+		it('should return the task', function() {
+
 			body.task.should.eql('dev');
 		});
 
-		it('should return the description', function(){
+		it('should return the description', function() {
+
 			body.description.should.eql('doing some work');
 		});
 
-		it('should return the date', function(){
+		it('should return the date', function() {
+
 			body.date.numeric.should.eql(20100304);
 		});
 
-		it('should return the from time', function(){
+		it('should return the from time', function() {
+
 			body.from.numeric.should.eql(1015);
 		});
 
-		it('should return the to time', function(){
+		it('should return the to time', function() {
+
 			body.to.numeric.should.eql(1215);
 		});			
 	});	 
@@ -1378,10 +1550,12 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeRegistration.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/timeregistrations/' + timeRegistration.id)
@@ -1396,8 +1570,10 @@ describe('When time registrations are searched (billable filter)', function() {
 		});
 
 		it('should not be updated', function(done) {
-			TimeRegistration.findById(timeRegistration.id, function(err, c){
-				if(err){ done(err); }
+			TimeRegistration.findById(timeRegistration.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				c.companyId.should.eql(company.id);
 				c.projectId.should.eql(project.id);
@@ -1410,8 +1586,10 @@ describe('When time registrations are searched (billable filter)', function() {
 	/**
 	 * Delete
 	 */
-	describe('When a time registration is deleted by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a time registration is deleted by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.delete('/api/public/timeregistrations/' + uuid.v1())
 				.send()
@@ -1431,10 +1609,12 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeRegistration.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.delete('/api/public/timeregistrations/' + timeRegistration.id)
@@ -1449,7 +1629,8 @@ describe('When time registrations are searched (billable filter)', function() {
 							response = res;
 							body = res.body;
 
-							TimeRegistration.findById(timeRegistration.id, function(err, c){
+							TimeRegistration.findById(timeRegistration.id, function(err, c) {
+
 								timeRegistration = c;
 								done();
 							});
@@ -1462,11 +1643,13 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration.should.exist;
 		});
 
-		it('should delete the time registration', function(){
+		it('should delete the time registration', function() {
+
 			timeRegistration.deleted.should.eql(true);
 		});
 
-		it('should return the id of the deleted item', function(){
+		it('should return the id of the deleted item', function() {
+
 			body.deleted.should.eql(timeRegistration.id);
 		});			
 	});	 
@@ -1482,10 +1665,12 @@ describe('When time registrations are searched (billable filter)', function() {
 			timeRegistration = TimeRegistration.create(uuid.v1(), company.id, project.id, 'development', false, 'work', 20001231, 1400, 1359);
 
 			async.series([
-				function(done){
+				function(done) {
+
 					timeRegistration.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.delete('/api/public/timeregistrations/' + timeRegistration.id)
@@ -1499,8 +1684,10 @@ describe('When time registrations are searched (billable filter)', function() {
 		});
 
 		it('should not be updated', function(done) {
-			TimeRegistration.findById(timeRegistration.id, function(err, c){
-				if(err){ done(err); }
+			TimeRegistration.findById(timeRegistration.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				c.deleted.should.eql(false);
 				done();

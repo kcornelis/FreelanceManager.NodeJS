@@ -11,35 +11,41 @@ var mongoose = require('mongoose'),
 
 var normalAccount, normalAccountToken;	
 
-before(function(done){
+before(function(done) {
+
 
 	console.log('Cleaning up old test data and create test data');
 
 	async.series([
-		function(done){
+		function(done) {
+
 			exports.emptyReadModel(done);
 		},
-		function(done){
+		function(done) {
+
 			exports.testUsers(done);
 		}
 	], done);
 });
 
-exports.emptyReadModel = function(done){
+exports.emptyReadModel = function(done) {
+
 
 	MongoClient.connect(config.db, function(err, db) {
 	  
 	  if(err) { return console.log(err); }
 
 	  	async.series([
-			function(done){
+			function(done) {
+
 				db.collection('accounts').remove(done);
 			}
 		], done);
 	});
 };
 
-exports.testUsers = function(done){
+exports.testUsers = function(done) {
+
 
 	// create a test user
 	var id = uuid.v1();
@@ -47,10 +53,12 @@ exports.testUsers = function(done){
 	normalAccount.changePassword('12345');
 	
 	async.series([
-		function(done){
+		function(done) {
+
 			normalAccount.save(done);
 		}
-	], function(){
+	], function() {
+
 
 		var profile = {
 			email: normalAccount.email,

@@ -3,8 +3,9 @@
 	
 	describe('Time Picker Directive Unit Tests:', function() {
 
-		var element,
-			$compile,
+		var element;
+
+		var $compile,
 			$rootScope,
 			$timeout;
 
@@ -35,12 +36,14 @@
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 		beforeEach(module('karma'));
 
+		beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_) {
+			$compile = _$compile_;
+			$rootScope = _$rootScope_;
+		}));
+
 		describe('When an element contains the clockpicker attribute and gets focus', function() {
 			
-			beforeEach(inject(function(_$compile_, _$rootScope_){
-
-				$compile = _$compile_;
-				$rootScope = _$rootScope_;
+			beforeEach(function() {
 
 				element = $compile('<div><div data-fm-clockpicker><input id="clockpickertest" type="textbox" /></div></div>')($rootScope);
 				element.appendTo(document.body);
@@ -50,9 +53,9 @@
 				$(element).find('#clockpickertest').focus();
 
 				$rootScope.$digest();
-			}));
+			});
 
-			it('should show the clockpicker on screen', function(){
+			it('should show the clockpicker on screen', function() {
 				expect(element).toHaveClockPicker();
 			});	
 		});

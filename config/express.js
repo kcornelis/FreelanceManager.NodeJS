@@ -4,10 +4,12 @@
 * Global declarations
 *   => require_config();
 */
-global.require_config = function(){
+global.require_config = function() {
+
    return require(__dirname + '/config.js');
 };
-global.require_infrastructure = function(item){
+global.require_infrastructure = function(item) {
+
    return require(__dirname + '/../app/infrastructure/' + item);
 };
 
@@ -25,7 +27,6 @@ var express = require('express'),
 	mongoStore = require('connect-mongo')({
 		session: session
 	}),
-	flash = require('connect-flash'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
 	path = require('path');
@@ -110,15 +111,14 @@ module.exports = function(db) {
 
 	// Express MongoDB session storage
 	app.use(session({
+		saveUninitialized: true,
+		resave: true,
 		secret: config.sessionSecret,
 		store: new mongoStore({
 			db: db.connection.db,
 			collection: config.sessionCollection
 		})
 	}));
-
-	// connect flash for flash messages
-	app.use(flash());
 
 	// Use helmet to secure Express headers
 	app.use(helmet.xframe());

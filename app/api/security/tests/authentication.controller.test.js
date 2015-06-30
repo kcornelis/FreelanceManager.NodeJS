@@ -21,15 +21,18 @@ describe('Security: Authentication Controller Integration Tests:', function() {
 		var response;
 		var body;
 
-		before(function(done){
+		before(function(done) {
+
 			var account = Account.create('John BVBA', 'John', 'Doe', 'john123456@doe.com');
 			account.changePassword('123');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					account.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.post('/security/authenticate')
@@ -62,15 +65,18 @@ describe('Security: Authentication Controller Integration Tests:', function() {
 		var response;
 		var body;
 
-		before(function(done){
+		before(function(done) {
+
 			var account = Account.create('John BVBA', 'John', 'Doe', 'john567890@doe.com');
 			account.changePassword('567');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					account.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.post('/security/authenticate')

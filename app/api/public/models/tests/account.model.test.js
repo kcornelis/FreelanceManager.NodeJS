@@ -40,31 +40,38 @@ describe('Account Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a first name', function(){
+		it('should have a first name', function() {
+
 			saved.firstName.should.eql('John');
 		});
 
-		it('should have a last name', function(){
+		it('should have a last name', function() {
+
 			saved.lastName.should.eql('Doe');
 		});
 
-		it('should have a name', function(){
+		it('should have a name', function() {
+
 			saved.name.should.eql('John Doe');
 		});
 
-		it('should have a email', function(){
+		it('should have a email', function() {
+
 			saved.email.should.eql('john@doe.com');
 		});
 
-		it('should not be admin by default', function(){
+		it('should not be admin by default', function() {
+
 			saved.admin.should.eql(false);
 		});
 
-		it('should have version 1', function(){
+		it('should have version 1', function() {
+
 			saved.version.should.eql(1);
 		});
 
-		it('should have a created event', function(){
+		it('should have a created event', function() {
+
 			saved.events[0].name.should.eql('John Doe');
 			saved.events[0].firstName.should.eql('John');
 			saved.events[0].lastName.should.eql('Doe');
@@ -73,7 +80,8 @@ describe('Account Model Unit Tests:', function() {
 			saved.events[0].metadata.eventName.should.eql('AccountCreated');
 		});
 
-		it('should have created on date', function(){
+		it('should have created on date', function() {
+
 			new Date(saved.createdOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(saved.createdOn).should.lessThan(new Date(Date.now() + 10000));
 		});
@@ -137,7 +145,8 @@ describe('Account Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a full name', function(){
+		it('should have a full name', function() {
+
 			saved.fullName.should.eql('John Doe');
 		});
 
@@ -193,7 +202,8 @@ describe('Account Model Unit Tests:', function() {
 
 				account.changeDetails('John Doe 1', 'John 1', 'Doe 1', 'john1@doe.com');
 
-				account.save(function(saveerr){
+				account.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -214,35 +224,43 @@ describe('Account Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have an updated first name', function(){
+		it('should have an updated first name', function() {
+
 			saved.firstName.should.eql('John 1');
 		});
 
-		it('should have an updated last name', function(){
+		it('should have an updated last name', function() {
+
 			saved.lastName.should.eql('Doe 1');
 		});
 
-		it('should have an updated name', function(){
+		it('should have an updated name', function() {
+
 			saved.name.should.eql('John Doe 1');
 		});
 
-		it('should have an updated email', function(){
+		it('should have an updated email', function() {
+
 			saved.email.should.eql('john1@doe.com');
 		});
 
-		it('should have no updated admin field', function(){
+		it('should have no updated admin field', function() {
+
 			saved.admin.should.eql(false);
 		});
 
-		it('should have the same created on date', function(){
+		it('should have the same created on date', function() {
+
 			saved.createdOn.should.eql(original.createdOn);
 		});
 
-		it('should have an updated version', function(){
+		it('should have an updated version', function() {
+
 			saved.version.should.eql(2);
 		});
 
-		it('should have a details changed event', function(){
+		it('should have a details changed event', function() {
+
 			saved.events[1].name.should.eql('John Doe 1');
 			saved.events[1].firstName.should.eql('John 1');
 			saved.events[1].lastName.should.eql('Doe 1');
@@ -265,7 +283,8 @@ describe('Account Model Unit Tests:', function() {
 			account.changeDetails('John Doe', 'John', 'Doe', 'john@doe.com');
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			account.events.should.have.length(1);
 		});
 
@@ -297,11 +316,13 @@ describe('Account Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have the new password', function(){
+		it('should have the new password', function() {
+
 			saved.authenticate('hello').should.eql(true);
 		});
 
-		it('should have a password changed event', function(){
+		it('should have a password changed event', function() {
+
 			saved.events[1].passwordHash.should.exist;
 			saved.events[1].passwordSalt.should.exist;
 
@@ -337,11 +358,13 @@ describe('Account Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be admin', function(){
+		it('should be admin', function() {
+
 			saved.admin.should.eql(true);
 		});
 
-		it('should have a made admin event', function(){
+		it('should have a made admin event', function() {
+
 			saved.events[1].metadata.eventName.should.eql('AccountMadeAdmin');
 		});
 
@@ -360,7 +383,8 @@ describe('Account Model Unit Tests:', function() {
 			account.makeAdmin();
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			account.events.should.have.length(2);
 		});
 
@@ -376,7 +400,8 @@ describe('Account Model Unit Tests:', function() {
 		before(function(done) {
 			original = Account.create('John Doe', 'John', 'Doe', 'john@doe.com');
 			original.changePassword('hello');
-			original.save(function(){
+			original.save(function() {
+
 				Account.findOne({
 					email: 'john@doe.com'
 				}, function(err, account) {
@@ -386,15 +411,18 @@ describe('Account Model Unit Tests:', function() {
 			});
 		});
 
-		it('should succeed with the correct password', function(){
+		it('should succeed with the correct password', function() {
+
 			saved.authenticate('hello').should.eql(true);
 		});
 
-		it('should fail with the wrong password', function(){
+		it('should fail with the wrong password', function() {
+
 			saved.authenticate('hello1').should.eql(false);
 		});
 
-		it('should fail with an emtpy password', function(){
+		it('should fail with an emtpy password', function() {
+
 			saved.authenticate('').should.eql(false);
 		});
 

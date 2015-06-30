@@ -20,7 +20,8 @@ function convert(template) {
 	};
 }
 
-function convertSingle(template, done){
+function convertSingle(template, done) {
+
 
 	done(convert(template));
 }
@@ -45,7 +46,8 @@ exports.getById = function(req, res, next) {
 	{
 		if(template)
 		{
-			convertSingle(template, function(converted){
+			convertSingle(template, function(converted) {
+
 				res.send(converted);
 			});
 		}
@@ -56,16 +58,19 @@ exports.getById = function(req, res, next) {
 exports.getAll = function(req, res) {
 
 	Template.find({ tenant: req.user.id },function(err, templates) {
-		convertMultiple(templates, function(converted){
+		convertMultiple(templates, function(converted) {
+
 			res.send(converted);
 		});
 	});
 };
 
-exports.getActive = function(req, res){
+exports.getActive = function(req, res) {
+
 
 	Template.find({ tenant: req.user.id, hidden: false },function(err, templates) {
-		convertMultiple(templates, function(converted){
+		convertMultiple(templates, function(converted) {
+
 			res.send(converted);
 		});
 	});
@@ -74,9 +79,11 @@ exports.getActive = function(req, res){
 exports.create = function(req, res, next) {
 
 	var template = Template.create(req.user.id, req.body.name, req.body.content);
-	template.save(function(err){
+	template.save(function(err) {
+
 		if(err) next(err);    
-		else convertSingle(template, function(converted){
+		else convertSingle(template, function(converted) {
+
 			res.send(converted);
 		});
 	});
@@ -91,11 +98,14 @@ exports.update = function(req, res, next) {
 	}, 
 	function(err, template) {
 		if(err) next(err);
-		else if(template){
+		else if(template) {
+
 			template.changeDetails(req.body.name, req.body.content);
-			template.save(function(err){
+			template.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(template, function(converted){
+				else convertSingle(template, function(converted) {
+
 					res.send(converted);
 				});
 			});
@@ -113,11 +123,14 @@ exports.hide = function(req, res, next) {
 	}, 
 	function(err, template) {
 		if(err) next(err);
-		else if(template){
+		else if(template) {
+
 			template.hide();
-			template.save(function(err){
+			template.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(template, function(converted){
+				else convertSingle(template, function(converted) {
+
 					res.send(converted);
 				});
 			});
@@ -135,11 +148,14 @@ exports.unhide = function(req, res, next) {
 	}, 
 	function(err, template) {
 		if(err) next(err);
-		else if(template){
+		else if(template) {
+
 			template.unhide();
-			template.save(function(err){
+			template.save(function(err) {
+
 				if(err) next(err);
-				else convertSingle(template, function(converted){
+				else convertSingle(template, function(converted) {
+
 					res.send(converted);
 				});
 			});

@@ -19,8 +19,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Get by id
 	 */
-	describe('When a template is requested by id by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a template is requested by id by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/templates/' + uuid.v1())
 				.expect(401)
@@ -34,14 +36,17 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		var body;
 		var template;
 
-		before(function(done){
+		before(function(done) {
+
 			template = Template.create(testdata.normalAccountId, 'template name', 'template content');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.get('/api/public/templates/' + template.id)
@@ -64,15 +69,18 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			body.id.should.eql(template.id);
 		});			
 
-		it('should return the template with the name', function(){
+		it('should return the template with the name', function() {
+
 			body.name.should.eql('template name');
 		});		
 
-		it('should return the template with the content', function(){
+		it('should return the template with the content', function() {
+
 			body.content.should.eql('template content');
 		});	
 
-		it('should return if the template is hidden', function(){
+		it('should return if the template is hidden', function() {
+
 			body.hidden.should.eql(false);
 		});							
 	});
@@ -83,17 +91,20 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		var body;
 		var template;
 
-		before(function(done){
+		before(function(done) {
+
 			template = Template.create(uuid.v1(), 'template name', 'template content');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
 			], done);
 		});
 		
-		it('should not return the template', function(done){
+		it('should not return the template', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/companies/' + template.id)
 				.set('Authorization', testdata.normalAccountToken)
@@ -106,8 +117,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Get all templates
 	 */
-	describe('When all templates are requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When all templates are requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/templates')
 				.expect(401)
@@ -124,22 +137,27 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		var template2;
 		var template3;
 
-		before(function(done){
+		before(function(done) {
+
 			template1 = Template.create(testdata.normalAccountId, 'template name', 'template content');
 			template2 = Template.create(testdata.normalAccountId, 'template name', 'template content');
 			template3 = Template.create(uuid.v1(), 'template name', 'template content');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					template1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					template2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					template3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/templates')
@@ -174,8 +192,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Get all active templates
 	 */
-	describe('When all active templates are requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When all active templates are requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/templates/active')
 				.expect(401)
@@ -192,23 +212,28 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		var template2;
 		var template3;
 
-		before(function(done){
+		before(function(done) {
+
 			template1 = Template.create(testdata.normalAccountId, 'template name', 'template content');
 			template2 = Template.create(testdata.normalAccountId, 'template name', 'template content');
 			template3 = Template.create(testdata.normalAccountId, 'template name', 'template content');
 			template3.hide();
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					template1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					template2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					template3.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/templates/active')
@@ -243,8 +268,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Create
 	 */
-	describe('When a template is created by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a template is created by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/templates')
 				.send({ name: 'template name', content: 'template content' })
@@ -274,7 +301,8 @@ describe('Public API: Template Controller Integration Tests:', function() {
 					response = res;
 					body = res.body;
 
-					Template.findById(body.id, function(err, c){
+					Template.findById(body.id, function(err, c) {
+
 						template = c;
 						done();
 					});
@@ -285,15 +313,18 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template.should.exist;
 		});
 
-		it('should create a template for the logged in user', function(){
+		it('should create a template for the logged in user', function() {
+
 			template.tenant.should.eql(testdata.normalAccountId);
 		});
 
-		it('should create a template with the specified name', function(){
+		it('should create a template with the specified name', function() {
+
 			template.name.should.eql('template name');
 		});
 
-		it('should create a template with the specified content', function(){
+		it('should create a template with the specified content', function() {
+
 			template.content.should.eql('template content');
 		});				
 		
@@ -301,11 +332,13 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 
-		it('should return the name', function(){
+		it('should return the name', function() {
+
 			body.name.should.eql('template name');
 		});		
 
-		it('should return the content', function(){
+		it('should return the content', function() {
+
 			body.content.should.eql('template content');
 		});			
 	});	 
@@ -313,8 +346,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Update
 	 */
-	describe('When a template is updated by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a template is updated by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/templates/' + uuid.v1())
 				.send({ name: 'John BVBA' })
@@ -334,10 +369,12 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template = Template.create(testdata.normalAccountId, 'template name', 'template content');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/templates/' + template.id)
@@ -352,7 +389,8 @@ describe('Public API: Template Controller Integration Tests:', function() {
 							response = res;
 							body = res.body;
 
-							Template.findById(body.id, function(err, c){
+							Template.findById(body.id, function(err, c) {
+
 								template = c;
 								done();
 							});
@@ -365,11 +403,13 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template.should.exist;
 		});
 
-		it('should update the template with the specified name', function(){
+		it('should update the template with the specified name', function() {
+
 			template.name.should.eql('Hello');
 		});
 
-		it('should update the template with the specified content', function(){
+		it('should update the template with the specified content', function() {
+
 			template.content.should.eql('There');
 		});
 		
@@ -377,11 +417,13 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 
-		it('should return the name', function(){
+		it('should return the name', function() {
+
 			body.name.should.eql('Hello');
 		});	
 
-		it('should return the content', function(){
+		it('should return the content', function() {
+
 			body.content.should.eql('There');
 		});			
 	});	 
@@ -397,10 +439,12 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template = Template.create(uuid.v1(), 'template name', 'template content');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/templates/' + template.id)
@@ -414,8 +458,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		});
 
 		it('should not be updated', function(done) {
-			Template.findById(template.id, function(err, c){
-				if(err){ done(err); }
+			Template.findById(template.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				c.name.should.eql('template name');
 				done();
@@ -426,8 +472,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Hide
 	 */
-	describe('When a template is hidden by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a template is hidden by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/templates/' + uuid.v1() + '/hide')
 				.send()
@@ -447,10 +495,12 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template = Template.create(testdata.normalAccountId, 'template name', 'template content');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/templates/' + template.id + '/hide')
@@ -465,7 +515,8 @@ describe('Public API: Template Controller Integration Tests:', function() {
 							response = res;
 							body = res.body;
 
-							Template.findById(body.id, function(err, c){
+							Template.findById(body.id, function(err, c) {
+
 								template = c;
 								done();
 							});
@@ -474,15 +525,18 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			], done);
 		});
 
-		it('should hide the template', function(){
+		it('should hide the template', function() {
+
 			template.hidden.should.eql(true);
 		});
 
-		it('should return the name', function(){
+		it('should return the name', function() {
+
 			body.name.should.eql('template name');
 		});		
 
-		it('should return the content', function(){
+		it('should return the content', function() {
+
 			body.content.should.eql('template content');
 		});		
 	});	 
@@ -498,10 +552,12 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template = Template.create(uuid.v1(), 'template name', 'template content');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/templates/' + template.id + '/hide')
@@ -515,8 +571,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		});
 
 		it('should not be updated', function(done) {
-			Template.findById(template.id, function(err, c){
-				if(err){ done(err); }
+			Template.findById(template.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				c.hidden.should.eql(false);
 				done();
@@ -528,8 +586,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 	/**
 	 * Hide
 	 */
-	describe('When a template is unhidden by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a template is unhidden by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/templates/' + uuid.v1() + '/unhide')
 				.send()
@@ -550,10 +610,12 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template.hide();
 
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/templates/' + template.id + '/unhide')
@@ -568,7 +630,8 @@ describe('Public API: Template Controller Integration Tests:', function() {
 							response = res;
 							body = res.body;
 
-							Template.findById(body.id, function(err, c){
+							Template.findById(body.id, function(err, c) {
+
 								template = c;
 								done();
 							});
@@ -577,15 +640,18 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			], done);
 		});
 
-		it('should unhide the template', function(){
+		it('should unhide the template', function() {
+
 			template.hidden.should.eql(false);
 		});
 
-		it('should return the name', function(){
+		it('should return the name', function() {
+
 			body.name.should.eql('template name');
 		});		
 
-		it('should return the content', function(){
+		it('should return the content', function() {
+
 			body.content.should.eql('template content');
 		});		
 	});	 
@@ -602,10 +668,12 @@ describe('Public API: Template Controller Integration Tests:', function() {
 			template.hide();
 
 			async.series([
-				function(done){
+				function(done) {
+
 					template.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/templates/' + template.id + '/unhide')
@@ -619,8 +687,10 @@ describe('Public API: Template Controller Integration Tests:', function() {
 		});
 
 		it('should not be updated', function(done) {
-			Template.findById(template.id, function(err, c){
-				if(err){ done(err); }
+			Template.findById(template.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				c.hidden.should.eql(true);
 				done();

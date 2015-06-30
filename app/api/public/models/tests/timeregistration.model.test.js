@@ -43,64 +43,77 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a tenant', function(){
+		it('should have a tenant', function() {
+
 			saved.tenant.should.eql(tenant);
 		});
 
-		it('should have a project id', function(){
+		it('should have a project id', function() {
+
 			saved.projectId.should.eql('project');
 		});
 
-		it('should have a company id', function(){
+		it('should have a company id', function() {
+
 			saved.companyId.should.eql('company');
 		});
 
-		it('should have a task', function(){
+		it('should have a task', function() {
+
 			saved.task.should.eql('task');
 		});
 
-		it('should have a billable property', function(){
+		it('should have a billable property', function() {
+
 			saved.billable.should.eql(true);
 		});
 
-		it('should have a description', function(){
+		it('should have a description', function() {
+
 			saved.description.should.eql('description');
 		});
 
-		it('should have a date', function(){
+		it('should have a date', function() {
+
 			saved.date.year.should.eql(2014);
 			saved.date.month.should.eql(10);
 			saved.date.day.should.eql(20);
 			saved.date.numeric.should.eql(20141020);
 		});
 
-		it('should have a from time', function(){
+		it('should have a from time', function() {
+
 			saved.from.hour.should.eql(0);
 			saved.from.minutes.should.eql(30);
 			saved.from.numeric.should.eql(30);
 		});
 
-		it('should have a to time', function(){
+		it('should have a to time', function() {
+
 			saved.to.hour.should.eql(12);
 			saved.to.minutes.should.eql(5);
 			saved.to.numeric.should.eql(1205);
 		});
 
-		it('should have a total minutes', function(){
+		it('should have a total minutes', function() {
+
 			saved.totalMinutes.should.eql(695);
 		});
 
-		it('should not be marked as invoiced', function(){
+		it('should not be marked as invoiced', function() {
+
 			saved.invoiced.should.eql(false);
 			(saved.invoicedOn === undefined).should.true;
 			(saved.invoiceId === undefined).should.true;
 		});
 
-		it('should have a version', function(){
+		it('should have a version', function() {
+
 			saved.version.should.eql(1);
 		});
 
-		it('should have a created event', function(){
+		it('should have a created event', function() {
+
 			saved.events[0].companyId.should.eql('company');			
 			saved.events[0].projectId.should.eql('project');			
 			saved.events[0].task.should.eql('task');
@@ -114,7 +127,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			saved.events[0].metadata.eventName.should.eql('TimeRegistrationCreated');
 		});
 
-		it('should have created on date', function(){
+		it('should have created on date', function() {
+
 			new Date(saved.createdOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(saved.createdOn).should.lessThan(new Date(Date.now() + 10000));
 		});
@@ -295,7 +309,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 
 				timeRegistration.changeDetails('John Doe BVBA', 'Project 1', 'Dev', false, 'Doing some work', 20141010, 1000, 2359);
 
-				timeRegistration.save(function(saveerr){
+				timeRegistration.save(function(saveerr) {
+
 					should.not.exist(saveerr);
 					done();
 				});
@@ -316,54 +331,65 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			});
 		});
 
-		it('should have a project id', function(){
+		it('should have a project id', function() {
+
 			saved.projectId.should.eql('Project 1');
 		});
 
-		it('should have a company id', function(){
+		it('should have a company id', function() {
+
 			saved.companyId.should.eql('John Doe BVBA');
 		});
 
-		it('should have a task', function(){
+		it('should have a task', function() {
+
 			saved.task.should.eql('Dev');
 		});
 
-		it('should have a billable property', function(){
+		it('should have a billable property', function() {
+
 			saved.billable.should.eql(false);
 		});
 
-		it('should have a description', function(){
+		it('should have a description', function() {
+
 			saved.description.should.eql('Doing some work');
 		});
 
-		it('should have a date', function(){
+		it('should have a date', function() {
+
 			saved.date.year.should.eql(2014);
 			saved.date.month.should.eql(10);
 			saved.date.day.should.eql(10);
 			saved.date.numeric.should.eql(20141010);
 		});
 
-		it('should have a from time', function(){
+		it('should have a from time', function() {
+
 			saved.from.hour.should.eql(10);
 			saved.from.minutes.should.eql(0);
 			saved.from.numeric.should.eql(1000);
 		});
 
-		it('should have a to time', function(){
+		it('should have a to time', function() {
+
 			saved.to.hour.should.eql(23);
 			saved.to.minutes.should.eql(59);
 			saved.to.numeric.should.eql(2359);
 		});
 
-		it('should have a new version', function(){
+		it('should have a new version', function() {
+
 			saved.version.should.eql(2);
 		});
 
-		it('should have a total minutes', function(){
+		it('should have a total minutes', function() {
+
 			saved.totalMinutes.should.eql(839);
 		});
 
-		it('should have a created event', function(){
+		it('should have a created event', function() {
+
 			saved.events[1].companyId.should.eql('John Doe BVBA');			
 			saved.events[1].projectId.should.eql('Project 1');			
 			saved.events[1].task.should.eql('Dev');
@@ -390,7 +416,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			timeRegistration.changeDetails('company', 'project', 'task', true, 'description', 20141020, 30, 1205);
 		});
 
-		it('should not create a new event', function(){
+		it('should not create a new event', function() {
+
 			timeRegistration.events.should.have.length(1);
 		});
 
@@ -399,7 +426,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When a time registration is marked as invoiced', function(){
+	describe('When a time registration is marked as invoiced', function() {
+
 
 		var original, timeRegistration;
 
@@ -420,24 +448,29 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be marked as invoiced', function(){
+		it('should be marked as invoiced', function() {
+
 			timeRegistration.invoiced.should.be.true;
 		});
 
-		it('should should contain the invoice id', function(){
+		it('should should contain the invoice id', function() {
+
 			timeRegistration.invoiceId.should.eql('invoice id');
 		});
 
-		it('should have the invoiced on date', function(){
+		it('should have the invoiced on date', function() {
+
 			new Date(timeRegistration.invoicedOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(timeRegistration.invoicedOn).should.lessThan(new Date(Date.now() + 10000));
 		});
 
-		it('should have a new version', function(){
+		it('should have a new version', function() {
+
 			timeRegistration.version.should.eql(2);
 		});
 
-		it('should have a marked invoiced event', function(){
+		it('should have a marked invoiced event', function() {
+
 			timeRegistration.events[1].invoiced.should.be.true;			
 			new Date(timeRegistration.events[1].invoicedOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(timeRegistration.events[1].invoicedOn).should.lessThan(new Date(Date.now() + 10000));		
@@ -451,7 +484,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When a time registration is marked as invoiced twice', function(){
+	describe('When a time registration is marked as invoiced twice', function() {
+
 
 		it('should fail', function() {
 			
@@ -461,7 +495,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When a time registration is deleted', function(){
+	describe('When a time registration is deleted', function() {
+
 
 		var original, timeRegistration;
 
@@ -482,20 +517,24 @@ describe('TimeRegistration Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be marked as deleted', function(){
+		it('should be marked as deleted', function() {
+
 			timeRegistration.deleted.should.be.true;
 		});
 
-		it('should have the deleted on date', function(){
+		it('should have the deleted on date', function() {
+
 			new Date(timeRegistration.deletedOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(timeRegistration.deletedOn).should.lessThan(new Date(Date.now() + 10000));
 		});
 
-		it('should have a new version', function(){
+		it('should have a new version', function() {
+
 			timeRegistration.version.should.eql(2);
 		});
 
-		it('should have a deleted event', function(){
+		it('should have a deleted event', function() {
+
 			timeRegistration.events[1].deleted.should.be.true;			
 			new Date(timeRegistration.events[1].deletedOn).should.greaterThan(new Date(Date.now() - 10000));
 			new Date(timeRegistration.events[1].deletedOn).should.lessThan(new Date(Date.now() + 10000));		
@@ -508,7 +547,8 @@ describe('TimeRegistration Model Unit Tests:', function() {
 		});
 	});
 
-	describe('When a time registration is deleted twice', function(){
+	describe('When a time registration is deleted twice', function() {
+
 
 		it('should fail', function() {
 			

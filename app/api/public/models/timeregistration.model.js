@@ -9,11 +9,16 @@ var mongoose = require('mongoose'),
 /**
  * Validators
  */	
-var yearValidation = [function(v){ return v >= 1900 && v <= 2200; }, 'Path `{PATH}` ({VALUE}) should be between 1900 and 2200'];
-var monthValidation = [function(v){ return v >= 1 && v <= 12; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 12'];
-var dayValidation = [function(v){ return v >= 1 && v <= 31; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 31'];
-var hourValidation = [function(v){ return v >= 0 && v <= 23; }, 'Path `{PATH}` ({VALUE}) should be between 0 and 23'];
-var minuteValidation = [function(v){ return v >= 0 && v <= 59; }, 'Path `{PATH}` ({VALUE}) should be between 0 and 59'];
+var yearValidation = [function(v) {
+ return v >= 1900 && v <= 2200; }, 'Path `{PATH}` ({VALUE}) should be between 1900 and 2200'];
+var monthValidation = [function(v) {
+ return v >= 1 && v <= 12; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 12'];
+var dayValidation = [function(v) {
+ return v >= 1 && v <= 31; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 31'];
+var hourValidation = [function(v) {
+ return v >= 0 && v <= 23; }, 'Path `{PATH}` ({VALUE}) should be between 0 and 23'];
+var minuteValidation = [function(v) {
+ return v >= 0 && v <= 59; }, 'Path `{PATH}` ({VALUE}) should be between 0 and 59'];
 
 /**
  * TimeRegistration Schema
@@ -94,7 +99,8 @@ var TimeRegistrationSchema = new AggregateRootSchema({
 /*
  *	Private methods
  */
-function createDateObject(date){
+function createDateObject(date) {
+
 
 	if(!date)
 		return;
@@ -111,7 +117,8 @@ function createDateObject(date){
 	};
 }
 
-function createTimeObject(time){
+function createTimeObject(time) {
+
 
 	time = time || 0;
 
@@ -125,7 +132,8 @@ function createTimeObject(time){
 	};
 }
 
-function calculateTotalMinutes(from, to){
+function calculateTotalMinutes(from, to) {
+
 
 	var difference = ((to.hour * 60) + to.minutes) - ((from.hour * 60) + from.minutes);
 
@@ -138,7 +146,8 @@ function calculateTotalMinutes(from, to){
 /*
  *      Write methods
  */
-TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, task, billable, description, date, from, to){
+TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, task, billable, description, date, from, to) {
+
 	
 	var timeRegistration = new this();
 
@@ -170,7 +179,8 @@ TimeRegistrationSchema.statics.create = function(tenant, companyId, projectId, t
 	return timeRegistration;
 };
 
-TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, task, billable, description, date, from, to){
+TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, task, billable, description, date, from, to) {
+
 
 	if( this.companyId !== companyId ||
 		this.projectId !== projectId ||
@@ -179,7 +189,8 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 		this.description !== description ||
 		this.date.numeric !== date ||
 		this.from.numeric !== from ||
-		this.to.numeric !== to){
+		this.to.numeric !== to) {
+
 
 		this.companyId = companyId;
 		this.projectId = projectId;
@@ -206,7 +217,8 @@ TimeRegistrationSchema.methods.changeDetails = function(companyId, projectId, ta
 	}
 };
 
-TimeRegistrationSchema.methods.markInvoiced = function(invoiceId){
+TimeRegistrationSchema.methods.markInvoiced = function(invoiceId) {
+
 	
 	if(this.invoiced)
 		throw new Error('Can\'t mark a time registration twice as invoiced');
@@ -223,7 +235,8 @@ TimeRegistrationSchema.methods.markInvoiced = function(invoiceId){
 	});
 };
 
-TimeRegistrationSchema.methods.delete = function(){
+TimeRegistrationSchema.methods.delete = function() {
+
 	
 	if(this.deleted)
 		throw new Error('Can\'t delete a time registration twice');

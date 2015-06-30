@@ -1,7 +1,8 @@
-angular.module('core').config(['$stateProvider', '$urlRouterProvider',
-function($stateProvider, $urlRouterProvider) {
-		'use strict';
-		
+(function() {
+	'use strict';
+	
+	function routeRegistration($stateProvider, $urlRouterProvider) {
+
 		// Redirect to the dashboard view when route not found
 		$urlRouterProvider.otherwise('/app/dashboard');
 
@@ -22,4 +23,8 @@ function($stateProvider, $urlRouterProvider) {
 			access: { requiredLogin: true }
 		});
 	}
-]);
+
+	routeRegistration.$inject = ['$stateProvider', '$urlRouterProvider'];
+
+	angular.module('fmCore').config(routeRegistration);
+})();

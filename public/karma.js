@@ -1,46 +1,60 @@
-ApplicationConfiguration.registerModule('karma');
-
-angular.module('karma', [])
-
-.config(function ($urlRouterProvider) {
+(function() {
 	'use strict';
 
-	$urlRouterProvider.otherwise(function(){ return false; });
-})
+	var karma = ApplicationConfiguration.registerModule('karma');
 
-.service('$state', function(){
+	function unknownRouteFix($urlRouterProvider) {
+		$urlRouterProvider.otherwise(function() { return false; });
+	}
 
-	this.expectedTransitions = [];
-	this.trackingTransitions = false;
+	function stateMock() {
 
-	this.transitionTo = function(stateName, stateParams){
-		
-		if(!this.trackingTransitions)
-			return;
 
-		if(this.expectedTransitions.length > 0){
-			var expectedState = this.expectedTransitions.shift();
-			if(expectedState.name !== stateName || JSON.stringify(stateParams) !== JSON.stringify(expectedState.params)){
-				throw Error('Expected transition to state: ' + expectedState.name + '(' + JSON.stringify(expectedState.params) + ') but transitioned to ' + stateName + '(' + JSON.stringify(stateParams) + ')' );
+		this.expectedTransitions = [];
+		this.trackingTransitions = false;
+
+		this.transitionTo = function(stateName, stateParams) {
+
+			
+			if(!this.trackingTransitions)
+				return;
+
+			if(this.expectedTransitions.length > 0) {
+
+				var expectedState = this.expectedTransitions.shift();
+				if(expectedState.name !== stateName || JSON.stringify(stateParams) !== JSON.stringify(expectedState.params)) {
+
+					throw Error('Expected transition to state: ' + expectedState.name + '(' + JSON.stringify(expectedState.params) + ') but transitioned to ' + stateName + '(' + JSON.stringify(stateParams) + ')' );
+				}
+				this.current = { name: stateName, params: stateParams };
+			}else{
+				throw Error('No more transitions were expected!');
 			}
-			this.current = { name: stateName, params: stateParams };
-		}else{
-			throw Error('No more transitions were expected!');
+		}
+
+		this.go = this.transitionTo;   
+
+		this.expectTransitionTo = function(stateName, stateParams) {
+
+			this.trackingTransitions = true;
+			this.expectedTransitions.push({ name: stateName, params: stateParams });
+		}
+
+		this.current = { name: '' };
+
+		this.ensureAllTransitionsHappened = function() {
+
+			if(this.expectedTransitions.length > 0) {
+
+				throw Error('Not all transitions happened!');
+			}
 		}
 	}
 
-	this.go = this.transitionTo;   
+	unknownRouteFix.$inject = ['$urlRouterProvider'];
+	stateMock.$inject = [];
 
-	this.expectTransitionTo = function(stateName, stateParams){
-		this.trackingTransitions = true;
-		this.expectedTransitions.push({ name: stateName, params: stateParams });
-	}
+	karma.config(unknownRouteFix);
+	karma.service('$state', stateMock);
 
-	this.current = { name: '' };
-
-	this.ensureAllTransitionsHappened = function(){
-		if(this.expectedTransitions.length > 0){
-			throw Error('Not all transitions happened!');
-		}
-	}
-});;
+})();

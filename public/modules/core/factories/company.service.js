@@ -1,6 +1,11 @@
-angular.module('core').factory('Company', ['$resource', 
-function($resource) {
+(function() {
 	'use strict';
-	
-	return $resource('/api/public/companies/:id', { id: '@id' }); 
-}]);
+
+	function factory($resource) {
+		return $resource('/api/public/companies/:id', { id: '@id' }); 
+	}
+
+	factory.$inject = ['$resource'];
+
+	angular.module('fmCore').factory('Company', factory);
+})();

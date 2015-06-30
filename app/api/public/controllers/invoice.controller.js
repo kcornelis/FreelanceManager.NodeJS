@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
 	_ = require('lodash'),
 	Invoice = mongoose.model('Invoice');
 
-function convert(invoice){
+function convert(invoice) {
+
 	return {
 		id: invoice.id,
 		number: invoice.number,
@@ -25,7 +26,8 @@ function convert(invoice){
 				city: invoice.customer.address.city
 			}
 		},
-		lines: _.map(invoice.lines, function(l){
+		lines: _.map(invoice.lines, function(l) {
+
 			return {
 				description: l.description,
 				quantity: l.quantity,
@@ -38,7 +40,8 @@ function convert(invoice){
 		}),
 		subTotalInCents: invoice.subTotalInCents,
 		subTotal: invoice.subTotalInCents / 100,
-		vatPerPercentages: _.map(invoice.vatPerPercentages, function(p){
+		vatPerPercentages: _.map(invoice.vatPerPercentages, function(p) {
+
 			return {
 				vatPercentage: p.vatPercentage,
 				totalVatInCents: p.totalVatInCents,
@@ -100,7 +103,8 @@ exports.create = function(req, res, next) {
 	invoice.changeCustomer(req.body.customer.name, req.body.customer.vatNumber, req.body.customer.number, req.body.customer.address);
 	invoice.linkTimeRegistrations(req.body.linkedTimeRegistrationIds);
 
-	invoice.save(function(err){
+	invoice.save(function(err) {
+
 		if(err) next(err);                     
 		else res.send(convert(invoice));
 	});

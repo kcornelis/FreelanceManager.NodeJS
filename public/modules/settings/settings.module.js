@@ -1,1 +1,5 @@
-ApplicationConfiguration.registerModule('settings');
+(function() {
+	'use strict';
+
+	ApplicationConfiguration.registerModule('fmSettings');
+})();

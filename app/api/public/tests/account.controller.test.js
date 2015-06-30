@@ -19,8 +19,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 	/**
 	 * Get by id
 	 */
-	describe('When an account is requested by id by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When an account is requested by id by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/accounts/' + uuid.v1())
 				.expect(401)
@@ -34,14 +36,17 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		var body;
 		var account;
 
-		before(function(done){
+		before(function(done) {
+
 			account = Account.create('John BVBA', 'John', 'Doe', 'john_001@doe.com');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					account.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.get('/api/public/accounts/' + account._id)
@@ -64,19 +69,23 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			body.id.should.eql(account.id);
 		});
 
-		it('should create an account with the specified name', function(){
+		it('should create an account with the specified name', function() {
+
 			body.name.should.eql('John BVBA');
 		});
 
-		it('should create an account with the specified first name', function(){
+		it('should create an account with the specified first name', function() {
+
 			body.firstName.should.eql('John');
 		});
 
-		it('should create an account with the specified last name', function(){
+		it('should create an account with the specified last name', function() {
+
 			body.lastName.should.eql('Doe');
 		});	
 
-		it('should create an account with the specified email', function(){
+		it('should create an account with the specified email', function() {
+
 			body.email.should.eql('john_001@doe.com');
 		});					
 	});
@@ -84,8 +93,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 	/**
 	 * Get all accounts
 	 */
-	describe('When all accounts are requested by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When all accounts are requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.get('/api/public/accounts')
 				.expect(401)
@@ -101,18 +112,22 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		var account1;
 		var account2;
 
-		before(function(done){
+		before(function(done) {
+
 			account1 = Account.create('John BVBA', 'John', 'Doe', 'john_002@doe.com');
 			account2 = Account.create('John BVBA', 'John', 'Doe', 'john_003@doe.com');
 			
 			async.series([
-				function(done){
+				function(done) {
+
 					account1.save(done);
 				},
-				function(done){
+				function(done) {
+
 					account2.save(done);
 				},
-				function(done){
+				function(done) {
+
 					
 					request('http://localhost:' + config.port)
 						.get('/api/public/accounts')
@@ -147,8 +162,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 	/**
 	 * Create
 	 */
-	describe('When an account is created by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When an account is created by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/accounts')
 				.send({ name: 'John BVBA', firstName: 'John', lastName: 'Doe', email: 'john_004@doe.com' })
@@ -178,7 +195,8 @@ describe('Public API: Account Controller Integration Tests:', function() {
 					response = res;
 					body = res.body;
 
-					Account.findById(body.id, function(err, a){
+					Account.findById(body.id, function(err, a) {
+
 						account = a;
 						done();
 					});
@@ -189,19 +207,23 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			account.should.exist;
 		});
 
-		it('should create an account with the specified name', function(){
+		it('should create an account with the specified name', function() {
+
 			account.name.should.eql('John BVBA');
 		});
 
-		it('should create an account with the specified first name', function(){
+		it('should create an account with the specified first name', function() {
+
 			account.firstName.should.eql('John');
 		});
 
-		it('should create an account with the specified last name', function(){
+		it('should create an account with the specified last name', function() {
+
 			account.lastName.should.eql('Doe');
 		});	
 
-		it('should create an account with the specified email', function(){
+		it('should create an account with the specified email', function() {
+
 			account.email.should.eql('john_005@doe.com');
 		});	
 		
@@ -209,19 +231,23 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			body.id.should.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 		});
 
-		it('should return the name', function(){
+		it('should return the name', function() {
+
 			body.name.should.eql('John BVBA');
 		});
 
-		it('should return the first name', function(){
+		it('should return the first name', function() {
+
 			body.firstName.should.eql('John');
 		});
 
-		it('should return the last name', function(){
+		it('should return the last name', function() {
+
 			body.lastName.should.eql('Doe');
 		});	
 
-		it('should return the email', function(){
+		it('should return the email', function() {
+
 			body.email.should.eql('john_005@doe.com');
 		});					
 	});	 
@@ -229,8 +255,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 	/**
 	 * Update
 	 */
-	describe('When a account is updated by an unauthenticated person', function(){
-		it('should return a 401 satus code', function(done){
+	describe('When a account is updated by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/accounts/' + uuid.v1())
 				.send({ name: 'John BVBA' })
@@ -261,7 +289,8 @@ describe('Public API: Account Controller Integration Tests:', function() {
 					response = res;
 					body = res.body;
 
-					Account.findById(body.id, function(err, c){
+					Account.findById(body.id, function(err, c) {
+
 						account = c;
 						done();
 					});
@@ -272,19 +301,23 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			account.should.exist;
 		});
 
-		it('should update the account with the specified name', function(){
+		it('should update the account with the specified name', function() {
+
 			account.name.should.eql('Jane BVBA');
 		});
 
-		it('should update the account with the specified first name', function(){
+		it('should update the account with the specified first name', function() {
+
 			account.firstName.should.eql('Jane');
 		});
 
-		it('should update the account with the specified last name', function(){
+		it('should update the account with the specified last name', function() {
+
 			account.lastName.should.eql('D');
 		});		
 
-		it('should update the account with the specified email', function(){
+		it('should update the account with the specified email', function() {
+
 			account.email.should.eql('123456789jane@doe.com');
 		});				
 		
@@ -292,23 +325,28 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			body.id.should.match(account.id);
 		});
 
-		it('should return the name', function(){
+		it('should return the name', function() {
+
 			body.name.should.eql('Jane BVBA');
 		});	
 
-		it('should return the first name', function(){
+		it('should return the first name', function() {
+
 			body.firstName.should.eql('Jane');
 		});	
 
-		it('should return the last name', function(){
+		it('should return the last name', function() {
+
 			body.lastName.should.eql('D');
 		});	
 
-		it('should return the email', function(){
+		it('should return the email', function() {
+
 			body.email.should.eql('123456789jane@doe.com');
 		});	
 
-		after(function(done){
+		after(function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/accounts/' + testdata.normalAccountId)
 				.set('Authorization', testdata.normalAccountToken)
@@ -331,10 +369,12 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			account.changePassword('12345');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					account.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/accounts/' + account.id)
@@ -350,8 +390,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should not be updated', function(done) {
-			Account.findById(account.id, function(err, c){
-				if(err){ done(err); }
+			Account.findById(account.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				c.name.should.eql('Jane BVBA');
 				done();
@@ -381,7 +423,8 @@ describe('Public API: Account Controller Integration Tests:', function() {
 					response = res;
 					body = res.body;
 
-					Account.findById(testdata.normalAccountId, function(err, c){
+					Account.findById(testdata.normalAccountId, function(err, c) {
+
 						account = c;
 						done();
 					});
@@ -389,15 +432,18 @@ describe('Public API: Account Controller Integration Tests:', function() {
 
 		});
 
-		it('should update the account password with the specified new password', function(){
+		it('should update the account password with the specified new password', function() {
+
 			account.authenticate('67890').should.be.true;
 		});
 
-		it('should return ok', function(){
+		it('should return ok', function() {
+
 			body.ok.should.be.true;
 		});
 
-		after(function(done){
+		after(function(done) {
+
 			request('http://localhost:' + config.port)
 				.post('/api/public/accounts/' + testdata.normalAccountId + '/changepassword')
 				.set('Authorization', testdata.normalAccountToken)
@@ -430,7 +476,8 @@ describe('Public API: Account Controller Integration Tests:', function() {
 					response = res;
 					body = res.body;
 
-					Account.findById(testdata.normalAccountId, function(err, c){
+					Account.findById(testdata.normalAccountId, function(err, c) {
+
 						account = c;
 						done();
 					});
@@ -438,7 +485,8 @@ describe('Public API: Account Controller Integration Tests:', function() {
 
 		});
 
-		it('should not update the account password with the specified new password', function(){
+		it('should not update the account password with the specified new password', function() {
+
 			account.authenticate('12345').should.be.true;
 		});							
 	});	 	 
@@ -455,10 +503,12 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			account.changePassword('12345');
 
 			async.series([
-				function(done){
+				function(done) {
+
 					account.save(done);
 				},
-				function(done){
+				function(done) {
+
 
 					request('http://localhost:' + config.port)
 						.post('/api/public/accounts/' + account.id + '/changepassword')
@@ -474,8 +524,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should not be updated', function(done) {
-			Account.findById(account.id, function(err, c){
-				if(err){ done(err); }
+			Account.findById(account.id, function(err, c) {
+
+				if(err) {
+ done(err); }
 
 				account.authenticate('12345').should.be.true;
 

@@ -48,7 +48,8 @@ var AccountSchema = new AggregateRootSchema({
  *	Helper methods
  */
 
-function hashPassword(password, salt){
+function hashPassword(password, salt) {
+
 	return crypto.pbkdf2Sync(password, new Buffer(salt, 'base64'), 10000, 64).toString('base64');
 }
 
@@ -56,7 +57,8 @@ function hashPassword(password, salt){
  *	Write methods
  */
 
-AccountSchema.statics.create = function(name, firstName, lastName, email){
+AccountSchema.statics.create = function(name, firstName, lastName, email) {
+
 	
 	var account = new this();
 
@@ -76,7 +78,8 @@ AccountSchema.statics.create = function(name, firstName, lastName, email){
 	return account;
 };
 
-AccountSchema.methods.changePassword = function(password){
+AccountSchema.methods.changePassword = function(password) {
+
 	
 	var salt = crypto.randomBytes(16).toString('base64');
 	var hash = hashPassword(password, salt);
@@ -91,15 +94,18 @@ AccountSchema.methods.changePassword = function(password){
 	});			
 };
 
-AccountSchema.methods.makeAdmin = function(){
+AccountSchema.methods.makeAdmin = function() {
 
-	if(!this.admin){
+
+	if(!this.admin) {
+
 		this.admin = true;
 		this.apply('AccountMadeAdmin', {});
 	}
 };
 
-AccountSchema.methods.changeDetails = function(name, firstName, lastName, email){
+AccountSchema.methods.changeDetails = function(name, firstName, lastName, email) {
+
 
 	if( this.name !== name ||
 		this.firstName !== firstName ||
@@ -129,7 +135,8 @@ AccountSchema.methods.authenticate = function(password) {
 	return this.passwordHash === hashPassword(password, this.passwordSalt);
 };
 
-AccountSchema.virtual('fullName').get(function(){
+AccountSchema.virtual('fullName').get(function() {
+
 	return this.firstName + ' ' + this.lastName;
 });
 

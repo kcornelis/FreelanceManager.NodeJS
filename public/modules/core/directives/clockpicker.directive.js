@@ -1,11 +1,16 @@
-angular.module('core').directive('fmClockpicker', 
-function () {
+(function() {
 	'use strict';
 
-	return {
-		restrict: 'A',
-		link: function (scope, element, attrs) {
-			element.clockpicker();
-		}
-	};
-});
+	function clockpickerDirective() {
+		return {
+			restrict: 'A',
+			link: function (scope, element, attrs) {
+				element.clockpicker();
+			}
+		};
+	}
+	
+	clockpickerDirective.$inject = [];
+
+	angular.module('fmCore').directive('fmClockpicker', clockpickerDirective);
+})();

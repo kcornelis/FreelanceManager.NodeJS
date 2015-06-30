@@ -1,13 +1,13 @@
-angular.module('invoice').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
-		'use strict';
-
+(function() {
+	'use strict';
+	
+	function routeRegistration($stateProvider) {
 		$stateProvider
 
 		.state('app.invoice_create', {
 			url: '/invoice/create',
 			templateUrl: 'modules/invoice/views/create.html',
-			controller: 'CreateController',
+			controller: 'CreateInvoiceController',
 			access: { requiredLogin: true }
 		})
 
@@ -17,9 +17,15 @@ angular.module('invoice').config(['$stateProvider', '$urlRouterProvider',
 			controller: 'InvoiceOverviewController',
 			access: { requiredLogin: true },
 			params: {
-				from: function(){ return moment().startOf('year').format('YYYYMMDD'); },
-				to: function(){ return moment().endOf('year').format('YYYYMMDD'); }
+				from: function() {
+ return moment().startOf('year').format('YYYYMMDD'); },
+				to: function() {
+ return moment().endOf('year').format('YYYYMMDD'); }
 			}
 		});
 	}
-]);
+
+	routeRegistration.$inject = ['$stateProvider'];
+
+	angular.module('fmInvoice').config(routeRegistration);
+})();

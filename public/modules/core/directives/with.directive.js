@@ -1,12 +1,9 @@
 // TODO unit test
-angular.module('core').directive('fmWith', 
-function () {
+(function() {
 	'use strict';
 
-	return {
-		restrict: 'A',
-		scope: true,
-		controller: function ($scope, $attrs, $parse) {
+	function withDirective() {
+		function controller($scope, $attrs, $parse) {
 			$scope.$parent.$watch($attrs.fmWith, function (oldVal, newVal) {
 				var withObj = $scope.$parent[$attrs.fmWith];
 				(function copyPropertiesToScope(withObj) {
@@ -24,5 +21,17 @@ function () {
 				})(withObj);
 			});
 		}
-	};
-});
+
+		controller.$inject = ['$scope', '$attrs', '$parse'];
+
+		return {
+			restrict: 'A',
+			scope: true,
+			controller: controller
+		};
+	}
+	
+	withDirective.$inject = [];
+
+	angular.module('fmCore').directive('fmWith', withDirective);
+})();

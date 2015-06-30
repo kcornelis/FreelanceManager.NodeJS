@@ -10,9 +10,12 @@ var mongoose = require('mongoose'),
 /**
  * Validators
  */	
-var yearValidation = [function(v){ return v >= 1900 && v <= 2200; }, 'Path `{PATH}` ({VALUE}) should be between 1900 and 2200'];
-var monthValidation = [function(v){ return v >= 1 && v <= 12; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 12'];
-var dayValidation = [function(v){ return v >= 1 && v <= 31; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 31'];
+var yearValidation = [function(v) {
+ return v >= 1900 && v <= 2200; }, 'Path `{PATH}` ({VALUE}) should be between 1900 and 2200'];
+var monthValidation = [function(v) {
+ return v >= 1 && v <= 12; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 12'];
+var dayValidation = [function(v) {
+ return v >= 1 && v <= 31; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 31'];
 
 /**
  * Client Schema
@@ -157,7 +160,8 @@ InvoiceSchema.post('save', function (doc) {
  /*
  *	Private methods
  */
-function createDateObject(date){
+function createDateObject(date) {
+
 
 	if(!date)
 		return;
@@ -174,7 +178,8 @@ function createDateObject(date){
 	};
 }
 
-function recalculateTotals(invoice){
+function recalculateTotals(invoice) {
+
 
 	var totalInCents = 0;
 	var totalPerPercentage = {};
@@ -182,13 +187,15 @@ function recalculateTotals(invoice){
 
 	invoice.vatPerPercentages = [];
 
-	if(invoice.lines.length > 0){
+	if(invoice.lines.length > 0) {
+
 
 		for(var i = 0; i < invoice.lines.length; i++) {
 
 			var varPercentage = invoice.lines[i].vatPercentage.toString();
 
-			if(!totalPerPercentage.hasOwnProperty(varPercentage)){
+			if(!totalPerPercentage.hasOwnProperty(varPercentage)) {
+
 				totalPerPercentage[varPercentage] = 0;
 			}
 
@@ -214,7 +221,8 @@ function recalculateTotals(invoice){
 	invoice.totalInCents = totalInCents + totalVatInCents;
 }
 
-InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
+InvoiceSchema.statics.create = function(tenant, number, date, creditTerm) {
+
 	
 	var invoice = new this();
 
@@ -238,9 +246,11 @@ InvoiceSchema.statics.create = function(tenant, number, date, creditTerm){
 	return invoice;
 };
 
-InvoiceSchema.methods.changeTemplate = function(template){
+InvoiceSchema.methods.changeTemplate = function(template) {
 
-	if(this.template !== template){
+
+	if(this.template !== template) {
+
 		
 		this.template = template;
 		
@@ -251,7 +261,8 @@ InvoiceSchema.methods.changeTemplate = function(template){
 	}
 };
 
-InvoiceSchema.methods.changeCustomer = function(name, vatNumber, number, address){
+InvoiceSchema.methods.changeCustomer = function(name, vatNumber, number, address) {
+
 
 	if(this.customer.name !== name ||
 	   this.customer.vatNumber !== vatNumber ||
@@ -259,7 +270,8 @@ InvoiceSchema.methods.changeCustomer = function(name, vatNumber, number, address
 	   this.customer.address.line1 !== address.line1 ||
 	   this.customer.address.line2 !== address.line2 ||
 	   this.customer.address.postalcode !== address.postalcode ||
-	   this.customer.address.city !== address.city){
+	   this.customer.address.city !== address.city) {
+
 		
 		this.customer.name = name;
 		this.customer.vatNumber = vatNumber;
@@ -276,7 +288,8 @@ InvoiceSchema.methods.changeCustomer = function(name, vatNumber, number, address
 	}
 };
 
-function createLine(description, quantity, priceInCents, vatPercentage){
+function createLine(description, quantity, priceInCents, vatPercentage) {
+
 	return {
 		description: description,
 		quantity: quantity,
@@ -286,7 +299,8 @@ function createLine(description, quantity, priceInCents, vatPercentage){
 	};
 }
 
-InvoiceSchema.methods.replaceLines = function(lines){
+InvoiceSchema.methods.replaceLines = function(lines) {
+
 
 	if(!lines)
 		return;
@@ -297,7 +311,8 @@ InvoiceSchema.methods.replaceLines = function(lines){
 	}
 	else {
 
-		for(var i = 0; i < lines.length; i++){
+		for(var i = 0; i < lines.length; i++) {
+
 
 			if (lines[i].description !== this.lines[i].description ||
 				lines[i].quantity !== this.lines[i].quantity ||
@@ -310,7 +325,8 @@ InvoiceSchema.methods.replaceLines = function(lines){
 		}
 	}
 
-	if(changed){
+	if(changed) {
+
 		
 		this.lines = [];
 
@@ -331,12 +347,14 @@ InvoiceSchema.methods.replaceLines = function(lines){
 	}
 };
 
-InvoiceSchema.methods.linkTimeRegistrations = function(timeRegistrationIds){
+InvoiceSchema.methods.linkTimeRegistrations = function(timeRegistrationIds) {
+
 
 	if(!timeRegistrationIds)
 		return;
 
-	for(var i = 0; i < timeRegistrationIds.length; i++){
+	for(var i = 0; i < timeRegistrationIds.length; i++) {
+
 		this.linkedTimeRegistrations.push(timeRegistrationIds[i]);
 	}
 

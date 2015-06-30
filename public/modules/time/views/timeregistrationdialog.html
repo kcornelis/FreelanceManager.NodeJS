@@ -1,69 +1,69 @@
 <form role="form" name="timeRegistrationForm" novalidate >
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" data-ng-click="cancel()" aria-hidden="true">&times;</button>
-			<h4 class="modal-title">Time Registration</h4>
+			<button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+			<h4 class="modal-title">{{ newTimeRegistration ? 'Create a new time registration' : 'Update a time registration' }}</h4>
 		</div>
 		<div class="modal-body">
 		
 			<div class="row">
-				<div class="col-xs-12 col-md-4" data-ng-show="projectEditable">
-					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.company">
+				<div class="col-xs-12 col-md-4" ng-show="projectEditable">
+					<div class="form-group" fm-add-error-for="timeRegistrationForm.company">
 						<label>Company</label>
-						<select class="form-control" name="company" data-ng-model="timeRegistration.company" data-ng-options="c.name for c in companies" required></select>
+						<select class="form-control" name="company" ng-model="timeRegistration.company" ng-options="c.name for c in companies" required></select>
 					</div>
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="projectEditable">
-					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.project">
+				<div class="col-xs-12 col-md-4" ng-show="projectEditable">
+					<div class="form-group" fm-add-error-for="timeRegistrationForm.project">
 						<label>Project</label>
-						<select class="form-control" name="project" data-ng-model="timeRegistration.project" data-ng-options="p.name for p in timeRegistration.company.projects" required></select>
+						<select class="form-control" name="project" ng-model="timeRegistration.project" ng-options="p.name for p in timeRegistration.company.projects" required></select>
 					</div>	
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="projectEditable">					
-					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.task">
+				<div class="col-xs-12 col-md-4" ng-show="projectEditable">					
+					<div class="form-group" fm-add-error-for="timeRegistrationForm.task">
 						<label>Task</label>
-						<select class="form-control" name="task" data-ng-model="timeRegistration.task" data-ng-options="t.name for t in timeRegistration.project.tasks" required></select>
+						<select class="form-control" name="task" ng-model="timeRegistration.task" ng-options="t.name for t in timeRegistration.project.tasks" required></select>
 					</div>	
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-xs-12 col-md-4" data-ng-show="!projectEditable">
+				<div class="col-xs-12 col-md-4" ng-show="!projectEditable">
 					<div class="form-group">
 						<label>Company</label>
-						<input type="text" class="form-control" data-ng-model="originalTimeRegistration.company.name" disabled="disabled"></select>
+						<input type="text" class="form-control" ng-model="originalTimeRegistration.company.name" disabled="disabled"></select>
 					</div>
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="!projectEditable">
+				<div class="col-xs-12 col-md-4" ng-show="!projectEditable">
 					<div class="form-group">
 						<label>Project</label>
-						<input type="text" class="form-control" data-ng-model="originalTimeRegistration.project.name" disabled="disabled"></select>
+						<input type="text" class="form-control" ng-model="originalTimeRegistration.project.name" disabled="disabled"></select>
 					</div>	
 				</div>
 
-				<div class="col-xs-12 col-md-4" data-ng-show="!projectEditable">					
+				<div class="col-xs-12 col-md-4" ng-show="!projectEditable">					
 					<div class="form-group">
 						<label>Task</label>
-						<input type="text" class="form-control" data-ng-model="originalTimeRegistration.task" disabled="disabled"></select>
+						<input type="text" class="form-control" ng-model="originalTimeRegistration.task" disabled="disabled"></select>
 					</div>	
 				</div>
 			</div>
 
-			<div class="form-group" data-fm-add-error-for="timeRegistrationForm.description">
+			<div class="form-group" fm-add-error-for="timeRegistrationForm.description">
 				<label>Description</label>
-				<input type="text" name="description" class="form-control" placeholder="Description" data-ng-model="timeRegistration.description" required autofocus>
+				<input type="text" name="description" class="form-control" placeholder="Description" ng-model="timeRegistration.description" required autofocus>
 			</div>
 
 			<div class="row">
 
 				<div class="col-xs-6">
-					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.from">
+					<div class="form-group" fm-add-error-for="timeRegistrationForm.from">
 						<label>From</label>
-						<div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true" data-fm-clockpicker>
-							<input type="text" name="from" class="form-control" data-ng-model="timeRegistration.from" required>
+						<div class="input-group clockpicker" placement="bottom" align="top" autoclose="true" fm-clockpicker>
+							<input type="text" name="from" class="form-control" ng-model="timeRegistration.from" required>
 							<span class="input-group-addon">
 								<span class="fa fa-clock-o"></span>
 							</span>
@@ -72,10 +72,10 @@
 				</div>
 
 				<div class="col-xs-6">
-					<div class="form-group" data-fm-add-error-for="timeRegistrationForm.to">
+					<div class="form-group" fm-add-error-for="timeRegistrationForm.to">
 						<label>To</label>
-						<div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true" data-fm-clockpicker>
-							<input name="to" type="text" class="form-control" data-ng-model="timeRegistration.to" required>
+						<div class="input-group clockpicker" placement="bottom" align="top" autoclose="true" fm-clockpicker>
+							<input name="to" type="text" class="form-control" ng-model="timeRegistration.to" required>
 							<span class="input-group-addon">
 								<span class="fa fa-clock-o"></span>
 							</span>
@@ -86,19 +86,19 @@
 			
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-ng-model="timeRegistration.billable"> Billable
+					<input type="checkbox" ng-model="timeRegistration.billable"> Billable
 				</label>
 			</div>		
 		</div>		
 		<div class="modal-footer">
-			<div class="pull-left" data-ng-show="!newTimeRegistration">
-				<button type="button" class="btn btn-default" data-ng-click="delete()">Delete</button>
+			<div class="pull-left" ng-show="!newTimeRegistration">
+				<button type="button" class="btn btn-default" ng-click="delete()">Delete</button>
 			</div>		
-			<div class="pull-left mt-sm ml-lg" data-ng-show="isBusy">
+			<div class="pull-left mt-sm ml-lg" ng-show="isBusy">
 				<i class="fm-spinner"></i><span>{{ message }}</span>
 			</div>
-			<button type="button" class="btn btn-default" data-ng-click="cancel()">Close</button>
-			<button type="submit" class="btn btn-primary" ng-disabled="timeRegistrationForm.$invalid" data-ng-click="ok()">{{ newTimeRegistration ? 'Create' : 'Update' }}</button>
+			<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+			<button type="submit" class="btn btn-primary" ng-disabled="timeRegistrationForm.$invalid" ng-click="ok()">{{ newTimeRegistration ? 'Create' : 'Update' }}</button>
 		</div>
 	</div>
 </form>

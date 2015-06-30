@@ -1,57 +1,14 @@
-<nav role="navigation" class="navbar topnavbar">
+<div class="logo large">
+	<a data-ui-sref="app.dashboard"><span>Flat Theme</span></a>
+</div>
+<div class="logo small">
+	<a data-ui-sref="app.dashboard"><span>FT</span></a>
+</div>				
 
-	<div class="navbar-header">
-		<a data-ui-sref="app.dashboard" class="navbar-brand">
-			<div class="brand-logo">
-				<img src="modules/core/images/logo.png" alt="App Logo" class="img-responsive" />
-			</div>
-			<div class="brand-logo-collapsed">
-				<img src="modules/core/images/logo-small.png" alt="App Logo" class="img-responsive" />
-			</div>
-		</a>
-	</div>
-
-	<div class="nav-wrapper">
-		<ul class="nav navbar-nav">
-			<li>
-				<a href="#" data-ng-click="app.layout.isCollapsed = !app.layout.isCollapsed" class="hidden-xs">
-					<em class="fa fa-navicon"></em>
-				</a>
-				<a href="#" toggle-state="aside-toggled" no-persist="no-persist" class="visible-xs sidebar-toggle">
-					<em class="fa fa-navicon"></em>
-				</a>
-			</li>
-			<li>
-				<a data-ui-sref="app.account">
-					<em class="icon-user"></em>
-				</a>
-			</li>
-			<li>
-				<a data-ui-sref="login" title="Lock screen">
-					<em class="icon-lock"></em>
-				</a>
-			</li>
-		</ul>
-
-		<ul class="nav navbar-nav navbar-right">
-			<li>
-				<a href="#" search-open="search-open">
-					<em class="icon-magnifier"></em>
-				</a>
-			</li>
-			<li class="visible-lg">
-				<a href="#" toggle-fullscreen="toggle-fullscreen">
-					<em class="fa fa-expand"></em>
-				</a>
-			</li>
-		</ul>
-	</div>
-
-	<form role="search" action="search.html" class="navbar-form">
-		<div class="form-group has-feedback">
-			<input type="text" placeholder="Search" class="form-control" />
-			<div search-dismiss="search-dismiss" class="fa fa-times form-control-feedback"></div>
-		</div>
-		<button type="submit" class="hidden btn btn-default">Submit</button>
-	</form>
-</nav>
+<div class="content">
+	<ul class="actions">
+		<li><a ft-toggle-sidebar><i class="fa fa-bars"></i></a></li>
+		<li><a href="#" data-ui-sref="login"><i class="icon-lock"></i></a></li>
+		<li><a href="#" data-ui-sref="app.account"><i class="icon-user"></i></a></li>
+	</ul>
+</div>

@@ -1,1 +1,5 @@
-ApplicationConfiguration.registerModule('account');
+(function() {
+	'use strict';
+
+	ApplicationConfiguration.registerModule('fmAccount');
+})();

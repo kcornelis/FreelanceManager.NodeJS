@@ -1,7 +1,7 @@
-angular.module('settings').config(['$stateProvider',
-	function($stateProvider) {
-		'use strict';
-
+(function() {
+	'use strict';
+	
+	function routeRegistration($stateProvider) {
 		$stateProvider
 
 		.state('app.settings_templates', {
@@ -11,4 +11,8 @@ angular.module('settings').config(['$stateProvider',
             access: { requiredLogin: true }
 		});
 	}
-]);
+
+	routeRegistration.$inject = ['$stateProvider'];
+
+	angular.module('fmSettings').config(routeRegistration);
+})();

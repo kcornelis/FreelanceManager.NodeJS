@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
 	_ = require('lodash'),
 	Account = mongoose.model('Account');
 
-function convert(account){
+function convert(account) {
+
 	return {
 		id: account.id,
 		name: account.name,
@@ -36,7 +37,8 @@ exports.getAll = function(req, res, next) {
 exports.create = function(req, res, next) {
 
 	var account = Account.create(req.body.name, req.body.firstName, req.body.lastName, req.body.email);
-	account.save(function(err){
+	account.save(function(err) {
+
 		if(err) next(err); 
 		else res.send(convert(account));
 	});
@@ -49,10 +51,13 @@ exports.update = function(req, res, next) {
 
 	Account.findById(req.params.accountId, function(err, account) {
 
-		if(err){ next(err); }
-		else if(account){
+		if(err) {
+ next(err); }
+		else if(account) {
+
 			account.changeDetails(req.body.name, req.body.firstName, req.body.lastName, req.body.email);
-			account.save(function(err){
+			account.save(function(err) {
+
 				if(err) next(err);
 				else res.send(convert(account));
 			});
@@ -68,11 +73,14 @@ exports.changepassword = function(req, res, next) {
 
 	Account.findById(req.params.accountId, function(err, account) {
 
-		if(err){ next(err); }
-		else if(account && account.authenticate(req.body.oldPassword)){
+		if(err) {
+ next(err); }
+		else if(account && account.authenticate(req.body.oldPassword)) {
+
 			
 			account.changePassword(req.body.newPassword);
-			account.save(function(err){
+			account.save(function(err) {
+
 				if(err) next(err);
 				else res.send({ ok: true });
 			});

@@ -47,7 +47,8 @@ var ProjectSchema = new AggregateRootSchema({
 /*
  *	Write methods
  */
-ProjectSchema.statics.create = function(tenant, companyId, name, description){
+ProjectSchema.statics.create = function(tenant, companyId, name, description) {
+
 	
 	var project = new this();
 
@@ -77,10 +78,12 @@ ProjectSchema.statics.create = function(tenant, companyId, name, description){
 	return project;
 };
 
-ProjectSchema.methods.changeDetails = function(name, description){
+ProjectSchema.methods.changeDetails = function(name, description) {
+
 
 	if( this.name !== name ||
-		this.description !== description){
+		this.description !== description) {
+
 		
 		this.name = name;
 		this.description = description;
@@ -93,18 +96,21 @@ ProjectSchema.methods.changeDetails = function(name, description){
 	}
 };
 
-ProjectSchema.methods.changeTasks = function(tasks){
+ProjectSchema.methods.changeTasks = function(tasks) {
+
 
 	if(!tasks)
 		return;
 	
 	var changed = false;
-	if (tasks.length !== this.tasks.length){
+	if (tasks.length !== this.tasks.length) {
+
 		changed = true;
 	}
 	else {
 
-		for(var i = 0; i < tasks.length; i++){
+		for(var i = 0; i < tasks.length; i++) {
+
 
 			if (tasks[i].name !== this.tasks[i].name ||
 				tasks[i].defaultRateInCents !== this.tasks[i].defaultRateInCents)
@@ -115,7 +121,8 @@ ProjectSchema.methods.changeTasks = function(tasks){
 		}
 	}
 
-	if(changed){
+	if(changed) {
+
 		this.tasks = tasks;
 	
 		this.apply('ProjectTasksChanged', 
@@ -125,17 +132,21 @@ ProjectSchema.methods.changeTasks = function(tasks){
 	}
 };
 
-ProjectSchema.methods.hide = function(){
+ProjectSchema.methods.hide = function() {
 
-	if(!this.hidden){
+
+	if(!this.hidden) {
+
 		this.hidden = true;
 		this.apply('ProjectHidden', {});	
 	}
 };
 
-ProjectSchema.methods.unhide = function(){
+ProjectSchema.methods.unhide = function() {
 
-	if(this.hidden){
+
+	if(this.hidden) {
+
 		this.hidden = false;	
 		this.apply('ProjectUnhidden', {});	
 	}
