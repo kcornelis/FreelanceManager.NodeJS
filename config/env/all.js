@@ -35,6 +35,7 @@ module.exports = {
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
 				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'public/lib/chosen/chosen.jquery.js',
+				'public/lib/ng-table/dist/ng-table.js',
 				
 				'public/lib/lodash/lodash.js',
 				'public/lib/moment/moment.js',
