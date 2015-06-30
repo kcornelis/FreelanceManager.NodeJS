@@ -193,18 +193,18 @@
 		});				
 
 		var dialog = {
-		    result: {
-		        then: function(confirmCallback, cancelCallback) {
-		            this.confirmCallBack = confirmCallback;
-		            this.cancelCallback = cancelCallback;
-		        }
-		    },
-		    close: function( item ) {
-		        this.result.confirmCallBack(item);
-		    },
-		    dismiss: function( type ) {
-		        this.result.cancelCallback(type);
-		    }
+			result: {
+				then: function(confirmCallback, cancelCallback) {
+					this.confirmCallBack = confirmCallback;
+					this.cancelCallback = cancelCallback;
+				}
+			},
+			close: function( item ) {
+				this.result.confirmCallBack(item);
+			},
+			dismiss: function( type ) {
+				this.result.cancelCallback(type);
+			}
 		};
 	});
 })();
