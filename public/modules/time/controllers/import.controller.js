@@ -1,4 +1,3 @@
-// TODO unit test
 (function() {
 	'use strict';
 
@@ -25,7 +24,7 @@
 		}
 
 		$scope.init = function() {
-			createsteps(4);
+			createsteps(6);
 			activate(1);
 		};
 
@@ -42,6 +41,7 @@
 				_.forEach(p.tasks, function(t) {
 					tasks.push({
 						project: p,
+						company: p.company,
 						task: t,
 						display: p.company.name + ' - ' + p.name + ' - ' + t.name,
 						id: id++
@@ -59,7 +59,7 @@
 			$scope.excelSheets = [];
 			$scope.excelFile = files[0];
 
-			XLSXReader.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+			XLSXReader.readFile($scope.excelFile, false).then(function(xlsxData) {
 				$scope.excelSheets = xlsxData;
 				activate(2);
 			});
@@ -167,7 +167,7 @@
 			TimeRegistration.saveMultiple(registrations, function(data) {
 				$scope.importing = false;
 				$scope.timeRegistrationsImported = data;
-				$scope.summaryTableParams.count(10);
+				$scope.summaryTableParams.count(10); // the number of items to show per page
 				activate(6);
 			}, function(err) {
 				$scope.importing = false;
@@ -187,22 +187,26 @@
 		// step 6 (summary)
 		// ***********************	
 
+
+		$scope.filterImportedTimeRegistrations = function ($defer, params) {
+
+			if(!$scope.timeRegistrationsImported)
+				return;
+
+			// use build-in angular filter
+			var filteredData = params.filter() ? $filter('filter')($scope.timeRegistrationsImported, params.filter()) : $scope.timeRegistrationsImported;
+			var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
+
+			params.total(orderedData.length); // set total for recalc pagination
+			$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+		};
+
 		$scope.summaryTableParams = new NgTableParams({
 			page: 1,
 			count: 1
 		}, 
 		{
-			getData: function ($defer, params) {
-				if(!$scope.timeRegistrationsImported)
-					return;
-
-				// use build-in angular filter
-				var filteredData = params.filter() ? $filter('filter')($scope.timeRegistrationsImported, params.filter()) : $scope.timeRegistrationsImported;
-				var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : $scope.timeRegistrationsImported;
-
-				params.total(orderedData.length); // set total for recalc pagination
-				$defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-			}
+			getData: $scope.filterImportedTimeRegistrations
 		});
 	}
 
