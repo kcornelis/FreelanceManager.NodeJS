@@ -271,11 +271,11 @@ exports.getInfoForPeriodPerTask = function(req, res, next) {
 			async.parallel([
 				function(done) {
 
-					Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
+					Company.find({ tenant: req.user.id }).in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
 				},
 				function(done) {
 
-					Project.find().in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
+					Project.find({ tenant: req.user.id }).in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
 				}
 			], 
 			function() {
