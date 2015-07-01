@@ -5,7 +5,9 @@
  */
 var mongoose = require('mongoose'),
 	_ = require('lodash'),
-	Invoice = mongoose.model('Invoice');
+	async = require('async'),
+	Invoice = mongoose.model('Invoice'),
+	Company = mongoose.model('Company');
 
 function convert(invoice) {
 
@@ -110,7 +112,7 @@ exports.create = function(req, res, next) {
 	});
 };
 
-exports.preview = function(req, res, next) {
+exports.preview = function(req, res) {
 
 	var invoice = Invoice.create(req.user.id, req.body.number, req.body.date, req.body.creditTerm);
 	invoice.changeTemplate(req.body.template);
@@ -119,4 +121,54 @@ exports.preview = function(req, res, next) {
 	invoice.linkTimeRegistrations(req.body.linkedTimeRegistrationIds);
 
 	res.send(convert(invoice));
+};
+
+exports.getInfoForPeriodPerCustomer = function(req, res, next) {
+	
+	Invoice.aggregate([
+	{
+		$match: {
+			tenant: req.user.id,
+			'date.numeric': { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
+		}
+	},
+	{ 	
+		$group: { 
+			_id: { customerNumber: '$customer.number' },
+			count: { $sum: 1 },
+			totalWithoutVatInCents: { $sum: '$subTotalInCents' },
+			totalInCents: { $sum: '$totalInCents' }
+		}
+	}],
+	function (err, result) {
+		
+		if(err) next(err);
+		else
+		{
+			var companies;
+
+			var customerNumbers = _.uniq(_.map(result, function(tr) { return tr._id.customerNumber; }));
+
+			async.parallel([
+				function(done) {
+					Company.find({ tenant: req.user.id }).in('number', customerNumbers).exec(function(err, c) { companies = c; done(); });
+				}
+			], 
+			function() {
+
+				res.send(_.map(result, function(r) {
+
+					return {
+						customerNumber: r._id.customerNumber,
+						company: _.find(companies, { 'number': r._id.customerNumber }),
+						count: r.count,
+						totalWithoutVatInCents: r.totalWithoutVatInCents,
+						totalWithoutVat: r.totalWithoutVatInCents / 100,
+						totalInCents: r.totalInCents,
+						total: r.totalInCents / 100
+					};
+				}));
+			});
+		}
+	});	
 };

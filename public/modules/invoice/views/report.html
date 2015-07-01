@@ -1,0 +1,75 @@
+<div class="content-header">
+	<h1><i class="icon-envelope"></i>Invoice report</h1>
+</div>
+
+<div class="fm-invoice-report" ng-init="refresh()">
+	<button class="btn btn-default pull-left btn-accentuate" ng-click="previous()"><span class="fa fa-chevron-left"></span></button>
+	<div class="btn-group pull-right btn-group-accentuate">
+		<button class="btn btn-default dropdown-toggle" toggle="dropdown">
+			<span class="fa fa-cog"></span>
+		</button>
+		<ul class="dropdown-menu dropdown-menu-right" role="menu">
+			<li><a ui-sref="app.invoice_report({ from: weekStart, to: weekEnd })">Week</a></li>
+			<li><a ui-sref="app.invoice_report({ from: monthStart, to: monthEnd })">Month</a></li>
+			<li><a ui-sref="app.invoice_report({ from: yearStart, to: yearEnd })">Year</a></li>
+		</ul>
+		<button class="btn btn-default" ng-click="next()"><span class="fa fa-chevron-right"></span></button>
+	</div>
+	<div class="clearfix visible-xs">&nbsp;</div>
+	<h1 class="text-center">{{ title }}</h1>
+
+	<div class="panel panel-default mt-xl" ng-show="loading">
+		<div class="panel-body text-center">
+			<div class="fm-wait-panel"></div>
+			<div class="clearfix"></div>
+			Loading...
+		</div>
+	</div>
+
+	<div class="panel panel-default mt-xl" ng-show="!loading && !hasInvoices">
+		<div class="panel-body text-center">
+			No invoices available for this period
+		</div>
+	</div>
+
+	<div class="row mt-xl" style="height: 220px;" ng-show="!loading && hasInvoices">
+		
+		<div class="col-xs-12 col-sm-4">
+			<piechart style="width: 100%;height: 200px;" ng-model="invoiceGraph"></piechart>
+		</div>
+
+		<div class="col-sm-4 hidden-xs">
+			<h3>Total invoiced</h3>
+			{{ totalWithoutVat }} €
+		</div>
+
+		<div class="col-xs-12 visible-xs mb-lg">
+			<h3 class="text-center">Total invoiced</h3>
+			{{ totalWithoutVat }} €
+			</div>
+		</div>
+
+	</div>
+
+	<div class="clearfix"></div>
+
+	<div ng-show="!loading && hasInvoices">
+		<div class="panel panel-default">
+			<div class="panel-heading text-center"><h4>Customers</h4></div>
+			<div class="panel-body">
+				<ul class="list-group">
+					<li class="list-group-item" ng-repeat="info in infoPerCustomer">
+						<div class="row">
+							<div class="col-xs-6">
+								<strong>{{ info.company.name }}</strong>
+							</div>
+							<div class="col-xs-6">
+								{{ info.totalWithoutVat }} €
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

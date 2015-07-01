@@ -148,6 +148,29 @@
 				$httpBackend.verifyNoOutstandingExpectation();
       			$httpBackend.verifyNoOutstandingRequest();
 			});	
-		});						
+		});
+
+		describe('Get info for period per customer', function() {
+			
+			var Invoice,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_Invoice_, _$httpBackend_) {
+				Invoice = _Invoice_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/invoices/getinfoforperiodpercustomer/20140101/20140110')
+					.respond(200, [ { customerNumber: 1 }, { customerNumber: 2 } ]);
+
+				response = Invoice.getinfoforperiodpercustomer({ from: 20140101, to: 20140110 });
+				$httpBackend.flush();
+			}));
+
+			it('should return invoice info for the given date range', function() {
+				expect(response[0].customerNumber).toBe(1);
+				expect(response[1].customerNumber).toBe(2);
+			});
+		});
 	});
 })();

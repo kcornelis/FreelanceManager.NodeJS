@@ -11,6 +11,7 @@ var should = require('should'),
 	config = require_config(),
 	uuid = require('node-uuid'),
 	Invoice = require('mongoose').model('Invoice'),
+	Company = require('mongoose').model('Company'),
 	testdata = require_infrastructure('testdata');
 
 
@@ -45,7 +46,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 			invoice.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice.replaceLines([{
 				description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
@@ -83,7 +84,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		it('should return the number of the invoice', function() {
 
 			body.number.should.eql('20140301');
-		});			
+		});		
 
 		it('should return the date of the invoice', function() {
 
@@ -91,7 +92,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.date.year.should.eql(2014);
 			body.date.month.should.eql(3);
 			body.date.day.should.eql(31);
-		});	
+		});
 
 		it('should return the credit term of the invoice', function() {
 
@@ -99,7 +100,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.creditTerm.year.should.eql(2014);
 			body.creditTerm.month.should.eql(4);
 			body.creditTerm.day.should.eql(30);
-		});	
+		});
 
 		it('should return the template of the invoice', function() {
 
@@ -115,7 +116,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.customer.address.line1.should.eql('Kerkstraat');
 			body.customer.address.postalcode.should.eql('9999');
 			body.customer.address.city.should.eql('Brussel');
-		});	
+		});
 
 		it('should return the lines of the invoice', function() {
 
@@ -126,44 +127,44 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.lines[0].vatPercentage.should.eql(21);
 			body.lines[0].totalInCents.should.eql(200);
 			body.lines[0].total.should.eql(2);
-		});	
+		});
 
 		it('should return the sub total of the invoice in cents', function() {
 
 			body.subTotalInCents.should.eql(200);
-		});	
+		});
 
 		it('should return the sub total of the invoice', function() {
 
 			body.subTotal.should.eql(2);
-		});			
+		});		
 
 		it('should return the vat per percentage of the invoice', function() {
 
 			body.vatPerPercentages[0].vatPercentage.should.eql(21);
 			body.vatPerPercentages[0].totalVatInCents.should.eql(42);
 			body.vatPerPercentages[0].totalVat.should.eql(0.42);
-		});	
+		});
 
 		it('should return the total vat of the invoice in cents', function() {
 
 			body.totalVatInCents.should.eql(42);
-		});	
+		});
 
 		it('should return the total vat of the invoice', function() {
 
 			body.totalVat.should.eql(0.42);
-		});			
+		});		
 
 		it('should return the total of the invoice in cents', function() {
 
 			body.totalInCents.should.eql(242);
-		});	
+		});
 
 		it('should return the total of the invoice', function() {
 
 			body.total.should.eql(2.42);
-		});	
+		});
 	});
 
 	describe('When a invoice is requested by id by another tenant', function() {
@@ -181,7 +182,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 			invoice.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice.replaceLines([{
 				description: 'item 1', quantity: 2, priceInCents: 100, vatPercentage: 21
@@ -235,19 +236,19 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			invoice1.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice1.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice2 = Invoice.create(testdata.normalAccountId, '20140302', 20140331, 20140430);
 			invoice2.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice2.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice3 = Invoice.create(uuid.v1(), '20140303', 20140331, 20140430);
 			invoice3.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice3.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 			
 			async.series([
 				function(done) {
@@ -329,31 +330,31 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			invoice1.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice1.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice2 = Invoice.create(testdata.normalAccountId, '2', 20100202, 20100230);
 			invoice2.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice2.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice3 = Invoice.create(testdata.normalAccountId, '3', 20100210, 20100230);
 			invoice3.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice3.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice4 = Invoice.create(testdata.normalAccountId, '4', 20100211, 20100230);
 			invoice4.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice4.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});	
+			});
 
 			invoice5 = Invoice.create(uuid.v1(), '5', 20100205, 20100230);
 			invoice5.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
 			invoice5.changeCustomer('John BVBA', 'BE12345678', '100', {
 				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
-			});			
+			});		
 
 			async.series([
 				function(done) {
@@ -497,12 +498,12 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		it('should create a invoice with the specified date', function() {
 
 			invoice.date.numeric.should.eql(20140101);
-		});	
+		});
 
 		it('sshould create a invoice with the specified credit term', function() {
 
 			invoice.creditTerm.numeric.should.eql(20140130);
-		});	
+		});
 
 		it('should create a invoice with the specified template', function() {
 
@@ -519,7 +520,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			invoice.customer.address.line2.should.eql('Test');
 			invoice.customer.address.postalcode.should.eql('9999');
 			invoice.customer.address.city.should.eql('Brussel');
-		});	
+		});
 
 		it('should create a invoice with the specified lines', function() {
 
@@ -534,7 +535,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			invoice.lines[1].quantity.should.eql(1);
 			invoice.lines[1].priceInCents.should.eql(100);
 			invoice.lines[1].vatPercentage.should.eql(20);
-			invoice.lines[1].totalInCents.should.eql(100);	
+			invoice.lines[1].totalInCents.should.eql(100);
 		});
 
 		it('should create a invoice with the specified linked time registrations', function() {
@@ -551,17 +552,17 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		it('should return the number of the invoice', function() {
 
 			body.number.should.eql('20140101');
-		});			
+		});		
 
 		it('should return the date of the invoice', function() {
 
 			body.date.numeric.should.eql(20140101);
-		});	
+		});
 
 		it('should return the credit term of the invoice', function() {
 
 			body.creditTerm.numeric.should.eql(20140130);
-		});	
+		});
 
 		it('should return the template of the invoice', function() {
 
@@ -578,7 +579,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.customer.address.line2.should.eql('Test');
 			body.customer.address.postalcode.should.eql('9999');
 			body.customer.address.city.should.eql('Brussel');
-		});	
+		});
 
 		it('should return the lines of the invoice', function() {
 
@@ -596,8 +597,8 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.lines[1].priceInCents.should.eql(100);
 			body.lines[1].price.should.eql(1);
 			body.lines[1].vatPercentage.should.eql(20);
-			body.lines[1].totalInCents.should.eql(100);	
-			body.lines[1].total.should.eql(1);	
+			body.lines[1].totalInCents.should.eql(100);
+			body.lines[1].total.should.eql(1);
 		});
 
 		it('should return the subtotal of the invoice in cents', function() {
@@ -629,7 +630,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		it('should return the total of the invoice in cents', function() {
 
 			body.totalInCents.should.eql(962);
-		});	
+		});
 
 		it('should return the total vat of the invoice', function() {
 
@@ -645,8 +646,23 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 			body.linkedTimeRegistrations[0].should.eql('abc');
 			body.linkedTimeRegistrations[1].should.eql('def');
-		});	
-	});	
+		});
+	});
+
+	/**
+	 * Preview
+	 */
+	describe('When a invoice is previewed by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
+			request('http://localhost:' + config.port)
+				.post('/api/public/invoices/preview')
+				.send({ number: '1234' })
+				.expect(401)
+				.end(done);
+		});
+	});
 
 	describe('When previewing an invoice', function() {
 
@@ -708,17 +724,17 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		it('should return the number of the invoice', function() {
 
 			body.number.should.eql('20140101');
-		});			
+		});		
 
 		it('should return the date of the invoice', function() {
 
 			body.date.numeric.should.eql(20140101);
-		});	
+		});
 
 		it('should return the credit term of the invoice', function() {
 
 			body.creditTerm.numeric.should.eql(20140130);
-		});	
+		});
 
 		it('should return the template of the invoice', function() {
 
@@ -735,7 +751,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.customer.address.line2.should.eql('Test');
 			body.customer.address.postalcode.should.eql('9999');
 			body.customer.address.city.should.eql('Brussel');
-		});	
+		});
 
 		it('should return the lines of the invoice', function() {
 
@@ -753,8 +769,8 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 			body.lines[1].priceInCents.should.eql(100);
 			body.lines[1].price.should.eql(1);
 			body.lines[1].vatPercentage.should.eql(20);
-			body.lines[1].totalInCents.should.eql(100);	
-			body.lines[1].total.should.eql(1);	
+			body.lines[1].totalInCents.should.eql(100);
+			body.lines[1].total.should.eql(1);
 		});
 
 		it('should return the subtotal of the invoice in cents', function() {
@@ -786,7 +802,7 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 		it('should return the total of the invoice in cents', function() {
 
 			body.totalInCents.should.eql(962);
-		});	
+		});
 
 		it('should return the total vat of the invoice', function() {
 
@@ -802,6 +818,183 @@ describe('Public API: Invoice Controller Integration Tests:', function() {
 
 			body.linkedTimeRegistrations[0].should.eql('abc');
 			body.linkedTimeRegistrations[1].should.eql('def');
-		});	
-	});		  
+		});
+
+	/**
+	 * Get Info For Period Per Customer
+	 */
+	describe('When invoices are requested by range by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
+			request('http://localhost:' + config.port)
+				.get('/api/public/invoices/getinfoforperiodpercustomer/20100202/20100211')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When invoices are requested by range', function() {
+
+		var response;
+		var body;
+
+		var company1;
+		var company2;
+		var company3;
+		var invoice1;
+		var invoice2;
+		var invoice3;
+		var invoice4;
+		var invoice5;
+		var invoice6;
+		var invoice7;
+
+		before(function(done) {
+
+			company1 = Company.create(uuid.v1(), '1100', 'Hello', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+			company2 = Company.create(testdata.normalAccountId, '1100', 'John BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+			company3 = Company.create(testdata.normalAccountId, '2200', 'Jane BVBA', 'BE124', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+
+		 	invoice1 = Invoice.create(testdata.normalAccountId, '1', 20100201, 20100230);
+			invoice1.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice1.changeCustomer('John BVBA', 'BE12345678', '1111', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			}); // outside range
+
+			invoice2 = Invoice.create(testdata.normalAccountId, '2', 20100202, 20100230);
+			invoice2.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice2.changeCustomer('John BVBA', 'BE12345678', '1100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});
+			invoice2.replaceLines([{
+				description: 'item 1', quantity: 1, priceInCents: 100, vatPercentage: 21
+			}]);
+
+			invoice3 = Invoice.create(testdata.normalAccountId, '3', 20100202, 20100230);
+			invoice3.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice3.changeCustomer('John BVBA', 'BE12345678', '1100', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});
+			invoice3.replaceLines([{
+				description: 'item 2', quantity: 2, priceInCents: 200, vatPercentage: 21
+			}]);
+
+			invoice4 = Invoice.create(testdata.normalAccountId, '4', 20100202, 20100230);
+			invoice4.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice4.changeCustomer('John BVBA', 'BE12345678', '2200', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});
+			invoice4.replaceLines([{
+				description: 'item 3', quantity: 1, priceInCents: 50, vatPercentage: 21
+			}]);
+
+			invoice5 = Invoice.create(testdata.normalAccountId, '5', 20100210, 20100230);
+			invoice5.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice5.changeCustomer('John BVBA', 'BE12345678', '2200', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			});
+			invoice5.replaceLines([{
+				description: 'item 4', quantity: 2, priceInCents: 100, vatPercentage: 21
+			}]);
+
+			invoice6 = Invoice.create(testdata.normalAccountId, '6', 20100211, 20100230);
+			invoice6.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice6.changeCustomer('John BVBA', 'BE12345678', '2222', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			}); // outside range
+
+			invoice7 = Invoice.create(uuid.v1(), '7', 20100205, 20100230);
+			invoice7.changeTemplate('<h1>INVOICE</h1><p>{{ invoice.number }}</p>');
+			invoice7.changeCustomer('John BVBA', 'BE12345678', '3333', {
+				line1: 'Kerkstraat', postalcode: '9999', city: 'Brussel'
+			}); // other tenant
+
+			async.series([
+				function(done) {
+					company1.save(done);
+				},
+				function(done) {
+					company2.save(done);
+				},
+				function(done) {
+					company3.save(done);
+				},
+				function(done) {
+					invoice1.save(done);
+				},
+				function(done) {
+					invoice2.save(done);
+				},
+				function(done) {
+					invoice3.save(done);
+				},
+				function(done) {
+					invoice4.save(done);
+				},
+				function(done) {
+					invoice5.save(done);
+				},
+				function(done) {
+					invoice6.save(done);
+				},
+				function(done) {
+					invoice7.save(done);
+				},
+				function(done) {
+	
+					request('http://localhost:' + config.port)
+						.get('/api/public/invoices/getinfoforperiodpercustomer/20100202/20100210')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should not return an invoice outside the range (min)', function() {
+			_.where(body, { customerNumber: '1111' }).length.should.eql(0);
+		});
+
+		it('should return invoice info grouped per customer (1)', function() {
+			var info = _.find(body, { customerNumber: '1100' });
+
+			info.customerNumber.should.eql('1100');
+			info.company.name.should.eql('John BVBA');
+			info.count.should.eql(2);
+			info.totalWithoutVatInCents.should.eql(500);
+			info.totalInCents.should.eql(605);
+			info.totalWithoutVat.should.eql(5);
+			info.total.should.eql(6.05);
+		});
+
+		it('should return invoice info grouped per customer (2)', function() {
+			var info = _.find(body, { customerNumber: '2200' });
+
+			info.customerNumber.should.eql('2200');
+			info.company.name.should.eql('Jane BVBA');
+			info.count.should.eql(2);
+			info.totalWithoutVatInCents.should.eql(250);
+			info.totalInCents.should.eql(303);
+			info.totalWithoutVat.should.eql(2.5);
+			info.total.should.eql(3.03);
+		});
+
+		it('should not return an invoice outside the range (max)', function() {
+			_.where(body, { customerNumber: '2222' }).length.should.eql(0);
+		});
+
+		it('should not return invoices from another tenant', function() {
+			_.where(body, { customerNumber: '3333' }).length.should.eql(0);
+		});
+	});
+	});	  
 });

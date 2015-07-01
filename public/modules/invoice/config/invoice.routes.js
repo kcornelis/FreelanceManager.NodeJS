@@ -17,10 +17,19 @@
 			controller: 'InvoiceOverviewController',
 			access: { requiredLogin: true },
 			params: {
-				from: function() {
- return moment().startOf('year').format('YYYYMMDD'); },
-				to: function() {
- return moment().endOf('year').format('YYYYMMDD'); }
+				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
+				to: function() { return moment().endOf('year').format('YYYYMMDD'); }
+			}
+		})
+
+		.state('app.invoice_report', {
+			url: '/invoice/report/:from/:to',
+			templateUrl: 'modules/invoice/views/report.html',
+			controller: 'InvoiceReportController',
+			access: { requiredLogin: true },
+			params: {
+				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
+				to: function() { return moment().endOf('year').format('YYYYMMDD'); }
 			}
 		});
 	}

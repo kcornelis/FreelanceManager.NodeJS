@@ -37,7 +37,8 @@
 		"icon": "icon-envelope",
 		"submenu": [
 			{ "text": "Create", "sref": "app.invoice_create" },
-			{ "text": "Overview", "sref": "app.invoice_overview" }
+			{ "text": "Overview", "sref": "app.invoice_overview" },
+			{ "text": "Report", "sref": "app.invoice_report" }
 		]
 	},
 	{
