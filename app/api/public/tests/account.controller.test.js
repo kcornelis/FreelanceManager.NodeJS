@@ -70,22 +70,18 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should create an account with the specified name', function() {
-
 			body.name.should.eql('John BVBA');
 		});
 
 		it('should create an account with the specified first name', function() {
-
 			body.firstName.should.eql('John');
 		});
 
 		it('should create an account with the specified last name', function() {
-
 			body.lastName.should.eql('Doe');
 		});	
 
 		it('should create an account with the specified email', function() {
-
 			body.email.should.eql('john_001@doe.com');
 		});					
 	});
@@ -208,22 +204,18 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should create an account with the specified name', function() {
-
 			account.name.should.eql('John BVBA');
 		});
 
 		it('should create an account with the specified first name', function() {
-
 			account.firstName.should.eql('John');
 		});
 
 		it('should create an account with the specified last name', function() {
-
 			account.lastName.should.eql('Doe');
 		});	
 
 		it('should create an account with the specified email', function() {
-
 			account.email.should.eql('john_005@doe.com');
 		});	
 		
@@ -232,22 +224,18 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should return the name', function() {
-
 			body.name.should.eql('John BVBA');
 		});
 
 		it('should return the first name', function() {
-
 			body.firstName.should.eql('John');
 		});
 
 		it('should return the last name', function() {
-
 			body.lastName.should.eql('Doe');
 		});	
 
 		it('should return the email', function() {
-
 			body.email.should.eql('john_005@doe.com');
 		});					
 	});	 
@@ -302,22 +290,18 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should update the account with the specified name', function() {
-
 			account.name.should.eql('Jane BVBA');
 		});
 
 		it('should update the account with the specified first name', function() {
-
 			account.firstName.should.eql('Jane');
 		});
 
 		it('should update the account with the specified last name', function() {
-
 			account.lastName.should.eql('D');
 		});		
 
 		it('should update the account with the specified email', function() {
-
 			account.email.should.eql('123456789jane@doe.com');
 		});				
 		
@@ -326,22 +310,18 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should return the name', function() {
-
 			body.name.should.eql('Jane BVBA');
 		});	
 
 		it('should return the first name', function() {
-
 			body.firstName.should.eql('Jane');
 		});	
 
 		it('should return the last name', function() {
-
 			body.lastName.should.eql('D');
 		});	
 
 		it('should return the email', function() {
-
 			body.email.should.eql('123456789jane@doe.com');
 		});	
 
@@ -386,17 +366,16 @@ describe('Public API: Account Controller Integration Tests:', function() {
 				}
 			], done);
 
-
 		});
 
 		it('should not be updated', function(done) {
 			Account.findById(account.id, function(err, c) {
 
-				if(err) {
- done(err); }
-
-				c.name.should.eql('Jane BVBA');
-				done();
+				if(err) { done(err); }
+				else {
+					c.name.should.eql('Jane BVBA');
+					done();
+				}
 			});
 		});		
 	});
@@ -433,12 +412,10 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should update the account password with the specified new password', function() {
-
 			account.authenticate('67890').should.be.true;
 		});
 
 		it('should return ok', function() {
-
 			body.ok.should.be.true;
 		});
 
@@ -486,7 +463,6 @@ describe('Public API: Account Controller Integration Tests:', function() {
 		});
 
 		it('should not update the account password with the specified new password', function() {
-
 			account.authenticate('12345').should.be.true;
 		});							
 	});	 	 
@@ -509,7 +485,6 @@ describe('Public API: Account Controller Integration Tests:', function() {
 				},
 				function(done) {
 
-
 					request('http://localhost:' + config.port)
 						.post('/api/public/accounts/' + account.id + '/changepassword')
 						.set('Authorization', testdata.normalAccountToken)
@@ -520,18 +495,17 @@ describe('Public API: Account Controller Integration Tests:', function() {
 				}
 			], done);
 
-
 		});
 
 		it('should not be updated', function(done) {
 			Account.findById(account.id, function(err, c) {
 
-				if(err) {
- done(err); }
+				if(err) { done(err); }
+				else {
+					account.authenticate('12345').should.be.true;
 
-				account.authenticate('12345').should.be.true;
-
-				done();
+					done();
+				}
 			});
 		});		
 	});	

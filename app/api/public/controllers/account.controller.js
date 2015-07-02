@@ -51,8 +51,7 @@ exports.update = function(req, res, next) {
 
 	Account.findById(req.params.accountId, function(err, account) {
 
-		if(err) {
- next(err); }
+		if(err) { next(err); }
 		else if(account) {
 
 			account.changeDetails(req.body.name, req.body.firstName, req.body.lastName, req.body.email);
@@ -73,11 +72,9 @@ exports.changepassword = function(req, res, next) {
 
 	Account.findById(req.params.accountId, function(err, account) {
 
-		if(err) {
- next(err); }
+		if(err) { next(err); }
 		else if(account && account.authenticate(req.body.oldPassword)) {
-
-			
+	
 			account.changePassword(req.body.newPassword);
 			account.save(function(err) {
 

@@ -59,7 +59,6 @@ function hashPassword(password, salt) {
 
 AccountSchema.statics.create = function(name, firstName, lastName, email) {
 
-	
 	var account = new this();
 
 	account.name = name;
@@ -80,7 +79,6 @@ AccountSchema.statics.create = function(name, firstName, lastName, email) {
 
 AccountSchema.methods.changePassword = function(password) {
 
-	
 	var salt = crypto.randomBytes(16).toString('base64');
 	var hash = hashPassword(password, salt);
 
@@ -96,7 +94,6 @@ AccountSchema.methods.changePassword = function(password) {
 
 AccountSchema.methods.makeAdmin = function() {
 
-
 	if(!this.admin) {
 
 		this.admin = true;
@@ -105,7 +102,6 @@ AccountSchema.methods.makeAdmin = function() {
 };
 
 AccountSchema.methods.changeDetails = function(name, firstName, lastName, email) {
-
 
 	if( this.name !== name ||
 		this.firstName !== firstName ||

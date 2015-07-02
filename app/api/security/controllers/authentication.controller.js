@@ -10,8 +10,7 @@ exports.authenticate = function(req, res, next) {
 	Account.findOne({ email: req.body.email }, function(err, account) {
 		if(err) {
 			next(err);
-		}
-		else {
+		} else {
 			if(account && account.authenticate(req.body.password)) {
 				
 				var profile = {

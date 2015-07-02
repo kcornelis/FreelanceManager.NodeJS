@@ -28,12 +28,10 @@ describe('Security: Authentication Controller Integration Tests:', function() {
 			
 			async.series([
 				function(done) {
-
 					account.save(done);
 				},
 				function(done) {
 
-					
 					request('http://localhost:' + config.port)
 						.post('/security/authenticate')
 						.send({ email: 'john123456@doe.com', password: '123' })
@@ -72,12 +70,10 @@ describe('Security: Authentication Controller Integration Tests:', function() {
 			
 			async.series([
 				function(done) {
-
 					account.save(done);
 				},
 				function(done) {
 
-					
 					request('http://localhost:' + config.port)
 						.post('/security/authenticate')
 						.send({ email: 'john567890@doe.com', password: '123' })

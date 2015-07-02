@@ -430,5 +430,4 @@ describe('Account Model Unit Tests:', function() {
 			Account.remove({ email: 'john@doe.com'}, done);
 		});
 	});
-
 });
