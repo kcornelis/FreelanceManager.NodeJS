@@ -38,7 +38,7 @@ function initialize(db){
 	initialized = true;	
 }
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'travis') {
 	
 	mongoose.connect(config.db);
 	initialize();

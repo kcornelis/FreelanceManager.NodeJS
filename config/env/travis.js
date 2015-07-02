@@ -2,5 +2,5 @@
 
 module.exports = {
 	db: 'mongodb://localhost/fm-travis',
-	port: 3000
+	port: 3001
 };
