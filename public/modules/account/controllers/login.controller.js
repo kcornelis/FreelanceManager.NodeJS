@@ -17,7 +17,7 @@
 					$window.localStorage.user = decrypted.fullName;
 
 					$window.localStorage.token = data.token;
-					$location.path($stateParams.r ? $stateParams.r : '/').search({ }); // TODO unit test
+					$location.path($stateParams.r ? decodeURIComponent($stateParams.r) : '/').search({ }); // TODO unit test
 				})
 				.error(function (data, status, headers, config) {
 					
