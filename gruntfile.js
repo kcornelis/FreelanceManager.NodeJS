@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 		serverViews: ['app/**/views/**/*.*'],
 		serverJS: ['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js'],
 		clientViews: ['public/modules/**/views/*.html'],
-		clientJS: ['public/modules/**/*.js'],
+		clientJS: ['public/*.js', 'public/modules/**/*.js'],
 		clientCSS: ['public/modules/**/*.css'],
 		mochaTests: ['app/infrastructure/testdata.server.js', 'app/**/tests/**/*.js']
 	};
@@ -189,9 +189,6 @@ module.exports = function(grunt) {
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
 
-	// Force by default to not break the project.
-	grunt.option('force', true);
-
 	// A task for loading the configuration object
 	grunt.task.registerTask('loadConfig', 'Task that loads the config into a grunt option.', function() {
 		var init = require('./config/init')();
@@ -203,15 +200,13 @@ module.exports = function(grunt) {
 		grunt.config.set('applicationCSSFiles', config.minification.fm.css);
 	});
 
-
 	// Lint task(s).
-	grunt.registerTask('lint', ['jshint', 'csslint']);
+	grunt.registerTask('lint', ['force:jshint', 'force:csslint']);
 
 	// Build task(s).
 	grunt.registerTask('fmbuild', ['loadConfig', 'concat:fm', 'cssmin:fm', 'uglify:fm']);
 	grunt.registerTask('libbuild', ['loadConfig', 'concat:lib', 'cssmin:lib', 'uglify:lib']);
 	grunt.registerTask('build', ['loadConfig', 'concat', 'cssmin', 'uglify']);
-
 
 
 	// Default task(s).
@@ -221,13 +216,9 @@ module.exports = function(grunt) {
 	grunt.registerTask('debug', ['lint', 'fmbuild', 'concurrent:debug']);
 
 
-
-	// Test task.
+	// Test tasks
+	grunt.registerTask('testtravis', ['env:travis', 'mochaTest', 'karma:unit']);
 	grunt.registerTask('testserver', ['lint', 'env:test','fmbuild', 'mochaTest']);
-
-	// Test task.
 	grunt.registerTask('testclient', ['lint', 'env:test','fmbuild', 'karma:unit']);
-
-	// Test task.
 	grunt.registerTask('test', ['lint', 'env:test','fmbuild', 'mochaTest', 'karma:unit']);
 };

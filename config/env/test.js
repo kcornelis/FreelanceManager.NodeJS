@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost/mean-tst',
+	db: 'mongodb://localhost/fm-tst',
 	port: 3001,
 	app: {
-		title: 'MEAN.JS - Test Environment'
+		title: 'Freelance Manager - Test'
 	}
 };

@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost:27017/mean-dev'
+	db: 'mongodb://localhost:27017/fm-dev'
 };
