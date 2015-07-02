@@ -4,19 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	_ = require('lodash'),
+	convert = require('../converters/account'),
 	Account = mongoose.model('Account');
-
-function convert(account) {
-
-	return {
-		id: account.id,
-		name: account.name,
-		firstName: account.firstName,
-		lastName: account.lastName,
-		email: account.email
-	};
-}
 
 exports.getById = function(req, res, next) {
 
@@ -30,7 +19,7 @@ exports.getAll = function(req, res, next) {
 
 	Account.find({ },function(err, accounts) {
 		if(err) next(err);
-		else res.send(_.map(accounts, convert));
+		else res.send(convert(accounts));
 	});
 };
 
