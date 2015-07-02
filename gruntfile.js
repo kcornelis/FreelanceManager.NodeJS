@@ -170,6 +170,9 @@ module.exports = function(grunt) {
 		env: {
 			test: {
 				NODE_ENV: 'test'
+			},
+			travis: {
+				NODE_ENV: 'travis'
 			}
 		},
 		mochaTest: {
