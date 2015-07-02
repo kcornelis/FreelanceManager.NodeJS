@@ -10,8 +10,8 @@ function convert(account) {
 		lastName: account.lastName,
 		email: account.email
 	};
-};
+}
 
 module.exports = function(a) {
 	return _.isArray(a) ? _.map(a, convert) : convert(a);
-}
+};

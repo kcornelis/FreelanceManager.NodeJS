@@ -4,7 +4,7 @@
 	describe('Time Registration Report Controller Unit Tests:', function() {
 
 		// Load the main application module
-		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module(fm.config.moduleName));
 		beforeEach(module('karma'));
 
 		describe('Year tests:', function() {

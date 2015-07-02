@@ -7,7 +7,7 @@
 		var scope, 
 			controller;
 
-		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module(fm.config.moduleName));
 		beforeEach(module('karma'));
 
 		beforeEach(inject(function($controller, $rootScope, $stateParams) {

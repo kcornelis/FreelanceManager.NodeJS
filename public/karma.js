@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	var karma = ApplicationConfiguration.registerModule('karma');
+	var karma = fm.module.register('karma');
 
 	function unknownRouteFix($urlRouterProvider) {
 		$urlRouterProvider.otherwise(function() { return false; });

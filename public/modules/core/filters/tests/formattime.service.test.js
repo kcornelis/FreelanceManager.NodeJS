@@ -6,7 +6,7 @@
 		var $filter;
 
 		// Load the main application module
-		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module(fm.config.moduleName));
 		beforeEach(module('karma'));
 
 		beforeEach(inject(function(_$filter_) {

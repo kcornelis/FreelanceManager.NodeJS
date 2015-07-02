@@ -27,6 +27,7 @@
 			templateUrl: 'modules/invoice/views/report.html',
 			controller: 'InvoiceReportController',
 			access: { requiredLogin: true },
+			resolve: fm.vendor.resolve('flot', 'flot-plugins'),
 			params: {
 				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
 				to: function() { return moment().endOf('year').format('YYYYMMDD'); }

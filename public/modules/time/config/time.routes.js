@@ -19,6 +19,7 @@
 			templateUrl: 'modules/time/views/report.html',
 			controller: 'TimeRegistrationReportController',
 			access: { requiredLogin: true },
+			resolve: fm.vendor.resolve('flot', 'flot-plugins'),
 			params: {
 				from: function() { return moment().startOf('month').format('YYYYMMDD'); },
 				to: function() { return moment().endOf('month').format('YYYYMMDD'); }
@@ -29,7 +30,7 @@
 			url: '/time/import',
 			templateUrl: 'modules/time/views/import.html',
 			controller: 'TimeRegistrationImportController',
-			resolve: ApplicationConfiguration.resolve('lib/js-xlsx/dist/xlsx.core.min.js'),
+			resolve: fm.vendor.resolve('xlsx'),
 			access: { requiredLogin: true }
 		})
 

@@ -33,7 +33,7 @@
 		});
 
 		// Load the main application module
-		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module(fm.config.moduleName));
 		beforeEach(module('karma'));
 
 		beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_) {

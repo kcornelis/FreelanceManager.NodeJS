@@ -39,6 +39,7 @@ module.exports = {
 				
 				'public/lib/lodash/lodash.js',
 				'public/lib/moment/moment.js',
+				'public/lib/oclazyload/dist/ocLazyLoad.js',
 
 				'public/lib/flat-theme/dist/flat-theme.angular.js'
 			]
@@ -49,7 +50,9 @@ module.exports = {
 			],
 			js: [
 				'public/config.js',
-				'public/application.js',
+				'public/module.js',
+				'public/bootstrap.js',
+				'public/vendor.js',
 				'public/modules/*/*.js',
 				'public/modules/*/*[!tests]*/*.js'
 			]

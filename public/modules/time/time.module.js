@@ -1,5 +1,5 @@
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmTime');
+	fm.module.register('fmTime');
 })();

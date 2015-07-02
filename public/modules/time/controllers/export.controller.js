@@ -61,7 +61,23 @@
 				$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
 				$scope.loading = false;
 			});
-		};	
+		};
+
+		// TODO
+		// $scope.export = function() {
+
+		// 	var wb = new Workbook();
+		// 	var wbOutput = XLSX.write(wb, { bookType:'xlsx', bookSST:false, type: 'binary' });
+
+		// 	saveAs(new Blob([convertStringToArrayBuffer(wbOutput)],{ type:"application/octet-stream" }), "test.xlsx")
+		// }
+
+		// function convertStringToArrayBuffer(s) {
+		// 	var buf = new ArrayBuffer(s.length);
+		// 	var view = new Uint8Array(buf);
+		// 	for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		// 	return buf;
+		// }
 	}
 
 	controller.$inject = ['$scope', '$state', '$stateParams', 'TimeRegistration'];

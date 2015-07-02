@@ -1,5 +1,5 @@
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmProject');
+	fm.module.register('fmProject');
 })();

@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmCore');
+	fm.module.register('fmCore');
 })();
 

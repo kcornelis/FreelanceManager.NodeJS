@@ -1,13 +1,7 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var glob = require('glob');
 
-/**
- * Module init function.
- */
 module.exports = function() {
 	/**
 	 * Before we begin, lets set the environment variable
@@ -34,6 +28,7 @@ module.exports = function() {
 	/**
 	 * Add our server node extensions
 	 */
+	require.extensions['.converter.js'] = require.extensions['.js'];
 	require.extensions['.controller.js'] = require.extensions['.js'];
 	require.extensions['.model.js'] = require.extensions['.js'];
 	require.extensions['.routes.js'] = require.extensions['.js'];

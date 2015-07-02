@@ -28,7 +28,7 @@
 		};
 
 		// Load the main application module
-		beforeEach(module(ApplicationConfiguration.applicationModuleName));
+		beforeEach(module(fm.config.moduleName));
 		beforeEach(module('karma'));
 
 		describe('when the controller is created for an existing time registration', function() {
