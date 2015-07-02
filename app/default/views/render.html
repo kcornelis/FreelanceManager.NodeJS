@@ -23,7 +23,7 @@
 	<div ui-view="" class="fill"></div>
 
 	<!--Application JavaScript Files-->
-	{% for jsFile in renderJsFiles %}<script type="text/javascript" src="/{{jsFile}}"></script>
+	{% for jsFile in renderJsFiles %}<script type="text/javascript" src="/{{jsFile}}?v={{version}}"></script>
 	{% endfor %}
 
 	{% if process.env.NODE_ENV === 'development' %}

@@ -5,11 +5,9 @@
 *   => require_config();
 */
 global.require_config = function() {
-
    return require(__dirname + '/config.js');
 };
 global.require_infrastructure = function(item) {
-
    return require(__dirname + '/../app/infrastructure/' + item);
 };
 
@@ -29,7 +27,8 @@ var express = require('express'),
 	}),
 	config = require('./config'),
 	consolidate = require('consolidate'),
-	path = require('path');
+	path = require('path'),
+	pck = require('../package.json');
 
 module.exports = function(db) {
 	
@@ -44,6 +43,7 @@ module.exports = function(db) {
 	// Setting application local variables
 	app.locals.title = config.app.title;
 	app.locals.description = config.app.description;
+	app.locals.version = pck.version;
 	app.locals.keywords = config.app.keywords;
 	app.locals.jsFiles = config.getJavaScriptAssets();
 	app.locals.renderJsFiles = config.getRenderJavaScriptAssets();
