@@ -235,8 +235,8 @@
 				beforeEach(inject(function($httpBackend) {
 
 					$httpBackend.expectGET('/api/public/invoices/getinfoforperiodpercustomer/20100101/20100107').respond(
-					[{ totalWithoutVatInCents: 15000, customer: { name: 'c1' } },
-					{ totalWithoutVatInCents: 10000, customer: { name: 'c2' } } ]);
+					[{ totalWithoutVatInCents: 15000, company: { name: 'c1' } },
+					{ totalWithoutVatInCents: 10000, company: { name: 'c2' } } ]);
 
 					scope.refresh();
 
