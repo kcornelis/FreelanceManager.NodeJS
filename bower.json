@@ -21,7 +21,7 @@
     "clockpicker": "~0.0.7",
     "angular-jwt": "~0.0.9",
     "js-xlsx": "~0.8.0",
-    "lodash": "~3.9.3",
+    "lodash": "~3.10.0",
     "flat-theme": "git://github.com/kcornelis/flat-theme.git",
     "angular-local-storage": "~0.2.1",
     "angular-resource": "~1.3.0",
