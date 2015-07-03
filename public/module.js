@@ -10,7 +10,7 @@ fm.module = (function() {
 		angular.module(fm.config.moduleName).requires.push(moduleName);
 
 		return m;
-	};
+	}
 
 	return {
 		register: register

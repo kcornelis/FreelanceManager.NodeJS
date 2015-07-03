@@ -8,47 +8,47 @@
 	}
 
 	function stateMock() {
+		var expectedTransitions = [];
+		var trackingTransitions = false;
 
+		var transitionTo = function(stateName, stateParams) {
 
-		this.expectedTransitions = [];
-		this.trackingTransitions = false;
-
-		this.transitionTo = function(stateName, stateParams) {
-
-			
-			if(!this.trackingTransitions)
+			if(!trackingTransitions)
 				return;
 
-			if(this.expectedTransitions.length > 0) {
-
-				var expectedState = this.expectedTransitions.shift();
+			if(expectedTransitions.length > 0) {
+				var expectedState = expectedTransitions.shift();
 				if(expectedState.name !== stateName || JSON.stringify(stateParams) !== JSON.stringify(expectedState.params)) {
-
 					throw Error('Expected transition to state: ' + expectedState.name + '(' + JSON.stringify(expectedState.params) + ') but transitioned to ' + stateName + '(' + JSON.stringify(stateParams) + ')' );
 				}
-				this.current = { name: stateName, params: stateParams };
+				current = { name: stateName, params: stateParams };
 			}else{
 				throw Error('No more transitions were expected!');
 			}
-		}
+		};
 
-		this.go = this.transitionTo;   
+		var go = transitionTo;   
 
-		this.expectTransitionTo = function(stateName, stateParams) {
+		var expectTransitionTo = function(stateName, stateParams) {
+			trackingTransitions = true;
+			expectedTransitions.push({ name: stateName, params: stateParams });
+		};
 
-			this.trackingTransitions = true;
-			this.expectedTransitions.push({ name: stateName, params: stateParams });
-		}
+		var current = { name: '' };
 
-		this.current = { name: '' };
-
-		this.ensureAllTransitionsHappened = function() {
-
-			if(this.expectedTransitions.length > 0) {
-
+		var ensureAllTransitionsHappened = function() {
+			if(expectedTransitions.length > 0) {
 				throw Error('Not all transitions happened!');
 			}
-		}
+		};
+
+		return {
+			transitionTo: transitionTo,
+			go: go,
+			expectTransitionTo: expectTransitionTo,
+			current: current,
+			ensureAllTransitionsHappened: ensureAllTransitionsHappened
+		};
 	}
 
 	unknownRouteFix.$inject = ['$urlRouterProvider'];
