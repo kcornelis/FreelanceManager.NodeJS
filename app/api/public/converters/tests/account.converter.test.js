@@ -7,13 +7,16 @@ var should = require('should'),
 
 describe('Account Converter Unit Tests:', function() {
 
-	describe('When an account converted to a dto', function() {
+	describe('When an account is converted to a dto', function() {
 
 		var converted;
 
 		beforeEach(function() {
-			console.log(convert);
-			converted = convert(Account.create('John Doe', 'John', 'Doe', 'john@doe.com'));
+			converted = convert.toDto(Account.create('John Doe', 'John', 'Doe', 'john@doe.com'));
+		});
+
+		it('should have an id', function() {
+			converted.id.should.exist;
 		});
 
 		it('should have a first name', function() {
@@ -38,7 +41,7 @@ describe('Account Converter Unit Tests:', function() {
 		var converted;
 
 		beforeEach(function() {
-			converted = convert([
+			converted = convert.toDto([
 				Account.create('John Doe', 'John', 'Doe', 'john@doe.com'),
 				Account.create('Jane Doe', 'Jane', 'Doe', 'jane@doe.com')
 			]);
@@ -52,6 +55,37 @@ describe('Account Converter Unit Tests:', function() {
 
 			converted[0].email.should.eql('john@doe.com');
 			converted[1].email.should.eql('jane@doe.com');
+		});
+	});
+
+	describe('When an account is converted to a dto with a promise', function() {
+
+		var converted;
+
+		beforeEach(function(done) {
+
+			convert.toDtoQ(Account.create('John Doe', 'John', 'Doe', 'john@doe.com'))
+				.done(function(a) { converted = a; done(); });
+		});
+
+		it('should have an id', function() {
+			converted.id.should.exist;
+		});
+
+		it('should have a first name', function() {
+			converted.firstName.should.eql('John');
+		});
+
+		it('should have a last name', function() {
+			converted.lastName.should.eql('Doe');
+		});
+
+		it('should have a name', function() {
+			converted.name.should.eql('John Doe');
+		});
+
+		it('should have a email', function() {
+			converted.email.should.eql('john@doe.com');
 		});
 	});
 });
