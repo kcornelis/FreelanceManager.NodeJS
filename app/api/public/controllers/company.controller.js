@@ -1,76 +1,62 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	_ = require('lodash'),
+var mongoose = require('mongoose-q')(),
+	convert = require('../converters/company'),
 	Company = mongoose.model('Company');
-
-function convert(company) {
-
-	return {
-		id: company.id,
-		name: company.name,
-		number: company.number,
-		vatNumber: company.vatNumber,
-		address: company.address
-	};
-}
 
 exports.getById = function(req, res, next) {
 
-	Company.findOne(
-	{ 
+	Company.findOneQ({ 
 		_id: req.params.companyId,
 		tenant: req.user.id
-	}, 
-	function(err, company) {
-		if(company)
-			res.send(convert(company));
-		else next();
-	});
+	})
+	.then(convert.toDtoQ)
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // company not found
+	})
+	.catch(next)
+	.done();
 };
 
-exports.getAll = function(req, res) {
+exports.getAll = function(req, res, next) {
 
-	Company.find({ tenant: req.user.id },function(err, companies) {
-		res.send(_.map(companies, convert));
-	});
+	Company.findQ({ tenant: req.user.id })
+		.then(convert.toDtoQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.create = function(req, res, next) {
 
-	Company.getNextNumber(req.user.id, function(err, number) {
-
-
-		var company = Company.create(req.user.id, number, req.body.name, req.body.vatNumber, req.body.address);
-		company.save(function(err) {
-
-			if(err) next(err);                     
-			else res.send(convert(company));
-		});
-	});
+	Company.getNextNumberQ(req.user.id)
+		.then(function(number) {
+			var company = Company.create(req.user.id, number, req.body.name, req.body.vatNumber, req.body.address);
+			return company.saveQ();
+		})
+		.then(convert.toDtoQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.update = function(req, res, next) {
 	
-	Company.findOne(
-	{ 
+	Company.findOneQ({ 
 		_id: req.params.companyId,
 		tenant: req.user.id
-	}, 
-	function(err, company) {
-		if(err) next(err);
-		else if(company) {
-
+	})
+	.then(function(company) {
+		if(company) {
 			company.changeDetails(req.body.name, req.body.vatNumber, req.body.address);
-			company.save(function(err) {
-
-				if(err) next(err);
-				else res.send(convert(company));
-			});
+			return company.saveQ().then(convert.toDtoQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // company not found
+	})
+	.catch(next)
+	.done();
 };
