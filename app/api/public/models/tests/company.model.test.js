@@ -4,10 +4,10 @@
  * Module dependencies.
  */
 var should = require('should'),
-	mongoose = require('mongoose'),
+	mongoose = require('mongoose-q')(),
+	async = require('async'),
 	uuid = require('node-uuid'),
 	Company = mongoose.model('Company');
-
 
 describe('Company Model Unit Tests:', function() {
 
@@ -234,6 +234,78 @@ describe('Company Model Unit Tests:', function() {
 		it('should not create a new event', function() {
 
 			company.events.should.have.length(1);
+		});
+
+		after(function(done) {
+			Company.remove(done);
+		});
+	});
+
+	describe('When a next company number is requested', function() {
+
+		var company1, company2;
+		var companyNumber1, companyNumber2;
+
+		before(function(done) {
+			async.series([
+				function(done) {
+					Company.getNextNumber(tenant, function(err, number) {
+						companyNumber1 = number;
+						done();
+					});
+				},
+				function(done) {
+					company1 = Company.create(tenant, companyNumber1, 'John Doe BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+					company1.save(done);
+				},
+				function(done) {
+					Company.getNextNumber(tenant, function(err, number) {
+						companyNumber2 = number;
+						done();
+					});
+				},
+				function(done) {
+					company2 = Company.create(tenant, companyNumber2, 'Jane Doe BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+					company2.save(done);
+				},
+			], done);
+		});
+
+		it('should give the next company number', function() {
+			company1.number.should.eql(1);
+			company2.number.should.eql(2);
+		});
+
+		after(function(done) {
+			Company.remove(done);
+		});
+	});
+
+	describe('When a next company number is requested (promise)', function() {
+
+		var company1, company2;
+
+		before(function(done) {
+
+			Company.getNextNumberQ(tenant)
+				.then(function(n) {
+					company1 = Company.create(tenant, n, 'John Doe BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+					return company1.saveQ();
+				})
+				.then(function() {
+					return Company.getNextNumberQ(tenant);
+				})
+				.then(function(n) {
+					company2 = Company.create(tenant, n, 'Jane Doe BVBA', 'BE123', { line1: 'kerkstraat', line2: 'tav me', postalcode: '1000', city: 'brussel'});
+					return company2.saveQ();
+				})
+				.finally(done)
+				.done();
+		});
+
+		it('should give the next company number', function() {
+			company1.number.should.eql(1);
+			company2.number.should.eql(2);
 		});
 
 		after(function(done) {

@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	_ = require('lodash'),
+	Q = require('q'),
 	AggregateRootSchema = require('./aggregateroot');
 
 /**
@@ -43,7 +44,6 @@ var CompanySchema = new AggregateRootSchema({
 
 CompanySchema.statics.create = function(tenant, number, name, vatNumber, address) {
 
-	
 	var company = new this();
 
 	company.name = name;
@@ -90,18 +90,25 @@ CompanySchema.methods.changeDetails = function(name, vatNumber, address) {
 	}
 };
 
-/*
- *	Read methods
- */
-
- CompanySchema.statics.getNextNumber = function(tenant, callback) {
-
-	
+CompanySchema.statics.getNextNumber = function(tenant, callback) {
 	return this.count({ tenant: tenant }, function(err, count) {
-
 		if(callback)
 			callback(err, count + 1);
 	});
+};
+
+CompanySchema.statics.getNextNumberQ = function(tenant) {
+	var deferred = Q.defer();
+	
+	this.count({ tenant: tenant }, function(err, count) {
+		if (err) {
+			deferred.reject(err);
+		} else {
+			deferred.resolve(count + 1);
+		}
+	});
+
+	return deferred.promise;
 };
 
 mongoose.model('Company', CompanySchema);
