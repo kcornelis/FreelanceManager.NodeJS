@@ -1,211 +1,143 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
+var mongoose = require('mongoose-q')(),
 	_ = require('lodash'),
+	convert = require('../converters/project'),
 	Project = mongoose.model('Project'),
 	Company = mongoose.model('Company');
 
-/**
- * Private helpers.
- */
-function convert(project, company) {
-
-	return {
-		id: project.id,
-		companyId: project.companyId,
-		company: {
-			name: company.name
-		},
-		name: project.name,
-		description: project.description,
-		tasks: _.map(project.tasks, function(t) {
-
-			return {
-				name: t.name,
-				defaultRateInCents: t.defaultRateInCents,
-				billable: t.defaultRateInCents > 0
-			};
-		}),
-		hidden: project.hidden
-	};
+function getCompany(project) {
+	return project ? [project, Company.findByIdQ(project.companyId)] : function() {};
 }
 
-function convertSingle(project, done) {
-
-
-	Company.findById(project.companyId, function(err, company) 
-	{ 
-		done(convert(project, company));
-	});
-}
-
-function convertMultiple(projects, done) {
-
-	var companyIds = _.map(projects, function(p) { return p.companyId; });
-
-	Company.find().in('_id', companyIds).exec(function(err, companies) 
-	{ 
-		var converted = _.map(projects, function(p) {
-			return convert(p, _.find(companies, { id: p.companyId }));
-		});
-
-		done(converted);
-	});
+function getCompanies(projects) {
+	var companyIds = _.map(projects, 'companyId');
+	return [projects, Company.find().in('_id', companyIds).execQ()];
 }
 
 exports.getById = function(req, res, next) {
 
-	Project.findOne(
-	{
+	Project.findOneQ({ 
 		_id: req.params.projectId,
 		tenant: req.user.id
-	}, 
-	function(err, project) 
-	{
-		if(project)
-		{
-			convertSingle(project, function(converted) {
-
-				res.send(converted);
-			});
-		}
-		else next();
-	});
+	})
+	.then(getCompany)
+	.spread(function(p, c) {
+		if(p) res.send(convert.toDtoWithCompany(p, c));
+		else next(); // time registration not found
+	})
+	.catch(next)
+	.done();
 };
 
-exports.getAll = function(req, res) {
+exports.getAll = function(req, res, next) {
 
-	Project.find({ tenant: req.user.id },function(err, projects) {
-		convertMultiple(projects, function(converted) {
-
-			res.send(converted);
-		});
-	});
+	Project.findQ({ tenant: req.user.id })
+		.then(getCompanies)
+		.spread(convert.toDtoWithCompanyQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
-exports.getActive = function(req, res) {
+exports.getActive = function(req, res, next) {
 
-
-	Project.find({ tenant: req.user.id, hidden: false },function(err, projects) {
-		convertMultiple(projects, function(converted) {
-
-			res.send(converted);
-		});
-	});
+	Project.findQ({ tenant: req.user.id, hidden: false })
+		.then(getCompanies)
+		.spread(convert.toDtoWithCompanyQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.create = function(req, res, next) {
 
 	var project = Project.create(req.user.id, req.body.companyId, req.body.name, req.body.description);
-	project.save(function(err) {
-
-		if(err) next(err);    
-		else convertSingle(project, function(converted) {
-
-			res.send(converted);
-		});
-	});
+	
+	project.saveQ()
+		.then(getCompany)
+		.spread(convert.toDtoWithCompanyQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.update = function(req, res, next) {
-	
-	Project.findOne(
-	{
+
+	Project.findOneQ({ 
 		_id: req.params.projectId,
 		tenant: req.user.id
-	}, 
-	function(err, project) {
-		if(err) next(err);
-		else if(project) {
-
+	})
+	.then(function(project) {
+		if(project) {
 			project.changeDetails(req.body.name, req.body.description);
-			project.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(project, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return project.saveQ().then(getCompany).spread(convert.toDtoWithCompanyQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // project not found
+	})
+	.catch(next)
+	.done();
 };
 
 exports.hide = function(req, res, next) {
 	
-	Project.findOne(
-	{
+	Project.findOneQ({ 
 		_id: req.params.projectId,
 		tenant: req.user.id
-	}, 
-	function(err, project) {
-		if(err) next(err);
-		else if(project) {
-
+	})
+	.then(function(project) {
+		if(project) {
 			project.hide();
-			project.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(project, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return project.saveQ().then(getCompany).spread(convert.toDtoWithCompanyQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // project not found
+	})
+	.catch(next)
+	.done();
 };
 
 exports.unhide = function(req, res, next) {
 	
-	Project.findOne(
-	{
+	Project.findOneQ({ 
 		_id: req.params.projectId,
 		tenant: req.user.id
-	}, 
-	function(err, project) {
-		if(err) next(err);
-		else if(project) {
-
+	})
+	.then(function(project) {
+		if(project) {
 			project.unhide();
-			project.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(project, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return project.saveQ().then(getCompany).spread(convert.toDtoWithCompanyQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // project not found
+	})
+	.catch(next)
+	.done();
 };
 
 exports.changeTasks = function(req, res, next) {
-	
-	Project.findOne(
-	{
+
+	Project.findOneQ({ 
 		_id: req.params.projectId,
 		tenant: req.user.id
-	}, 
-	function(err, project) {
-		if(err) next(err);
-		else if(project) {
-
+	})
+	.then(function(project) {
+		if(project) {
 			project.changeTasks(req.body);
-			project.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(project, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return project.saveQ().then(getCompany).spread(convert.toDtoWithCompanyQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // project not found
+	})
+	.catch(next)
+	.done();
 };
