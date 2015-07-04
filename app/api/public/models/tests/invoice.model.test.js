@@ -528,7 +528,7 @@ describe('Invoice Model Unit Tests:', function() {
 			saved.totalInCents.should.eql(962);
 		});
 
-		it('should have a template changed event', function() {
+		it('should have a invoice lines changed event', function() {
 
 
 			// invoice lines

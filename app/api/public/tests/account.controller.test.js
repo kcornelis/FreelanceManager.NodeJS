@@ -42,11 +42,9 @@ describe('Public API: Account Controller Integration Tests:', function() {
 			
 			async.series([
 				function(done) {
-
 					account.save(done);
 				},
 				function(done) {
-
 
 					request('http://localhost:' + config.port)
 						.get('/api/public/accounts/' + account._id)
