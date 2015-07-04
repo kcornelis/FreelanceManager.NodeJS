@@ -1,145 +1,65 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
+var mongoose = require('mongoose-q')(),
 	_ = require('lodash'),
-	async = require('async'),
+	Q = require('Q'),
+	convert = require('../converters/timeregistration'),
 	TimeRegistration = mongoose.model('TimeRegistration'),
 	Project = mongoose.model('Project'),
 	Company = mongoose.model('Company');
 
-/**
- * Private helpers.
- */
-function convert(timeRegistration, company, project) {
-
-	return {
-		id: timeRegistration.id,
-		companyId: timeRegistration.companyId,
-		company: {
-			name: company.name
-		},
-		projectId: timeRegistration.projectId,
-		project: {
-			name: project.name,
-			description: project.description
-		},
-		task: timeRegistration.task,
-		billable: timeRegistration.billable,
-		description: timeRegistration.description,
-		date: timeRegistration.date,
-		from: timeRegistration.from,
-		to: timeRegistration.to,
-		totalMinutes: timeRegistration.totalMinutes
-	};
+function getCompanyAndProject(timeregistration) {
+	return timeregistration ? [timeregistration, 
+		Company.findByIdQ(timeregistration.companyId),
+		Project.findByIdQ(timeregistration.projectId)] : function() { };
 }
 
-function convertSingle(timeregistration, done) {
+function getCompaniesAndProjects(timeregistrations) {
+	var companyIds = _.map(timeregistrations, 'companyId');
+	var projectIds = _.map(timeregistrations, 'projectId');
 
-
-	var project;
-	var company;
-
-	async.parallel([
-		function(done) {
-
-			Company.findById(timeregistration.companyId, function(err, c) { company = c; done(); });
-		},
-		function(done) {
-
-			Project.findById(timeregistration.projectId, function(err, p) { project = p; done(); });
-		}
-	], 
-	function() {
-
-		done(convert(timeregistration, company, project));
-	});
+	return [timeregistrations, 
+		Company.find().in('_id', companyIds).execQ(),
+		Project.find().in('_id', projectIds).execQ()];
 }
 
-function convertMultiple(timeRegistrations, done) {
-
-	var projects;
-	var companies;
-
-	var companyIds = _.map(timeRegistrations, 'companyId');
-	var projectIds = _.map(timeRegistrations, 'projectId');
-
-	async.parallel([
-		function(done) {
-			Company.find().in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
-		},
-		function(done) {
-			Project.find().in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
-		}
-	], 
-	function() {
-
-		var converted = _.map(timeRegistrations, function(tr) {
-			return convert(tr,
-				_.find(companies, 'id', tr.companyId),
-				_.find(projects, 'id', tr.projectId));
-		});
-
-		done(converted);
-	});
-}	
-
-/**
- * API Actions.
- */
 exports.getById = function(req, res, next) {
 
-	TimeRegistration.findOne(
-	{ 
+	TimeRegistration.findOneQ({ 
 		_id: req.params.timeRegistrationId,
-		tenant: req.user.id,
-		deleted: false
-	}, 
-	function(err, timeRegistration) {
-		if(err) next(err);
-		else if(timeRegistration)
-		{
-			convertSingle(timeRegistration, function(converted) {
-				res.send(converted);
-			});
-		}
-		else next();
-	});
+		tenant: req.user.id
+	})
+	.then(getCompanyAndProject)
+	.spread(function(tr, c, p) {
+		if(tr) res.send(convert.toDtoWithCompanyAndProject(tr, c, p));
+		else next(); // time registration not found
+	})
+	.catch(next)
+	.done();
 };
 
 exports.getAll = function(req, res, next) {
 
-	TimeRegistration.find(
-	{ 
-		tenant: req.user.id ,
-		deleted: false
-	},
-	function(err, timeRegistrations) 
-	{
-		if(err) next(err);
-		else convertMultiple(timeRegistrations, function(converted) {
-			res.send(converted);
-		});
-	});
+	TimeRegistration.findQ({ tenant: req.user.id, deleted: false })
+		.then(getCompaniesAndProjects)
+		.spread(convert.toDtoWithCompanyAndProjectQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.getForDate = function(req, res, next) {
 
-	TimeRegistration.find(
-	{ 
-		tenant: req.user.id,
-		deleted: false,
-		'date.numeric': req.params.date
-	},
-	function(err, timeRegistrations) 
-	{
-		if(err) next(err);
-		else convertMultiple(timeRegistrations, function(converted) {
-			res.send(converted);
-		});
-	});
+	TimeRegistration.findQ({ 
+		tenant: req.user.id, 
+		deleted: false, 
+		'date.numeric': req.params.date 
+	})
+	.then(getCompaniesAndProjects)
+	.spread(convert.toDtoWithCompanyAndProjectQ)
+	.then(res.send.bind(res))
+	.catch(next)
+	.done();
 };
 
 exports.search = function(req, res, next) {
@@ -164,222 +84,179 @@ exports.search = function(req, res, next) {
 	if(!_.isUndefined(req.query.billable))
 		searchOptions.billable = req.query.billable;
 
-	TimeRegistration.find(searchOptions, function(err, timeRegistrations) 
-	{
-		if(err) next(err);
-		else convertMultiple(timeRegistrations, function(converted) {
-			res.send(converted);
-		});
-	});
+	TimeRegistration.findQ(searchOptions)
+		.then(getCompaniesAndProjects)
+		.spread(convert.toDtoWithCompanyAndProjectQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.getForRange = function(req, res, next) {
 
-	TimeRegistration.find(
-	{ 
-		tenant: req.user.id,
-		deleted: false,
+	TimeRegistration.findQ({ 
+		tenant: req.user.id, 
+		deleted: false, 
 		'date.numeric': { $gte: req.params.from, $lte: req.params.to }
-	},
-	function(err, timeRegistrations) 
-	{
-		if(err) next(err);
-		else convertMultiple(timeRegistrations, function(converted) {
-			res.send(converted);
-		});
-	});
+	})
+	.then(getCompaniesAndProjects)
+	.spread(convert.toDtoWithCompanyAndProjectQ)
+	.then(res.send.bind(res))
+	.catch(next)
+	.done();
 };
 
 exports.getUninvoiced = function(req, res, next) {
 
-
-	TimeRegistration.find(
-	{ 
+	TimeRegistration.findQ({ 
 		tenant: req.user.id,
 		deleted: false,
 		invoiced: false,
-		billable: true
-	},
-	function(err, timeRegistrations) 
-	{
-		if(err) next(err);
-		else convertMultiple(timeRegistrations, function(converted) {
-			res.send(converted);
-		});
-	});
+		billable: true 
+	})
+	.then(getCompaniesAndProjects)
+	.spread(convert.toDtoWithCompanyAndProjectQ)
+	.then(res.send.bind(res))
+	.catch(next)
+	.done();
 };
 
 exports.getInfoForPeriod = function(req, res, next) {
 
-
-	TimeRegistration.aggregate([
-	{
-		$match: {
+	TimeRegistration.aggregate()
+		.match({
 			tenant: req.user.id,
 			deleted: false,
 			'date.numeric': { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
-		}
-	},
-	{ 	
-		$group: { 
+		})
+		.group({ 
 			_id: null, 
 			count: { $sum: 1 }, 
 			billable: { $sum: { $cond: [ '$billable', '$totalMinutes', 0 ] } },
 			total: { $sum: '$totalMinutes' }
-		}
-	}], 
-	function (err, result) {
-		if(err) next(err);
-		else res.send({
-			count: (result[0] ? result[0].count : 0),
-			billableMinutes: (result[0] ? result[0].billable : 0),
-			unBillableMinutes: (result[0] ? result[0].total - result[0].billable : 0)
-		});
-	});	
+		})
+		.execQ()
+		.then(function(result) {
+			res.send({
+				count: (result[0] ? result[0].count : 0),
+				billableMinutes: (result[0] ? result[0].billable : 0),
+				unBillableMinutes: (result[0] ? result[0].total - result[0].billable : 0)
+			});
+		})
+		.catch(next)
+		.done();
 };
 
 exports.getInfoForPeriodPerTask = function(req, res, next) {
 
-	
-	TimeRegistration.aggregate([
-	{
-		$match: {
+	TimeRegistration.aggregate()
+		.match({
 			tenant: req.user.id,
 			deleted: false,
 			'date.numeric': { $gte: parseInt(req.params.from), $lte: parseInt(req.params.to) }
-		}
-	},
-	{ 	
-		$group: { 
+		})
+		.group({ 
 			_id: { companyId: '$companyId', projectId: '$projectId', task: '$task' }, 
 			count: { $sum: 1 }, 
 			billable: { $sum: { $cond: [ '$billable', '$totalMinutes', 0 ] } },
 			total: { $sum: '$totalMinutes' }
-		}
-	}], 
-	function (err, result) {
-		
-		if(err) next(err);
-		else
-		{ 
-			var projects;
-			var companies;
+		})
+		.execQ()
+		.then(function(result) {
+			var companyIds = _.uniq(_.pluck(result, '_id.companyId'));
+			var projectIds = _.uniq(_.pluck(result, '_id.projectId'));
 
-			var companyIds = _.uniq(_.map(result, function(tr) { return tr._id.companyId; }));
-			var projectIds = _.uniq(_.map(result, function(tr) { return tr._id.projectId; }));
-
-			async.parallel([
-				function(done) {
-
-					Company.find({ tenant: req.user.id }).in('_id', companyIds).exec(function(err, c) { companies = c; done(); });
-				},
-				function(done) {
-
-					Project.find({ tenant: req.user.id }).in('_id', projectIds).exec(function(err, p) { projects = p; done(); });
-				}
-			], 
-			function() {
-
-
-				res.send(_.map(result, function(r) {
-
-					return {
-						companyId: r._id.companyId,
-						company: _.find(companies, { 'id': r._id.companyId }),
-						projectId: r._id.projectId,
-						project: _.find(projects, { 'id': r._id.projectId }),
-						task: r._id.task,
-						count: r.count,
-						billableMinutes: r.billable,
-						unBillableMinutes: r.total - r.billable
-					};
-				}));
-			});
-		}
-	});	
+			return [result, 
+				Company.find({ tenant: req.user.id }).in('_id', companyIds).execQ(),
+				Project.find({ tenant: req.user.id }).in('_id', projectIds).execQ()];
+		})
+		.spread(function(result, companies, projects) {
+			res.send(_.map(result, function(r) {
+				return {
+					companyId: r._id.companyId,
+					company: _.find(companies, { 'id': r._id.companyId }),
+					projectId: r._id.projectId,
+					project: _.find(projects, { 'id': r._id.projectId }),
+					task: r._id.task,
+					count: r.count,
+					billableMinutes: r.billable,
+					unBillableMinutes: r.total - r.billable
+				};
+			}));
+		})
+		.catch(next)
+		.done();
 };
 
 exports.create = function(req, res, next) {
 
-	var timeRegistrations = req.body;
-	var domainTimeRegistrations = [];
-
-	if(!_.isArray(timeRegistrations)) {
-
-		timeRegistrations = [ req.body ];
-	}
-	
-	_.forEach(timeRegistrations, function (timeRegistration) {
-
+	function createPromise(timeRegistration) {
 		var domainTimeRegistration = TimeRegistration.create(req.user.id, 
 			timeRegistration.companyId, timeRegistration.projectId, timeRegistration.task, 
 			timeRegistration.billable, timeRegistration.description, 
 			timeRegistration.date, timeRegistration.from, timeRegistration.to);
 
-		domainTimeRegistrations.push(domainTimeRegistration);
-		domainTimeRegistration.save(function(err) {
-			if(err) next(err);		
-		});
-	});
+		return domainTimeRegistration.saveQ()
+			.then(getCompanyAndProject)
+			.spread(convert.toDtoWithCompanyAndProjectQ);
+	}
+	
+	var timeRegistrations = _.isArray(req.body) ? req.body : [ req.body ];
 
-	if(domainTimeRegistrations.length === 1) {
-		convertSingle(domainTimeRegistrations[0], function(converted) {
-			res.send(converted);
-		});
-	}
-	else{
-		convertMultiple(domainTimeRegistrations, function(converted) {
-			res.send(converted);
-		});
-	}
+	Q.all(_.map(timeRegistrations, createPromise))
+		.then(function(dtos) {
+			if(dtos.length === 1)
+				res.send(dtos[0]);
+			else
+				res.send(dtos);
+		})
+		.catch(next)
+		.done();
 };
 
 exports.update = function(req, res, next) {
 	
-	TimeRegistration.findOne(
-	{ 
+	TimeRegistration.findOneQ({ 
 		_id: req.params.timeRegistrationId,
 		tenant: req.user.id,
 		deleted: false
-	}, 
-	function(err, timeRegistration) {
-		if(err) next(err);
-		else if(timeRegistration) {
-
+	})
+	.then(function(timeRegistration) {
+		if(timeRegistration) {
 			timeRegistration.changeDetails(req.body.companyId, req.body.projectId, req.body.task, 
 				req.body.billable, req.body.description, 
 				req.body.date, req.body.from, req.body.to);
 
-			timeRegistration.save(function(err) {
-				if(err) next(err);
-				else convertSingle(timeRegistration, function(converted) {
-					res.send(converted);
-				});
-			});
+			return timeRegistration.saveQ()
+				.then(getCompanyAndProject)
+				.spread(convert.toDtoWithCompanyAndProjectQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // time registration not found
+	})
+	.catch(next)
+	.done();
 };
-
 
 exports.delete = function(req, res, next) {
 	
-	TimeRegistration.findOne(
-	{ 
+	TimeRegistration.findOneQ({ 
 		_id: req.params.timeRegistrationId,
 		tenant: req.user.id,
 		deleted: false
-	}, 
-	function(err, timeRegistration) {
-		if(err) next(err);
-		else if(timeRegistration) {
+	})
+	.then(function(timeRegistration) {
+		if(timeRegistration) {
 			timeRegistration.delete();
-			timeRegistration.save(function(err) {
-
-				if(err) next(err);
-				else res.send({ deleted: req.params.timeRegistrationId });
-			});
+			return timeRegistration.saveQ();
 		}
-		else next();
-	});
+	})
+	.then(function(tr) { 
+		if(tr) res.send({ deleted: req.params.timeRegistrationId });
+		else next(); // time registration not found
+	})
+	.catch(next)
+	.done();
 };
