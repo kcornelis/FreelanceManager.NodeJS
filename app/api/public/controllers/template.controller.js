@@ -1,165 +1,108 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	_ = require('lodash'),
+var mongoose = require('mongoose-q')(),
+	convert = require('../converters/template'),
 	Template = mongoose.model('Template');
-
-/**
- * Private helpers.
- */
-function convert(template) {
-
-	return {
-		id: template.id,
-		name: template.name,
-		content: template.content,
-		hidden: template.hidden
-	};
-}
-
-function convertSingle(template, done) {
-
-
-	done(convert(template));
-}
-
-function convertMultiple(templates, done) {
-
-	var converted = _.map(templates, function(t) {
-		return convert(t);
-	});
-
-	done(converted);
-}
 
 exports.getById = function(req, res, next) {
 
-	Template.findOne(
-	{
+	Template.findOneQ({ 
 		_id: req.params.templateId,
 		tenant: req.user.id
-	}, 
-	function(err, template) 
-	{
-		if(template)
-		{
-			convertSingle(template, function(converted) {
-
-				res.send(converted);
-			});
-		}
-		else next();
-	});
+	})
+	.then(convert.toDtoQ)
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // template not found
+	})
+	.catch(next)
+	.done();
 };
 
-exports.getAll = function(req, res) {
+exports.getAll = function(req, res, next) {
 
-	Template.find({ tenant: req.user.id },function(err, templates) {
-		convertMultiple(templates, function(converted) {
-
-			res.send(converted);
-		});
-	});
+	Template.findQ({ tenant: req.user.id })
+		.then(convert.toDtoQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
-exports.getActive = function(req, res) {
+exports.getActive = function(req, res, next) {
 
-
-	Template.find({ tenant: req.user.id, hidden: false },function(err, templates) {
-		convertMultiple(templates, function(converted) {
-
-			res.send(converted);
-		});
-	});
+	Template.findQ({ tenant: req.user.id, hidden: false })
+		.then(convert.toDtoQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.create = function(req, res, next) {
 
 	var template = Template.create(req.user.id, req.body.name, req.body.content);
-	template.save(function(err) {
-
-		if(err) next(err);    
-		else convertSingle(template, function(converted) {
-
-			res.send(converted);
-		});
-	});
+	template.saveQ()
+		.then(convert.toDtoQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
 };
 
 exports.update = function(req, res, next) {
-	
-	Template.findOne(
-	{
+
+	Template.findOneQ({ 
 		_id: req.params.templateId,
 		tenant: req.user.id
-	}, 
-	function(err, template) {
-		if(err) next(err);
-		else if(template) {
-
+	})
+	.then(function(template) {
+		if(template) {
 			template.changeDetails(req.body.name, req.body.content);
-			template.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(template, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return template.saveQ().then(convert.toDtoQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // template not found
+	})
+	.catch(next)
+	.done();
 };
 
 exports.hide = function(req, res, next) {
 	
-	Template.findOne(
-	{
+	Template.findOneQ({ 
 		_id: req.params.templateId,
 		tenant: req.user.id
-	}, 
-	function(err, template) {
-		if(err) next(err);
-		else if(template) {
-
+	})
+	.then(function(template) {
+		if(template) {
 			template.hide();
-			template.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(template, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return template.saveQ().then(convert.toDtoQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // template not found
+	})
+	.catch(next)
+	.done();
 };
 
 exports.unhide = function(req, res, next) {
 	
-	Template.findOne(
-	{
+	Template.findOneQ({ 
 		_id: req.params.templateId,
 		tenant: req.user.id
-	}, 
-	function(err, template) {
-		if(err) next(err);
-		else if(template) {
-
+	})
+	.then(function(template) {
+		if(template) {
 			template.unhide();
-			template.save(function(err) {
-
-				if(err) next(err);
-				else convertSingle(template, function(converted) {
-
-					res.send(converted);
-				});
-			});
+			return template.saveQ().then(convert.toDtoQ);
 		}
-		else next();
-	});
+	})
+	.then(function(dto) { 
+		if(dto) res.send(dto);
+		else next(); // template not found
+	})
+	.catch(next)
+	.done();
 };
