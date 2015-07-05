@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose-q')(),
 	_ = require('lodash'),
-	Q = require('Q'),
+	Q = require('q'),
 	convert = require('../converters/timeregistration'),
 	TimeRegistration = mongoose.model('TimeRegistration'),
 	Project = mongoose.model('Project'),
@@ -200,7 +200,7 @@ exports.create = function(req, res, next) {
 			.then(getCompanyAndProject)
 			.spread(convert.toDtoWithCompanyAndProjectQ);
 	}
-	
+
 	var timeRegistrations = _.isArray(req.body) ? req.body : [ req.body ];
 
 	Q.all(_.map(timeRegistrations, createPromise))
