@@ -1,27 +1,108 @@
-// Init the application configuration module for AngularJS application
-var ApplicationConfiguration = (function() {
+var fm = fm || {};
+
+fm.config = (function() {
 	'use strict';
 
-	// Init module configuration options
-	var applicationModuleName = 'freelancemanager';
-	var applicationModuleVendorDependencies = [ 'LocalStorageModule', 'ngAnimate', 'ui.bootstrap', 'ui.router', 'ui.utils', 'ngResource', 'ft', 'ngTable'];
+	return {
+		moduleName: 'freelancemanager',
+		moduleDependencies: ['LocalStorageModule', 
+			'ngAnimate', 
+			'ui.bootstrap', 
+			'ui.router', 
+			'ui.utils',
+			'oc.lazyLoad',
+			'ngResource', 
+			'ft', 
+			'ngTable']
+	};
+})();
 
-	// Add a new vertical module
-	var registerModule = function(moduleName) {
+var fm = fm || {};
 
-		// Create angular module
+fm.module = (function() {
+	'use strict';
+
+	function register(moduleName) {
 		var m = angular.module(moduleName, []);
 
 		// Add the module to the AngularJS configuration file
-		angular.module(applicationModuleName).requires.push(moduleName);
+		angular.module(fm.config.moduleName).requires.push(moduleName);
 
 		return m;
-	};
+	}
 
-	var resolve = function() {
+	return {
+		register: register
+	};
+})();
+
+(function() {
+	'use strict';
+	
+	angular.module(fm.config.moduleName, fm.config.moduleDependencies);
+
+	// Setting HTML5 Location Mode
+	angular.module(fm.config.moduleName).config(['$locationProvider',
+		function($locationProvider) {
+			$locationProvider.hashPrefix('!');
+		}
+	]);
+
+	angular.element(document).ready(function() {
+		angular.bootstrap(document, [fm.config.moduleName]);
+	});
+})();
+
+var fm = fm || {};
+
+fm.vendor = (function() {
+	'use strict';
+
+	var vendorConfiguration = [
+	{
+		name: 'flot',
+		files: ['lib/flot/jquery.flot.js']
+	}, 
+	{
+		name: 'flot-plugins',
+		files: ['lib/flot/jquery.flot.resize.js',
+			'lib/flot/jquery.flot.pie.js', 
+			'lib/flot/jquery.flot.time.js',
+			'lib/flot/jquery.flot.categories.js', 
+			'lib/flot/jquery.flot.stack.js',
+			'lib/flot-spline/js/jquery.flot.spline.js', 
+			'lib/flot.tooltip/js/jquery.flot.tooltip.js',
+			'lib/angular-flot/angular-flot.js']
+	}, 
+	{
+		name: 'xlsx',
+		files: ['lib/js-xlsx/dist/xlsx.core.min.js']
+	}];
+
+	function configure($ocLazyLoadProvider) {
+		$ocLazyLoadProvider.config({
+			modules: vendorConfiguration
+		});
+	}
+
+	configure.$inject = ['$ocLazyLoadProvider'];
+
+	angular.module(fm.config.moduleName).config(configure);
+
+	function resolve() {
 		var _args = arguments;
 		return {
-			deps: ['$ocLazyLoad','$q', function ($ocLL, $q) {
+			vendor: ['$ocLazyLoad','$q', function ($ocLL, $q) {
+				// creates promise to chain dynamically
+				function andThen(_arg) {
+					// also support a function that returns a promise
+					if(typeof _arg === 'function')
+						return promise.then(_arg);
+					else return promise.then(function() {
+						return $ocLL.load( _arg );
+					});
+				}
+
 				// Creates a promise chain for each argument
 				var promise = $q.when(1); // empty promise
 				for(var i=0, len=_args.length; i < len; i ++) {
@@ -29,89 +110,57 @@ var ApplicationConfiguration = (function() {
 					promise = andThen(_args[i]);
 				}
 				return promise;
-
-				// creates promise to chain dynamically
-				function andThen(_arg) {
-					// also support a function that returns a promise
-					if(typeof _arg == 'function')
-							return promise.then(_arg);
-					else
-							return promise.then(function() {
-								return $ocLL.load( _arg );
-							});
-				}
 			}]};
-	};
+	}
 
 	return {
-		applicationModuleName: applicationModuleName,
-		applicationModuleVendorDependencies: applicationModuleVendorDependencies,
-		registerModule: registerModule,
 		resolve: resolve
 	};
-})();
-(function() {
-	'use strict';
-	
-	//Start by defining the main module and adding the module dependencies
-	angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 
-	// Setting HTML5 Location Mode
-	angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
-		function($locationProvider) {
-			$locationProvider.hashPrefix('!');
-		}
-	]);
-
-	//Then define the init function for starting up the application
-	angular.element(document).ready(function() {
-		//Then init the app
-		angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
-	});
 })();
 
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmAccount');
+	fm.module.register('fmAccount');
 })();
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmCore');
+	fm.module.register('fmCore');
 })();
 
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmCrm');
+	fm.module.register('fmCrm');
 })();
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmInvoice');
+	fm.module.register('fmInvoice');
 })();
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmProject');
+	fm.module.register('fmProject');
 })();
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmSettings');
+	fm.module.register('fmSettings');
 })();
 
 (function() {
 	'use strict';
 
-	ApplicationConfiguration.registerModule('fmTime');
+	fm.module.register('fmTime');
 })();
 
 (function() {
@@ -227,7 +276,7 @@ var ApplicationConfiguration = (function() {
 					$window.localStorage.user = decrypted.fullName;
 
 					$window.localStorage.token = data.token;
-					$location.path($stateParams.r ? $stateParams.r : '/').search({ }); // TODO unit test
+					$location.path($stateParams.r ? decodeURIComponent($stateParams.r) : '/').search({ }); // TODO unit test
 				})
 				.error(function (data, status, headers, config) {
 					
@@ -726,6 +775,7 @@ var ApplicationConfiguration = (function() {
 		{
 			preview: { method:'POST', url: '/api/public/invoices/preview', isArray: false },
 			bydate: { method:'GET', url: '/api/public/invoices/bydate/:from/:to', params: { from: '@from', to: '@to' }, isArray: true },
+			getinfoforperiodpercustomer: { method:'GET', url: '/api/public/invoices/getinfoforperiodpercustomer/:from/:to', params: { from: '@from', to: '@to' }, isArray: true }
 		});
 	}
 
@@ -1077,10 +1127,20 @@ var ApplicationConfiguration = (function() {
 			controller: 'InvoiceOverviewController',
 			access: { requiredLogin: true },
 			params: {
-				from: function() {
- return moment().startOf('year').format('YYYYMMDD'); },
-				to: function() {
- return moment().endOf('year').format('YYYYMMDD'); }
+				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
+				to: function() { return moment().endOf('year').format('YYYYMMDD'); }
+			}
+		})
+
+		.state('app.invoice_report', {
+			url: '/invoice/report/:from/:to',
+			templateUrl: 'modules/invoice/views/report.html',
+			controller: 'InvoiceReportController',
+			access: { requiredLogin: true },
+			resolve: fm.vendor.resolve('flot', 'flot-plugins'),
+			params: {
+				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
+				to: function() { return moment().endOf('year').format('YYYYMMDD'); }
 			}
 		});
 	}
@@ -1340,6 +1400,88 @@ var ApplicationConfiguration = (function() {
 	controller.$inject = ['$scope', 'Invoice', '$state', '$stateParams'];
 
 	angular.module('fmInvoice').controller('InvoiceOverviewController', controller);
+})();
+
+(function() {
+	'use strict';
+
+	function controller($scope, $location, $state, $stateParams, Invoice) {
+
+		$scope.from = moment($stateParams.from, 'YYYYMMDD');
+		$scope.to = moment($stateParams.to, 'YYYYMMDD');
+
+		// is this a full year?
+		if($scope.from.date() === 1 && $scope.from.month() === 0 &&
+			$scope.to.date() === 31 && $scope.to.month() === 11 &&
+			$scope.from.year() === $scope.to.year())
+		{
+			$scope.title = $scope.from.format('YYYY');
+
+			$scope.previousFrom = moment($scope.from).subtract(1, 'year');
+			$scope.previousTo = moment($scope.to).subtract(1, 'year');
+			$scope.nextFrom = moment($scope.from).add(1, 'year');
+			$scope.nextTo = moment($scope.to).add(1, 'year');
+		}
+		// is this a full month?
+		else if($scope.from.date() === 1 && moment($scope.from).endOf('month').date() === $scope.to.date() &&
+			$scope.from.month() === $scope.to.month() &&
+			$scope.from.year() === $scope.to.year())
+		{
+			$scope.title = $scope.from.format('MMMM YYYY');
+
+			$scope.previousFrom = moment($scope.from).subtract(1, 'month').startOf('month');
+			$scope.previousTo = moment($scope.from).subtract(1, 'month').endOf('month');
+			$scope.nextFrom = moment($scope.from).add(1, 'month').startOf('month');
+			$scope.nextTo = moment($scope.from).add(1, 'month').endOf('month');
+		}
+		else {
+			$scope.title = $scope.from.format('YYYY-MM-DD') + ' - ' + $scope.to.format('YYYY-MM-DD');
+			
+			var days = $scope.to.diff($scope.from, 'days') + 1;
+			$scope.previousFrom = moment($scope.from).subtract(days, 'days');
+			$scope.previousTo = moment($scope.to).subtract(days, 'days');
+			$scope.nextFrom = moment($scope.from).add(days, 'days');
+			$scope.nextTo = moment($scope.to).add(days, 'days');
+		}
+
+		$scope.weekStart = moment().startOf('isoWeek').format('YYYYMMDD');
+		$scope.weekEnd = moment().endOf('isoWeek').format('YYYYMMDD');
+		$scope.monthStart = moment().startOf('month').format('YYYYMMDD');
+		$scope.monthEnd = moment().endOf('month').format('YYYYMMDD');
+		$scope.yearStart = moment().startOf('year').format('YYYYMMDD');
+		$scope.yearEnd = moment().endOf('year').format('YYYYMMDD');
+
+		$scope.previous = function() {
+			$state.go('app.invoice_report', { from: $scope.previousFrom.format('YYYYMMDD'), to: $scope.previousTo.format('YYYYMMDD')}, { location: 'replace' });
+		};
+
+		$scope.next = function() {
+			$state.go('app.invoice_report', { from: $scope.nextFrom.format('YYYYMMDD'), to: $scope.nextTo.format('YYYYMMDD')}, { location: 'replace' });
+		};
+
+		$scope.refresh = function() {
+
+			$scope.loading = true;
+
+			Invoice.getinfoforperiodpercustomer({ from: $scope.from.format('YYYYMMDD'), to:  $scope.to.format('YYYYMMDD') },
+				function(result) {
+
+					$scope.infoPerCustomer = result;
+					$scope.invoiceGraph = _.map(result, function(r) {
+						return { label: r.company.name, data: r.totalWithoutVatInCents / 100 };
+					});
+					$scope.totalWithoutVatInCents = _.sum(result, 'totalWithoutVatInCents');
+					$scope.totalWithoutVat = $scope.totalWithoutVatInCents / 100;
+					$scope.hasInvoices = result && result.length > 0;
+
+					$scope.loading = false;
+				});
+		};
+	}
+
+	controller.$inject = ['$scope', '$location', '$state', '$stateParams', 'Invoice'];
+
+	angular.module('fmInvoice').controller('InvoiceReportController', controller);
 })();
 
 (function() {
@@ -1623,6 +1765,7 @@ var ApplicationConfiguration = (function() {
 			templateUrl: 'modules/time/views/report.html',
 			controller: 'TimeRegistrationReportController',
 			access: { requiredLogin: true },
+			resolve: fm.vendor.resolve('flot', 'flot-plugins'),
 			params: {
 				from: function() { return moment().startOf('month').format('YYYYMMDD'); },
 				to: function() { return moment().endOf('month').format('YYYYMMDD'); }
@@ -1633,7 +1776,7 @@ var ApplicationConfiguration = (function() {
 			url: '/time/import',
 			templateUrl: 'modules/time/views/import.html',
 			controller: 'TimeRegistrationImportController',
-			resolve: ApplicationConfiguration.resolve('lib/js-xlsx/dist/xlsx.core.min.js'),
+			resolve: fm.vendor.resolve('xlsx'),
 			access: { requiredLogin: true }
 		})
 
@@ -1717,7 +1860,23 @@ var ApplicationConfiguration = (function() {
 				$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
 				$scope.loading = false;
 			});
-		};	
+		};
+
+		// TODO
+		// $scope.export = function() {
+
+		// 	var wb = new Workbook();
+		// 	var wbOutput = XLSX.write(wb, { bookType:'xlsx', bookSST:false, type: 'binary' });
+
+		// 	saveAs(new Blob([convertStringToArrayBuffer(wbOutput)],{ type:"application/octet-stream" }), "test.xlsx")
+		// }
+
+		// function convertStringToArrayBuffer(s) {
+		// 	var buf = new ArrayBuffer(s.length);
+		// 	var view = new Uint8Array(buf);
+		// 	for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		// 	return buf;
+		// }
 	}
 
 	controller.$inject = ['$scope', '$state', '$stateParams', 'TimeRegistration'];
