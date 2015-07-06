@@ -1,5 +1,6 @@
 <div class="content-header">
 	<h1><i class="icon-user"></i>Account</h1>
+	<small>Change your account details or pick a new password.</small>
 </div>
 
 <div class="row">
@@ -36,6 +37,9 @@
 					</ft-form-group>
 				</div>
 				<div class="panel-footer clearfix">
+					<div class="pull-left" ng-show="isSaving">
+						<i class="fm-spinner"></i>
+					</div>
 					<div class="pull-right">
 						<button type="submit" class="btn btn-primary" ng-click="save()" 
 								ng-disabled="accountInfoForm.$invalid">Save</button>
@@ -57,19 +61,19 @@
 					<ft-form-group ft-floating-label fm-add-error-for="accountPasswordForm.oldPassword">
 						<label>Old password</label>
 						<input type="password" name="oldPassword" class="form-control" 
-								ng-model="oldPassword" required>
+								ng-model="password.old" required>
 					</ft-form-group>
 
 					<ft-form-group ft-floating-label fm-add-error-for="accountPasswordForm.newPassword">
 						<label>New password</label>
 						<input type="password" name="newPassword" class="form-control" 
-								ng-model="newPassword" required>
+								ng-model="password.new" required>
 					</ft-form-group>
 
 					<ft-form-group ft-floating-label fm-add-error-for="accountPasswordForm.newPasswordConfirm">
 						<label>Password confirm</label>
 						<input type="password" name="newPasswordConfirm" class="form-control" 
-								ng-model="newPasswordConfirm" required fm-match="newPassword">
+								ng-model="password.confirm" required fm-match="password.new">
 					</ft-form-group>
 				</div>
 				<div class="panel-footer clearfix">

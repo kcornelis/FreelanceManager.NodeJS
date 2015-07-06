@@ -5,22 +5,24 @@
 
 		var token = jwtHelper.decodeToken($window.localStorage.token);
 
-		$scope.oldPassword = '';
-		$scope.newPassword = '';
-		$scope.newPasswordConfirm = '';
+		$scope.password = {
+			old: '',
+			new: '',
+			confirm: ''
+		};
 
 		$scope.save = function () {
 			$scope.isSaving = true;
 			$scope.hasError = false;
 
-			Account.changePassword({ id: token.id }, { oldPassword: $scope.oldPassword, newPassword: $scope.newPassword },
+			Account.changePassword({ id: token.id }, { oldPassword: $scope.password.old, newPassword: $scope.password.new },
 				function() {
 
 					$scope.isSaving = false;
 
-					$scope.oldPassword = '';
-					$scope.newPassword = '';
-					$scope.newPasswordConfirm = '';
+					$scope.password.old = '';
+					$scope.password.new = '';
+					$scope.password.confirm = '';
 
 					$scope.accountPasswordForm.$setPristine();
 				},

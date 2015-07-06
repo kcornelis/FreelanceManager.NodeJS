@@ -26,15 +26,15 @@
 			}));
 
 			it('should create an empty oldPassword', function() {
-				expect(scope.oldPassword).toBe('');
+				expect(scope.password.old).toBe('');
 			});
 
 			it('should create an empty newPassword', function() {
-				expect(scope.newPassword).toBe('');
+				expect(scope.password.new).toBe('');
 			});
 
 			it('should create an empty newPasswordConfirm', function() {
-				expect(scope.newPasswordConfirm).toBe('');
+				expect(scope.password.confirm).toBe('');
 			});								
 		});	
 
@@ -64,8 +64,8 @@
 					Account: accountServiceMock
 				});
 
-				scope.oldPassword = 'abc';
-				scope.newPassword = 'xyz';
+				scope.password.old = 'abc';
+				scope.password.new = 'xyz';
 				scope.accountPasswordForm = {
 					pristineCalled: false,
 					$setPristine: function() { this.pristineCalled = true; }
@@ -82,7 +82,7 @@
 
 			it('should set is saving to true before the data is send to the backend', function() {
 				expect(scope.isSaving).toBe(true);
-			});				
+			});
 
 			it('should set is saving to false after the data is send to the backend', function() {	
 				accountServiceMock.flush();
@@ -96,9 +96,9 @@
 
 			it('should reset the scope variables after the data is send to the backend', function() {	
 				accountServiceMock.flush();
-				expect(scope.oldPassword).toBe('');
-				expect(scope.newPassword).toBe('');
-				expect(scope.newPasswordConfirm).toBe('');
+				expect(scope.password.old).toBe('');
+				expect(scope.password.new).toBe('');
+				expect(scope.password.confirm).toBe('');
 			});					
 		});	
 
@@ -128,9 +128,9 @@
 					Account: accountServiceMock
 				});
 
-				scope.oldPassword = 'abc';
-				scope.newPassword = 'xyz';
-				scope.newPasswordConfirm = 'xyz';
+				scope.password.old = 'abc';
+				scope.password.new = 'xyz';
+				scope.password.confirm = 'xyz';
 
 				scope.accountPasswordForm = {
 					pristineCalled: false,
@@ -161,9 +161,9 @@
 
 			it('should not reset the scope variables after the data is send to the backend', function() {	
 				accountServiceMock.flushWithError();
-				expect(scope.oldPassword).toBe('abc');
-				expect(scope.newPassword).toBe('xyz');
-				expect(scope.newPasswordConfirm).toBe('xyz');
+				expect(scope.password.old).toBe('abc');
+				expect(scope.password.new).toBe('xyz');
+				expect(scope.password.confirm).toBe('xyz');
 			});					
 		});
 	});
