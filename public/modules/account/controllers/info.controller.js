@@ -8,7 +8,14 @@
 		$scope.account = Account.get({ id: token.id });
 
 		$scope.save = function () {
-			Account.save(token.id, $scope.account);
+			$scope.isSaving = true;
+
+			Account.save(token.id, $scope.account, function() {
+				$scope.isSaving = false;
+			}, 
+			function(err) {
+				$scope.isSaving = false;
+			});
 		};
 	}
 
