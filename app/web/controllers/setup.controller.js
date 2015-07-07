@@ -1,13 +1,12 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-		Account = mongoose.model('Account'),
-		uuid = require('node-uuid');
+	Account = mongoose.model('Account'),
+	uuid = require('node-uuid');
 
 exports.getSetup = function(req, res) {
 
 	Account.findOne(function(err, hasAccount) {
-
 
 		if(hasAccount) {
 			res.status(404).render('404', {
@@ -24,7 +23,6 @@ exports.getSetup = function(req, res) {
 exports.postSetup = function(req, res) {
 
 	Account.findOne(function(err, hasAccount) {
-
 
 		if(hasAccount) {
 

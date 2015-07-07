@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var should = require('should'),
 	mongoose = require('mongoose-q')(),
 	async = require('async'),

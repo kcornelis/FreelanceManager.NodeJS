@@ -1,14 +1,8 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var mongoose = require('mongoose'),
 	AggregateRootSchema = require('./aggregateroot');
 
-/**
- * Client Schema
- */
 var ProjectSchema = new AggregateRootSchema({
 	tenant: {
 		type: String,
@@ -44,11 +38,7 @@ var ProjectSchema = new AggregateRootSchema({
 	}]
 });
 
-/*
- *	Write methods
- */
 ProjectSchema.statics.create = function(tenant, companyId, name, description) {
-
 	
 	var project = new this();
 
@@ -80,7 +70,6 @@ ProjectSchema.statics.create = function(tenant, companyId, name, description) {
 
 ProjectSchema.methods.changeDetails = function(name, description) {
 
-
 	if( this.name !== name ||
 		this.description !== description) {
 
@@ -97,7 +86,6 @@ ProjectSchema.methods.changeDetails = function(name, description) {
 };
 
 ProjectSchema.methods.changeTasks = function(tasks) {
-
 
 	if(!tasks)
 		return;
@@ -134,7 +122,6 @@ ProjectSchema.methods.changeTasks = function(tasks) {
 
 ProjectSchema.methods.hide = function() {
 
-
 	if(!this.hidden) {
 
 		this.hidden = true;
@@ -143,7 +130,6 @@ ProjectSchema.methods.hide = function() {
 };
 
 ProjectSchema.methods.unhide = function() {
-
 
 	if(this.hidden) {
 

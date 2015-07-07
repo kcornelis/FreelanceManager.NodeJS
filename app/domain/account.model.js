@@ -1,16 +1,10 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var mongoose = require('mongoose'),
 	AggregateRootSchema = require('./aggregateroot'),
 	crypto = require('crypto'),
 	uuid = require('node-uuid');
 
-/**
- * Account Schema
- */
 var AccountSchema = new AggregateRootSchema({
   	name: {
 		type: String,
@@ -44,18 +38,10 @@ var AccountSchema = new AggregateRootSchema({
 	}
 });
 
-/*
- *	Helper methods
- */
-
 function hashPassword(password, salt) {
 
 	return crypto.pbkdf2Sync(password, new Buffer(salt, 'base64'), 10000, 64).toString('base64');
 }
-
-/*
- *	Write methods
- */
 
 AccountSchema.statics.create = function(name, firstName, lastName, email) {
 
@@ -123,10 +109,6 @@ AccountSchema.methods.changeDetails = function(name, firstName, lastName, email)
 	}
 };
 
-/*
- *	Read methods
- */
-
 AccountSchema.methods.authenticate = function(password) {
 	return this.passwordHash === hashPassword(password, this.passwordSalt);
 };
@@ -135,6 +117,5 @@ AccountSchema.virtual('fullName').get(function() {
 
 	return this.firstName + ' ' + this.lastName;
 });
-
 
 mongoose.model('Account', AccountSchema);

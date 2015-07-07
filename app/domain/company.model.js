@@ -1,16 +1,10 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var mongoose = require('mongoose'),
 	_ = require('lodash'),
 	Q = require('q'),
 	AggregateRootSchema = require('./aggregateroot');
 
-/**
- * Client Schema
- */
 var CompanySchema = new AggregateRootSchema({
 	tenant: {
 		type: String,
@@ -38,10 +32,6 @@ var CompanySchema = new AggregateRootSchema({
 	}
 });
 
-/*
- *	Write methods
- */
-
 CompanySchema.statics.create = function(tenant, number, name, vatNumber, address) {
 
 	var company = new this();
@@ -65,7 +55,6 @@ CompanySchema.statics.create = function(tenant, number, name, vatNumber, address
 };
 
 CompanySchema.methods.changeDetails = function(name, vatNumber, address) {
-
 
 	if(this.name !== name ||
 		this.vatNumber !== vatNumber ||

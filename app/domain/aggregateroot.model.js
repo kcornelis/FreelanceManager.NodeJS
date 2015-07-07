@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var mongoose = require('mongoose'),
 	util = require('util'),
 	uuid = require('node-uuid'),

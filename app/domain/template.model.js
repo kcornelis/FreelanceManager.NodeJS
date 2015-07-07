@@ -1,14 +1,8 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var mongoose = require('mongoose'),
 	AggregateRootSchema = require('./aggregateroot');
 
-/**
- * Client Schema
- */
 var TemplateSchema = new AggregateRootSchema({
 	tenant: {
 		type: String,
@@ -31,12 +25,8 @@ var TemplateSchema = new AggregateRootSchema({
 	}
 });
 
-/*
- *	Write methods
- */
 TemplateSchema.statics.create = function(tenant, name, content) {
 
-	
 	var template = new this();
 
 	template.name = name;
@@ -55,11 +45,9 @@ TemplateSchema.statics.create = function(tenant, name, content) {
 
 TemplateSchema.methods.changeDetails = function(name, content) {
 
-
 	if( this.name !== name ||
 		this.content !== content) {
 
-		
 		this.name = name;
 		this.content = content;
 
@@ -73,9 +61,7 @@ TemplateSchema.methods.changeDetails = function(name, content) {
 
 TemplateSchema.methods.hide = function() {
 
-
 	if(!this.hidden) {
-
 		this.hidden = true;
 		this.apply('TemplateHidden', {});	
 	}
@@ -83,9 +69,7 @@ TemplateSchema.methods.hide = function() {
 
 TemplateSchema.methods.unhide = function() {
 
-
 	if(this.hidden) {
-
 		this.hidden = false;	
 		this.apply('TemplateUnhidden', {});	
 	}

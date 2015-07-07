@@ -1,15 +1,8 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
 var mongoose = require('mongoose'),
 	AggregateRootSchema = require('./aggregateroot');
 
-
-/**
- * Validators
- */	
 var yearValidation = [function(v) {
  return v >= 1900 && v <= 2200; }, 'Path `{PATH}` ({VALUE}) should be between 1900 and 2200'];
 var monthValidation = [function(v) {
@@ -17,9 +10,6 @@ var monthValidation = [function(v) {
 var dayValidation = [function(v) {
  return v >= 1 && v <= 31; }, 'Path `{PATH}` ({VALUE}) should be between 1 and 31'];
 
-/**
- * Client Schema
- */
 var InvoiceSchema = new AggregateRootSchema({
 	tenant: {
 		type: String,
@@ -134,10 +124,6 @@ var InvoiceSchema = new AggregateRootSchema({
 	linkedTimeRegistrations: [ String ]
 });
 
-/*
- *	Middleware
- */
-
 InvoiceSchema.post('save', function (doc) {
 
 	mongoose.model('TimeRegistration').find(
@@ -157,11 +143,7 @@ InvoiceSchema.post('save', function (doc) {
 	});
 });
 
- /*
- *	Private methods
- */
 function createDateObject(date) {
-
 
 	if(!date)
 		return;
@@ -179,7 +161,6 @@ function createDateObject(date) {
 }
 
 function recalculateTotals(invoice) {
-
 
 	var totalInCents = 0;
 	var totalPerPercentage = {};
@@ -223,7 +204,6 @@ function recalculateTotals(invoice) {
 
 InvoiceSchema.statics.create = function(tenant, number, date, creditTerm) {
 
-	
 	var invoice = new this();
 
 	invoice.number = number;
@@ -248,7 +228,6 @@ InvoiceSchema.statics.create = function(tenant, number, date, creditTerm) {
 
 InvoiceSchema.methods.changeTemplate = function(template) {
 
-
 	if(this.template !== template) {
 
 		
@@ -262,7 +241,6 @@ InvoiceSchema.methods.changeTemplate = function(template) {
 };
 
 InvoiceSchema.methods.changeCustomer = function(name, vatNumber, number, address) {
-
 
 	if(this.customer.name !== name ||
 	   this.customer.vatNumber !== vatNumber ||
@@ -300,7 +278,6 @@ function createLine(description, quantity, priceInCents, vatPercentage) {
 }
 
 InvoiceSchema.methods.replaceLines = function(lines) {
-
 
 	if(!lines)
 		return;
@@ -348,7 +325,6 @@ InvoiceSchema.methods.replaceLines = function(lines) {
 };
 
 InvoiceSchema.methods.linkTimeRegistrations = function(timeRegistrationIds) {
-
 
 	if(!timeRegistrationIds)
 		return;
