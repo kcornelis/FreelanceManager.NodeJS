@@ -12,7 +12,6 @@
 
 		$scope.openCompany = function(company) {
 
-
 			var createDialog = $modal.open({
 				templateUrl: '/modules/crm/views/editcompany.html',
 				controller: 'CompanyDialogController',
