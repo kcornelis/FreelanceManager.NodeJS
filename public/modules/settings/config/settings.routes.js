@@ -7,8 +7,7 @@
 		.state('app.settings_templates', {
 			url: '/settings/templates',
 			templateUrl: 'modules/settings/views/templates.html',
-			controller: 'TemplatesController',
-            access: { requiredLogin: true }
+			controller: 'TemplatesController'
 		});
 	}
 

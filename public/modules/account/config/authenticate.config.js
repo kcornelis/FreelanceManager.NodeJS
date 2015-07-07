@@ -26,11 +26,11 @@
 	function authentication($rootScope, $state, $window, $location, jwtHelper) {
 		$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
 				var loggedIn = $window.localStorage.token && !jwtHelper.isTokenExpired($window.localStorage.token);
-				if (nextRoute.access && 
-					nextRoute.access.requiredLogin && 
-					!loggedIn) {
+				if (!nextRoute.access || nextRoute.access.requiredLogin) {
+					if(!loggedIn) {
 						event.preventDefault();
 						$state.go('login', { r: $location.url() });
+					}
 				}
 		});
 	}

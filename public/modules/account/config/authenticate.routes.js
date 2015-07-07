@@ -7,7 +7,8 @@
 		// the login page does not require loggin
 		state('login', {
 			url: '/login?r',
-			templateUrl: 'modules/account/views/login.html'
+			templateUrl: 'modules/account/views/login.html',
+			access: { requiredLogin: false }
 		}).	
 
 		state('app.account', {

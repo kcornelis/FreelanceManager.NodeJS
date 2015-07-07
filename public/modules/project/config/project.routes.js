@@ -7,8 +7,7 @@
 		.state('app.projects', {
 			url: '/projects/overview',
 			templateUrl: 'modules/project/views/projects.html',
-			controller: 'ProjectsController',
-            access: { requiredLogin: true }
+			controller: 'ProjectsController'
 		});
 	}
 
