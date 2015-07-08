@@ -3,6 +3,7 @@
 }
 
 .fm-projects dl {
-	margin-top: 4px;
-	margin-bottom: 4px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-weight: normal;
 }

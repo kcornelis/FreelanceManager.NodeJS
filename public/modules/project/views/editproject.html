@@ -6,9 +6,11 @@
 		</div>
 		<div class="modal-body">
 			<ft-form-group ft-floating-label>
+				<select class="form-control chosen-select"  chosen="" data-placeholder=" "
+						ng-model="project.companyId" ng-options="c.id as c.name for c in companies"
+						required ng-required width="'100%'" disable-search="true" ng-disabled="!newProject">
+				</select>
 				<label>Company</label>
-				<select class="form-control" ng-model="project.companyId" ng-options="c.id as c.name for c in companies" 
-					ng-disabled="!newProject" required></select>
 			</ft-form-group>
 			<ft-form-group ft-floating-label fm-add-error-for="projectForm.name">
 				<label>Name</label>

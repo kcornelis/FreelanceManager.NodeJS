@@ -7,7 +7,7 @@
 		<div class="modal-body">
 			<ft-form-group ft-floating-label ng-repeat="task in project.tasks">
 				<label>{{ task.name }}</label>
-				<input type="text" ng-model="task.defaultRate" class="form-control">
+				<input type="text" ng-model="task.defaultRate" class="form-control" autofocus autofocus-condition="{{ $index == 0 }}" />
 			</ft-form-group>
 		</div>
 		<div class="modal-footer">

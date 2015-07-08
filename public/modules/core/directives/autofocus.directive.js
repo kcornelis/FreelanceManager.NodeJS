@@ -1,17 +1,30 @@
 (function() {
 	'use strict';
 
-	function autofocusDirective($timeout) {
+	function autofocusDirective($timeout, $parse) {
 		return {
 			link: function(scope, element, attrs) {
-				$timeout(function() {
-					element[0].focus(); 
-				}, 100);
+				if(attrs.autofocusCondition) {
+					 scope.$watch(
+						function () { return $parse(attrs.autofocusCondition)(); },
+						function (newVal) { 
+							if(newVal) { 
+								$timeout(function() {
+									element[0].focus(); 
+								}, 100);
+							}
+						}
+					);
+				} else {
+					$timeout(function() {
+						element[0].focus(); 
+					}, 100);
+				}
 			}
 		};
 	}
 	
-	autofocusDirective.$inject = ['$timeout'];
+	autofocusDirective.$inject = ['$timeout', '$parse'];
 
 	angular.module('fmCore').directive('autofocus', autofocusDirective);
 })();

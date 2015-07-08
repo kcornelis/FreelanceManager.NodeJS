@@ -32,7 +32,8 @@
     "ng-table": "~0.5.4",
     "file-saver.js": "~1.20150507.2",
     "oclazyload": "~1.0.1",
-    "angular-flot": "~0.0.9"
+    "angular-flot": "~0.0.9",
+    "angular-chosen-localytics": "~1.0.7"
   },
   "resolutions": {
     "jquery": "~2.1.1",

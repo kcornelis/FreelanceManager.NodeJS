@@ -13,6 +13,7 @@ fm.config = (function() {
 			'oc.lazyLoad',
 			'ngResource', 
 			'ft', 
-			'ngTable']
+			'ngTable',
+			'localytics.directives']
 	};
 })();

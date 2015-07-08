@@ -18,7 +18,7 @@ module.exports = {
 				'public/lib/flat-theme/dist/bootstrap.css',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/bootstrap-datepicker/css/datepicker3.css',
-				'public/lib/chosen/chosen.css',
+				'public/lib/chosen/chosen.min.css',
 
 				'public/lib/flat-theme/dist/flat-theme.css'
 			],
@@ -34,8 +34,10 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.js',
 				'public/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
-				'public/lib/chosen/chosen.jquery.js',
 				'public/lib/ng-table/dist/ng-table.js',
+
+				'public/lib/chosen/chosen.jquery.min.js',
+				'public/lib/angular-chosen-localytics/chosen.js',
 				
 				'public/lib/lodash/lodash.js',
 				'public/lib/moment/moment.js',
