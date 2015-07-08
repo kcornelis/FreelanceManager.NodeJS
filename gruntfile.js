@@ -98,7 +98,8 @@ module.exports = function(grunt) {
 				shorthandCompacting: false,
 				roundingPrecision: -1,
 				advanced: false,
-				sourceMap: true
+				sourceMap: true,
+				rebase: true
 			},
 			lib: {
 				files: {
