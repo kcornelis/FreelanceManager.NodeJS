@@ -8,79 +8,88 @@
 		
 			<div class="row">
 				<div class="col-xs-12 col-md-4" ng-show="projectEditable">
-					<div class="form-group" fm-add-error-for="timeRegistrationForm.company">
+					<ft-form-group ft-floating-label fm-add-error-for="timeRegistrationForm.company">
+						<select class="form-control chosen-select"  chosen="" data-placeholder=" "
+								name="company" ng-model="timeRegistration.company" ng-options="c.name for c in companies"
+								required ng-required width="'100%'" disable-search="true">
+						</select>
 						<label>Company</label>
-						<select class="form-control" name="company" ng-model="timeRegistration.company" ng-options="c.name for c in companies" required></select>
-					</div>
+					</ft-form-group>
 				</div>
 
 				<div class="col-xs-12 col-md-4" ng-show="projectEditable">
-					<div class="form-group" fm-add-error-for="timeRegistrationForm.project">
+					<ft-form-group ft-floating-label fm-add-error-for="timeRegistrationForm.project">
+						<select class="form-control chosen-select"  chosen="" data-placeholder=" "
+								 name="project"ng-model="timeRegistration.project" ng-options="p.name for p in timeRegistration.company.projects"
+								required ng-required width="'100%'" disable-search="true">
+						</select>
 						<label>Project</label>
-						<select class="form-control" name="project" ng-model="timeRegistration.project" ng-options="p.name for p in timeRegistration.company.projects" required></select>
-					</div>	
+					</ft-form-group>	
 				</div>
 
 				<div class="col-xs-12 col-md-4" ng-show="projectEditable">					
-					<div class="form-group" fm-add-error-for="timeRegistrationForm.task">
+					<ft-form-group ft-floating-label fm-add-error-for="timeRegistrationForm.task">
+						<select class="form-control chosen-select"  chosen="" data-placeholder=" "
+								name="task" ng-model="timeRegistration.task" ng-options="t.name for t in timeRegistration.project.tasks"
+								required ng-required width="'100%'" disable-search="true">
+						</select>
 						<label>Task</label>
-						<select class="form-control" name="task" ng-model="timeRegistration.task" ng-options="t.name for t in timeRegistration.project.tasks" required></select>
-					</div>	
+					</ft-form-group>	
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-xs-12 col-md-4" ng-show="!projectEditable">
-					<div class="form-group">
+					<ft-form-group ft-floating-label>
 						<label>Company</label>
 						<input type="text" class="form-control" ng-model="originalTimeRegistration.company.name" disabled="disabled"></select>
-					</div>
+					</ft-form-group>
 				</div>
 
 				<div class="col-xs-12 col-md-4" ng-show="!projectEditable">
-					<div class="form-group">
+					<ft-form-group ft-floating-label>
 						<label>Project</label>
 						<input type="text" class="form-control" ng-model="originalTimeRegistration.project.name" disabled="disabled"></select>
-					</div>	
+					</ft-form-group>
 				</div>
 
 				<div class="col-xs-12 col-md-4" ng-show="!projectEditable">					
-					<div class="form-group">
+					<ft-form-group ft-floating-label>
 						<label>Task</label>
 						<input type="text" class="form-control" ng-model="originalTimeRegistration.task" disabled="disabled"></select>
-					</div>	
+					</ft-form-group>
 				</div>
 			</div>
 
-			<div class="form-group" fm-add-error-for="timeRegistrationForm.description">
+			<ft-form-group ft-floating-label fm-add-error-for="timeRegistrationForm.description">
 				<label>Description</label>
-				<input type="text" name="description" class="form-control" placeholder="Description" ng-model="timeRegistration.description" required autofocus>
-			</div>
+				<input type="text" name="description" class="form-control" ng-model="timeRegistration.description" required autofocus>
+			</ft-form-group>
 
 			<div class="row">
 
 				<div class="col-xs-6">
-					<div class="form-group" fm-add-error-for="timeRegistrationForm.from">
-						<label>From</label>
+					<ft-form-group ft-floating-label fm-add-error-for="timeRegistrationForm.from">
 						<div class="input-group clockpicker" placement="bottom" align="top" autoclose="true" fm-clockpicker>
 							<input type="text" name="from" class="form-control" ng-model="timeRegistration.from" required>
 							<span class="input-group-addon">
 								<span class="fa fa-clock-o"></span>
 							</span>
 						</div>
-					</div>	
+						<label>From</label>
+					</ft-form-group>
 				</div>
 
 				<div class="col-xs-6">
-					<div class="form-group" fm-add-error-for="timeRegistrationForm.to">
-						<label>To</label>
+					<ft-form-group ft-floating-label fm-add-error-for="timeRegistrationForm.to">
 						<div class="input-group clockpicker" placement="bottom" align="top" autoclose="true" fm-clockpicker>
 							<input name="to" type="text" class="form-control" ng-model="timeRegistration.to" required>
 							<span class="input-group-addon">
 								<span class="fa fa-clock-o"></span>
 							</span>
 						</div>
-					</div>					
+						<label>To</label>
+					</ft-form-group>
 				</div>
 			</div>	
 			

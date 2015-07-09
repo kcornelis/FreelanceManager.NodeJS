@@ -1,27 +1,30 @@
 <div class="content-header">
 	<div class="toolbar">
-		<button class="btn btn-primary pull-right" ng-click="export()">
+		<button class="btn btn-primary pull-right btn-accentuate" ng-click="export()">
 			<em class="fa fa-plus-circle fa-fw mr-sm"></em>Export
 		</button>
 	</div>
-	<h1><i class="icon-clock"></i>Time registration export</h1>
+	<h1><i class="icon-clock"></i>Time export</h1>
+	<small>Search time registrations and export them</small>
 </div>
 
 
 <div class="fm-time-export" ng-init="refresh()">
 
 	<div class="btn-group pull-right btn-group-accentuate">
-		<button type="button" class="btn btn-default dropdown-toggle" toggle="dropdown">
-			<span class="fa fa-cog"></span>
-		</button>
-		<ul class="dropdown-menu dropdown-menu-right" role="menu">
-			<li><a href="/#!/app/time/export/{{ thisWeek }}">This Week</a></li>
-			<li><a href="/#!/app/time/export/{{ lastWeek }}">Last Week</a></li>
-			<li><a href="/#!/app/time/export/{{ thisMonth }}">This Month</a></li>
-			<li><a href="/#!/app/time/export/{{ lastMonth }}">Last Month</a></li>
-			<li><a href="/#!/app/time/export/{{ thisYear }}">This Year</a></li>
-			<li><a href="/#!/app/time/export/{{ lastYear }}">Last Year</a></li>
-		</ul>	
+		<span class="dropdown" dropdown>
+			<button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+				<span class="fa fa-cog"></span>
+			</button>
+			<ul class="dropdown-menu dropdown-menu-right" role="menu">
+				<li><a href="/#!/app/time/export/{{ thisWeek }}">This Week</a></li>
+				<li><a href="/#!/app/time/export/{{ lastWeek }}">Last Week</a></li>
+				<li><a href="/#!/app/time/export/{{ thisMonth }}">This Month</a></li>
+				<li><a href="/#!/app/time/export/{{ lastMonth }}">Last Month</a></li>
+				<li><a href="/#!/app/time/export/{{ thisYear }}">This Year</a></li>
+				<li><a href="/#!/app/time/export/{{ lastYear }}">Last Year</a></li>
+			</ul>
+		</span>
 	</div>
 
 	<div class="input-group input-group-accentuate">
@@ -77,6 +80,5 @@
 			</ul>
 		</div>
 	</div>	
-
 
 </div>

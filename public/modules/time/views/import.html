@@ -1,5 +1,6 @@
 <div class="content-header">
-	<h1><i class="icon-clock"></i>Time registration import</h1>
+	<h1><i class="icon-clock"></i>Time import</h1>
+	<small>Import time registrations from an excel</small>
 </div>
 
 <div class="fm-time-import" ng-init="init()">
@@ -37,49 +38,45 @@
 
 			<!-- STEP 1: File upload -->
 			<div ng-show="active(1)">
-				<fieldset>
-					<legend>File selection</legend>
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<div class="box-placeholder text-center">
-									<p>
-										<em class="fa fa-cloud-upload fa-2x"></em>
-									</p>Upload your files by
-									<div class="btn-link form-file">selecting one
-										<input type="file" name="ExcelFile" accept=".xlsx" onchange="angular.element(this).scope().fileChanged(this.files);">
-									</div>
+				<div class="row mt-xl">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<div class="box-placeholder text-center">
+								<p>
+									<em class="fa fa-cloud-upload fa-2x"></em>
+								</p>Upload your files by
+								<div class="btn-link form-file">selecting one
+									<input type="file" name="ExcelFile" accept=".xlsx" onchange="angular.element(this).scope().fileChanged(this.files);">
 								</div>
 							</div>
 						</div>
 					</div>
-				</fieldset>
+				</div>
 			</div>
 
 
 			<!-- STEP 2: Sheet selection -->
 			<div ng-show="active(2)">
-				<fieldset>
-					<legend>Sheet selection</legend>
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<!-- <label for="selectedSheetName">Sheet Name</label> -->
+				<div class="row mt-xl">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<ft-form-group ft-floating-label>
 								<select id="selectedSheetName" class="form-control chosen-select"  chosen=""
-										ng-model="selectedSheetName" ng-options="sheetName as sheetName for (sheetName, sheetData) in excelSheets"
+										ng-model="excel.selectedSheetName" ng-options="sheetName as sheetName for (sheetName, sheetData) in excel.sheets" data-placeholder=" "
 										required="true" ng-required="true" width="'100%'" disable-search="true">
 									<option value=""></option>
 								</select>
-								<!-- <table class="table table-bordered">
-									<tr ng-repeat="row in selectedSheet.data">
-										<td ng-repeat="col in row" ng-bind="col"></td>
-									</tr>
-								</table> -->
-							</div>
+								<label>Sheet name</label>
+							</ft-form-group>
+							<!-- <table class="table table-bordered">
+								<tr ng-repeat="row in excel.selectedSheet.data">
+									<td ng-repeat="col in row" ng-bind="col"></td>
+								</tr>
+							</table> -->
 						</div>
 					</div>
+				</div>
 
-				</fieldset>
 				<ul class="pager pull-right">
 					<li><button class="btn btn-default" ng-disabled="!canGoto3()" ng-click="goto3()">Next <span>&rarr;</span></button></li>
 				</ul>
@@ -88,56 +85,54 @@
 
 			<!-- STEP 3: Column selection -->
 			<div ng-show="active(3)">
-				<fieldset>
-					<legend>Column selection</legend>
-					<div class="form-group">
-						<label for="projectColumn">Project column</label>
-						<select id="projectColumn" name="projectColumn" class="form-control chosen-select"  chosen=""
-							 	ng-model="selectedProjectColumn" ng-options="c.key as c.value for c in selectedSheetHeader"
-							 	required="true" ng-required="true" width="'100%'" disable-search="true">
-						</select>
-					</div>
+				<ft-form-group ft-floating-label class="mt-xl">
+					<select id="projectColumn" name="projectColumn" class="form-control chosen-select"  chosen=""
+						 	ng-model="excel.selectedProjectColumn" ng-options="c.key as c.value for c in excel.selectedSheetHeader"
+						 	required="true" ng-required="true" width="'100%'" disable-search="true" data-placeholder=" ">
+					</select>
+					<label for="projectColumn">Project column</label>
+				</ft-form-group>
 
-					<div class="form-group">
-						<label for="taskColumn">Task column</label>
-						<select id="taskColumn" name="taskColumn" class="form-control chosen-select"  chosen=""
-								ng-model="selectedTaskColumn" ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" ng-required="true" width="'100%'" disable-search="true">
-						</select>
-					</div>
+				<ft-form-group ft-floating-label>
+					<label for="taskColumn">Task column</label>
+					<select id="taskColumn" name="taskColumn" class="form-control chosen-select"  chosen=""
+							ng-model="excel.selectedTaskColumn" ng-options="c.key as c.value for c in excel.selectedSheetHeader"
+							required="true" ng-required="true" width="'100%'" disable-search="true" data-placeholder=" ">
+					</select>
+				</ft-form-group>
 
-					<div class="form-group">
-						<label for="dateColumn">Date column (YYYY-MM-DD)</label>
-						<select id="dateColumn" name="dateColumn" class="form-control chosen-select"  chosen=""
-								ng-model="selectedDateColumn" ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" ng-required="true" width="'100%'" disable-search="true">
-						</select>
-					</div>
+				<ft-form-group ft-floating-label>
+					<select id="dateColumn" name="dateColumn" class="form-control chosen-select"  chosen=""
+							ng-model="excel.selectedDateColumn" ng-options="c.key as c.value for c in excel.selectedSheetHeader"
+							required="true" ng-required="true" width="'100%'" disable-search="true" data-placeholder=" ">
+					</select>
+					<label for="dateColumn">Date column (YYYY-MM-DD)</label>
+				</ft-form-group>
 
-					<div class="form-group">
-						<label for="fromColumn">From column (hh:mm)</label>
-						<select id="fromColumn" name="fromColumn" class="form-control chosen-select"  chosen=""
-								ng-model="selectedFromColumn" ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" ng-required="true" width="'100%'" disable-search="true">
-						</select>
-					</div>
+				<ft-form-group ft-floating-label>
+					<select id="fromColumn" name="fromColumn" class="form-control chosen-select"  chosen=""
+							ng-model="excel.selectedFromColumn" ng-options="c.key as c.value for c in excel.selectedSheetHeader"
+							required="true" ng-required="true" width="'100%'" disable-search="true" data-placeholder=" ">
+					</select>
+					<label for="fromColumn">From column (hh:mm)</label>
+				</ft-form-group>
 
-					<div class="form-group">
-						<label for="toColumn">To column (hh:mm)</label>
-						<select id="toColumn" name="toColumn" class="form-control chosen-select"  chosen=""
-								ng-model="selectedToColumn" ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" ng-required="true" width="'100%'" disable-search="true">
-						</select>
-					</div>
+				<ft-form-group ft-floating-label>
+					<select id="toColumn" name="toColumn" class="form-control chosen-select"  chosen=""
+							ng-model="excel.selectedToColumn" ng-options="c.key as c.value for c in excel.selectedSheetHeader"
+							required="true" ng-required="true" width="'100%'" disable-search="true" data-placeholder=" ">
+					</select>
+					<label for="toColumn">To column (hh:mm)</label>
+				</ft-form-group>
 
-					<div class="form-group">
-						<label for="descriptionColumn">Description column</label>
-						<select id="descriptionColumn" name="descriptionColumn" class="form-control chosen-select"  chosen=""
-								ng-model="selectedDescriptionColumn" ng-options="c.key as c.value for c in selectedSheetHeader"
-								required="true" ng-required="true" width="'100%'" disable-search="true">
-						</select>
-					</div>
-				</fieldset>
+				<ft-form-group ft-floating-label>
+					<select id="descriptionColumn" name="descriptionColumn" class="form-control chosen-select"  chosen=""
+							ng-model="excel.selectedDescriptionColumn" ng-options="c.key as c.value for c in excel.selectedSheetHeader"
+							required="true" ng-required="true" width="'100%'" disable-search="true" data-placeholder=" ">
+					</select>
+					<label for="descriptionColumn">Description column</label>
+				</ft-form-group>
+
 				<ul class="pager pull-right">
 					<li><button class="btn btn-default" ng-disabled="!canGoto4()" ng-click="goto4()">Next <span>&rarr;</span></button></li>
 				</ul>
@@ -146,19 +141,16 @@
 
 			<!-- STEP 4: Map projects -->
 			<div ng-show="active(4)">
-				<fieldset>
-					<legend>Project selection</legend>
-					<div ng-repeat="p in projectsInExcelSheet">
-						<div class="form-group">
-							<label>{{ p.display }}</label>
-							<select class="form-control chosen-select"  chosen=""
-									ng-model="p.mappedProjectAndTask" ng-options="p.id as p.display for p in tasks"
-									required="true" ng-required="true"  width="'100%'" disable-search="true">
-									<option value=""></option>
-							</select>
-						</div>
+				<div class="mt-xl" ng-repeat="p in excel.projectsInSheet">
+					<div class="form-group">
+						<label>{{ p.display }}</label>
+						<select class="form-control chosen-select"  chosen=""
+								ng-model="p.mappedProjectAndTask" ng-options="p.id as p.display for p in tasks"
+								required="true" ng-required="true"  width="'100%'" disable-search="true">
+								<option value=""></option>
+						</select>
 					</div>
-				</fieldset>
+				</div>
 				<ul class="pager pull-right">
 					<li><button class="btn btn-default" ng-disabled="!canGoto5()" ng-click="goto5()">Next <span>&rarr;</span></button></li>
 				</ul>
@@ -167,10 +159,7 @@
 
 			<!-- STEP 5: Import -->
 			<div ng-show="active(5)">
-				<fieldset>
-					<legend>Execute the import</legend>
-					<div ng-show="importing" class="fm-wait-panel"></div>
-				</fieldset>
+				<div ng-show="importing" class="fm-wait-panel mt-xl"></div>
 				<ul class="pager pull-right">
 					<li><button class="btn btn-default" ng-disabled="importing" ng-click="import()">Import</button></li>
 				</ul>
@@ -179,19 +168,16 @@
 
 			<!-- STEP 5: Import -->
 			<div ng-show="active(6)">
-				<fieldset>
-					<legend>Summary</legend>
-					<div class="alert alert-success text-center">Items imported: {{ timeRegistrationsImported.length }}</div>
-					<table ng-table="summaryTableParams" class="table ng-table-rowselected">
-						<tr ng-repeat="imported in $data">
-							<td title="'Project'">{{ imported.project.name }}</td>
-							<td title="'Description'">{{ imported.description }}</td>
-							<td title="'Date'">{{ imported.date | formatdate }}</td>
-							<td title="'From'">{{ imported.from | formattime }}</td>
-							<td title="'To'">{{ imported.to | formattime }}</td>
-						</tr>
-					</table>
-				</fieldset>
+				<div class="alert alert-success text-center mt-xl">Items imported: {{ timeRegistrationsImported.length }}</div>
+				<table ng-table="summaryTableParams" class="table ng-table-rowselected">
+					<tr ng-repeat="imported in $data">
+						<td title="'Project'">{{ imported.project.name }}</td>
+						<td title="'Description'">{{ imported.description }}</td>
+						<td title="'Date'">{{ imported.date | formatdate }}</td>
+						<td title="'From'">{{ imported.from | formattime }}</td>
+						<td title="'To'">{{ imported.to | formattime }}</td>
+					</tr>
+				</table>
 				<ul class="pager pull-right">
 					<li><button class="btn btn-default" ui-sref="app.time_overview">Overview</button></li>
 				</ul>

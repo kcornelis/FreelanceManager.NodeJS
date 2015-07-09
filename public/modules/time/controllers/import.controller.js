@@ -56,11 +56,11 @@
 
 		$scope.fileChanged = function(files) {
 
-			$scope.excelSheets = [];
+			$scope.excel.sheets = [];
 			$scope.excelFile = files[0];
 
 			XLSXReader.readFile($scope.excelFile, false).then(function(xlsxData) {
-				$scope.excelSheets = xlsxData;
+				$scope.excel.sheets = xlsxData;
 				activate(2);
 			});
 		};
@@ -68,24 +68,25 @@
 		// step 2 (sheet selection)
 		// ***********************
 
-		$scope.selectedSheetName = undefined;
-		$scope.selectedSheet = undefined;
+		$scope.excel = {};
+		$scope.excel.selectedSheetName = undefined;
+		$scope.excel.selectedSheet = undefined;
 
 		$scope.goto3 = function() {
 			
-			$scope.selectedSheet = $scope.excelSheets[$scope.selectedSheetName];
+			$scope.excel.selectedSheet = $scope.excel.sheets[$scope.excel.selectedSheetName];
 
 			var selectedSheetHeader = [];
-			for(var i = 0; i < $scope.selectedSheet.header.length; i++) {
-				selectedSheetHeader.push({ key: i, value: $scope.selectedSheet.header[i] });
+			for(var i = 0; i < $scope.excel.selectedSheet.header.length; i++) {
+				selectedSheetHeader.push({ key: i, value: $scope.excel.selectedSheet.header[i] });
 			}
-			$scope.selectedSheetHeader = selectedSheetHeader;
+			$scope.excel.selectedSheetHeader = selectedSheetHeader;
 
 			activate(3);
 		};
 
 		$scope.canGoto3 = function() {
-			return isvalid($scope.selectedSheetName);
+			return isvalid($scope.excel.selectedSheetName);
 		};
 
 		// step 3 (column selection)
@@ -93,15 +94,15 @@
 
 		$scope.goto4 = function() {
 
-			$scope.groupedRows = _.groupBy($scope.selectedSheet.data, function(r) {
-				return r[$scope.selectedProjectColumn] + ' - ' + r[$scope.selectedTaskColumn];
+			$scope.excel.groupedRows = _.groupBy($scope.excel.selectedSheet.data, function(r) {
+				return r[$scope.excel.selectedProjectColumn] + ' - ' + r[$scope.excel.selectedTaskColumn];
 			});
 
-			$scope.projectsInExcelSheet = _.map($scope.groupedRows, function(g) {
+			$scope.excel.projectsInSheet = _.map($scope.excel.groupedRows, function(g) {
 				return {
-					project: g[0][$scope.selectedProjectColumn],
-					task: g[0][$scope.selectedTaskColumn],
-					display: g[0][$scope.selectedProjectColumn] + ' - ' + g[0][$scope.selectedTaskColumn]
+					project: g[0][$scope.excel.selectedProjectColumn],
+					task: g[0][$scope.excel.selectedTaskColumn],
+					display: g[0][$scope.excel.selectedProjectColumn] + ' - ' + g[0][$scope.excel.selectedTaskColumn]
 				};
 			});
 
@@ -109,12 +110,12 @@
 		};
 
 		$scope.canGoto4 = function() {
-			return isvalid($scope.selectedProjectColumn) &&
-				isvalid($scope.selectedTaskColumn) && 
-				isvalid($scope.selectedDateColumn) &&
-				isvalid($scope.selectedFromColumn) && 
-				isvalid($scope.selectedToColumn) && 
-				isvalid($scope.selectedDescriptionColumn);
+			return isvalid($scope.excel.selectedProjectColumn) &&
+				isvalid($scope.excel.selectedTaskColumn) && 
+				isvalid($scope.excel.selectedDateColumn) &&
+				isvalid($scope.excel.selectedFromColumn) && 
+				isvalid($scope.excel.selectedToColumn) && 
+				isvalid($scope.excel.selectedDescriptionColumn);
 		};
 
 		// step 4 (project mapping)
@@ -125,7 +126,7 @@
 		};
 
 		$scope.canGoto5 = function() {
-			return _.every($scope.projectsInExcelSheet, function(p) {
+			return _.every($scope.excel.projectsInSheet, function(p) {
 				return isvalid(p.mappedProjectAndTask);
 			});
 		};
@@ -140,10 +141,10 @@
 			var registrations = [];
 			$scope.importing = true;
 
-			_.forEach($scope.groupedRows, function(groupedRow) {
+			_.forEach($scope.excel.groupedRows, function(groupedRow) {
 
-				var selectedProjectTask = _.find($scope.projectsInExcelSheet, function(p) {
-					return p.project === groupedRow[0][$scope.selectedProjectColumn] && p.task === groupedRow[0][$scope.selectedTaskColumn];
+				var selectedProjectTask = _.find($scope.excel.projectsInSheet, function(p) {
+					return p.project === groupedRow[0][$scope.excel.selectedProjectColumn] && p.task === groupedRow[0][$scope.excel.selectedTaskColumn];
 				}).mappedProjectAndTask;
 
 				var project = _.find($scope.tasks, { id: selectedProjectTask }).project;
@@ -155,10 +156,10 @@
 						companyId: project.companyId,
 						projectId: project.id,
 						task: task.name,
-						description: row[$scope.selectedDescriptionColumn],
-						date: convertDisplayDateToNumeric(row[$scope.selectedDateColumn]),
-						from: convertDisplayTimeToNumeric(row[$scope.selectedFromColumn]),
-						to: convertDisplayTimeToNumeric(row[$scope.selectedToColumn]),
+						description: row[$scope.excel.selectedDescriptionColumn],
+						date: convertDisplayDateToNumeric(row[$scope.excel.selectedDateColumn]),
+						from: convertDisplayTimeToNumeric(row[$scope.excel.selectedFromColumn]),
+						to: convertDisplayTimeToNumeric(row[$scope.excel.selectedToColumn]),
 						billable: task.billable
 					});
 				});

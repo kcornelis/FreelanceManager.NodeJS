@@ -5,7 +5,10 @@
 		return {
 			restrict: 'A',
 			link: function (scope, element, attrs) {
-				element.clockpicker();
+				element.clockpicker({
+					donetext: 'DONE',
+					autoclose: true
+				});
 			}
 		};
 	}

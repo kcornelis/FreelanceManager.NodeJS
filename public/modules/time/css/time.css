@@ -7,6 +7,10 @@
 	margin-top: 30px;
 }
 
+.fm-time-overview .list-group .list-group-item {
+	padding: 8px 15px;
+}
+
 
 /*
  * Time registration report
@@ -27,7 +31,9 @@
 .fm-time-report .fm-time-infoperproject p {
 	margin: 5px 0 0 0;
 }
-
+.fm-time-report .btn-group .dropdown {
+	float: left;
+}
 
 /*
  * Time registration import
