@@ -102,10 +102,10 @@
 			}));
 
 			describe('$scope.fileChanged', function() {
-				it('should load the excel and put the result in $scope.excelSheets', function() {
+				it('should load the excel and put the result in $scope.excel.sheets', function() {
 					scope.fileChanged(['the file']);
 
-					expect(scope.excelSheets).toBe('some excel data');
+					expect(scope.excel.sheets).toBe('some excel data');
 				});
 
 				it('should goto the next wizard page', function() {
@@ -134,12 +134,12 @@
 			describe('$scope.canGoto3', function() {
 				it('should return false if no sheet is selected', function() {
 					expect(scope.canGoto3()).toBe(false);
-					scope.selectedSheetName = null;
+					scope.excel.selectedSheetName = null;
 					expect(scope.canGoto3()).toBe(false);
 				});
 
 				it('should return true if a sheet is selected', function() {
-					scope.selectedSheetName = 'first sheet';
+					scope.excel.selectedSheetName = 'first sheet';
 					expect(scope.canGoto3()).toBe(true);
 				});
 			});
@@ -147,8 +147,8 @@
 			describe('$scope.goto3', function() {
 
 				beforeEach(function() {
-					scope.selectedSheetName = 'sheet1';
-					scope.excelSheets = {
+					scope.excel.selectedSheetName = 'sheet1';
+					scope.excel.sheets = {
 						sheet1: {
 							name: 'sheet1',
 							header: [ 'a', 'b', 'c' ]
@@ -156,19 +156,19 @@
 					};
 				});
 
-				it('should store the selected sheet in $scope.selectedSheet', function() {
+				it('should store the selected sheet in $scope.excel.selectedSheet', function() {
 					scope.goto3();
-					expect(scope.selectedSheet.name).toBe('sheet1');
+					expect(scope.excel.selectedSheet.name).toBe('sheet1');
 				});
 
-				it('should store the header and indexes in $scope.selectedSheetHeader', function() {
+				it('should store the header and indexes in $scope.excel.selectedSheetHeader', function() {
 					scope.goto3();
 					
-					expect(scope.selectedSheetHeader[0].key).toBe(0);
-					expect(scope.selectedSheetHeader[0].value).toBe('a');
+					expect(scope.excel.selectedSheetHeader[0].key).toBe(0);
+					expect(scope.excel.selectedSheetHeader[0].value).toBe('a');
 
-					expect(scope.selectedSheetHeader[1].key).toBe(1);
-					expect(scope.selectedSheetHeader[1].value).toBe('b');
+					expect(scope.excel.selectedSheetHeader[1].key).toBe(1);
+					expect(scope.excel.selectedSheetHeader[1].value).toBe('b');
 				});
 
 				it('should go to the next wizard page', function() {
@@ -197,89 +197,89 @@
 
 			describe('$scope.canGoto4', function() {
 				it('should return false if no column is selected', function() {
-					scope.selectedProjectColumn = null;
-					scope.selectedTaskColumn = null;
-					scope.selectedDateColumn = null;
-					scope.selectedFromColumn = null;
-					scope.selectedToColumn = null;
-					scope.selectedDescriptionColumn = null;
+					scope.excel.selectedProjectColumn = null;
+					scope.excel.selectedTaskColumn = null;
+					scope.excel.selectedDateColumn = null;
+					scope.excel.selectedFromColumn = null;
+					scope.excel.selectedToColumn = null;
+					scope.excel.selectedDescriptionColumn = null;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return false if only the project column is selected', function() {
-					scope.selectedProjectColumn = 1;
-					scope.selectedTaskColumn = null;
-					scope.selectedDateColumn = null;
-					scope.selectedFromColumn = null;
-					scope.selectedToColumn = null;
-					scope.selectedDescriptionColumn = null;
+					scope.excel.selectedProjectColumn = 1;
+					scope.excel.selectedTaskColumn = null;
+					scope.excel.selectedDateColumn = null;
+					scope.excel.selectedFromColumn = null;
+					scope.excel.selectedToColumn = null;
+					scope.excel.selectedDescriptionColumn = null;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return false if only the task column is selected', function() {
-					scope.selectedProjectColumn = null;
-					scope.selectedTaskColumn = 1;
-					scope.selectedDateColumn = null;
-					scope.selectedFromColumn = null;
-					scope.selectedToColumn = null;
-					scope.selectedDescriptionColumn = null;
+					scope.excel.selectedProjectColumn = null;
+					scope.excel.selectedTaskColumn = 1;
+					scope.excel.selectedDateColumn = null;
+					scope.excel.selectedFromColumn = null;
+					scope.excel.selectedToColumn = null;
+					scope.excel.selectedDescriptionColumn = null;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return false if only the date column is selected', function() {
-					scope.selectedProjectColumn = null;
-					scope.selectedTaskColumn = null;
-					scope.selectedDateColumn = 1;
-					scope.selectedFromColumn = null;
-					scope.selectedToColumn = null;
-					scope.selectedDescriptionColumn = null;
+					scope.excel.selectedProjectColumn = null;
+					scope.excel.selectedTaskColumn = null;
+					scope.excel.selectedDateColumn = 1;
+					scope.excel.selectedFromColumn = null;
+					scope.excel.selectedToColumn = null;
+					scope.excel.selectedDescriptionColumn = null;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return false if only the from column is selected', function() {
-					scope.selectedProjectColumn = null;
-					scope.selectedTaskColumn = null;
-					scope.selectedDateColumn = null;
-					scope.selectedFromColumn = 1;
-					scope.selectedToColumn = null;
-					scope.selectedDescriptionColumn = null;
+					scope.excel.selectedProjectColumn = null;
+					scope.excel.selectedTaskColumn = null;
+					scope.excel.selectedDateColumn = null;
+					scope.excel.selectedFromColumn = 1;
+					scope.excel.selectedToColumn = null;
+					scope.excel.selectedDescriptionColumn = null;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return false if only the to column is selected', function() {
-					scope.selectedProjectColumn = null;
-					scope.selectedTaskColumn = null;
-					scope.selectedDateColumn = null;
-					scope.selectedFromColumn = null;
-					scope.selectedToColumn = 1;
-					scope.selectedDescriptionColumn = null;
+					scope.excel.selectedProjectColumn = null;
+					scope.excel.selectedTaskColumn = null;
+					scope.excel.selectedDateColumn = null;
+					scope.excel.selectedFromColumn = null;
+					scope.excel.selectedToColumn = 1;
+					scope.excel.selectedDescriptionColumn = null;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return false if only the description column is selected', function() {
-					scope.selectedProjectColumn = null;
-					scope.selectedTaskColumn = null;
-					scope.selectedDateColumn = null;
-					scope.selectedFromColumn = null;
-					scope.selectedToColumn = null;
-					scope.selectedDescriptionColumn = 1;
+					scope.excel.selectedProjectColumn = null;
+					scope.excel.selectedTaskColumn = null;
+					scope.excel.selectedDateColumn = null;
+					scope.excel.selectedFromColumn = null;
+					scope.excel.selectedToColumn = null;
+					scope.excel.selectedDescriptionColumn = 1;
 
 					expect(scope.canGoto4()).toBe(false);
 				});
 
 				it('should return true if all columns are selected', function() {
-					scope.selectedProjectColumn = 1;
-					scope.selectedTaskColumn = 2;
-					scope.selectedDateColumn = 3;
-					scope.selectedFromColumn = 4;
-					scope.selectedToColumn = 5;
-					scope.selectedDescriptionColumn = 6;
+					scope.excel.selectedProjectColumn = 1;
+					scope.excel.selectedTaskColumn = 2;
+					scope.excel.selectedDateColumn = 3;
+					scope.excel.selectedFromColumn = 4;
+					scope.excel.selectedToColumn = 5;
+					scope.excel.selectedDescriptionColumn = 6;
 
 					expect(scope.canGoto4()).toBe(true);
 				});
@@ -288,7 +288,7 @@
 			describe('$scope.goto4', function() {
 
 				beforeEach(function() {
-					scope.selectedSheet = {
+					scope.excel.selectedSheet = {
 						data: [
 							[ 'a', 'p1', 'dev' ],
 							[ 'a', 'p1', 'meeting' ],
@@ -297,32 +297,32 @@
 							[ 'a', 'p2', 'dev' ]
 						]
 					};
-					scope.selectedProjectColumn = 1;
-					scope.selectedTaskColumn = 2;
+					scope.excel.selectedProjectColumn = 1;
+					scope.excel.selectedTaskColumn = 2;
 				});
 
-				it('should group the sheet data by project and task and store it in $scope.groupedRows', function() {
+				it('should group the sheet data by project and task and store it in $scope.excel.groupedRows', function() {
 					scope.goto4();
 
-					expect(scope.groupedRows['p1 - dev'].length).toBe(1);
-					expect(scope.groupedRows['p1 - meeting'].length).toBe(1);
-					expect(scope.groupedRows['p2 - dev'].length).toBe(3);
+					expect(scope.excel.groupedRows['p1 - dev'].length).toBe(1);
+					expect(scope.excel.groupedRows['p1 - meeting'].length).toBe(1);
+					expect(scope.excel.groupedRows['p2 - dev'].length).toBe(3);
 				});
 
-				it('should store all the tasks and projects in $scope.projectsInExcelSheet', function() {
+				it('should store all the tasks and projects in $scope.excel.projectsInSheet', function() {
 					scope.goto4();
 
-					expect(scope.projectsInExcelSheet[0].project).toBe('p1');
-					expect(scope.projectsInExcelSheet[0].task).toBe('dev');
-					expect(scope.projectsInExcelSheet[0].display).toBe('p1 - dev');
+					expect(scope.excel.projectsInSheet[0].project).toBe('p1');
+					expect(scope.excel.projectsInSheet[0].task).toBe('dev');
+					expect(scope.excel.projectsInSheet[0].display).toBe('p1 - dev');
 
-					expect(scope.projectsInExcelSheet[1].project).toBe('p1');
-					expect(scope.projectsInExcelSheet[1].task).toBe('meeting');
-					expect(scope.projectsInExcelSheet[1].display).toBe('p1 - meeting');
+					expect(scope.excel.projectsInSheet[1].project).toBe('p1');
+					expect(scope.excel.projectsInSheet[1].task).toBe('meeting');
+					expect(scope.excel.projectsInSheet[1].display).toBe('p1 - meeting');
 
-					expect(scope.projectsInExcelSheet[2].project).toBe('p2');
-					expect(scope.projectsInExcelSheet[2].task).toBe('dev');
-					expect(scope.projectsInExcelSheet[2].display).toBe('p2 - dev');
+					expect(scope.excel.projectsInSheet[2].project).toBe('p2');
+					expect(scope.excel.projectsInSheet[2].task).toBe('dev');
+					expect(scope.excel.projectsInSheet[2].display).toBe('p2 - dev');
 				});
 
 				it('should go to the next wizard page', function() {
@@ -352,7 +352,7 @@
 
 			describe('$scope.canGoto5', function() {
 				it('should return false if at least one excel project has no project and task assigned', function() {
-					scope.projectsInExcelSheet = [
+					scope.excel.projectsInSheet = [
 						{ mappedProjectAndTask: 1 },
 						{ mappedProjectAndTask: null }
 					];
@@ -361,7 +361,7 @@
 				});
 
 				it('should return true if all excel project have a project and task assigned', function() {
-					scope.projectsInExcelSheet = [
+					scope.excel.projectsInSheet = [
 						{ mappedProjectAndTask: 1 },
 						{ mappedProjectAndTask: 2 }
 					];
@@ -394,40 +394,6 @@
 
 				scope = $rootScope.$new();
 
-				scope.selectedProjectColumn = 1;
-				scope.selectedTaskColumn = 2;
-				scope.selectedDateColumn = 4;
-				scope.selectedFromColumn = 5;
-				scope.selectedToColumn = 6;
-				scope.selectedDescriptionColumn = 3;
-
-				scope.groupedRows = {
-					'p1 - dev': [
-						[ 'c1', 'p1', 'dev', 'description1', '2010-01-01', '10:10', '10:20' ],
-						[ 'c1', 'p1', 'dev', 'description2', '2010-02-01', '9:00', '10:00' ]
-					],
-					'p1 - meeting': [
-						[ 'c1', 'p1', 'meeting', 'description1', '2010-01-01', '10:10', '10:20' ],
-						[ 'c1', 'p1', 'meeting', 'description2', '2010-01-01', '10:10', '10:20' ]
-					],
-					'p2 - dev': [
-						[ 'c2', 'p2', 'dev', 'description6', '2011-01-01', '00:00', '23:59' ],
-						[ 'c2', 'p2', 'dev', 'description7', '2012-01-01', '00:00', '10:00' ]
-					]
-				};
-
-				scope.projectsInExcelSheet = [
-					{ project: 'p1', task: 'dev', mappedProjectAndTask: 1 },
-					{ project: 'p1', task: 'meeting', mappedProjectAndTask: 2 },
-					{ project: 'p2', task: 'dev', mappedProjectAndTask: 3 }
-				];
-
-				scope.tasks = [ 
-					{ project: { id: 11, companyId: 111, name: 'p1' }, task: { name: 'dev', billable: true }, id: 1 },
-					{ project: { id: 11, companyId: 111, name: 'p1' }, task: { name: 'meeting', billable: true }, id: 2 },
-					{ project: { id: 22, companyId: 222, name: 'p2' }, task: { name: 'dev', billable: false }, id: 3 } 
-				];
-
 				timeRegistrationMock = {
 					verifyInput: null,
 					_cb: null,
@@ -443,6 +409,40 @@
 					TimeRegistration: timeRegistrationMock
 				});
 				scope.init();
+
+				scope.excel.selectedProjectColumn = 1;
+				scope.excel.selectedTaskColumn = 2;
+				scope.excel.selectedDateColumn = 4;
+				scope.excel.selectedFromColumn = 5;
+				scope.excel.selectedToColumn = 6;
+				scope.excel.selectedDescriptionColumn = 3;
+
+				scope.excel.groupedRows = {
+					'p1 - dev': [
+						[ 'c1', 'p1', 'dev', 'description1', '2010-01-01', '10:10', '10:20' ],
+						[ 'c1', 'p1', 'dev', 'description2', '2010-02-01', '9:00', '10:00' ]
+					],
+					'p1 - meeting': [
+						[ 'c1', 'p1', 'meeting', 'description1', '2010-01-01', '10:10', '10:20' ],
+						[ 'c1', 'p1', 'meeting', 'description2', '2010-01-01', '10:10', '10:20' ]
+					],
+					'p2 - dev': [
+						[ 'c2', 'p2', 'dev', 'description6', '2011-01-01', '00:00', '23:59' ],
+						[ 'c2', 'p2', 'dev', 'description7', '2012-01-01', '00:00', '10:00' ]
+					]
+				};
+
+				scope.excel.projectsInSheet = [
+					{ project: 'p1', task: 'dev', mappedProjectAndTask: 1 },
+					{ project: 'p1', task: 'meeting', mappedProjectAndTask: 2 },
+					{ project: 'p2', task: 'dev', mappedProjectAndTask: 3 }
+				];
+
+				scope.tasks = [ 
+					{ project: { id: 11, companyId: 111, name: 'p1' }, task: { name: 'dev', billable: true }, id: 1 },
+					{ project: { id: 11, companyId: 111, name: 'p1' }, task: { name: 'meeting', billable: true }, id: 2 },
+					{ project: { id: 22, companyId: 222, name: 'p2' }, task: { name: 'dev', billable: false }, id: 3 } 
+				];
 			}));
 
 			describe('$scope.import', function() {
