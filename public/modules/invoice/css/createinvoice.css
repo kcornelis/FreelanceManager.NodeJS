@@ -23,3 +23,7 @@
 .fm-create-invoice  .fm-invoice-searchresult th {
 	padding-top: 15px;
 }
+
+.fm-invoice-report .btn-group .dropdown {
+	float: left;
+}
