@@ -5,8 +5,7 @@
 	width: 25px;
 	margin: 0 10px 0 0;
 	position: relative;
-	display: inline-block;
-	vertical-align: middle;
+	display: block;
 	-webkit-animation: rotation .6s infinite linear;
 	-moz-animation: rotation .6s infinite linear;
 	-o-animation: rotation .6s infinite linear;
@@ -47,10 +46,9 @@
 .fm-wait-panel {
 	height: 40px;
 	width: 40px;
-	margin: 20px;
+	margin: 20px auto;
 	position: relative;
-	display: inline-block;
-	vertical-align: middle;
+	display: block;
 	-webkit-animation: rotation .6s infinite linear;
 	-moz-animation: rotation .6s infinite linear;
 	-o-animation: rotation .6s infinite linear;

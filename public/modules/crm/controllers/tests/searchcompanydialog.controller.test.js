@@ -44,7 +44,7 @@
 				$httpBackend.expectGET('/api/public/companies').respond([{ id: 1, name: 'company1'}, { id: 2, name: 'company2'}]);
 				$httpBackend.flush();
 
-				scope.selectedCompany = 1;
+				scope.company.id = 1;
 
 				scope.$close = function() { };
 				spyOn(scope, '$close');

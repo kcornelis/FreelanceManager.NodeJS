@@ -4,12 +4,13 @@
 		<h4 class="modal-title">Search Company</h4>
 	</div>
 	<div class="modal-body">
-		<div class="form-group">
-			<label>Name</label>
-			<select class="form-control" ng-model="selectedCompany">
-				<option ng-repeat="company in companies" value="{{ company.id }}">{{ company.name }}</option>
+		<ft-form-group ft-floating-label>
+			<select class="form-control chosen-select"  chosen=""
+				 	ng-model="company.id" ng-options="t.id as t.name for t in companies"
+				 	width="'100%'" disable-search="true" data-placeholder=" ">
 			</select>
-		</div>
+			<label>Name</label>
+		</ft-form-group>
 	</div>
 	<div class="modal-footer">
 		<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>

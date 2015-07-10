@@ -142,14 +142,14 @@
 			<!-- STEP 4: Map projects -->
 			<div ng-show="active(4)">
 				<div class="mt-xl" ng-repeat="p in excel.projectsInSheet">
-					<div class="form-group">
-						<label>{{ p.display }}</label>
-						<select class="form-control chosen-select"  chosen=""
+					<ft-form-group ft-floating-label>
+						<select class="form-control chosen-select"  chosen="" data-placeholder=" "
 								ng-model="p.mappedProjectAndTask" ng-options="p.id as p.display for p in tasks"
 								required="true" ng-required="true"  width="'100%'" disable-search="true">
 								<option value=""></option>
 						</select>
-					</div>
+						<label>{{ p.display }}</label>
+					</ft-form-group>				
 				</div>
 				<ul class="pager pull-right">
 					<li><button class="btn btn-default" ng-disabled="!canGoto5()" ng-click="goto5()">Next <span>&rarr;</span></button></li>
@@ -159,8 +159,8 @@
 
 			<!-- STEP 5: Import -->
 			<div ng-show="active(5)">
-				<div ng-show="importing" class="fm-wait-panel mt-xl"></div>
-				<ul class="pager pull-right">
+				<div ng-show="importing" class="fm-wait-panel mt-xl mh-a"></div>
+				<ul class="pager width-full mh-a">
 					<li><button class="btn btn-default" ng-disabled="importing" ng-click="import()">Import</button></li>
 				</ul>
 			</div>	

@@ -4,9 +4,10 @@
 	function controller($scope, Company) {
 
 		$scope.companies = Company.query();
+		$scope.company = {};
 
 		$scope.ok = function () {
-			$scope.$close(_.find($scope.companies, function(c) { return c.id === $scope.selectedCompany; }));
+			$scope.$close(_.find($scope.companies, function(c) { return c.id === $scope.company.id; }));
 		};
 
 		$scope.cancel = function () {

@@ -1,5 +1,6 @@
 <div class="content-header">
-	<h1><i class="icon-envelope"></i>Create a new invoice</h1>
+	<h1><i class="icon-envelope"></i>New invoice</h1>
+	<small>Create a new invoice</small>
 </div>
 
 <div class="fm-create-invoice" ng-init="init()">
@@ -34,36 +35,45 @@
 					<div class="mt-xl">
 						<div class="row">
 							<div class="col-sm-12 mb">
-								<label>Project</label>
-								<select class="form-control" ng-model="search.project" ng-options="p.id as (p.company.name + ' - ' + p.name) for p in projects">
-									<option></option>
-								</select>
+								<ft-form-group ft-floating-label>
+									<select class="form-control chosen-select"  chosen=""
+										 	ng-model="search.project" ng-options="p.id as (p.company.name + ' - ' + p.name) for p in projects"
+										 	width="'100%'" disable-search="true" data-placeholder=" ">
+									</select>
+									<label>Project</label>
+								</ft-form-group>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-3 mb-lg">
-								<label>From</label>
-								<input type="text" ng-model="search.from" class="form-control"
-									fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+							<div class="col-sm-3">
+								<ft-form-group ft-floating-label>
+									<label>From</label>
+									<input type="text" ng-model="search.from" class="form-control"
+										fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+								</ft-form-group>
 							</div>
-							<div class="col-sm-3 mb-lg">
-								<label>To</label>
-								<input type="text" ng-model="search.to" class="form-control"
-									fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+							<div class="col-sm-3">
+								<ft-form-group ft-floating-label>
+									<label>To</label>
+									<input type="text" ng-model="search.to" class="form-control"
+										fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+								<ft-form-group ft-floating-label>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-3 mb-lg">
-								<label class="checkbox-inline c-checkbox">
-									<input type="checkbox" ng-model="search.invoiced" />
-									<span class="fa fa-check"></span> Invoiced
-								</label>							
+							<div class="col-sm-3 mb-xl">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" ng-model="search.invoiced"> Invoiced
+									</label>
+								</div>							
 							</div>
-							<div class="col-sm-3 mb-lg">
-								<label class="checkbox-inline c-checkbox">
-									<input type="checkbox" ng-model="search.billable" />
-									<span class="fa fa-check"></span> Billable
-								</label>							
+							<div class="col-sm-3 mb-xl">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" ng-model="search.billable"> Billable
+									</label>
+								</div>							
 							</div>
 						</div>
 
@@ -84,14 +94,13 @@
 								Search returned no time registrations
 						</div>
 						<div class="table-responsive table-bordered mt-xl" ng-show="timeRegistrations.length > 0">
-							<table class="table table-hover">
+							<table class="table table-hover fm-invoice-searchresult">
 								<thead>
 									<tr>
 										<th check-all="check-all">
-											<div toggle="tooltip" title="Check All" class="checkbox c-checkbox">
+											<div toggle="tooltip" title="Check All" class="checkbox">
 												<label>
-													<input type="checkbox" ng-model="includeAllTimeRegistrations" />
-													<span class="fa fa-check"></span>
+													<input type="checkbox" ng-model="includeAllTimeRegistrations">
 												</label>
 											</div>
 										</th>
@@ -101,10 +110,9 @@
 								<tbody>
 									<tr ng-repeat="item in timeRegistrations">
 										<td>
-											<div class="checkbox c-checkbox">
+											<div class="checkbox">
 												<label>
-													<input type="checkbox" ng-model="item.included" />
-													<span class="fa fa-check"></span>
+													<input type="checkbox" ng-model="item.included">
 												</label>
 											</div>
 										</td>
@@ -204,70 +212,94 @@
 				<!-- STEP 3: Invoice info -->
 				<div ng-show="active(3)">
 
-					<legend class="mt-xl">Invoice details</legend>
+					<h3 class="text-center">Invoice details</h3>
 					<div class="row">
 						<div class="col-sm-12 mb">
-							<label>Number</label>
-							<input type="text" ng-model="invoice.number" class="form-control" required />
+							<ft-form-group ft-floating-label>
+								<label>Number</label>
+								<input type="text" ng-model="invoice.number" class="form-control" required />
+							</ft-form-group>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-6 mb">
-							<label>Date</label>
-							<input type="text" ng-model="invoice.displayDate" class="form-control" required
-								fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+							<ft-form-group ft-floating-label>
+								<label>Date</label>
+								<input type="text" ng-model="invoice.displayDate" class="form-control" required
+									fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+							</ft-form-group>
 						</div>
 						<div class="col-sm-6 mb">
-							<label>Credit Term</label>
-							<input type="text" ng-model="invoice.displayCreditTerm" class="form-control" required 
-								fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+							<ft-form-group ft-floating-label>
+								<label>Credit Term</label>
+								<input type="text" ng-model="invoice.displayCreditTerm" class="form-control" required 
+									fm-datepicker fm-datepicker-format="yyyy-mm-dd" fm-datepicker-h-position="left" />
+							</ft-form-group>
 						</div>
 					</div>	
 					<div class="row">
 						<div class="col-sm-12 mb">
-							<label>Template</label>
-							<select class="form-control" ng-model="invoice.templateId" ng-options="t.id as t.name for t in templates" required>
-							</select>
+							<ft-form-group ft-floating-label>
+								<select class="form-control chosen-select"  chosen=""
+									 	ng-model="invoice.templateId" ng-options="t.id as t.name for t in templates"
+									 	width="'100%'" disable-search="true" data-placeholder=" ">
+								</select>
+								<label>Template</label>
+							</ft-form-group>
 						</div>
 					</div>						
 
-					<legend class="mt-xl">Customer details <span class="fa fa-search fa-hover pull-right mt-sm" ng-click="searchCustomer()"></span></legend>
+					<h3 class="text-center">Customer details <span class="fa fa-search fa-hover pull-right mt-sm" ng-click="searchCustomer()"></span></h3>
 					<div class="row">
 						<div class="col-sm-6 mb">
-							<label>Name</label>
-							<input type="text" ng-model="invoice.customer.name" class="form-control" required />
+							<ft-form-group ft-floating-label>
+								<label>Name</label>
+								<input type="text" ng-model="invoice.customer.name" class="form-control" required />
+							</ft-form-group>
 						</div>
 						<div class="col-sm-6 mb">
-							<label>Customer Number</label>
-							<input type="text" ng-model="invoice.customer.number" class="form-control" required />
+							<ft-form-group ft-floating-label>
+								<label>Customer Number</label>
+								<input type="text" ng-model="invoice.customer.number" class="form-control" required />
+							</ft-form-group>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12 mb">
-							<label>VAT Number</label>
-							<input type="text" ng-model="invoice.customer.vatNumber" class="form-control" />
+							<ft-form-group ft-floating-label>
+								<label>VAT Number</label>
+								<input type="text" ng-model="invoice.customer.vatNumber" class="form-control" />
+							</ft-form-group>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12 mb">
-							<label>Address Line 1</label>
-							<input type="text" ng-model="invoice.customer.address.line1" class="form-control" required />
+							<ft-form-group ft-floating-label>
+								<label>Address Line 1</label>
+								<input type="text" ng-model="invoice.customer.address.line1" class="form-control" required />
+							</ft-form-group>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12 mb">
-							<label>Address Line 2</label>
-							<input type="text" ng-model="invoice.customer.address.line2" class="form-control" />
+							<ft-form-group ft-floating-label>
+								<label>Address Line 2</label>
+								<input type="text" ng-model="invoice.customer.address.line2" class="form-control" />
+							</ft-form-group>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-4 mb">
-							<label>Postalcode</label>
-							<input type="text" ng-model="invoice.customer.address.postalcode" class="form-control" required />
+							<ft-form-group ft-floating-label>
+								<label>Postalcode</label>
+								<input type="text" ng-model="invoice.customer.address.postalcode" class="form-control" required />
+							</ft-form-group>
 						</div>
 						<div class="col-sm-8 mb">
-							<label>City</label>
-							<input type="text" ng-model="invoice.customer.address.city" class="form-control" required />
+							<ft-form-group ft-floating-label>
+								<label>City</label>
+								<input type="text" ng-model="invoice.customer.address.city" class="form-control" required />
+							</ft-form-group>
 						</div>
 					</div>
 

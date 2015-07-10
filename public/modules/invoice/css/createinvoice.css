@@ -11,3 +11,15 @@
 .fm-create-invoice  .fm-invoice-preview {
 	border: 1px solid #dde6e9;
 }
+
+.fm-create-invoice  .fm-invoice-searchresult td {
+	vertical-align: middle;
+}
+
+.fm-create-invoice  .fm-invoice-searchresult .checkbox {
+	margin: 0;
+}
+
+.fm-create-invoice  .fm-invoice-searchresult th {
+	padding-top: 15px;
+}
