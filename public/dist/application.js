@@ -13,7 +13,8 @@ fm.config = (function() {
 			'oc.lazyLoad',
 			'ngResource', 
 			'ft', 
-			'ngTable']
+			'ngTable',
+			'localytics.directives']
 	};
 })();
 
@@ -132,7 +133,6 @@ fm.vendor = (function() {
 	fm.module.register('fmCore');
 })();
 
-
 (function() {
 	'use strict';
 
@@ -191,11 +191,11 @@ fm.vendor = (function() {
 	function authentication($rootScope, $state, $window, $location, jwtHelper) {
 		$rootScope.$on('$stateChangeStart', function(event, nextRoute, currentRoute) {
 				var loggedIn = $window.localStorage.token && !jwtHelper.isTokenExpired($window.localStorage.token);
-				if (nextRoute.access && 
-					nextRoute.access.requiredLogin && 
-					!loggedIn) {
+				if (!nextRoute.access || nextRoute.access.requiredLogin) {
+					if(!loggedIn) {
 						event.preventDefault();
 						$state.go('login', { r: $location.url() });
+					}
 				}
 		});
 	}
@@ -221,7 +221,8 @@ fm.vendor = (function() {
 		// the login page does not require loggin
 		state('login', {
 			url: '/login?r',
-			templateUrl: 'modules/account/views/login.html'
+			templateUrl: 'modules/account/views/login.html',
+			access: { requiredLogin: false }
 		}).	
 
 		state('app.account', {
@@ -247,7 +248,14 @@ fm.vendor = (function() {
 		$scope.account = Account.get({ id: token.id });
 
 		$scope.save = function () {
-			Account.save(token.id, $scope.account);
+			$scope.isSaving = true;
+
+			Account.save(token.id, $scope.account, function() {
+				$scope.isSaving = false;
+			}, 
+			function(err) {
+				$scope.isSaving = false;
+			});
 		};
 	}
 
@@ -303,22 +311,24 @@ fm.vendor = (function() {
 
 		var token = jwtHelper.decodeToken($window.localStorage.token);
 
-		$scope.oldPassword = '';
-		$scope.newPassword = '';
-		$scope.newPasswordConfirm = '';
+		$scope.password = {
+			old: '',
+			new: '',
+			confirm: ''
+		};
 
 		$scope.save = function () {
 			$scope.isSaving = true;
 			$scope.hasError = false;
 
-			Account.changePassword({ id: token.id }, { oldPassword: $scope.oldPassword, newPassword: $scope.newPassword },
+			Account.changePassword({ id: token.id }, { oldPassword: $scope.password.old, newPassword: $scope.password.new },
 				function() {
 
 					$scope.isSaving = false;
 
-					$scope.oldPassword = '';
-					$scope.newPassword = '';
-					$scope.newPasswordConfirm = '';
+					$scope.password.old = '';
+					$scope.password.new = '';
+					$scope.password.confirm = '';
 
 					$scope.accountPasswordForm.$setPristine();
 				},
@@ -386,15 +396,13 @@ fm.vendor = (function() {
 			url: '/app',
 			abstract: true,
 			templateUrl: 'modules/core/views/app.html',
-			controller: 'AppController',
-			access: { requiredLogin: true }
+			controller: 'AppController'
 		})
 
 		.state('app.dashboard', {
 			url: '/dashboard',
 			title: 'Dashboard',
-			templateUrl: 'modules/core/views/dashboard.html',
-			access: { requiredLogin: true }
+			templateUrl: 'modules/core/views/dashboard.html'
 		});
 	}
 
@@ -457,17 +465,30 @@ fm.vendor = (function() {
 (function() {
 	'use strict';
 
-	function autofocusDirective($timeout) {
+	function autofocusDirective($timeout, $parse) {
 		return {
 			link: function(scope, element, attrs) {
-				$timeout(function() {
-					element[0].focus(); 
-				}, 100);
+				if(attrs.autofocusCondition) {
+					 scope.$watch(
+						function () { return $parse(attrs.autofocusCondition)(); },
+						function (newVal) { 
+							if(newVal) { 
+								$timeout(function() {
+									element[0].focus(); 
+								}, 100);
+							}
+						}
+					);
+				} else {
+					$timeout(function() {
+						element[0].focus(); 
+					}, 100);
+				}
 			}
 		};
 	}
 	
-	autofocusDirective.$inject = ['$timeout'];
+	autofocusDirective.$inject = ['$timeout', '$parse'];
 
 	angular.module('fmCore').directive('autofocus', autofocusDirective);
 })();
@@ -479,7 +500,10 @@ fm.vendor = (function() {
 		return {
 			restrict: 'A',
 			link: function (scope, element, attrs) {
-				element.clockpicker();
+				element.clockpicker({
+					donetext: 'DONE',
+					autoclose: true
+				});
 			}
 		};
 	}
@@ -981,8 +1005,7 @@ fm.vendor = (function() {
 		.state('app.companies', {
 			url: '/crm/companies',
 			templateUrl: 'modules/crm/views/companies.html',
-			controller: 'CompaniesController',
-			access: { requiredLogin: true }
+			controller: 'CompaniesController'
 		});
 	}
 
@@ -1004,7 +1027,6 @@ fm.vendor = (function() {
 		};
 
 		$scope.openCompany = function(company) {
-
 
 			var createDialog = $modal.open({
 				templateUrl: '/modules/crm/views/editcompany.html',
@@ -1093,9 +1115,10 @@ fm.vendor = (function() {
 	function controller($scope, Company) {
 
 		$scope.companies = Company.query();
+		$scope.company = {};
 
 		$scope.ok = function () {
-			$scope.$close(_.find($scope.companies, function(c) { return c.id === $scope.selectedCompany; }));
+			$scope.$close(_.find($scope.companies, function(c) { return c.id === $scope.company.id; }));
 		};
 
 		$scope.cancel = function () {
@@ -1117,15 +1140,13 @@ fm.vendor = (function() {
 		.state('app.invoice_create', {
 			url: '/invoice/create',
 			templateUrl: 'modules/invoice/views/create.html',
-			controller: 'CreateInvoiceController',
-			access: { requiredLogin: true }
+			controller: 'CreateInvoiceController'
 		})
 
 		.state('app.invoice_overview', {
 			url: '/invoice/overview/:from/:to',
 			templateUrl: 'modules/invoice/views/overview.html',
 			controller: 'InvoiceOverviewController',
-			access: { requiredLogin: true },
 			params: {
 				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
 				to: function() { return moment().endOf('year').format('YYYYMMDD'); }
@@ -1136,7 +1157,6 @@ fm.vendor = (function() {
 			url: '/invoice/report/:from/:to',
 			templateUrl: 'modules/invoice/views/report.html',
 			controller: 'InvoiceReportController',
-			access: { requiredLogin: true },
 			resolve: fm.vendor.resolve('flot', 'flot-plugins'),
 			params: {
 				from: function() { return moment().startOf('year').format('YYYYMMDD'); },
@@ -1493,8 +1513,7 @@ fm.vendor = (function() {
 		.state('app.projects', {
 			url: '/projects/overview',
 			templateUrl: 'modules/project/views/projects.html',
-			controller: 'ProjectsController',
-            access: { requiredLogin: true }
+			controller: 'ProjectsController'
 		});
 	}
 
@@ -1694,8 +1713,7 @@ fm.vendor = (function() {
 		.state('app.settings_templates', {
 			url: '/settings/templates',
 			templateUrl: 'modules/settings/views/templates.html',
-			controller: 'TemplatesController',
-            access: { requiredLogin: true }
+			controller: 'TemplatesController'
 		});
 	}
 
@@ -1718,6 +1736,7 @@ fm.vendor = (function() {
 			$scope.newTemplate = template === undefined;
 		};
 
+		$scope.template = {};
 		$scope.newTemplate = true;
 
 		$scope.saveTemplate = function() {
@@ -1754,7 +1773,6 @@ fm.vendor = (function() {
 			url: '/time/overview/:date',
 			templateUrl: 'modules/time/views/overview.html',
 			controller: 'TimeRegistrationOverviewController',
-			access: { requiredLogin: true },
 			params: {
 				date: function() { return moment().format('YYYYMMDD'); }
 			}
@@ -1764,7 +1782,6 @@ fm.vendor = (function() {
 			url: '/time/report/:from/:to',
 			templateUrl: 'modules/time/views/report.html',
 			controller: 'TimeRegistrationReportController',
-			access: { requiredLogin: true },
 			resolve: fm.vendor.resolve('flot', 'flot-plugins'),
 			params: {
 				from: function() { return moment().startOf('month').format('YYYYMMDD'); },
@@ -1776,15 +1793,13 @@ fm.vendor = (function() {
 			url: '/time/import',
 			templateUrl: 'modules/time/views/import.html',
 			controller: 'TimeRegistrationImportController',
-			resolve: fm.vendor.resolve('xlsx'),
-			access: { requiredLogin: true }
+			resolve: fm.vendor.resolve('xlsx')
 		})
 
 		.state('app.time_export', {
 			url: '/time/export/:from/:to',
 			templateUrl: 'modules/time/views/export.html',
 			controller: 'TimeRegistrationExportController',
-			access: { requiredLogin: true },
 			params: {
 				from: function() { return moment().startOf('month').format('YYYYMMDD'); },
 				to: function() { return moment().endOf('month').format('YYYYMMDD'); }
@@ -1942,11 +1957,11 @@ fm.vendor = (function() {
 
 		$scope.fileChanged = function(files) {
 
-			$scope.excelSheets = [];
+			$scope.excel.sheets = [];
 			$scope.excelFile = files[0];
 
 			XLSXReader.readFile($scope.excelFile, false).then(function(xlsxData) {
-				$scope.excelSheets = xlsxData;
+				$scope.excel.sheets = xlsxData;
 				activate(2);
 			});
 		};
@@ -1954,24 +1969,25 @@ fm.vendor = (function() {
 		// step 2 (sheet selection)
 		// ***********************
 
-		$scope.selectedSheetName = undefined;
-		$scope.selectedSheet = undefined;
+		$scope.excel = {};
+		$scope.excel.selectedSheetName = undefined;
+		$scope.excel.selectedSheet = undefined;
 
 		$scope.goto3 = function() {
 			
-			$scope.selectedSheet = $scope.excelSheets[$scope.selectedSheetName];
+			$scope.excel.selectedSheet = $scope.excel.sheets[$scope.excel.selectedSheetName];
 
 			var selectedSheetHeader = [];
-			for(var i = 0; i < $scope.selectedSheet.header.length; i++) {
-				selectedSheetHeader.push({ key: i, value: $scope.selectedSheet.header[i] });
+			for(var i = 0; i < $scope.excel.selectedSheet.header.length; i++) {
+				selectedSheetHeader.push({ key: i, value: $scope.excel.selectedSheet.header[i] });
 			}
-			$scope.selectedSheetHeader = selectedSheetHeader;
+			$scope.excel.selectedSheetHeader = selectedSheetHeader;
 
 			activate(3);
 		};
 
 		$scope.canGoto3 = function() {
-			return isvalid($scope.selectedSheetName);
+			return isvalid($scope.excel.selectedSheetName);
 		};
 
 		// step 3 (column selection)
@@ -1979,15 +1995,15 @@ fm.vendor = (function() {
 
 		$scope.goto4 = function() {
 
-			$scope.groupedRows = _.groupBy($scope.selectedSheet.data, function(r) {
-				return r[$scope.selectedProjectColumn] + ' - ' + r[$scope.selectedTaskColumn];
+			$scope.excel.groupedRows = _.groupBy($scope.excel.selectedSheet.data, function(r) {
+				return r[$scope.excel.selectedProjectColumn] + ' - ' + r[$scope.excel.selectedTaskColumn];
 			});
 
-			$scope.projectsInExcelSheet = _.map($scope.groupedRows, function(g) {
+			$scope.excel.projectsInSheet = _.map($scope.excel.groupedRows, function(g) {
 				return {
-					project: g[0][$scope.selectedProjectColumn],
-					task: g[0][$scope.selectedTaskColumn],
-					display: g[0][$scope.selectedProjectColumn] + ' - ' + g[0][$scope.selectedTaskColumn]
+					project: g[0][$scope.excel.selectedProjectColumn],
+					task: g[0][$scope.excel.selectedTaskColumn],
+					display: g[0][$scope.excel.selectedProjectColumn] + ' - ' + g[0][$scope.excel.selectedTaskColumn]
 				};
 			});
 
@@ -1995,12 +2011,12 @@ fm.vendor = (function() {
 		};
 
 		$scope.canGoto4 = function() {
-			return isvalid($scope.selectedProjectColumn) &&
-				isvalid($scope.selectedTaskColumn) && 
-				isvalid($scope.selectedDateColumn) &&
-				isvalid($scope.selectedFromColumn) && 
-				isvalid($scope.selectedToColumn) && 
-				isvalid($scope.selectedDescriptionColumn);
+			return isvalid($scope.excel.selectedProjectColumn) &&
+				isvalid($scope.excel.selectedTaskColumn) && 
+				isvalid($scope.excel.selectedDateColumn) &&
+				isvalid($scope.excel.selectedFromColumn) && 
+				isvalid($scope.excel.selectedToColumn) && 
+				isvalid($scope.excel.selectedDescriptionColumn);
 		};
 
 		// step 4 (project mapping)
@@ -2011,7 +2027,7 @@ fm.vendor = (function() {
 		};
 
 		$scope.canGoto5 = function() {
-			return _.every($scope.projectsInExcelSheet, function(p) {
+			return _.every($scope.excel.projectsInSheet, function(p) {
 				return isvalid(p.mappedProjectAndTask);
 			});
 		};
@@ -2026,10 +2042,10 @@ fm.vendor = (function() {
 			var registrations = [];
 			$scope.importing = true;
 
-			_.forEach($scope.groupedRows, function(groupedRow) {
+			_.forEach($scope.excel.groupedRows, function(groupedRow) {
 
-				var selectedProjectTask = _.find($scope.projectsInExcelSheet, function(p) {
-					return p.project === groupedRow[0][$scope.selectedProjectColumn] && p.task === groupedRow[0][$scope.selectedTaskColumn];
+				var selectedProjectTask = _.find($scope.excel.projectsInSheet, function(p) {
+					return p.project === groupedRow[0][$scope.excel.selectedProjectColumn] && p.task === groupedRow[0][$scope.excel.selectedTaskColumn];
 				}).mappedProjectAndTask;
 
 				var project = _.find($scope.tasks, { id: selectedProjectTask }).project;
@@ -2041,10 +2057,10 @@ fm.vendor = (function() {
 						companyId: project.companyId,
 						projectId: project.id,
 						task: task.name,
-						description: row[$scope.selectedDescriptionColumn],
-						date: convertDisplayDateToNumeric(row[$scope.selectedDateColumn]),
-						from: convertDisplayTimeToNumeric(row[$scope.selectedFromColumn]),
-						to: convertDisplayTimeToNumeric(row[$scope.selectedToColumn]),
+						description: row[$scope.excel.selectedDescriptionColumn],
+						date: convertDisplayDateToNumeric(row[$scope.excel.selectedDateColumn]),
+						from: convertDisplayTimeToNumeric(row[$scope.excel.selectedFromColumn]),
+						to: convertDisplayTimeToNumeric(row[$scope.excel.selectedToColumn]),
 						billable: task.billable
 					});
 				});
