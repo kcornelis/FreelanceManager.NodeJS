@@ -12,6 +12,7 @@
 			$scope.newTemplate = template === undefined;
 		};
 
+		$scope.template = {};
 		$scope.newTemplate = true;
 
 		$scope.saveTemplate = function() {
