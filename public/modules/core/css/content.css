@@ -1,0 +1,11 @@
+@media (max-width: 767px) {
+	#content .content-header .toolbar {
+		float: none;
+		text-align: center;
+		margin: 20px auto 0 auto;
+	}
+
+	#content .content-header .toolbar .btn {
+		float: none !important;
+	}
+}
