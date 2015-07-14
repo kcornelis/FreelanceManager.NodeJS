@@ -19,6 +19,7 @@ module.exports = {
 				'public/lib/clockpicker/dist/bootstrap-clockpicker.css',
 				'public/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
 				'public/lib/chosen/chosen.min.css',
+				'public/lib/angular-loading-bar/src/loading-bar.css',
 
 				'public/lib/flat-theme/dist/flat-theme.css'
 			],
@@ -29,6 +30,7 @@ module.exports = {
 				'public/lib/angular-local-storage/dist/angular-local-storage.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-animate/angular-animate.js',
+				'public/lib/angular-loading-bar/src/loading-bar.js',
 
 				'public/lib/bootstrap/dist/js/bootstrap.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',

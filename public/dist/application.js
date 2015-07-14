@@ -14,7 +14,8 @@ fm.config = (function() {
 			'ngResource', 
 			'ft', 
 			'ngTable',
-			'localytics.directives']
+			'localytics.directives',
+			'angular-loading-bar']
 	};
 })();
 
@@ -366,9 +367,17 @@ fm.vendor = (function() {
 		};
 	}
 
+	function configureLoadingBarProvider(cfpLoadingBarProvider) {
+		cfpLoadingBarProvider.parentSelector = '#content';
+		cfpLoadingBarProvider.includeSpinner = false;
+		cfpLoadingBarProvider.includeBar = true;
+	}
+
 	config.$inject = ['$rootScope', '$state', '$stateParams',  '$window'];
+	configureLoadingBarProvider.$inject = ['cfpLoadingBarProvider'];
 
 	angular.module('fmCore').run(config);
+	angular.module('fmCore').config(configureLoadingBarProvider);
 })();
 
 (function() {
@@ -414,7 +423,7 @@ fm.vendor = (function() {
 (function() {
 	'use strict';
 
-	function controller($rootScope, $scope, $state) {
+	function controller($rootScope, $scope, $state, cfpLoadingBar) {
 		// TODO register for state changes and change the title
 		// $rootScope.currTitle = $state.current.title;
 		// $rootScope.pageTitle = function() {
@@ -423,9 +432,20 @@ fm.vendor = (function() {
 		$rootScope.pageTitle = function() {
 			return $rootScope.app.name + ' - ' + $rootScope.app.description;
 		};
+
+		// TODO unit test
+		$rootScope.$on('$stateChangeStart', function() {
+			cfpLoadingBar.start();
+		});
+
+		$rootScope.$on('$stateChangeSuccess', function(event) {
+			event.targetScope.$watch('$viewContentLoaded', function () {
+				cfpLoadingBar.complete();
+			});
+		});
 	}
 
-	controller.$inject = ['$rootScope', '$scope', '$state'];
+	controller.$inject = ['$rootScope', '$scope', '$state', 'cfpLoadingBar'];
 
 	angular.module('fmCore').controller('AppController', controller);
 })();

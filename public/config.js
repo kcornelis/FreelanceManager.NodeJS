@@ -14,6 +14,7 @@ fm.config = (function() {
 			'ngResource', 
 			'ft', 
 			'ngTable',
-			'localytics.directives']
+			'localytics.directives',
+			'angular-loading-bar']
 	};
 })();

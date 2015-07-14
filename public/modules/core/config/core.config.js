@@ -18,7 +18,15 @@
 		};
 	}
 
+	function configureLoadingBarProvider(cfpLoadingBarProvider) {
+		cfpLoadingBarProvider.parentSelector = '#content';
+		cfpLoadingBarProvider.includeSpinner = false;
+		cfpLoadingBarProvider.includeBar = true;
+	}
+
 	config.$inject = ['$rootScope', '$state', '$stateParams',  '$window'];
+	configureLoadingBarProvider.$inject = ['cfpLoadingBarProvider'];
 
 	angular.module('fmCore').run(config);
+	angular.module('fmCore').config(configureLoadingBarProvider);
 })();
