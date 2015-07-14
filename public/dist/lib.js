@@ -7374,7 +7374,7 @@ angularLocalStorage.provider('localStorageService', function() {
 });
 })( window, window.angular );
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -8043,7 +8043,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.3.16
+ * @license AngularJS v1.3.17
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -10181,6 +10181,330 @@ angular.module('ngAnimate', ['ng'])
 
 
 })(window, window.angular);
+
+/*
+ * angular-loading-bar
+ *
+ * intercepts XHR requests and creates a loading bar.
+ * Based on the excellent nprogress work by rstacruz (more info in readme)
+ *
+ * (c) 2013 Wes Cruver
+ * License: MIT
+ */
+
+
+(function() {
+
+'use strict';
+
+// Alias the loading bar for various backwards compatibilities since the project has matured:
+angular.module('angular-loading-bar', ['cfp.loadingBarInterceptor']);
+angular.module('chieffancypants.loadingBar', ['cfp.loadingBarInterceptor']);
+
+
+/**
+ * loadingBarInterceptor service
+ *
+ * Registers itself as an Angular interceptor and listens for XHR requests.
+ */
+angular.module('cfp.loadingBarInterceptor', ['cfp.loadingBar'])
+  .config(['$httpProvider', function ($httpProvider) {
+
+    var interceptor = ['$q', '$cacheFactory', '$timeout', '$rootScope', '$log', 'cfpLoadingBar', function ($q, $cacheFactory, $timeout, $rootScope, $log, cfpLoadingBar) {
+
+      /**
+       * The total number of requests made
+       */
+      var reqsTotal = 0;
+
+      /**
+       * The number of requests completed (either successfully or not)
+       */
+      var reqsCompleted = 0;
+
+      /**
+       * The amount of time spent fetching before showing the loading bar
+       */
+      var latencyThreshold = cfpLoadingBar.latencyThreshold;
+
+      /**
+       * $timeout handle for latencyThreshold
+       */
+      var startTimeout;
+
+
+      /**
+       * calls cfpLoadingBar.complete() which removes the
+       * loading bar from the DOM.
+       */
+      function setComplete() {
+        $timeout.cancel(startTimeout);
+        cfpLoadingBar.complete();
+        reqsCompleted = 0;
+        reqsTotal = 0;
+      }
+
+      /**
+       * Determine if the response has already been cached
+       * @param  {Object}  config the config option from the request
+       * @return {Boolean} retrns true if cached, otherwise false
+       */
+      function isCached(config) {
+        var cache;
+        var defaultCache = $cacheFactory.get('$http');
+        var defaults = $httpProvider.defaults;
+
+        // Choose the proper cache source. Borrowed from angular: $http service
+        if ((config.cache || defaults.cache) && config.cache !== false &&
+          (config.method === 'GET' || config.method === 'JSONP')) {
+            cache = angular.isObject(config.cache) ? config.cache
+              : angular.isObject(defaults.cache) ? defaults.cache
+              : defaultCache;
+        }
+
+        var cached = cache !== undefined ?
+          cache.get(config.url) !== undefined : false;
+
+        if (config.cached !== undefined && cached !== config.cached) {
+          return config.cached;
+        }
+        config.cached = cached;
+        return cached;
+      }
+
+
+      return {
+        'request': function(config) {
+          // Check to make sure this request hasn't already been cached and that
+          // the requester didn't explicitly ask us to ignore this request:
+          if (!config.ignoreLoadingBar && !isCached(config)) {
+            $rootScope.$broadcast('cfpLoadingBar:loading', {url: config.url});
+            if (reqsTotal === 0) {
+              startTimeout = $timeout(function() {
+                cfpLoadingBar.start();
+              }, latencyThreshold);
+            }
+            reqsTotal++;
+            cfpLoadingBar.set(reqsCompleted / reqsTotal);
+          }
+          return config;
+        },
+
+        'response': function(response) {
+          if (!response || !response.config) {
+            $log.error('Broken interceptor detected: Config object not supplied in response:\n https://github.com/chieffancypants/angular-loading-bar/pull/50');
+            return response;
+          }
+
+          if (!response.config.ignoreLoadingBar && !isCached(response.config)) {
+            reqsCompleted++;
+            $rootScope.$broadcast('cfpLoadingBar:loaded', {url: response.config.url, result: response});
+            if (reqsCompleted >= reqsTotal) {
+              setComplete();
+            } else {
+              cfpLoadingBar.set(reqsCompleted / reqsTotal);
+            }
+          }
+          return response;
+        },
+
+        'responseError': function(rejection) {
+          if (!rejection || !rejection.config) {
+            $log.error('Broken interceptor detected: Config object not supplied in rejection:\n https://github.com/chieffancypants/angular-loading-bar/pull/50');
+            return $q.reject(rejection);
+          }
+
+          if (!rejection.config.ignoreLoadingBar && !isCached(rejection.config)) {
+            reqsCompleted++;
+            $rootScope.$broadcast('cfpLoadingBar:loaded', {url: rejection.config.url, result: rejection});
+            if (reqsCompleted >= reqsTotal) {
+              setComplete();
+            } else {
+              cfpLoadingBar.set(reqsCompleted / reqsTotal);
+            }
+          }
+          return $q.reject(rejection);
+        }
+      };
+    }];
+
+    $httpProvider.interceptors.push(interceptor);
+  }]);
+
+
+/**
+ * Loading Bar
+ *
+ * This service handles adding and removing the actual element in the DOM.
+ * Generally, best practices for DOM manipulation is to take place in a
+ * directive, but because the element itself is injected in the DOM only upon
+ * XHR requests, and it's likely needed on every view, the best option is to
+ * use a service.
+ */
+angular.module('cfp.loadingBar', [])
+  .provider('cfpLoadingBar', function() {
+
+    this.autoIncrement = true;
+    this.includeSpinner = true;
+    this.includeBar = true;
+    this.latencyThreshold = 100;
+    this.startSize = 0.02;
+    this.parentSelector = 'body';
+    this.spinnerTemplate = '<div id="loading-bar-spinner"><div class="spinner-icon"></div></div>';
+    this.loadingBarTemplate = '<div id="loading-bar"><div class="bar"><div class="peg"></div></div></div>';
+
+    this.$get = ['$injector', '$document', '$timeout', '$rootScope', function ($injector, $document, $timeout, $rootScope) {
+      var $animate;
+      var $parentSelector = this.parentSelector,
+        loadingBarContainer = angular.element(this.loadingBarTemplate),
+        loadingBar = loadingBarContainer.find('div').eq(0),
+        spinner = angular.element(this.spinnerTemplate);
+
+      var incTimeout,
+        completeTimeout,
+        started = false,
+        status = 0;
+
+      var autoIncrement = this.autoIncrement;
+      var includeSpinner = this.includeSpinner;
+      var includeBar = this.includeBar;
+      var startSize = this.startSize;
+
+      /**
+       * Inserts the loading bar element into the dom, and sets it to 2%
+       */
+      function _start() {
+        if (!$animate) {
+          $animate = $injector.get('$animate');
+        }
+
+        var $parent = $document.find($parentSelector).eq(0);
+        $timeout.cancel(completeTimeout);
+
+        // do not continually broadcast the started event:
+        if (started) {
+          return;
+        }
+
+        $rootScope.$broadcast('cfpLoadingBar:started');
+        started = true;
+
+        if (includeBar) {
+          $animate.enter(loadingBarContainer, $parent, angular.element($parent[0].lastChild));
+        }
+
+        if (includeSpinner) {
+          $animate.enter(spinner, $parent, angular.element($parent[0].lastChild));
+        }
+
+        _set(startSize);
+      }
+
+      /**
+       * Set the loading bar's width to a certain percent.
+       *
+       * @param n any value between 0 and 1
+       */
+      function _set(n) {
+        if (!started) {
+          return;
+        }
+        var pct = (n * 100) + '%';
+        loadingBar.css('width', pct);
+        status = n;
+
+        // increment loadingbar to give the illusion that there is always
+        // progress but make sure to cancel the previous timeouts so we don't
+        // have multiple incs running at the same time.
+        if (autoIncrement) {
+          $timeout.cancel(incTimeout);
+          incTimeout = $timeout(function() {
+            _inc();
+          }, 250);
+        }
+      }
+
+      /**
+       * Increments the loading bar by a random amount
+       * but slows down as it progresses
+       */
+      function _inc() {
+        if (_status() >= 1) {
+          return;
+        }
+
+        var rnd = 0;
+
+        // TODO: do this mathmatically instead of through conditions
+
+        var stat = _status();
+        if (stat >= 0 && stat < 0.25) {
+          // Start out between 3 - 6% increments
+          rnd = (Math.random() * (5 - 3 + 1) + 3) / 100;
+        } else if (stat >= 0.25 && stat < 0.65) {
+          // increment between 0 - 3%
+          rnd = (Math.random() * 3) / 100;
+        } else if (stat >= 0.65 && stat < 0.9) {
+          // increment between 0 - 2%
+          rnd = (Math.random() * 2) / 100;
+        } else if (stat >= 0.9 && stat < 0.99) {
+          // finally, increment it .5 %
+          rnd = 0.005;
+        } else {
+          // after 99%, don't increment:
+          rnd = 0;
+        }
+
+        var pct = _status() + rnd;
+        _set(pct);
+      }
+
+      function _status() {
+        return status;
+      }
+
+      function _completeAnimation() {
+        status = 0;
+        started = false;
+      }
+
+      function _complete() {
+        if (!$animate) {
+          $animate = $injector.get('$animate');
+        }
+
+        $rootScope.$broadcast('cfpLoadingBar:completed');
+        _set(1);
+
+        $timeout.cancel(completeTimeout);
+
+        // Attempt to aggregate any start/complete calls within 500ms:
+        completeTimeout = $timeout(function() {
+          var promise = $animate.leave(loadingBarContainer, _completeAnimation);
+          if (promise && promise.then) {
+            promise.then(_completeAnimation);
+          }
+          $animate.leave(spinner);
+        }, 500);
+      }
+
+      return {
+        start            : _start,
+        set              : _set,
+        status           : _status,
+        inc              : _inc,
+        complete         : _complete,
+        autoIncrement    : this.autoIncrement,
+        includeSpinner   : this.includeSpinner,
+        latencyThreshold : this.latencyThreshold,
+        parentSelector   : this.parentSelector,
+        startSize        : this.startSize
+      };
+
+
+    }];     //
+  });       // wtf javascript. srsly
+})();       //
 
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
@@ -19254,8 +19578,9 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     } else {
         return factory(angular);
     }
-}(angular || null, function(angular) {
+}(window.angular || null, function(angular) {
     'use strict';
+
 /**
  * ngTable: Table + Angular JS
  *
@@ -19302,8 +19627,9 @@ var app = angular.module('ngTable', []);
  */
 
 /**
- * @ngdoc value
- * @name ngTable.value:ngTableDefaultParams
+ * @ngdoc object
+ * @name ngTableDefaultParams
+ * @module ngTable
  * @description Default Parameters for ngTable
  */
 app.value('ngTableDefaults', {
@@ -19313,7 +19639,8 @@ app.value('ngTableDefaults', {
 
 /**
  * @ngdoc service
- * @name ngTable.factory:NgTableParams
+ * @name NgTableParams
+ * @module ngTable
  * @description Parameters manager for ngTable
  */
 
@@ -19333,8 +19660,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#parameters
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#parameters
          * @description Set new parameters or get current parameters
          *
          * @param {string} newParameters      New parameters
@@ -19373,8 +19699,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#settings
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#settings
          * @description Set new settings for table
          *
          * @param {string} newSettings New settings or undefined
@@ -19395,8 +19720,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#page
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#page
          * @description If parameter page not set return current page else set current page
          *
          * @param {string} page Page number
@@ -19410,8 +19734,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#total
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#total
          * @description If parameter total not set return current quantity else set quantity
          *
          * @param {string} total Total quantity of items
@@ -19425,8 +19748,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#count
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#count
          * @description If parameter count not set return current count per page else set count per page
          *
          * @param {string} count Count per number
@@ -19442,8 +19764,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#filter
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#filter
          * @description If parameter page not set return current filter else set current filter
          *
          * @param {string} filter New filter
@@ -19458,8 +19779,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#sorting
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#sorting
          * @description If 'sorting' parameter is not set, return current sorting. Otherwise set current sorting.
          *
          * @param {string} sorting New sorting
@@ -19481,8 +19801,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#isSortBy
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#isSortBy
          * @description Checks sort field
          *
          * @param {string} field     Field name
@@ -19495,8 +19814,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#orderBy
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#orderBy
          * @description Return object of sorting parameters for angular filter
          *
          * @returns {Array} Array like: [ '-name', '+age' ]
@@ -19511,8 +19829,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#getData
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#getData
          * @description Called when updated some of parameters for get new data
          *
          * @param {Object} $defer promise object
@@ -19529,8 +19846,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#getGroups
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#getGroups
          * @description Return groups for table grouping
          */
         this.getGroups = function($defer, column) {
@@ -19559,18 +19875,19 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#generatePagesArray
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#generatePagesArray
          * @description Generate array of pages
          *
          * @param {boolean} currentPage which page must be active
          * @param {boolean} totalItems  Total quantity of items
          * @param {boolean} pageSize    Quantity of items on page
+         * @param {number} maxBlocks    Quantity of blocks for pagination
          * @returns {Array} Array of pages
          */
-        this.generatePagesArray = function(currentPage, totalItems, pageSize) {
-            var maxBlocks, maxPage, maxPivotPages, minPage, numPages, pages;
-            maxBlocks = 11;
+        this.generatePagesArray = function(currentPage, totalItems, pageSize, maxBlocks) {
+            var maxPage, maxPivotPages, minPage, numPages, pages;
+            maxBlocks = maxBlocks && maxBlocks < 6 ? 6 : maxBlocks;
+
             pages = [];
             numPages = Math.ceil(totalItems / pageSize);
             if (numPages > 1) {
@@ -19585,7 +19902,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
                     active: currentPage > 1,
                     current: currentPage === 1
                 });
-                maxPivotPages = Math.round((maxBlocks - 5) / 2);
+                maxPivotPages = Math.round((settings.paginationMaxBlocks - settings.paginationMinBlocks) / 2);
                 minPage = Math.max(2, currentPage - maxPivotPages);
                 maxPage = Math.min(numPages - 1, currentPage + maxPivotPages * 2 - (currentPage - minPage));
                 minPage = Math.max(2, minPage - (maxPivotPages * 2 - (maxPage - minPage)));
@@ -19623,8 +19940,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#url
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#url
          * @description Return groups for table grouping
          *
          * @param {boolean} asString flag indicates return array of string or object
@@ -19662,8 +19978,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
-         * @name ngTable.factory:NgTableParams#reload
-         * @methodOf ngTable.factory:NgTableParams
+         * @name NgTableParams#reload
          * @description Reload table data
          */
         this.reload = function() {
@@ -19698,8 +20013,10 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
                     self.data = data;
                     if (settings.$scope) settings.$scope.$data = data;
                 }
-                if (settings.$scope) settings.$scope.pages = self.generatePagesArray(self.page(), self.total(), self.count());
-                settings.$scope.$emit('ngTableAfterReloadData');
+                if (settings.$scope) {
+                    settings.$scope.pages = self.generatePagesArray(self.page(), self.total(), self.count());
+                    settings.$scope.$emit('ngTableAfterReloadData');
+                }
                 return data;
             });
         };
@@ -19727,6 +20044,8 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
             defaultSort: 'desc',
             filterDelay: 750,
             counts: [10, 25, 50, 100],
+            paginationMaxBlocks: 11,
+            paginationMinBlocks: 5,
             sortingIndicator: 'span',
             getGroups: this.getGroups,
             getData: this.getData
@@ -19742,7 +20061,7 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
 /**
  * @ngdoc service
- * @name ngTable.factory:ngTableParams
+ * @name ngTableParams
  * @description Backwards compatible shim for lowercase 'n' in NgTableParams
  */
 app.factory('ngTableParams', ['NgTableParams', function(NgTableParams) {
@@ -19759,10 +20078,10 @@ app.factory('ngTableParams', ['NgTableParams', function(NgTableParams) {
 
 /**
  * @ngdoc object
- * @name ngTable.directive:ngTable.ngTableController
+ * @name ngTableController
  *
  * @description
- * Each {@link ngTable.directive:ngTable ngTable} directive creates an instance of `ngTableController`
+ * Each {@link ngTable ngTable} directive creates an instance of `ngTableController`
  */
 app.controller('ngTableController', ['$scope', 'NgTableParams', '$timeout', '$parse', '$compile', '$attrs', '$element',
     'ngTableColumn',
@@ -19928,10 +20247,10 @@ function($scope, NgTableParams, $timeout, $parse, $compile, $attrs, $element, ng
 
 /**
  * @ngdoc service
- * @name ngTable.factory:ngTableColumn
- *
+ * @name ngTableColumn
+ * @module ngTable
  * @description
- * Service to construct a $column definition used by {@link ngTable.directive:ngTable ngTable} directive
+ * Service to construct a $column definition used by {@link ngTable ngTable} directive
  */
 app.factory('ngTableColumn', [function () {
 
@@ -19940,17 +20259,16 @@ app.factory('ngTableColumn', [function () {
         filter: function(){ return false; },
         filterData: angular.noop,
         headerTemplateURL: function(){ return false; },
-        headerTitle: function(){ return ' '; },
+        headerTitle: function(){ return ''; },
         sortable: function(){ return false; },
         show: function(){ return true; },
-        title: function(){ return ' '; },
+        title: function(){ return ''; },
         titleAlt: function(){ return ''; }
     };
 
     /**
      * @ngdoc method
-     * @name ngTable.factory:ngTableColumn#buildColumn
-     * @methodOf ngTable.factory:ngTableColumn
+     * @name ngTableColumn#buildColumn
      * @description Creates a $column for use within a header template
      *
      * @param {Object} column an existing $column or simple column data object
@@ -20005,11 +20323,12 @@ app.factory('ngTableColumn', [function () {
 
 /**
  * @ngdoc directive
- * @name ngTable.directive:ngTable
+ * @name ngTable
+ * @module ngTable
  * @restrict A
  *
  * @description
- * Directive that instantiates {@link ngTable.directive:ngTable.ngTableController ngTableController}.
+ * Directive that instantiates {@link ngTableController ngTableController}.
  */
 app.directive('ngTable', ['$q', '$parse',
     function($q, $parse) {
@@ -20092,11 +20411,12 @@ app.directive('ngTable', ['$q', '$parse',
 
 /**
  * @ngdoc directive
- * @name ngTable.directive:ngTableDynamic
+ * @name ngTableDynamic
+ * @module ngTable
  * @restrict A
  *
  * @description
- * A dynamic version of the {@link ngTable.directive:ngTable ngTable} directive that accepts a dynamic list of columns
+ * A dynamic version of the {@link ngTable ngTable} directive that accepts a dynamic list of columns
  * definitions to render
  */
 app.directive('ngTableDynamic', ['$parse', function ($parse){
@@ -20148,15 +20468,16 @@ app.directive('ngTableDynamic', ['$parse', function ($parse){
                     el.attr('ng-show', '$columns[$index].show(this)');
                 }
             });
-
-            return function(scope, element, attrs, controller) {
+            return function (scope, element, attrs, controller) {
                 var expr = parseDirectiveExpression(attrs.ngTableDynamic);
-                var columns = $parse(expr.columns)(scope) || [];
-                scope.$columns = controller.buildColumns(columns);
 
                 controller.setupBindingsToInternalScope(expr.tableParams);
-                controller.loadFilterData(scope.$columns);
                 controller.compileDirectiveTemplates();
+
+                scope.$watchCollection(expr.columns, function (newCols/*, oldCols*/) {
+                    scope.$columns = controller.buildColumns(newCols);
+                    controller.loadFilterData(scope.$columns);
+                });
             };
         }
     };
@@ -20172,7 +20493,8 @@ app.directive('ngTableDynamic', ['$parse', function ($parse){
 
 /**
  * @ngdoc directive
- * @name ngTable.directive:ngTablePagination
+ * @name ngTablePagination
+ * @module ngTable
  * @restrict A
  */
 app.directive('ngTablePagination', ['$compile',
@@ -20188,8 +20510,13 @@ app.directive('ngTablePagination', ['$compile',
             replace: false,
             link: function(scope, element, attrs) {
 
-                scope.params.settings().$scope.$on('ngTableAfterReloadData', function() {
-                    scope.pages = scope.params.generatePagesArray(scope.params.page(), scope.params.total(), scope.params.count());
+                var settings = scope.params.settings();
+                settings.$scope.$on('ngTableAfterReloadData', function() {
+                    var page = scope.params.page(),
+                        total = scope.params.total(),
+                        count = scope.params.count(),
+                        maxBlocks = settings.paginationMaxBlocks;
+                    scope.pages = scope.params.generatePagesArray(page, total, count, maxBlocks);
                 }, true);
 
                 scope.$watch('templateUrl', function(templateUrl) {
@@ -20207,11 +20534,12 @@ app.directive('ngTablePagination', ['$compile',
         };
     }
 ]);
+
 angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 	$templateCache.put('ng-table/filters/select-multiple.html', '<select ng-options="data.id as data.title for data in $column.data" ng-disabled="$filterRow.disabled" multiple ng-multiple="true" ng-model="params.filter()[name]" ng-show="filter==\'select-multiple\'" class="filter filter-select-multiple form-control" name="{{name}}"> </select>');
 	$templateCache.put('ng-table/filters/select.html', '<select ng-options="data.id as data.title for data in $column.data" ng-disabled="$filterRow.disabled" ng-model="params.filter()[name]" ng-show="filter==\'select\'" class="filter filter-select form-control" name="{{name}}"> </select>');
 	$templateCache.put('ng-table/filters/text.html', '<input type="text" name="{{name}}" ng-disabled="$filterRow.disabled" ng-model="params.filter()[name]" ng-if="filter==\'text\'" class="input-filter form-control"/>');
-	$templateCache.put('ng-table/header.html', '<tr> <th title="{{$column.headerTitle(this)}}" ng-repeat="$column in $columns" ng-class="{ \'sortable\': $column.sortable(this), \'sort-asc\': params.sorting()[$column.sortable(this)]==\'asc\', \'sort-desc\': params.sorting()[$column.sortable(this)]==\'desc\' }" ng-click="sortBy($column, $event)" ng-show="$column.show(this)" ng-init="template=$column.headerTemplateURL(this)" class="header {{$column.class(this)}}"> <div ng-if="!template" ng-show="!template" class="ng-table-header" ng-class="{\'sort-indicator\': params.settings().sortingIndicator==\'div\'}"> <span ng-bind="$column.title(this)" ng-class="{\'sort-indicator\': params.settings().sortingIndicator==\'span\'}"></span> </div> <div ng-if="template" ng-show="template" ng-include="template"></div> </th> </tr> <tr ng-show="show_filter" class="ng-table-filters"> <th data-title-text="{{$column.titleAlt(this) || $column.title(this)}}" ng-repeat="$column in $columns" ng-show="$column.show(this)" class="filter"> <div ng-repeat="(name, filter) in $column.filter(this)"> <div ng-if="filter.indexOf(\'/\') !==-1" ng-include="filter"></div> <div ng-if="filter.indexOf(\'/\')===-1" ng-include="\'ng-table/filters/\' + filter + \'.html\'"></div> </div> </th> </tr> ');
+	$templateCache.put('ng-table/header.html', '<tr> <th title="{{$column.headerTitle(this)}}" ng-repeat="$column in $columns | orderBy:\'position\'" ng-class="{ \'sortable\': $column.sortable(this), \'sort-asc\': params.sorting()[$column.sortable(this)]==\'asc\', \'sort-desc\': params.sorting()[$column.sortable(this)]==\'desc\' }" ng-click="sortBy($column, $event)" ng-show="$column.show(this)" ng-init="template=$column.headerTemplateURL(this)" class="header {{$column.class(this)}}"> <div ng-if="!template" ng-show="!template" class="ng-table-header" ng-class="{\'sort-indicator\': params.settings().sortingIndicator==\'div\'}"> <span ng-bind="$column.title(this)" ng-class="{\'sort-indicator\': params.settings().sortingIndicator==\'span\'}"></span> </div> <div ng-if="template" ng-show="template" ng-include="template"></div> </th> </tr> <tr ng-show="show_filter" class="ng-table-filters"> <th data-title-text="{{$column.titleAlt(this) || $column.title(this)}}" ng-repeat="$column in $columns | orderBy:\'position\'" ng-show="$column.show(this)" class="filter"> <div ng-repeat="(name, filter) in $column.filter(this)"> <div ng-if="filter.indexOf(\'/\') !==-1" ng-include="filter"></div> <div ng-if="filter.indexOf(\'/\')===-1" ng-include="\'ng-table/filters/\' + filter + \'.html\'"></div> </div> </th> </tr> ');
 	$templateCache.put('ng-table/pager.html', '<div class="ng-cloak ng-table-pager" ng-if="params.data.length"> <div ng-if="params.settings().counts.length" class="ng-table-counts btn-group pull-right"> <button ng-repeat="count in params.settings().counts" type="button" ng-class="{\'active\':params.count()==count}" ng-click="params.count(count)" class="btn btn-default"> <span ng-bind="count"></span> </button> </div> <ul class="pagination ng-table-pagination"> <li ng-class="{\'disabled\': !page.active && !page.current, \'active\': page.current}" ng-repeat="page in pages" ng-switch="page.type"> <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;</a> <a ng-switch-when="first" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="page" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="more" ng-click="params.page(page.number)" href="">&#8230;</a> <a ng-switch-when="last" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="next" ng-click="params.page(page.number)" href="">&raquo;</a> </li> </ul> </div> ');
 }]);
     return app;
@@ -35800,15 +36128,15 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 }));
 /**
  * oclazyload - Load modules on demand (lazy load) with angularJS
- * @version v1.0.1
+ * @version v1.0.2
  * @link https://github.com/ocombe/ocLazyLoad
  * @license MIT
  * @author Olivier Combe <olivier.combe@gmail.com>
  */
 (function (angular, window) {
-    "use strict";
+    'use strict';
 
-    var regModules = ["ng", "oc.lazyLoad"],
+    var regModules = ['ng', 'oc.lazyLoad'],
         regInvokes = {},
         regConfigs = [],
         modulesToLoad = [],
@@ -35817,9 +36145,9 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
         runBlocks = {},
         justLoaded = [];
 
-    var ocLazyLoad = angular.module("oc.lazyLoad", ["ng"]);
+    var ocLazyLoad = angular.module('oc.lazyLoad', ['ng']);
 
-    ocLazyLoad.provider("$ocLazyLoad", ["$controllerProvider", "$provide", "$compileProvider", "$filterProvider", "$injector", "$animateProvider", function ($controllerProvider, $provide, $compileProvider, $filterProvider, $injector, $animateProvider) {
+    ocLazyLoad.provider('$ocLazyLoad', ["$controllerProvider", "$provide", "$compileProvider", "$filterProvider", "$injector", "$animateProvider", function ($controllerProvider, $provide, $compileProvider, $filterProvider, $injector, $animateProvider) {
         var modules = {},
             providers = {
             $controllerProvider: $controllerProvider,
@@ -35868,7 +36196,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
             // this is probably useless now because we override angular.bootstrap
             if (modulesToLoad.length === 0) {
                 var elements = [element],
-                    names = ["ng:app", "ng-app", "x-ng-app", "data-ng-app"],
+                    names = ['ng:app', 'ng-app', 'x-ng-app', 'data-ng-app'],
                     NG_APP_CLASS_REGEXP = /\sng[:\-]app(:\s*([\w\d_]+);?)?\s/,
                     append = function append(elm) {
                     return elm && elements.push(elm);
@@ -35877,20 +36205,20 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                 angular.forEach(names, function (name) {
                     names[name] = true;
                     append(document.getElementById(name));
-                    name = name.replace(":", "\\:");
-                    if (element[0].querySelectorAll) {
-                        angular.forEach(element[0].querySelectorAll("." + name), append);
-                        angular.forEach(element[0].querySelectorAll("." + name + "\\:"), append);
-                        angular.forEach(element[0].querySelectorAll("[" + name + "]"), append);
+                    name = name.replace(':', '\\:');
+                    if (typeof element[0] !== 'undefined' && element[0].querySelectorAll) {
+                        angular.forEach(element[0].querySelectorAll('.' + name), append);
+                        angular.forEach(element[0].querySelectorAll('.' + name + '\\:'), append);
+                        angular.forEach(element[0].querySelectorAll('[' + name + ']'), append);
                     }
                 });
 
                 angular.forEach(elements, function (elm) {
                     if (modulesToLoad.length === 0) {
-                        var className = " " + element.className + " ";
+                        var className = ' ' + element.className + ' ';
                         var match = NG_APP_CLASS_REGEXP.exec(className);
                         if (match) {
-                            modulesToLoad.push((match[2] || "").replace(/\s+/g, ","));
+                            modulesToLoad.push((match[2] || '').replace(/\s+/g, ','));
                         } else {
                             angular.forEach(elm.attributes, function (attr) {
                                 if (modulesToLoad.length === 0 && names[attr.name]) {
@@ -35903,7 +36231,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
             }
 
             if (modulesToLoad.length === 0 && !((window.jasmine || window.mocha) && angular.isDefined(angular.mock))) {
-                console.error("No module found during bootstrap, unable to init ocLazyLoad. You should always use the ng-app directive or angular.boostrap when you use ocLazyLoad.");
+                console.error('No module found during bootstrap, unable to init ocLazyLoad. You should always use the ng-app directive or angular.boostrap when you use ocLazyLoad.');
             }
 
             var addReg = function addReg(moduleName) {
@@ -35996,7 +36324,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                     }
                     _invokeQueue(providers, moduleFn._invokeQueue, moduleName, params.reconfig);
                     _invokeQueue(providers, moduleFn._configBlocks, moduleName, params.reconfig); // angular 1.3+
-                    broadcast(newModule ? "ocLazyLoad.moduleLoaded" : "ocLazyLoad.moduleReloaded", moduleName);
+                    broadcast(newModule ? 'ocLazyLoad.moduleLoaded' : 'ocLazyLoad.moduleReloaded', moduleName);
                     registerModules.pop();
                     justLoaded.push(moduleName);
                 }
@@ -36025,7 +36353,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                 if (regInvokes[moduleName][type][invokeName].indexOf(signature) === -1) {
                     newInvoke = true;
                     regInvokes[moduleName][type][invokeName].push(signature);
-                    broadcast("ocLazyLoad.componentLoaded", [moduleName, type, invokeName]);
+                    broadcast('ocLazyLoad.componentLoaded', [moduleName, type, invokeName]);
                 }
             };
 
@@ -36077,21 +36405,21 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                         if (providers.hasOwnProperty(args[0])) {
                             provider = providers[args[0]];
                         } else {
-                            throw new Error("unsupported provider " + args[0]);
+                            throw new Error('unsupported provider ' + args[0]);
                         }
                     }
                     var isNew = _registerInvokeList(args, moduleName);
-                    if (args[1] !== "invoke") {
+                    if (args[1] !== 'invoke') {
                         if (isNew && angular.isDefined(provider)) {
                             provider[args[1]].apply(provider, args[2]);
                         }
                     } else {
                         // config block
                         var callInvoke = function callInvoke(fct) {
-                            var invoked = regConfigs.indexOf("" + moduleName + "-" + fct);
+                            var invoked = regConfigs.indexOf('' + moduleName + '-' + fct);
                             if (invoked === -1 || reconfig) {
                                 if (invoked === -1) {
-                                    regConfigs.push("" + moduleName + "-" + fct);
+                                    regConfigs.push('' + moduleName + '-' + fct);
                                 }
                                 if (angular.isDefined(provider)) {
                                     provider[args[1]].apply(provider, args[2]);
@@ -36116,7 +36444,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
             var moduleName = null;
             if (angular.isString(module)) {
                 moduleName = module;
-            } else if (angular.isObject(module) && module.hasOwnProperty("name") && angular.isString(module.name)) {
+            } else if (angular.isObject(module) && module.hasOwnProperty('name') && angular.isString(module.name)) {
                 moduleName = module.name;
             }
             return moduleName;
@@ -36129,7 +36457,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
             try {
                 return ngModuleFct(moduleName);
             } catch (e) {
-                if (/No module/.test(e) || e.message.indexOf("$injector:nomod") > -1) {
+                if (/No module/.test(e) || e.message.indexOf('$injector:nomod') > -1) {
                     return false;
                 }
             }
@@ -36137,18 +36465,18 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 
         this.$get = ["$log", "$rootElement", "$rootScope", "$cacheFactory", "$q", function ($log, $rootElement, $rootScope, $cacheFactory, $q) {
             var instanceInjector,
-                filesCache = $cacheFactory("ocLazyLoad");
+                filesCache = $cacheFactory('ocLazyLoad');
 
             if (!debug) {
                 $log = {};
-                $log.error = angular.noop;
-                $log.warn = angular.noop;
-                $log.info = angular.noop;
+                $log['error'] = angular.noop;
+                $log['warn'] = angular.noop;
+                $log['info'] = angular.noop;
             }
 
             // Make this lazy because when $get() is called the instance injector hasn't been assigned to the rootElement yet
             providers.getInstanceInjector = function () {
-                return instanceInjector ? instanceInjector : instanceInjector = $rootElement.data("$injector") || angular.injector();
+                return instanceInjector ? instanceInjector : instanceInjector = $rootElement.data('$injector') || angular.injector();
             };
 
             broadcast = function broadcast(eventName, params) {
@@ -36199,7 +36527,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                  */
                 getModuleConfig: function getModuleConfig(moduleName) {
                     if (!angular.isString(moduleName)) {
-                        throw new Error("You need to give the name of the module to get");
+                        throw new Error('You need to give the name of the module to get');
                     }
                     if (!modules[moduleName]) {
                         return null;
@@ -36214,7 +36542,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                  */
                 setModuleConfig: function setModuleConfig(moduleConfig) {
                     if (!angular.isObject(moduleConfig)) {
-                        throw new Error("You need to give the module config object to set");
+                        throw new Error('You need to give the module config object to set');
                     }
                     modules[moduleConfig.name] = moduleConfig;
                     return moduleConfig;
@@ -36224,7 +36552,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                  * Returns the list of loaded modules
                  * @returns {string[]}
                  */
-                getModules: function () {
+                getModules: function getModules() {
                     return regModules;
                 },
 
@@ -36253,7 +36581,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                         }
                         return true;
                     } else {
-                        throw new Error("You need to define the module(s) name(s)");
+                        throw new Error('You need to define the module(s) name(s)');
                     }
                 },
 
@@ -36274,8 +36602,8 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                         return ngModuleFct(moduleName);
                     } catch (e) {
                         // this error message really suxx
-                        if (/No module/.test(e) || e.message.indexOf("$injector:nomod") > -1) {
-                            e.message = "The module \"" + stringify(moduleName) + "\" that you are trying to load does not exist. " + e.message;
+                        if (/No module/.test(e) || e.message.indexOf('$injector:nomod') > -1) {
+                            e.message = 'The module "' + stringify(moduleName) + '" that you are trying to load does not exist. ' + e.message;
                         }
                         throw e;
                     }
@@ -36337,7 +36665,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 
                             // If the module was redefined, advise via the console
                             if (diff.length !== 0) {
-                                self._$log.warn("Module \"", moduleName, "\" attempted to redefine configuration for dependency. \"", requireEntry.name, "\"\n Additional Files Loaded:", diff);
+                                self._$log.warn('Module "', moduleName, '" attempted to redefine configuration for dependency. "', requireEntry.name, '"\n Additional Files Loaded:', diff);
                             }
 
                             // Push everything to the file loader, it will weed out the duplicates.
@@ -36347,7 +36675,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                                     return self._loadDependencies(requireEntry);
                                 }));
                             } else {
-                                return reject(new Error("Error: New dependencies need to be loaded from external files (" + requireEntry.files + "), but no loader has been defined."));
+                                return reject(new Error('Error: New dependencies need to be loaded from external files (' + requireEntry.files + '), but no loader has been defined.'));
                             }
                             return;
                         } else if (angular.isArray(requireEntry)) {
@@ -36355,10 +36683,10 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                                 files: requireEntry
                             };
                         } else if (angular.isObject(requireEntry)) {
-                            if (requireEntry.hasOwnProperty("name") && requireEntry.name) {
+                            if (requireEntry.hasOwnProperty('name') && requireEntry['name']) {
                                 // The dependency doesn't exist in the module cache and is a new configuration, so store and push it.
                                 self.setModuleConfig(requireEntry);
-                                moduleCache.push(requireEntry.name);
+                                moduleCache.push(requireEntry['name']);
                             }
                         }
 
@@ -36370,7 +36698,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                                     return self._loadDependencies(requireEntry);
                                 }));
                             } else {
-                                return reject(new Error("Error: the module \"" + requireEntry.name + "\" is defined in external files (" + requireEntry.files + "), but no loader has been defined."));
+                                return reject(new Error('Error: the module "' + requireEntry.name + '" is defined in external files (' + requireEntry.files + '), but no loader has been defined.'));
                             }
                         }
                     });
@@ -36508,19 +36836,24 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
         _addToLoadList(name);
         return ngModuleFct(name, requires, configFn);
     };
+
+    // CommonJS package manager support:
+    if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
+        module.exports = 'oc.lazyLoad';
+    }
 })(angular, window);
 (function (angular) {
-    "use strict";
+    'use strict';
 
-    angular.module("oc.lazyLoad").directive("ocLazyLoad", ["$ocLazyLoad", "$compile", "$animate", "$parse", function ($ocLazyLoad, $compile, $animate, $parse) {
+    angular.module('oc.lazyLoad').directive('ocLazyLoad', ["$ocLazyLoad", "$compile", "$animate", "$parse", function ($ocLazyLoad, $compile, $animate, $parse) {
         return {
-            restrict: "A",
+            restrict: 'A',
             terminal: true,
             priority: 1000,
             compile: function compile(element, attrs) {
                 // we store the content and remove it before compilation
                 var content = element[0].innerHTML;
-                element.html("");
+                element.html('');
 
                 return function ($scope, $element, $attr) {
                     var model = $parse($attr.ocLazyLoad);
@@ -36546,13 +36879,13 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
     }]);
 })(angular);
 (function (angular) {
-    "use strict";
+    'use strict';
 
-    angular.module("oc.lazyLoad").config(["$provide", function ($provide) {
-        $provide.decorator("$ocLazyLoad", ["$delegate", "$q", "$window", "$interval", function ($delegate, $q, $window, $interval) {
+    angular.module('oc.lazyLoad').config(["$provide", function ($provide) {
+        $provide.decorator('$ocLazyLoad', ["$delegate", "$q", "$window", "$interval", function ($delegate, $q, $window, $interval) {
             var uaCssChecked = false,
                 useCssLoadPatch = false,
-                anchor = $window.document.getElementsByTagName("head")[0] || $window.document.getElementsByTagName("body")[0];
+                anchor = $window.document.getElementsByTagName('head')[0] || $window.document.getElementsByTagName('body')[0];
 
             /**
              * Load a js/css file
@@ -36568,13 +36901,13 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                     filesCache = $delegate._getFilesCache(),
                     cacheBuster = function cacheBuster(url) {
                     var dc = new Date().getTime();
-                    if (url.indexOf("?") >= 0) {
-                        if (url.substring(0, url.length - 1) === "&") {
-                            return "" + url + "_dc=" + dc;
+                    if (url.indexOf('?') >= 0) {
+                        if (url.substring(0, url.length - 1) === '&') {
+                            return '' + url + '_dc=' + dc;
                         }
-                        return "" + url + "&_dc=" + dc;
+                        return '' + url + '&_dc=' + dc;
                     } else {
-                        return "" + url + "?_dc=" + dc;
+                        return '' + url + '?_dc=' + dc;
                     }
                 };
 
@@ -36587,31 +36920,31 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 
                 // Switch in case more content types are added later
                 switch (type) {
-                    case "css":
-                        el = $window.document.createElement("link");
-                        el.type = "text/css";
-                        el.rel = "stylesheet";
+                    case 'css':
+                        el = $window.document.createElement('link');
+                        el.type = 'text/css';
+                        el.rel = 'stylesheet';
                         el.href = params.cache === false ? cacheBuster(path) : path;
                         break;
-                    case "js":
-                        el = $window.document.createElement("script");
+                    case 'js':
+                        el = $window.document.createElement('script');
                         el.src = params.cache === false ? cacheBuster(path) : path;
                         break;
                     default:
                         filesCache.remove(path);
-                        deferred.reject(new Error("Requested type \"" + type + "\" is not known. Could not inject \"" + path + "\""));
+                        deferred.reject(new Error('Requested type "' + type + '" is not known. Could not inject "' + path + '"'));
                         break;
                 }
-                el.onload = el.onreadystatechange = function (e) {
-                    if (el.readyState && !/^c|loade/.test(el.readyState) || loaded) return;
-                    el.onload = el.onreadystatechange = null;
+                el.onload = el['onreadystatechange'] = function (e) {
+                    if (el['readyState'] && !/^c|loade/.test(el['readyState']) || loaded) return;
+                    el.onload = el['onreadystatechange'] = null;
                     loaded = 1;
-                    $delegate._broadcast("ocLazyLoad.fileLoaded", path);
+                    $delegate._broadcast('ocLazyLoad.fileLoaded', path);
                     deferred.resolve();
                 };
                 el.onerror = function () {
                     filesCache.remove(path);
-                    deferred.reject(new Error("Unable to load " + path));
+                    deferred.reject(new Error('Unable to load ' + path));
                 };
                 el.async = params.serie ? 0 : 1;
 
@@ -36630,20 +36963,20 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                  - Android < 4.4 (default mobile browser)
                  - Safari < 6    (desktop browser)
                  */
-                if (type == "css") {
+                if (type == 'css') {
                     if (!uaCssChecked) {
                         var ua = $window.navigator.userAgent.toLowerCase();
 
                         // iOS < 6
                         if (/iP(hone|od|ad)/.test($window.navigator.platform)) {
                             var v = $window.navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);
-                            var iOSVersion = parseFloat([parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join("."));
+                            var iOSVersion = parseFloat([parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join('.'));
                             useCssLoadPatch = iOSVersion < 6;
-                        } else if (ua.indexOf("android") > -1) {
+                        } else if (ua.indexOf('android') > -1) {
                             // Android < 4.4
-                            var androidVersion = parseFloat(ua.slice(ua.indexOf("android") + 8));
+                            var androidVersion = parseFloat(ua.slice(ua.indexOf('android') + 8));
                             useCssLoadPatch = androidVersion < 4.4;
-                        } else if (ua.indexOf("safari") > -1) {
+                        } else if (ua.indexOf('safari') > -1) {
                             var versionMatch = ua.match(/version\/([\.\d]+)/i);
                             useCssLoadPatch = versionMatch && versionMatch[1] && parseFloat(versionMatch[1]) < 6;
                         }
@@ -36673,10 +37006,10 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
     }]);
 })(angular);
 (function (angular) {
-    "use strict";
+    'use strict';
 
-    angular.module("oc.lazyLoad").config(["$provide", function ($provide) {
-        $provide.decorator("$ocLazyLoad", ["$delegate", "$q", function ($delegate, $q) {
+    angular.module('oc.lazyLoad').config(["$provide", function ($provide) {
+        $provide.decorator('$ocLazyLoad', ["$delegate", "$q", function ($delegate, $q) {
             /**
              * The function that loads new files
              * @param config
@@ -36718,23 +37051,23 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                             if ((m = /[.](css|less|html|htm|js)?((\?|#).*)?$/.exec(path)) !== null) {
                                 // Detect file type via file extension
                                 file_type = m[1];
-                            } else if (!$delegate.jsLoader.hasOwnProperty("ocLazyLoadLoader") && $delegate.jsLoader.hasOwnProperty("load")) {
+                            } else if (!$delegate.jsLoader.hasOwnProperty('ocLazyLoadLoader') && $delegate.jsLoader.hasOwnProperty('load')) {
                                 // requirejs
-                                file_type = "js";
+                                file_type = 'js';
                             } else {
-                                $delegate._$log.error("File type could not be determined. " + path);
+                                $delegate._$log.error('File type could not be determined. ' + path);
                                 return;
                             }
                         }
 
-                        if ((file_type === "css" || file_type === "less") && cssFiles.indexOf(path) === -1) {
+                        if ((file_type === 'css' || file_type === 'less') && cssFiles.indexOf(path) === -1) {
                             cssFiles.push(path);
-                        } else if ((file_type === "html" || file_type === "htm") && templatesFiles.indexOf(path) === -1) {
+                        } else if ((file_type === 'html' || file_type === 'htm') && templatesFiles.indexOf(path) === -1) {
                             templatesFiles.push(path);
-                        } else if (file_type === "js" || jsFiles.indexOf(path) === -1) {
+                        } else if (file_type === 'js' || jsFiles.indexOf(path) === -1) {
                             jsFiles.push(path);
                         } else {
-                            $delegate._$log.error("File type is not valid. " + path);
+                            $delegate._$log.error('File type is not valid. ' + path);
                         }
                     } else if (cachePromise) {
                         promises.push(cachePromise);
@@ -36752,7 +37085,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                 if (cssFiles.length > 0) {
                     var cssDeferred = $q.defer();
                     $delegate.cssLoader(cssFiles, function (err) {
-                        if (angular.isDefined(err) && $delegate.cssLoader.hasOwnProperty("ocLazyLoadLoader")) {
+                        if (angular.isDefined(err) && $delegate.cssLoader.hasOwnProperty('ocLazyLoadLoader')) {
                             $delegate._$log.error(err);
                             cssDeferred.reject(err);
                         } else {
@@ -36765,7 +37098,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                 if (templatesFiles.length > 0) {
                     var templatesDeferred = $q.defer();
                     $delegate.templatesLoader(templatesFiles, function (err) {
-                        if (angular.isDefined(err) && $delegate.templatesLoader.hasOwnProperty("ocLazyLoadLoader")) {
+                        if (angular.isDefined(err) && $delegate.templatesLoader.hasOwnProperty('ocLazyLoadLoader')) {
                             $delegate._$log.error(err);
                             templatesDeferred.reject(err);
                         } else {
@@ -36778,7 +37111,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                 if (jsFiles.length > 0) {
                     var jsDeferred = $q.defer();
                     $delegate.jsLoader(jsFiles, function (err) {
-                        if (angular.isDefined(err) && $delegate.jsLoader.hasOwnProperty("ocLazyLoadLoader")) {
+                        if (angular.isDefined(err) && $delegate.jsLoader.hasOwnProperty('ocLazyLoadLoader')) {
                             $delegate._$log.error(err);
                             jsDeferred.reject(err);
                         } else {
@@ -36790,7 +37123,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 
                 if (promises.length === 0) {
                     var deferred = $q.defer(),
-                        err = "Error: no file to load has been found, if you're trying to load an existing module you should use the 'inject' method instead of 'load'.";
+                        err = 'Error: no file to load has been found, if you\'re trying to load an existing module you should use the \'inject\' method instead of \'load\'.';
                     $delegate._$log.error(err);
                     deferred.reject(err);
                     return deferred.promise;
@@ -36799,7 +37132,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                         return $delegate.filesLoader(config, params);
                     });
                 } else {
-                    return $q.all(promises)["finally"](function (res) {
+                    return $q.all(promises)['finally'](function (res) {
                         $delegate.toggleWatch(false); // stop watching angular.module calls
                         return res;
                     });
@@ -36863,7 +37196,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 
                 if (config === null) {
                     var moduleName = self._getModuleName(module);
-                    errText = "Module \"" + (moduleName || "unknown") + "\" is not configured, cannot load.";
+                    errText = 'Module "' + (moduleName || 'unknown') + '" is not configured, cannot load.';
                     $delegate._$log.error(errText);
                     deferred.reject(new Error(errText));
                     return deferred.promise;
@@ -36907,10 +37240,10 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
     }]);
 })(angular);
 (function (angular) {
-    "use strict";
+    'use strict';
 
-    angular.module("oc.lazyLoad").config(["$provide", function ($provide) {
-        $provide.decorator("$ocLazyLoad", ["$delegate", "$q", function ($delegate, $q) {
+    angular.module('oc.lazyLoad').config(["$provide", function ($provide) {
+        $provide.decorator('$ocLazyLoad', ["$delegate", "$q", function ($delegate, $q) {
             /**
              * cssLoader function
              * @type Function
@@ -36922,7 +37255,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
             $delegate.cssLoader = function (paths, callback, params) {
                 var promises = [];
                 angular.forEach(paths, function (path) {
-                    promises.push($delegate.buildElement("css", path, params));
+                    promises.push($delegate.buildElement('css', path, params));
                 });
                 $q.all(promises).then(function () {
                     callback();
@@ -36937,10 +37270,10 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
     }]);
 })(angular);
 (function (angular) {
-    "use strict";
+    'use strict';
 
-    angular.module("oc.lazyLoad").config(["$provide", function ($provide) {
-        $provide.decorator("$ocLazyLoad", ["$delegate", "$q", function ($delegate, $q) {
+    angular.module('oc.lazyLoad').config(["$provide", function ($provide) {
+        $provide.decorator('$ocLazyLoad', ["$delegate", "$q", function ($delegate, $q) {
             /**
              * jsLoader function
              * @type Function
@@ -36952,7 +37285,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
             $delegate.jsLoader = function (paths, callback, params) {
                 var promises = [];
                 angular.forEach(paths, function (path) {
-                    promises.push($delegate.buildElement("js", path, params));
+                    promises.push($delegate.buildElement('js', path, params));
                 });
                 $q.all(promises).then(function () {
                     callback();
@@ -36967,10 +37300,10 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
     }]);
 })(angular);
 (function (angular) {
-    "use strict";
+    'use strict';
 
-    angular.module("oc.lazyLoad").config(["$provide", function ($provide) {
-        $provide.decorator("$ocLazyLoad", ["$delegate", "$templateCache", "$q", "$http", function ($delegate, $templateCache, $q, $http) {
+    angular.module('oc.lazyLoad').config(["$provide", function ($provide) {
+        $provide.decorator('$ocLazyLoad', ["$delegate", "$templateCache", "$q", "$http", function ($delegate, $templateCache, $q, $http) {
             /**
              * templatesLoader function
              * @type Function
@@ -36989,7 +37322,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                     $http.get(url, params).success(function (data) {
                         if (angular.isString(data) && data.length > 0) {
                             angular.forEach(angular.element(data), function (node) {
-                                if (node.nodeName === "SCRIPT" && node.type === "text/ng-template") {
+                                if (node.nodeName === 'SCRIPT' && node.type === 'text/ng-template') {
                                     $templateCache.put(node.id, node.innerHTML);
                                 }
                             });
@@ -36999,7 +37332,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
                         }
                         deferred.resolve();
                     }).error(function (err) {
-                        deferred.reject(new Error("Unable to load template file \"" + url + "\": " + err));
+                        deferred.reject(new Error('Unable to load template file "' + url + '": ' + err));
                     });
                 });
                 return $q.all(promises).then(function () {
@@ -37022,7 +37355,7 @@ if (!Array.prototype.indexOf) {
                 // 1. Let O be the result of calling ToObject passing
                 //    the this value as the argument.
                 if (this == null) {
-                        throw new TypeError("\"this\" is null or not defined");
+                        throw new TypeError('"this" is null or not defined');
                 }
 
                 var O = Object(this);
@@ -37241,21 +37574,21 @@ if (!Array.prototype.indexOf) {
 
 		// in tablet mode the menu should collapse when the state changes
 		$rootScope.$on('$stateChangeStart', function() {
-			if(self.isMobile()) {
-				self.collapse();
-			} else {
-				self.restoreFromLocalStorage();
-			}
+			self.setMenu();
 		});
 
 		// switch between normal and mobile mode should collapse/expand the menu
 		$window.on('resize', function() {
+			self.setMenu();
+		});
+
+		self.setMenu = function() {
 			if(self.isMobile()) {
 				self.collapse();
 			} else {
 				self.restoreFromLocalStorage();
 			}
-		});
+		}
 
 		self.restoreFromLocalStorage = function() {
 			if(storage.get(collapseStorageKey)) {
@@ -37278,7 +37611,7 @@ if (!Array.prototype.indexOf) {
 		}
 
 		// initialize sidebar
-		self.restoreFromLocalStorage();
+		self.setMenu();
 	}
 })();
 
