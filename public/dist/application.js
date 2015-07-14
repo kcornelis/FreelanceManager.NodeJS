@@ -435,7 +435,8 @@ fm.vendor = (function() {
 
 		// TODO unit test
 		$rootScope.$on('$stateChangeStart', function() {
-			cfpLoadingBar.start();
+			if($('#content').length)
+				cfpLoadingBar.start();
 		});
 
 		$rootScope.$on('$stateChangeSuccess', function(event) {
