@@ -45,12 +45,13 @@
 
 
 /*
- * Time registration import
+ * Time registration export
  */
 
 .fm-time-export .date-selector{
- 	float: left;
- 	height: 33px;
+	float: left;
+	height: 33px;
+	width: 120px;
 }
 .fm-time-export .btn-group > .date-selector:not(:first-child) {
 	margin-left: -1px;
@@ -65,4 +66,10 @@
 }
 .fm-time-export .btn-group > .btn:not(:first-child) {
 	margin-left: -1px;
+}
+
+@media (max-width: 767px) {
+	.fm-time-export .date-selector{
+	 	width: 90px;
+	}
 }
