@@ -37,6 +37,6 @@ grunt testclient
 ```
    
 
-## GNU GENERAL PUBLIC LICENSE
+### GNU GENERAL PUBLIC LICENSE
    
 Copyright (c) 2015 Kevin Cornelis
