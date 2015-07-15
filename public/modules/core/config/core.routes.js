@@ -20,8 +20,8 @@
 
 		// Redirect to the dashboard view when route not found
 		$urlRouterProvider.otherwise( function($injector, $location) {
-			var $state = $injector.get("$state");
-			$state.go("app.dashboard");
+			var $state = $injector.get('$state');
+			$state.go('app.dashboard');
 		});
 	}
 
