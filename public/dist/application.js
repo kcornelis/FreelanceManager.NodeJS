@@ -371,6 +371,7 @@ fm.vendor = (function() {
 		cfpLoadingBarProvider.parentSelector = '#content';
 		cfpLoadingBarProvider.includeSpinner = false;
 		cfpLoadingBarProvider.includeBar = true;
+		cfpLoadingBarProvider.latencyThreshold = 500;
 	}
 
 	config.$inject = ['$rootScope', '$state', '$stateParams',  '$window'];
@@ -396,9 +397,6 @@ fm.vendor = (function() {
 	
 	function routeRegistration($stateProvider, $urlRouterProvider) {
 
-		// Redirect to the dashboard view when route not found
-		$urlRouterProvider.otherwise('/app/dashboard');
-
 		$stateProvider
 
 		.state('app', {
@@ -412,6 +410,12 @@ fm.vendor = (function() {
 			url: '/dashboard',
 			title: 'Dashboard',
 			templateUrl: 'modules/core/views/dashboard.html'
+		});
+
+		// Redirect to the dashboard view when route not found
+		$urlRouterProvider.otherwise( function($injector, $location) {
+			var $state = $injector.get("$state");
+			$state.go("app.dashboard");
 		});
 	}
 
