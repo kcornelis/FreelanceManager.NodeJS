@@ -3,9 +3,6 @@
 	
 	function routeRegistration($stateProvider, $urlRouterProvider) {
 
-		// Redirect to the dashboard view when route not found
-		$urlRouterProvider.otherwise('/app/dashboard');
-
 		$stateProvider
 
 		.state('app', {
@@ -20,6 +17,9 @@
 			title: 'Dashboard',
 			templateUrl: 'modules/core/views/dashboard.html'
 		});
+
+		// Redirect to the dashboard view when route not found
+		$urlRouterProvider.otherwise('/app/dashboard');
 	}
 
 	routeRegistration.$inject = ['$stateProvider', '$urlRouterProvider'];

@@ -22,6 +22,7 @@
 		cfpLoadingBarProvider.parentSelector = '#content';
 		cfpLoadingBarProvider.includeSpinner = false;
 		cfpLoadingBarProvider.includeBar = true;
+		cfpLoadingBarProvider.latencyThreshold = 500;
 	}
 
 	config.$inject = ['$rootScope', '$state', '$stateParams',  '$window'];
