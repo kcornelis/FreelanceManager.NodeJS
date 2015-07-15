@@ -19,7 +19,10 @@
 		});
 
 		// Redirect to the dashboard view when route not found
-		$urlRouterProvider.otherwise('/app/dashboard');
+		$urlRouterProvider.otherwise( function($injector, $location) {
+			var $state = $injector.get("$state");
+			$state.go("app.dashboard");
+		});
 	}
 
 	routeRegistration.$inject = ['$stateProvider', '$urlRouterProvider'];
