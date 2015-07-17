@@ -48,6 +48,19 @@ exports.getAll = function(req, res, next) {
 		.done();
 };
 
+exports.getLast = function(req, res, next) {
+
+	TimeRegistration.find({ tenant: req.user.id, deleted: false })
+		.sort({ createdOn: -1 })
+		.limit(req.params.amount)
+		.execQ()
+		.then(getCompaniesAndProjects)
+		.spread(convert.toDtoWithCompanyAndProjectQ)
+		.then(res.send.bind(res))
+		.catch(next)
+		.done();
+};
+
 exports.getForDate = function(req, res, next) {
 
 	TimeRegistration.findQ({ 
