@@ -31,6 +31,54 @@
 			});	
 		});
 
+		describe('Get last 2 grouped by description', function() {
+			
+			var TimeRegistration,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
+				TimeRegistration = _TimeRegistration_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbydescription/2')
+					.respond(200, [{ description: 'time registration 1'}, { description: 'time registration 2'}]);
+
+				response = TimeRegistration.getlastgroupedbydescription({ amount: 2 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should return the last 2 timeregistrations grouped by description', function() {
+				expect(response[0].description).toBe('time registration 1');
+				expect(response[1].description).toBe('time registration 2');
+			});	
+		});
+
+		describe('Get last 2 grouped by task', function() {
+			
+			var TimeRegistration,
+				$httpBackend,
+				response;
+
+			beforeEach(inject(function(_TimeRegistration_, _$httpBackend_) {
+				TimeRegistration = _TimeRegistration_;
+				$httpBackend = _$httpBackend_;
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbytask/2')
+					.respond(200, [{ task: 't1'}, { task: 't2'}]);
+
+				response = TimeRegistration.getlastgroupedbytask({ amount: 2 });
+				$httpBackend.flush();
+
+			}));
+
+			it('should return the last 2 timeregistrations grouped by task', function() {
+				expect(response[0].task).toBe('t1');
+				expect(response[1].task).toBe('t2');
+			});	
+		});
+
 		describe('Search', function() {
 			
 			var TimeRegistration,
