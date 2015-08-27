@@ -47,6 +47,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		], done);
 	});
 
+	after(function(done) {
+		TimeRegistration.remove(done);
+	});
+
 	/**
 	 * Get by id
 	 */
@@ -360,7 +364,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			], done);
 		});
 
-		it('should return 2 time registrations with the company name', function() {
+		it('should return 2 items', function() {
 
 			_.size(body).should.eql(2);
 		});	
@@ -369,7 +373,153 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 
 			body[0].description.should.eql('Doing some work 3');
 			body[1].description.should.eql('Doing some work 2');
+		});
+
+		it('should return time registration info with the companyId', function() {
+
+			body[0].companyId.should.eql(company.id);
 		});	
+
+		it('should return time registration info with the company name', function() {
+
+			body[0].company.name.should.eql('My Company');
+		});	
+
+		it('should return time registration info with the projectId', function() {
+
+			body[0].projectId.should.eql(project.id);
+		});
+
+		it('should return time registration info with the project name', function() {
+
+			body[0].project.name.should.eql('FM Manager');
+		});
+
+		it('should return time registration info with the project description', function() {
+
+			body[0].project.description.should.eql('Freelance manager');
+		});				
+
+		it('should return time registration info with the task', function() {
+
+			body[0].task.should.eql('Dev');
+		});
+
+		it('should not return time registrations from another tenant', function() {
+			_.where(body, { id: timeregistration5.id }).length.should.eql(0);
+		});
+	});
+
+	/**
+	 * Get last x time registrations grouped by task
+	 */
+	describe('When the last time registrations grouped by task are requested by an unauthenticated person', function() {
+
+		it('should return a 401 satus code', function(done) {
+
+			request('http://localhost:' + config.port)
+				.get('/api/public/timeregistrations/getlastgroupedbytask/10')
+				.expect(401)
+				.end(done);
+		});
+	});
+
+	describe('When the last 3 time registrations grouped by task are requested', function() {
+
+		var response;
+		var body;
+
+		var timeregistration1;
+		var timeregistration2;
+		var timeregistration3;
+		var timeregistration4;
+		var timeregistration5;
+
+		before(function(done) {
+
+			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Analyse', false, 'Doing some work 1', 20001231, 1400, 1500);
+			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 2', 20001231, 1400, 1500);
+			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 3', 20001231, 1400, 1500);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Meeting', false, 'Doing some work 3', 20001231, 1500, 1600);
+			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1359);
+			
+			timeregistration1.createdOn = new Date(2050, 1, 1, 1, 1, 1, 6);
+			timeregistration2.createdOn = new Date(2050, 1, 1, 1, 1, 1, 7);
+			timeregistration3.createdOn = new Date(2050, 1, 1, 1, 1, 1, 8);
+			timeregistration4.createdOn = new Date(2050, 1, 1, 1, 1, 1, 9);
+			timeregistration5.createdOn = new Date(2050, 1, 1, 1, 1, 1, 10);
+
+			async.series([
+				function(done) {
+					timeregistration1.save(done);
+				},
+				function(done) {
+					timeregistration2.save(done);
+				},
+				function(done) {
+					timeregistration3.save(done);
+				},
+				function(done) {
+					timeregistration4.save(done);
+				},
+				function(done) {
+					timeregistration5.save(done);
+				},
+				function(done) {
+					
+					request('http://localhost:' + config.port)
+						.get('/api/public/timeregistrations/getlastgroupedbytask/3')
+						.set('Authorization', testdata.normalAccountToken)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res) {
+							if(err)
+								throw err;
+
+							response = res;
+							body = res.body;
+							done();
+						});
+				}
+			], done);
+		});
+
+		it('should return 3 items', function() {
+
+			_.size(body).should.eql(3);
+		});	
+
+		it('should return the last time registrations grouped by task', function() {
+
+			body[0].task.should.eql('Meeting');
+			body[1].task.should.eql('Dev');
+			body[2].task.should.eql('Analyse');
+		});
+
+		it('should return time registration info with the companyId', function() {
+
+			body[0].companyId.should.eql(company.id);
+		});	
+
+		it('should return time registration info with the company name', function() {
+
+			body[0].company.name.should.eql('My Company');
+		});	
+
+		it('should return time registration info with the projectId', function() {
+
+			body[0].projectId.should.eql(project.id);
+		});
+
+		it('should return time registration info with the project name', function() {
+
+			body[0].project.name.should.eql('FM Manager');
+		});
+
+		it('should return time registration info with the project description', function() {
+
+			body[0].project.description.should.eql('Freelance manager');
+		});
 
 		it('should not return time registrations from another tenant', function() {
 			_.where(body, { id: timeregistration5.id }).length.should.eql(0);
