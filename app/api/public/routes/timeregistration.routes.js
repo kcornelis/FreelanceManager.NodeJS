@@ -14,6 +14,8 @@ module.exports = function(app) {
 	app.route('/api/public/timeregistrations').get(timeRegistration.getAll);
 	app.route('/api/public/timeregistrations/search').get(timeRegistration.search);
 	app.route('/api/public/timeregistrations/getlast/:amount').get(timeRegistration.getLast);
+	app.route('/api/public/timeregistrations/getlastgroupedbydescription/:amount').get(timeRegistration.getLastGroupedByDescription);
+	app.route('/api/public/timeregistrations/getlastgroupedbytask/:amount').get(timeRegistration.getLastGroupedByTask);
 	app.route('/api/public/timeregistrations/bydate/:date').get(timeRegistration.getForDate);
 	app.route('/api/public/timeregistrations/byrange/:from/:to').get(timeRegistration.getForRange);
 	app.route('/api/public/timeregistrations/getinfoforperiod/:from/:to').get(timeRegistration.getInfoForPeriod);

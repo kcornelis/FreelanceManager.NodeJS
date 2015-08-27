@@ -287,20 +287,20 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 	});
 
 	/**
-	 * Get last x time registrations
+	 * Get last x time registrations grouped by description
 	 */
-	describe('When the last time registrations are requested by an unauthenticated person', function() {
+	describe('When the last time registrations grouped by description are requested by an unauthenticated person', function() {
 
 		it('should return a 401 satus code', function(done) {
 
 			request('http://localhost:' + config.port)
-				.get('/api/public/timeregistrations/getlast/10')
+				.get('/api/public/timeregistrations/getlastgroupedbydescription/10')
 				.expect(401)
 				.end(done);
 		});
 	});
 
-	describe('When the last 3 time registrations are requested', function() {
+	describe('When the last 2 time registrations grouped by description are requested', function() {
 
 		var response;
 		var body;
@@ -316,13 +316,13 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 1', 20001231, 1400, 1500);
 			timeregistration2 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 2', 20001231, 1400, 1500);
 			timeregistration3 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 3', 20001231, 1400, 1500);
-			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 4', 20001231, 1500, 1600);
+			timeregistration4 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work 3', 20001231, 1500, 1600);
 			timeregistration5 = TimeRegistration.create(uuid.v1(), company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1359);
 			
-			timeregistration1.createdOn = new Date(2050, 1, 1, 1, 1, 1, 9);
-			timeregistration2.createdOn = new Date(2050, 1, 1, 1, 1, 1, 8);
-			timeregistration3.createdOn = new Date(2050, 1, 1, 1, 1, 1, 7);
-			timeregistration4.createdOn = new Date(2050, 1, 1, 1, 1, 1, 6);
+			timeregistration1.createdOn = new Date(2050, 1, 1, 1, 1, 1, 6);
+			timeregistration2.createdOn = new Date(2050, 1, 1, 1, 1, 1, 7);
+			timeregistration3.createdOn = new Date(2050, 1, 1, 1, 1, 1, 8);
+			timeregistration4.createdOn = new Date(2050, 1, 1, 1, 1, 1, 9);
 			timeregistration5.createdOn = new Date(2050, 1, 1, 1, 1, 1, 10);
 
 			async.series([
@@ -344,7 +344,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 				function(done) {
 					
 					request('http://localhost:' + config.port)
-						.get('/api/public/timeregistrations/getlast/3')
+						.get('/api/public/timeregistrations/getlastgroupedbydescription/2')
 						.set('Authorization', testdata.normalAccountToken)
 						.expect(200)
 						.expect('Content-Type', /json/)
@@ -360,16 +360,15 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 			], done);
 		});
 
-		it('should return 3 time registrations with the company name', function() {
+		it('should return 2 time registrations with the company name', function() {
 
-			_.size(body).should.eql(3);
+			_.size(body).should.eql(2);
 		});	
 
-		it('should return the last time registrations', function() {
+		it('should return the last time registrations grouped by description', function() {
 
-			body[0].description.should.eql('Doing some work 1');
+			body[0].description.should.eql('Doing some work 3');
 			body[1].description.should.eql('Doing some work 2');
-			body[2].description.should.eql('Doing some work 3');
 		});	
 
 		it('should not return time registrations from another tenant', function() {
@@ -808,7 +807,7 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		});
 	});
 
-describe('When time registrations are searched (billable filter)', function() {
+	describe('When time registrations are searched (billable filter)', function() {
 
 		var response;
 		var body;
@@ -1663,8 +1662,7 @@ describe('When time registrations are searched (billable filter)', function() {
 		it('should not be updated', function(done) {
 			TimeRegistration.findById(timeRegistration.id, function(err, c) {
 
-				if(err) {
- done(err); }
+				if(err) { done(err); }
 
 				c.companyId.should.eql(company.id);
 				c.projectId.should.eql(project.id);
@@ -1777,8 +1775,7 @@ describe('When time registrations are searched (billable filter)', function() {
 		it('should not be updated', function(done) {
 			TimeRegistration.findById(timeRegistration.id, function(err, c) {
 
-				if(err) {
- done(err); }
+				if(err) { done(err); }
 
 				c.deleted.should.eql(false);
 				done();
