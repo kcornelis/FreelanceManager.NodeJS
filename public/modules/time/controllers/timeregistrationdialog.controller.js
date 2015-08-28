@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	function controller($scope, Project, TimeRegistration, toUpdate, date) {
+	function controller($scope, Project, TimeRegistration, toUpdate, defaults, date) {
 
 		// private methods
 		// ---------------
@@ -26,6 +26,22 @@
 			return parseInt(time.replace(':', ''), 10);
 		}
 
+		function loadDefaults() {
+			if(!defaults) return;
+
+			if(defaults.companyId)
+				$scope.timeRegistration.company = _.find($scope.companies, { id: defaults.companyId });
+			
+			if(defaults.projectId && $scope.timeRegistration.company)
+				$scope.timeRegistration.project = _.find($scope.timeRegistration.company.projects, { id: defaults.projectId });
+
+			if(defaults.task && $scope.timeRegistration.project)
+				$scope.timeRegistration.task = _.find($scope.timeRegistration.project.tasks, { name: defaults.task });
+
+			if(defaults.description)
+				$scope.timeRegistration.description = defaults.description;
+		}
+
 		// scope watches
 		// -------------
 
@@ -46,7 +62,7 @@
 			if($scope.newTimeRegistration && $scope.timeRegistration.task) {
 				$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
 			}
-		});	
+		});
 
 		// scope properties
 		// ----------------	
@@ -55,7 +71,7 @@
 		$scope.message = '';
 
 		$scope.originalTimeRegistration = toUpdate;
-		$scope.newTimeRegistration = toUpdate === undefined;
+		$scope.newTimeRegistration = _.isNull(toUpdate) || _.isUndefined(toUpdate);
 		toUpdate = toUpdate || { };
 		$scope.timeRegistration =  { 
 			company: null,
@@ -94,6 +110,9 @@
 			else if($scope.timeRegistration.task)
 				$scope.projectEditable = true;
 			else $scope.projectEditable = false;
+
+			if($scope.newTimeRegistration)
+				loadDefaults();
 		});
 
 		// scope actions
@@ -144,7 +163,7 @@
 		};
 	}
 
-	controller.$inject = ['$scope', 'Project', 'TimeRegistration', 'toUpdate', 'date'];
+	controller.$inject = ['$scope', 'Project', 'TimeRegistration', 'toUpdate', 'defaults', 'date'];
 
 	angular.module('fmTime').controller('TimeRegistrationDialogController', controller);
 })();

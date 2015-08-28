@@ -1,8 +1,20 @@
 <div class="content-header">
 	<div class="toolbar">
-		<button class="btn btn-primary pull-right btn-accentuate" ng-click="openTimeRegistration()">
-			<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Registration
-		</button>
+		<div class="btn-group btn-group-accentuate pull-right">
+			<button class="btn btn-primary" ng-click="openTimeRegistration()">
+				<em class="fa fa-plus-circle fa-fw mr-sm"></em>New Registration
+			</button>
+			<button type="button" data-toggle="dropdown" class="btn dropdown-toggle btn-primary">
+				<span class="caret"></span>
+				<span class="sr-only">default</span>
+			</button>
+			<ul role="menu" class="dropdown-menu">
+				<li ng-repeat="tr in lastTimeRegistrationsByDescription" ng-click="openTimeRegistration(null, tr)"><a>{{ tr.company.name }} - {{ tr.project.name }} - {{ tr.task }} - {{ tr.description }}</a></li>
+				<li class="divider"></li>
+				<li ng-repeat="tr in lastTimeRegistrationsByTask" ng-click="openTimeRegistration(null, tr)"><a>{{ tr.company.name }} - {{ tr.project.name }} - {{ tr.task }}</a></li>
+				</li>
+			</ul>
+		</div>
 	</div>
 	<h1><i class="icon-clock"></i>Time overview</h1>
 	<small>Manage your time</small>

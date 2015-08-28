@@ -46,6 +46,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: toUpdate,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -126,6 +127,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: { id: 2, companyId: 1, projectId: 10, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } },
+					defaults: null,
 					date: 20100102
 				});
 
@@ -175,6 +177,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -233,6 +236,42 @@
 			});
 		});	
 
+		describe('when the controller is created for a new project with defaults', function() {
+
+			var scope, 
+				controller;
+
+			beforeEach(inject(function($controller, $rootScope) {
+
+				scope = $rootScope.$new();
+				controller = $controller('TimeRegistrationDialogController', {
+					$scope: scope,
+					Project: mockProjectService,
+					toUpdate: null,
+					defaults: { description: '1234', companyId: 1, projectId: 2, task: 'Meeting' },
+					date: 20100102
+				});
+
+				mockProjectService.flush();
+			}));
+
+			it('should load the default description', function() {
+				expect(scope.timeRegistration.description).toBe('1234');
+			});
+
+			it('should load the default company', function() {
+				expect(scope.timeRegistration.company.name).toBe('company 1');
+			});
+
+			it('should load the default project', function() {
+				expect(scope.timeRegistration.project.name).toBe('project 2');
+			});
+
+			it('should load the default task', function() {
+				expect(scope.timeRegistration.task.name).toBe('Meeting');
+			});
+		});	
+
 		describe('when an existing time registration is saved with success', function() {
 
 			var scope, 
@@ -258,6 +297,7 @@
 					toUpdate: { id: 2, companyId: 1, projectId: 1, description: 'description', task: 'Development', from: { numeric: 1000 }, to: { numeric: 1100 } },
 					Project: mockProjectService,
 					TimeRegistration: mockService,
+					defaults: null,
 					date: 20100102
 				});
 				scope.$close = function() { };
@@ -314,6 +354,7 @@
 					toUpdate: toUpdate,
 					Project: mockProjectService,
 					TimeRegistration: mockService,
+					defaults: null,
 					date: 20100102
 				});
 				scope.$close = function() { };
@@ -361,6 +402,7 @@
 					toUpdate: undefined,
 					Project: mockProjectService,
 					TimeRegistration: mockService,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -434,6 +476,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -467,6 +510,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -504,6 +548,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -537,6 +582,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: undefined,
+					defaults: null,
 					date: 20100102
 				});
 
@@ -575,6 +621,7 @@
 					$scope: scope,
 					Project: mockProjectService,
 					toUpdate: { id: 2, billable: true, companyId: 1, projectId: 1, description: 'description', task: 'Meeting', from: { numeric: 1000 }, to: { numeric: 1100 } },
+					defaults: null,
 					date: 20100102
 				});
 

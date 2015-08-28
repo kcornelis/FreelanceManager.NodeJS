@@ -10,7 +10,7 @@
 		beforeEach(module(fm.config.moduleName));
 		beforeEach(module('karma'));
 
-		beforeEach(inject(function($controller, $rootScope, $stateParams) {
+		beforeEach(inject(function($controller, $rootScope, $stateParams, $httpBackend) {
 			
 			scope = $rootScope.$new();
 			$stateParams.date = '20100120';
@@ -83,6 +83,14 @@
 					{ from: { numeric: 2010 }, description: 'description 2'},
 					{ from: { numeric: 2009 }, description: 'description 1'}]);
 
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbydescription/5').respond([
+					{ description: 'old 1'},
+					{ description: 'old 2'}]);
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbytask/5').respond([
+					{ task: 't 1'},
+					{ task: 't 2'}]);
+
 				scope.refresh();
 				$httpBackend.flush();
 			}));
@@ -95,7 +103,17 @@
 			if('should refresh $scope.hasTimeRegistrations', function() {
 				expect(scope.hasTimeRegistrations).toBe(true);
 			});
-		});	
+
+			it('should store the last 5 timeregistrations grouped by description in $scope.lastTimeRegistrationsByDescription', function() {
+				expect(scope.lastTimeRegistrationsByDescription[0].description).toBe('old 1');
+				expect(scope.lastTimeRegistrationsByDescription[1].description).toBe('old 2');
+			});
+
+			it('should store the last 5 timeregistrations grouped by task in $scope.lastTimeRegistrationsByTask', function() {
+				expect(scope.lastTimeRegistrationsByTask[0].task).toBe('t 1');
+				expect(scope.lastTimeRegistrationsByTask[1].task).toBe('t 2');
+			});
+		});
 
 		describe('$scope.openTimeRegistration', function() {
 
@@ -107,8 +125,19 @@
 					{ id: 1, from: { numeric: 2010 }, description: 'description 1'}, 
 					{ id: 2, from: { numeric: 2011 }, description: 'description 2'}]);
 
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbydescription/5').respond([]);
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbytask/5').respond([]);
+
 				scope.refresh();
 				$httpBackend.flush();
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbydescription/5').respond([
+					{ description: 'old 1'},
+					{ description: 'old 2'}]);
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbytask/5').respond([
+					{ task: 't 1'},
+					{ task: 't 2'}]);
 			}));
 
 			it('should update the ui if a time registration is updated', function() {
@@ -137,7 +166,25 @@
 				// item with id 2 is deleted
 				expect(scope.timeRegistrations.length).toBe(1);
 				expect(scope.timeRegistrations[0].id).toBe(1);
-			});			
+			});
+
+
+			it('should refresh the last created time registrations after the dialog is closed', inject(function($httpBackend) {
+
+				expect(scope.lastTimeRegistrationsByDescription.length).toBe(0);
+				expect(scope.lastTimeRegistrationsByTask.length).toBe(0);
+
+				scope.openTimeRegistration();
+				dialog.close({ id: 3, description: 'def' });
+
+				$httpBackend.flush();
+
+				expect(scope.lastTimeRegistrationsByDescription[0].description).toBe('old 1');
+				expect(scope.lastTimeRegistrationsByDescription[1].description).toBe('old 2');
+
+				expect(scope.lastTimeRegistrationsByTask[0].task).toBe('t 1');
+				expect(scope.lastTimeRegistrationsByTask[1].task).toBe('t 2');
+			}));
 		});
 
 		describe('$scope.openTimeRegistration when adding the first time registration', function() {
@@ -147,6 +194,9 @@
 				sinon.stub($modal, 'open', function() { return dialog; });
 
 				$httpBackend.expectGET('/api/public/timeregistrations/bydate/20100120').respond([]);
+
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbydescription/5').respond([]);
+				$httpBackend.expectGET('/api/public/timeregistrations/getlastgroupedbytask/5').respond([]);
 
 				scope.refresh();
 				$httpBackend.flush();

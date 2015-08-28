@@ -22,6 +22,16 @@
 			$state.go('app.time_overview', { date: moment(date, format).format('YYYYMMDD') }, { location: 'replace' });
 		};
 
+		$scope.refreshLastTimeRegistrations = function() {
+			TimeRegistration.getlastgroupedbydescription({ amount: 5 }, function(timeRegistrations) {
+				$scope.lastTimeRegistrationsByDescription = timeRegistrations;
+			});
+
+			TimeRegistration.getlastgroupedbytask({ amount: 5 }, function(timeRegistrations) {
+				$scope.lastTimeRegistrationsByTask = timeRegistrations;
+			});
+		};
+
 		$scope.refresh = function() {
 			TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function(timeRegistrations) {
 				$scope.hasTimeRegistrations = timeRegistrations.length > 0;
@@ -30,9 +40,11 @@
 						return i.from.numeric;
 					});
 			});
+
+			$scope.refreshLastTimeRegistrations();
 		};
 
-		$scope.openTimeRegistration = function(timeRegistration) {
+		$scope.openTimeRegistration = function(timeRegistration, defaults) {
 
 			var createDialog = $modal.open({
 				templateUrl: '/modules/time/views/timeregistrationdialog.html',
@@ -41,6 +53,9 @@
 				resolve: {
 					toUpdate: function () {
 						return timeRegistration;
+					},
+					defaults: function() {
+						return defaults;
 					},
 					date: function() {
 						return $scope.date.format('YYYYMMDD');
@@ -59,6 +74,7 @@
 				}
 
 				$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+				$scope.refreshLastTimeRegistrations();
 			});		
 		};
 	}
