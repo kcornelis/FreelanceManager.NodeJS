@@ -414,8 +414,8 @@ fm.vendor = (function() {
 
 		// Redirect to the dashboard view when route not found
 		$urlRouterProvider.otherwise( function($injector, $location) {
-			var $state = $injector.get("$state");
-			$state.go("app.dashboard");
+			var $state = $injector.get('$state');
+			$state.go('app.dashboard');
 		});
 	}
 
@@ -876,6 +876,8 @@ fm.vendor = (function() {
 		{ 
 			search: { method:'GET', url: '/api/public/timeregistrations/search', isArray: true },
 			bydate: { method:'GET', url: '/api/public/timeregistrations/bydate/:date', params: { date: '@date' }, isArray: true },
+			getlastgroupedbydescription: { method:'GET', url: '/api/public/timeregistrations/getlastgroupedbydescription/:amount', params: { amount: '@amount' }, isArray: true },
+			getlastgroupedbytask: { method:'GET', url: '/api/public/timeregistrations/getlastgroupedbytask/:amount', params: { amount: '@amount' }, isArray: true },
 			byrange: { method:'GET', url: '/api/public/timeregistrations/byrange/:from/:to', params: { from: '@from', to: '@to' }, isArray: true },
 			uninvoiced: { method:'GET', url: '/api/public/timeregistrations/uninvoiced', isArray: true },
 			getinfoforperiod: { method:'GET', url: '/api/public/timeregistrations/getinfoforperiod/:from/:to', params: { from: '@from', to: '@to' } },
@@ -2166,6 +2168,16 @@ fm.vendor = (function() {
 			$state.go('app.time_overview', { date: moment(date, format).format('YYYYMMDD') }, { location: 'replace' });
 		};
 
+		$scope.refreshLastTimeRegistrations = function() {
+			TimeRegistration.getlastgroupedbydescription({ amount: 5 }, function(timeRegistrations) {
+				$scope.lastTimeRegistrationsByDescription = timeRegistrations;
+			});
+
+			TimeRegistration.getlastgroupedbytask({ amount: 5 }, function(timeRegistrations) {
+				$scope.lastTimeRegistrationsByTask = timeRegistrations;
+			});
+		};
+
 		$scope.refresh = function() {
 			TimeRegistration.bydate({ date: $scope.date.format('YYYYMMDD') }, function(timeRegistrations) {
 				$scope.hasTimeRegistrations = timeRegistrations.length > 0;
@@ -2174,9 +2186,11 @@ fm.vendor = (function() {
 						return i.from.numeric;
 					});
 			});
+
+			$scope.refreshLastTimeRegistrations();
 		};
 
-		$scope.openTimeRegistration = function(timeRegistration) {
+		$scope.openTimeRegistration = function(timeRegistration, defaults) {
 
 			var createDialog = $modal.open({
 				templateUrl: '/modules/time/views/timeregistrationdialog.html',
@@ -2185,6 +2199,9 @@ fm.vendor = (function() {
 				resolve: {
 					toUpdate: function () {
 						return timeRegistration;
+					},
+					defaults: function() {
+						return defaults;
 					},
 					date: function() {
 						return $scope.date.format('YYYYMMDD');
@@ -2203,6 +2220,7 @@ fm.vendor = (function() {
 				}
 
 				$scope.hasTimeRegistrations = $scope.timeRegistrations.length > 0;
+				$scope.refreshLastTimeRegistrations();
 			});		
 		};
 	}
@@ -2319,7 +2337,7 @@ fm.vendor = (function() {
 (function() {
 	'use strict';
 
-	function controller($scope, Project, TimeRegistration, toUpdate, date) {
+	function controller($scope, Project, TimeRegistration, toUpdate, defaults, date) {
 
 		// private methods
 		// ---------------
@@ -2344,6 +2362,22 @@ fm.vendor = (function() {
 			return parseInt(time.replace(':', ''), 10);
 		}
 
+		function loadDefaults() {
+			if(!defaults) return;
+
+			if(defaults.companyId)
+				$scope.timeRegistration.company = _.find($scope.companies, { id: defaults.companyId });
+			
+			if(defaults.projectId && $scope.timeRegistration.company)
+				$scope.timeRegistration.project = _.find($scope.timeRegistration.company.projects, { id: defaults.projectId });
+
+			if(defaults.task && $scope.timeRegistration.project)
+				$scope.timeRegistration.task = _.find($scope.timeRegistration.project.tasks, { name: defaults.task });
+
+			if(defaults.description)
+				$scope.timeRegistration.description = defaults.description;
+		}
+
 		// scope watches
 		// -------------
 
@@ -2364,7 +2398,7 @@ fm.vendor = (function() {
 			if($scope.newTimeRegistration && $scope.timeRegistration.task) {
 				$scope.timeRegistration.billable = $scope.timeRegistration.task.defaultRateInCents > 0;
 			}
-		});	
+		});
 
 		// scope properties
 		// ----------------	
@@ -2373,7 +2407,7 @@ fm.vendor = (function() {
 		$scope.message = '';
 
 		$scope.originalTimeRegistration = toUpdate;
-		$scope.newTimeRegistration = toUpdate === undefined;
+		$scope.newTimeRegistration = _.isNull(toUpdate) || _.isUndefined(toUpdate);
 		toUpdate = toUpdate || { };
 		$scope.timeRegistration =  { 
 			company: null,
@@ -2412,6 +2446,9 @@ fm.vendor = (function() {
 			else if($scope.timeRegistration.task)
 				$scope.projectEditable = true;
 			else $scope.projectEditable = false;
+
+			if($scope.newTimeRegistration)
+				loadDefaults();
 		});
 
 		// scope actions
@@ -2462,7 +2499,7 @@ fm.vendor = (function() {
 		};
 	}
 
-	controller.$inject = ['$scope', 'Project', 'TimeRegistration', 'toUpdate', 'date'];
+	controller.$inject = ['$scope', 'Project', 'TimeRegistration', 'toUpdate', 'defaults', 'date'];
 
 	angular.module('fmTime').controller('TimeRegistrationDialogController', controller);
 })();
