@@ -3,5 +3,12 @@ node_js:
   - "0.10"
 env:
   - NODE_ENV=travis
+sudo: false
 services:
-  - mongodb
+- mongodb
+addons:
+  apt:
+    sources:
+    - mongodb-3.0-precise
+    packages:
+    - mongodb-org-server
