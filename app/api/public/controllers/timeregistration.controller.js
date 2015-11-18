@@ -67,13 +67,12 @@ exports.getLastGroupedByDescription = function(req, res, next) {
 	var limit = parseInt(req.params.amount, 10);
 	TimeRegistration.aggregate()
 		.match({ tenant: req.user.id, deleted: false })
-		.sort({ createdOn: 1 })
 		.group({ 
 			_id: { companyId: '$companyId', projectId: '$projectId', task: '$task', description: '$description' },
 			'last': { $max: '$createdOn' }
 		})
-		.limit(limit)
 		.sort({ last: -1 })
+		.limit(limit)
 		.project({
 			'_id': false,
 			companyId: '$_id.companyId',
@@ -94,13 +93,12 @@ exports.getLastGroupedByTask = function(req, res, next) {
 	var limit = parseInt(req.params.amount, 10);
 	TimeRegistration.aggregate()
 		.match({ tenant: req.user.id, deleted: false })
-		.sort({ createdOn: 1 })
 		.group({ 
 			_id: { companyId: '$companyId', projectId: '$projectId', task: '$task' },
 			'last': { $max: '$createdOn' }
 		})
-		.limit(limit)
 		.sort({ last: -1 })
+		.limit(limit)
 		.project({
 			'_id': false,
 			companyId: '$_id.companyId',
