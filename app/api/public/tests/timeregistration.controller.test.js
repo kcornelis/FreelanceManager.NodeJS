@@ -71,6 +71,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var body;
 		var timeRegistration;
 
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
+
 		before(function(done) {
 
 			timeRegistration = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', true, 'Doing some work', 20001231, 1400, 1359);
@@ -223,6 +227,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
+
 		before(function(done) {
 
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1500);
@@ -314,6 +322,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration3;
 		var timeregistration4;
 		var timeregistration5;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -435,6 +447,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration4;
 		var timeregistration5;
 
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
+
 		before(function(done) {
 
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Analyse', false, 'Doing some work 1', 20001231, 1400, 1500);
@@ -549,6 +565,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
+
 		before(function(done) {
 
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20001231, 1400, 1500);
@@ -625,6 +645,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration3;
 		var timeregistration4;
 		var timeregistration5;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -719,6 +743,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
+
 		before(function(done) {
 
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
@@ -781,6 +809,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration3;
 		var timeregistration4;
 		var timeregistration5;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -861,6 +893,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration2;
 		var timeregistration3;
 
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
+
 		before(function(done) {
 
 			timeregistration1 = TimeRegistration.create(testdata.normalAccountId, company.id, project.id, 'Dev', false, 'Doing some work', 20100201, 1400, 1500);
@@ -912,6 +948,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration1;
 		var timeregistration2;
 		var timeregistration3;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -965,6 +1005,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration1;
 		var timeregistration2;
 		var timeregistration3;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -1033,6 +1077,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration3;
 		var timeregistration4;
 		var timeregistration5;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -1130,6 +1178,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration5;
 		var timeregistration6;
 		var timeregistration7;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
@@ -1230,6 +1282,10 @@ describe('Public API: TimeRegistration Controller Integration Tests:', function(
 		var timeregistration5;
 		var timeregistration6;
 		var timeregistration7;
+
+		before(function(done){
+			TimeRegistration.remove({ }, done);
+		});
 
 		before(function(done) {
 
