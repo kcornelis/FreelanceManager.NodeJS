@@ -1,7 +1,19 @@
+sudo: false
 language: node_js
 node_js:
   - "0.10"
-env:
-  - NODE_ENV=travis
 services:
   - mongodb
+addons:
+  apt:
+    sources:
+    - mongodb-3.0-precise
+    packages:
+    - mongodb-org-server
+env:
+  - NODE_ENV=travis
+before_install: 
+  - "npm install -g npm" 
+  - "npm install -g grunt-cli" 
+before_script: 
+  - "until nc -z localhost 27017; do echo Waiting for MongoDB; sleep 1; done" 
